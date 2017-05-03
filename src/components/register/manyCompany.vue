@@ -6,7 +6,7 @@
 <script >
 
     export default {
-      name: 'bindPhone',
+      name: 'manyCompany',
       data() {
         return {
           msg: 'Welcome',

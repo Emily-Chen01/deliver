@@ -18,23 +18,42 @@
 </template>
 
 <script>
-import { Navbar, TabItem,Toast,mtTabContainerItem } from 'mint-ui';
+import { Navbar, TabItem,Toast,MessageBox } from 'mint-ui';
+//import manyCompany from "@/components/business/manyCompany"
+
 export default {
   name: 'hello',
   data() {
     return {
       msg: '欢迎使用 EHR SAAS 员工自助服务',
-      msgPhone: '您需要先绑定手机!!!!',
-      phoneNumber:'185500454656'
+      msgPhone: '您需要先绑定手机!',
+      phoneNumber:'18550045759',
+      paramVerification:{
+        "type":1,
+        "phone":this.phoneNumber
+      }
 
     }
+  },
+  created() {
+
   },
   mounted: function() {
 
   },
   methods: {
     handerClick(){
-        console.log(this.phoneNumber)
+        console.log(this.paramVerification)
+//      MessageBox('提示', '请联系您的HR绑定手机');
+      this.$http.get('/api/v1.0/account/sendsms',{
+        "type":1,
+        "phone":this.phoneNumber
+      }).then(response => {
+        console.log(1234);
+        console.log(response);
+      }, response => {
+        console.log( 'error callback');
+      });
     },
 
   },
