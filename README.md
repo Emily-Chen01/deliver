@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # project
 
 > vue project
@@ -25,3 +26,7 @@ npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+=======
+# hro-wechat
+# hro 微信端项目
+>>>>>>> fe4f2487e74cbea750778b4ec937776bb4e9f1ef
