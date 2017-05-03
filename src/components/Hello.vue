@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       msg: '欢迎使用 EHR SAAS 员工自助服务',
-      msgPhone: '您需要先绑定手机',
+      msgPhone: '您需要先绑定手机!!!!',
       phoneNumber:'185500454656'
 
     }
