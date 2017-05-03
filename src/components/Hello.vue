@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import { Navbar, TabItem,Toast,mtTabContainerItem } from 'mint-ui';
 export default {
   name: 'hello',
@@ -29,7 +29,7 @@ export default {
 
     }
   },
-  mounted:{
+  mounted: function() {
 
   },
   methods: {
