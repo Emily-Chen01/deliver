@@ -68,10 +68,10 @@ export default {
             iconClass: 'mint-toast-icon mintui mintui-success'
           });
 
-        }else{
-            if(response.body.code==200){
+        }else if(response.body.code==200){
               this.handerCome();
-            }
+        }else  if(response.body.code==1001){
+              alert("登录超时");
         }
       }, response => {
         console.log( 'error callback');

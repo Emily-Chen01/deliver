@@ -4,12 +4,12 @@
         <img :src="imgSrc.comAddress" class="avatar">
       </div>
       <div class="siginRight">
-        <div>北京科锐国际人力资源股份有限公司</div>
+        <div style="text-align: left;">{{oneselfData.companyNmae}}</div>
         <div>
-          <p class="signName"><span>产品部</span> <span>刘佳安</span></p>
+          <p class="signName"><span>{{oneselfData.department}}</span> <span>{{oneselfData.name}}</span></p>
           <div class="signImg"><img :src="imgSrc.shezhiBackground" /></div>
         </div>
-        <div class="signTitle">产品总监</div>
+        <div class="signTitle">{{oneselfData.position}}</div>
       </div>
       <div>
         <mt-button
@@ -33,10 +33,19 @@
 </template>
 <script >
 //  import ManyCompany from "./manyCompany"
+let oneselfData={};
 
   export default {
       data(){
         return {
+          oneselfData:{
+            companyNmae:'北京科锐国际人力资源股份有限公司',
+            department:'产品部',
+            position:'产品员工',
+            name:'刘易斯',
+
+          },
+          arryOneself:[],
           imgSrc: {
             comAddress:  require('../../assets/logo.png'),
             shezhiBackground:  require('../../assets/shezhi.png'),
@@ -65,6 +74,11 @@
 //      }, response => {
 //        console.log( 'error callback');
 //      });
+      this.searchStaff();
+//      this.$nextTick(() => {
+//        this.searchStaff();
+//      });
+
     },
     methods: {
       handerSign(){
@@ -81,6 +95,29 @@
 
         this.$router.push({path:'/signIn'}); //进入打卡页
 
+      },
+      searchStaff(){
+        let phoneObj={
+          "openid":"2",
+        };
+//        let arryOneself=[];
+        this.$http.post('api/v1.0/client/findStaff',phoneObj).then(response => {
+          console.log("111",response.body.result);
+          this.arryOneself.push(response.body.result);
+          console.log("rryOne",this.arryOneself);
+          for(let i=0; i<this.arryOneself.length;i++){
+            this.oneselfData={
+              companyNmae:this.arryOneself[i].finallyEmpCom,
+                department:this.arryOneself[i].graduateInst,
+                position:this.arryOneself[i].bankName,
+                name:this.arryOneself[i].name,
+            }
+          }
+
+
+       }, response => {
+          console.log( 'error callback');
+        });
       }
 
     },
@@ -117,7 +154,7 @@
     width: 45%;
     height: 0.5rem;
     line-height: 0.5rem;
-    text-indent: -22%;
+    text-indent: -24%;
   }
   .signImg {
     display: inline-block;
@@ -135,7 +172,7 @@
 }
   .signTitle {
     text-align: left;
-    padding-left: 0.89rem;
+    padding-left: 0.33rem;
     height: 0.65rem;
     line-height: 0.65rem;
   }

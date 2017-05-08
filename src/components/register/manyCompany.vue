@@ -3,17 +3,16 @@
       <p class="manyCompanyTitle">{{ msg }}</p>
       <div>
         <div >
-        <a  class="mint-cell" v-for="(item , $index) in arryName" @click="handerComeCompany(item,$index)" >
-          <div class="mint-cell-wrapper">
-            <div class="mint-cell-title"><!----> <div ><i class="indexicon icon-toast"></i> <span>{{item.name}}</span></div></div>
-            <div class="mint-cell-value is-link"><span></span></div>
-          </div>
-          <div class="mint-cell-right"></div>
-          <i class="mint-cell-allow-right"></i>
-        </a>
+          <a  class="mint-cell" v-for="(item , $index) in arryName" @click="handerComeCompany(item,$index)" >
+            <div class="mint-cell-wrapper">
+              <div class="mint-cell-title"><!----> <div ><i class="indexicon icon-toast"></i> <span>{{item.COMP_NAME}}</span></div></div>
+              <div class="mint-cell-value is-link"><span></span></div>
+            </div>
+            <div class="mint-cell-right"></div>
+            <i class="mint-cell-allow-right"></i>
+          </a>
         </div>
       </div>
-
     </div>
 
 </template>
@@ -28,15 +27,6 @@
             {
                 name:'苏州工业园区科技有限公司',
                 url:'www.baidu.com'
-            },
-            {
-              name:'苏州科技有限公司'
-            },
-            {
-              name:'苏州工业园区科技有限公司'
-            },
-            {
-              name:'苏州科技有限公司'
             }
           ]
 
@@ -44,22 +34,29 @@
         }
       },
       created: function () {
-        console.log('a is: ')
+        let phoneObj={
+          phone:18021611639
+        }
+        this.$http.get('api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => {
+            this.arryName=response.body.result
+        }, response => {
+          console.log( 'error callback');
+        });
       },
       methods: {
         handerComeCompany(item,ff) {
             let param={
               "openid":"2",
-              "companyUid":"d713a5e1-4624-4301-8602-b1eb5f869663"
+              "companyUid":"1"
             }
             this.$http.post('api/v1.0/client/chooseCompany',param).then(response => {
-              console.log(123);
-              console.log(response);
+              console.log('选择公司接口');
+
+              this.$router.push({path:'/signCard'});
             }, response => {
               console.log( 'error callback');
             });
-          this.$router.push({path:'/signCard'});
-          console.log(ff);
+
         },
 //
       },
