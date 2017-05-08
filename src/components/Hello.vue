@@ -13,14 +13,11 @@
     </div>
 
 
-
   </div>
 </template>
 
 <script>
 import { Navbar, TabItem,Toast,MessageBox } from 'mint-ui';
-//import manyCompany from "@/components/business/manyCompany"
-
 export default {
   name: 'hello',
   data() {
@@ -29,8 +26,11 @@ export default {
       msgPhone: '您需要先绑定手机!',
       phoneNumber:'18550045759',
       paramVerification:{
+        "phone":18601421739,
         "type":1,
-        "phone":this.phoneNumber
+        "code":"159216",
+        "passwd":123456,
+        "confirmPasswd":123456
       }
 
     }
@@ -45,10 +45,7 @@ export default {
     handerClick(){
         console.log(this.paramVerification)
 //      MessageBox('提示', '请联系您的HR绑定手机');
-      this.$http.get('/api/v1.0/account/sendsms',{
-        "type":1,
-        "phone":this.phoneNumber
-      }).then(response => {
+      this.$http.post('api/v1.0/account/signup',this.paramVerification).then(response => {
         console.log(1234);
         console.log(response);
       }, response => {
@@ -57,6 +54,8 @@ export default {
     },
 
   },
+  components: {
+  }
 
 }
 </script>
@@ -78,7 +77,6 @@ export default {
   font-size: 1rem;
   display: inline-block;
   margin-bottom: 2rem;
-
 }
 .verification span{
   font-size: 0.7rem;
@@ -98,38 +96,5 @@ export default {
 }
 .confirmBinding button{
   width: 99%;
-}
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-.dd{
-  font-size: 1.2rem;
-  width: 9.4rem;
-  height: 3rem;
-  display: inline-block;
-}
-p{
-  text-align: center;
-  font-size: 1.1rem;
-  height: 1rem;
-  font-weight: 600;
-}
- .titlesSmall{
-  font-size: 1rem;
-  height: 0.8rem;
-   font-weight: 600;
- }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
 }
 </style>
