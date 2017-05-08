@@ -18,7 +18,7 @@
       <file leaf-file-name="index.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pages/index.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="575">
+            <state relative-caret-position="1400">
               <caret line="56" column="9" lean-forward="true" selection-start-line="46" selection-start-column="8" selection-end-line="56" selection-end-column="9" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
@@ -50,11 +50,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="signCard.vue" pinned="false" current-in-tab="true">
+      <file leaf-file-name="signCard.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/components/register/signCard.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
-              <caret line="179" column="83" lean-forward="true" selection-start-line="179" selection-start-column="83" selection-end-line="179" selection-end-column="83" />
+            <state relative-caret-position="312">
+              <caret line="51" column="12" lean-forward="true" selection-start-line="48" selection-start-column="9" selection-end-line="51" selection-end-column="12" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#mt-button#0;n#div#2;n#div#0;n#template#0;n#!!top" expanded="true" />
@@ -63,11 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="signIn.vue" pinned="false" current-in-tab="false">
+      <file leaf-file-name="signIn.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/components/SignIn/signIn.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12">
-              <caret line="62" column="20" lean-forward="false" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
+            <state relative-caret-position="-988">
+              <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
@@ -125,10 +125,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>handerComeCompany</find>
-      <find>toUpShow</find>
-      <find>to</find>
-      <find>downClickSpan</find>
       <find>toUpYuanShow</find>
       <find>Obtain</find>
       <find>toUp</find>
@@ -152,9 +148,13 @@
       <find>打卡正常</find>
       <find>clickStaus</find>
       <find>toDaKaStatus</find>
-      <find>toWorkRightTime</find>
       <find>signName</find>
       <find>signTitle</find>
+      <find>handerComeCompany</find>
+      <find>img</find>
+      <find>toWorkRightTime</find>
+      <find>comAddress</find>
+      <find>postionClassIcon</find>
     </findStrings>
     <replaceStrings>
       <replace>4</replace>
@@ -170,8 +170,8 @@
         <option value="$PROJECT_DIR$/main.js" />
         <option value="$PROJECT_DIR$/pages/index.vue" />
         <option value="$PROJECT_DIR$/components/register/manyCompany.vue" />
-        <option value="$PROJECT_DIR$/components/SignIn/signIn.vue" />
         <option value="$PROJECT_DIR$/components/register/signCard.vue" />
+        <option value="$PROJECT_DIR$/components/SignIn/signIn.vue" />
       </list>
     </option>
   </component>
@@ -404,15 +404,15 @@
       <option name="presentableId" value="Default" />
       <updated>1494050151194</updated>
       <workItem from="1494050153031" duration="17469000" />
-      <workItem from="1494204699918" duration="36183000" />
+      <workItem from="1494204699918" duration="37197000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55519000" />
+    <option name="totallyTimeSpent" value="56533000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="565" y="53" width="1220" height="1015" extended-state="1" />
+    <frame x="565" y="53" width="1220" height="1015" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -674,7 +674,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pages/index.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
+        <state relative-caret-position="1400">
           <caret line="56" column="9" lean-forward="true" selection-start-line="46" selection-start-column="8" selection-end-line="56" selection-end-column="9" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
@@ -685,10 +685,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/components/register/signCard.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="51" column="12" lean-forward="true" selection-start-line="48" selection-start-column="9" selection-end-line="51" selection-end-column="12" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#mt-button#0;n#div#2;n#div#0;n#template#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/components/SignIn/signIn.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12">
-          <caret line="62" column="20" lean-forward="false" selection-start-line="62" selection-start-column="20" selection-end-line="62" selection-end-column="20" />
+        <state relative-caret-position="-988">
+          <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
@@ -707,17 +718,6 @@
             <element signature="n#style#0;n#mt-button#0;n#div#4;n#div#2;n#mt-popup#0;n#div#0;n#div#8;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#3;n#mt-popup#0;n#div#0;n#div#8;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#4;n#mt-popup#0;n#div#0;n#div#8;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/register/signCard.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="179" column="83" lean-forward="true" selection-start-line="179" selection-start-column="83" selection-end-line="179" selection-end-column="83" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#template#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#mt-button#0;n#div#2;n#div#0;n#template#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>

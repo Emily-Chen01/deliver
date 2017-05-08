@@ -27,7 +27,9 @@
                     {{clickStaus}}
                  </mt-button>
               </div>
-              <div style="width: 12rem">地理位置：范围内</div>
+              <div style="width: 12rem">
+                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
+                地理位置：范围内</div>
             </div>
           </div>
         </div>
@@ -44,7 +46,10 @@
                   {{clickStaus}}
                  </mt-button>
               </div>
-              <div style="width: 12rem">地理位置：范围内</div>
+              <div style="width: 12rem">
+                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
+                地理位置：范围内
+              </div>
             </div>
           </div>
          </div>
@@ -61,7 +66,10 @@
                   {{clickStaus}}
                  </mt-button>
               </div>
-              <div style="width: 12rem">地理位置：范围内</div>
+              <div style="width: 12rem">
+                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
+                地理位置：范围内
+              </div>
             </div>
           </div>
         </div>
@@ -155,6 +163,7 @@
           clickStaus:'打卡正常',
           imgSrc: {
             daKaIcon: require('../../assets/dakachenggong.png'),
+            daKaPostionIcon: require('../../assets/weizhi.png'),
           },
         }
       },
@@ -467,5 +476,10 @@
     top: 0.1rem;
     font-size: 1rem;
     border-radius: 8px
+  }
+  .postionClassIcon{
+    width: 1.5rem;
+    height: 1.5rem;
+    line-height: 1.5rem
   }
 </style>
