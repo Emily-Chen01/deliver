@@ -3,14 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup} from 'mint-ui';
+import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Field } from 'mint-ui';
 import Mint from 'mint-ui';
 import VueResource from 'vue-resource'
 
 
 
 Vue.use(Mint);
-Vue.use(VueResource)
+Vue.use(VueResource);
+
 
 Vue.component(Tabbar.name, Tabbar);
 Vue.component(TabItem.name, TabItem);
@@ -20,6 +21,8 @@ Vue.component(Button.name, Button);
 // Vue.use(Toast);
 Vue.component(Progress.name, Progress);
 Vue.component(Popup.name, Popup);
+Vue.component(Field.name, Field);
+
 
 
 Vue.config.productionTip = false

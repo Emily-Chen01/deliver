@@ -18,18 +18,46 @@
           <div>
             <div class="toWorkLeft"><p>上</p></div>
             <div class="toWorkRight">
-              <div class="toWorkRightTime">上班时间</div>
-              <div class="toWorkRightTime">
+              <div class="toWorkRightTimeSpan">上班时间</div>
+              <div class="toWorkRightTimeSpan">
                 {{initToTime}}
               </div>
-              <div class="toWorkRightTime" style="position: relative">
-                  <mt-button type="default" class="toDaKaStatus">
+              <div class="toWorkRightTime" style="position: relative" >
+                 <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
                     {{clickStaus}}
+                </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondQ" v-show="isYellow">
+                  区域外
+                 </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondQ" v-show="lateStatusAddW">
+                  <!--区域外+迟到显示-->
+                  区域外
+                 </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatus">
+                  <!--lateStatus-->
+                  迟到了
+                 </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondK" v-show="absenteeismStatus">
+                  <!--absenteeismStatus-->
+                  旷工
                  </mt-button>
               </div>
-              <div style="width: 12rem">
-                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
-                地理位置：范围内</div>
+              <div style="width: 17rem">
+                <div v-show="initDaKaRecord">
+                  <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon" >
+                  地理位置：范围内
+                </div>
+                <div>
+                  <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus">
+                    <!--absenteeismStatus  旷工-->
+                    提交请假/外出申请
+                   </mt-button>
+                  <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus">
+                    <!--lateStatus  迟到块-->
+                    忘打卡？
+                   </mt-button>
+                </div>
+                </div>
             </div>
           </div>
         </div>
@@ -37,18 +65,45 @@
           <div>
             <div class="toWorkLeft"><p>上</p></div>
             <div class="toWorkRight">
-              <div class="toWorkRightTime">上班时间</div>
-              <div class="toWorkRightTime">
+              <div class="toWorkRightTimeSpan">上1班时间</div>
+              <div class="toWorkRightTimeSpan">
                {{initToTime}}
               </div>
-              <div class="toWorkRightTime" style="position: relative">
-                <mt-button type="default" class="toDaKaStatus">
+              <div class="toWorkRightTime" style="position: relative" >
+                <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
                   {{clickStaus}}
+                </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondQ" v-show="isYellow">
+                  区域外
+                 </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondQ" v-show="lateStatusAddW">
+                  <!--区域外+迟到显示-->
+                  区域外
+                 </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatus">
+                  <!--lateStatus-->
+                  迟到了
+                 </mt-button>
+                <mt-button type="default" class="toDaKaStatusSecondK" v-show="absenteeismStatus">
+                  <!--absenteeismStatus-->
+                  旷工
                  </mt-button>
               </div>
-              <div style="width: 12rem">
-                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
-                地理位置：范围内
+              <div style="width: 17rem">
+                <div v-show="initDaKaRecord">
+                  <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon" >
+                  地理位置：范围内
+                </div>
+                <div>
+                  <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus">
+                    <!--absenteeismStatus  旷工-->
+                    提交请假/外出申请
+                   </mt-button>
+                  <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus">
+                    <!--lateStatus  迟到块-->
+                    忘打卡？
+                   </mt-button>
+                </div>
               </div>
             </div>
           </div>
@@ -57,12 +112,12 @@
           <div style="margin-top: 5rem">
             <div class="toWorkLeft"><p>下</p></div>
             <div class="toWorkRight">
-              <div class="toWorkRightTime">下班时间</div>
-              <div class="toWorkRightTime">
+              <div class="toWorkRightTimeSpan">下2班时间</div>
+              <div class="toWorkRightTimeSpan">
               {{goToTime}}
               </div>
               <div class="toWorkRightTime" style="position: relative">
-                <mt-button type="default" class="toDaKaStatus">
+                <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
                   {{clickStaus}}
                  </mt-button>
               </div>
@@ -93,10 +148,10 @@
               </div>
             </mt-button>
 
-            <mt-popup
+          <mt-popup
               v-model="popupVisible"
               closeOnClickModal="true"
-              class="popupClass"
+              :class="{  popupClass:isNormal,active: isYellow ,absenteeismClass:absenteeismStatus }"
               >
               <div class="daKaAlert"><img :src="imgSrc.daKaIcon" /><span class="daKaSpan">打卡成功</span></div>
               <div style="clear: both"></div>
@@ -113,9 +168,26 @@
                 <div class="dakahr"></div>
                 <div>
                   <mt-button type="default"
-                             style="width: 10rem;height: 3rem;position: absolute;right: 1rem;top: 4.6rem;">
-                  {{clickStaus}}
-                </mt-button>
+                             style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
+                             v-show="initDaKaRecord">
+                    打卡正常
+                  </mt-button>
+                  <mt-button type="default"
+                             style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
+                             v-show="lateStatus">
+                    迟到打卡
+                  </mt-button>
+                  <mt-button type="default"
+                             style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
+                             v-show="absenteeismStatus">
+                    旷工打卡
+                  </mt-button>
+                  <mt-button type="default"
+                             style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 7.4rem;"
+                             v-show="isYellowAddQ">
+                    <!--迟到+区域外-->
+                    区域外
+                  </mt-button>
                 </div>
               </div>
               <div style="clear: both"></div>
@@ -159,6 +231,16 @@
           downClickSpan:false, //下班打卡文字
           clickfunction:true, //为了区别上班还是下班
           zcDownShowSpan:false, //下班打卡后显示的文字
+          isYellow:false, //区域外面打卡 yellow
+          isNormal:true, //正常打卡 灰色
+          absenteeismStatus:false, //旷工打卡
+          lateStatus:false, //迟到状态
+          lateStatusAddW:false, //迟到状态
+          isYellowAddQ:false,  //迟到+区域外
+
+          initDaKaRecord:false, //查询打卡记录是否有  span
+          toDaKaStatusIs:'',
+
 
           clickStaus:'打卡正常',
           imgSrc: {
@@ -175,29 +257,45 @@
         }
         this.$http.post('api/v1.0/client/findPunchCardLog',initUpDakaObj).then(response => { //查询是否有打卡
           console.log('初始化上班已经打卡');
-          console.log(response.body.result)
-          this.year=response.body.result.punchYear;
-          this.month=response.body.result.punchMonth;
-          this.data=response.body.result.punchDate;
-          this.initToTime=response.body.result.twTime; //上班时间
-          this.goToTime=response.body.result.owTime;  //下班时间
+          console.log(response.body.result);
+          this.toDaKaStatusIs=response.body.result.twStatus;
+          console.log(this.toDaKaStatusIs);
+          if(this.toDaKaStatusIs!==null){   //要查看初始化 是否显示  还要调节这个条件............................
+            this.year=response.body.result.punchYear;
+            this.month=response.body.result.punchMonth;
+            this.data=response.body.result.punchDate;
+            this.initToTime=response.body.result.twTime; //上班时间
+            var zhuan=new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+            this.initToTime=zhuan.substring(8);
 
-          var zhuan=new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-          this.initToTime=zhuan.substring(8);
+            this.toClickSpan=false;
+            this.downClickSpan=true;
 
-          var zhuan=new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-          this.goToTime=zhuan.substring(8);
+            if(this.toDaKaStatusIs==0){//正常打卡显示
+              this.initDaKaRecord=true;
+            }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
+              this.lateStatus=true;
+            }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==true){ //迟到+区域外打卡显示
+              this.lateStatus=true;
+              this.lateStatusAddW =true;
+            }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
+              this.absenteeismStatus=true;
+            }
 
 
+          }else if(response.body.result.owTime!==null){
+            this.year=response.body.result.punchYear;
+            this.month=response.body.result.punchMonth;
+            this.data=response.body.result.punchDate;
+            this.goToTime=response.body.result.owTime;  //下班时间
+            var zhuan=new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+            this.goToTime=zhuan.substring(8);
 
-
-          if(response.body.result.twTime!==null){
-              this.toClickSpan=false;
-              this.downClickSpan=true;
-
-          }else{
             this.toClickSpan=true;
             this.downClickSpan=false;
+            this.initDaKaRecord=false;
+          }else if(response.body.message=='暂无任何打卡信息'){
+            this.initDaKaRecord=false;
           }
         }, response => {
           console.log( 'error callback');
@@ -227,8 +325,7 @@
             return ''+n;
           }
         },
-        handerClickEvent(){
-
+        handerClickEvent(){  //打卡按钮   上班或下班
 
               MessageBox.confirm('“HR SAAS系统”，要使用你的地理位置，是否允许？').then(action => {
 
@@ -239,7 +336,10 @@
                   "record":{"twOutside":0}
                 }
                 this.$http.post('api/v1.0/client/punchCardLog',updakaObj).then(response => { //打卡
-                    if( this.initToTime==null){ //上班打卡
+                  if(response.body.message=='打卡失败'){
+                      alert('系统打卡失败,请看接口返回结果');
+                  }else{
+                    if( this.toDaKaStatusIs==null){ //上班打卡
                       this.toUp=false;
                       this.Obtain=true;
                       this.popupVisible=true;
@@ -247,24 +347,60 @@
                       this.toTimeMiddleShow=true;
                       var zhuan=new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
                       this.initToTime=zhuan.substring(8);
-                  }else{ //下班打卡
-                    this.zcDownShowSpan=true;
-                    this.alertToSpan=false;//sapn 上班
-                    this.alertDownSpan=true; //sapn 下班
-                    this.popupVisible=true; //弹出的模态框打卡
-                    console.log(response.body);
+
+                      if(this.toDaKaStatusIs==0){//正常打卡显示
+                        this.initDaKaRecord=true;
+                        console.log(this.toDaKaStatusIs)
+                      }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
+                        this.lateStatus=true;
+                        this.isYellow=true;
+
+                      }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==false){ //迟到+区域外打卡显示
+                        this.lateStatus=true;
+                        this.isYellow=true;
+                        this.isYellowAddQ=true;
+                      }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
+                        this.absenteeismStatus=true;
+                      }
+
+
+                    }else if ( this.toDaKaStatusIs!==null){ //下班打卡
+                      console.log(this.toDaKaStatusIs);
+                      this.zcDownShowSpan=true;
+                      this.alertToSpan=false;//sapn 上班
+                      this.alertDownSpan=true; //sapn 下班
+                      this.popupVisible=true; //弹出的模态框打卡
+                      console.log(response.body);
                       var zhuan=new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
                       this.goToTime=zhuan.substring(8);
                       this.downTimeMiddleShow=true;
                       this.toTimeMiddleShow=false;
 
+                      if(this.toDaKaStatusIs==0){//正常打卡显示
+                        this.initDaKaRecord=true;
+                        console.log(this.toDaKaStatusIs)
+                      }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
+                        this.lateStatus=true;
+                        this.isYellow=true;
+
+                      }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==false){ //迟到+区域外打卡显示
+                        this.lateStatus=true;
+                        this.isYellow=true;
+                        this.initDaKaRecord=false;
+
+                        this.isYellowAddQ=true;
+                        this.lateStatusAddW=true;
+
+                      }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
+                        this.absenteeismStatus=true;
+                      }
                     }
+                  }
+
                 }, response => {
                   console.log( 'error callback');
                 });
-
               });
-
         },
         currentTime(){ //模态框显示当前打卡成功
         },
@@ -281,6 +417,39 @@
           this.zcToUpShow=false;
           this.currentTimeSpan();//显示在list上的日志
           this.daKaHide=false; //下班打卡后不可再打卡
+
+
+
+          if(this.toDaKaStatusIs==0){//正常打卡显示
+
+            this.alertToSpan=true;//sapn 上班
+            this.alertDownSpan=true; //sapn 下班
+            this.initDaKaRecord=true;
+            console.log(this.toDaKaStatusIs)
+          }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
+            this.lateStatus=true;
+            this.isYellow=true;
+            this.initDaKaRecord=false;
+
+
+          }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==false){ //迟到+区域外打卡显示
+            this.initDaKaRecord=false;
+            this.lateStatusAddW=true;
+            console.log(this.lateStatusAddW);
+//            this.lateStatus=true;
+//            this.isYellowAddQ=true;
+          }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
+            this.absenteeismStatus=true;
+            this.initDaKaRecord=false;
+            this.lateStatus=true;
+
+
+
+
+          }
+
+
+
 
         }
 
@@ -336,7 +505,7 @@
     border: 1px solid #cccccc;
   }
   .toWorkRight{
-     width: 20.2rem;
+     width: 20.67rem;
      height: 1.4rem;
      line-height: 1.4rem;
      padding-top: 1.1rem;
@@ -466,15 +635,84 @@
     line-height: 2rem;
     float: left;
   }
+  .toWorkRightTimeSpan{
+    width: 5rem;
+    height: 2rem;
+    line-height: 2rem;
+    float: left;
+  }
   .toDaKaStatus{
     background-color: rgb(139, 156, 172);
     color:#000000;
-    width: 5.9rem;
+    width: 5.7rem;
+    left:-0.8rem;
     height: 1.8rem;
     position: absolute;
-    left:0.7rem;
     top: 0.1rem;
-    font-size: 1rem;
+    font-size: 0.3rem;
+    border-radius: 8px
+  }
+  .toDaKaStatusSecond{
+    background-color: rgb(139, 156, 172);
+    color:#000000;
+    width: 5.7rem;
+    left:5rem;
+    height: 1.8rem;
+    position: absolute;
+    top: 0.1rem;
+    font-size: 0.3rem;
+    border-radius: 8px
+  }
+  .toDaKaStatusSecondQ{
+    background-color: rgb(255, 204, 0);
+    color:#ffffff;
+    width: 5rem;
+    left:0rem;
+  /*这个地方与上1 右边的的迟到了有重叠原来是left：5*/
+    height: 1.8rem;
+    position: absolute;
+    top: 0.1rem;
+    font-size: 0.3rem;
+    border-radius: 8px
+  }
+  .toDaKaStatusSecondC{
+    background-color: rgb(255, 204, 0);
+    color:#000000;
+    width: 5.2rem;
+    left:5.2rem;
+    height: 1.8rem;
+    position: absolute;
+    top: 0.1rem;
+    font-size: 0.3rem;
+    border-radius: 8px
+  }
+  .toDaKaStatusSecondK{
+    background-color: rgb(255, 102, 0);
+    color:#000000;
+    width: 5.7rem;
+    left:5rem;
+    height: 1.8rem;
+    position: absolute;
+    top: 0.1rem;
+    font-size: 0.3rem;
+    border-radius: 8px
+  }
+  .toDaKaStatusWj{
+    background-color: rgb(139, 156, 172);
+    color:#ffffff;
+    width: 6rem;
+    height: 1.8rem;
+    top: 0.5rem;
+    font-size: 0.3rem;
+    border-radius: 8px
+  }
+  .toDaKaStatusQj{
+    background-color: rgb(139, 156, 172);
+    color:#ffffff;
+    width: 9.8rem;
+    height: 1.8rem;
+    top: 0.5rem;
+    font-size: 0.3rem;
     border-radius: 8px
   }
   .postionClassIcon{
@@ -482,4 +720,17 @@
     height: 1.5rem;
     line-height: 1.5rem
   }
+  .active{
+    width: 16rem;
+    height: 24rem;
+    border-radius: 4px;
+    background-color: rgb(255,204,0);
+  }
+  .absenteeismClass{
+    width: 16rem;
+    height: 24rem;
+    border-radius: 4px;
+    background-color: rgb(255,102,0);
+  }
+
 </style>
