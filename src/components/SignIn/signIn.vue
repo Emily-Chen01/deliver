@@ -151,7 +151,7 @@
           <mt-popup
               v-model="popupVisible"
               closeOnClickModal="true"
-              :class="{  popupClass:isNormal,active: isYellow ,absenteeismClass:absenteeismStatus }"
+              :class="{  popupClass:isNormal,active: isYellow,active2: isYellow2 ,absenteeismClass:absenteeismStatus }"
               >
               <div class="daKaAlert"><img :src="imgSrc.daKaIcon" /><span class="daKaSpan">打卡成功</span></div>
               <div style="clear: both"></div>
@@ -170,12 +170,12 @@
                   <mt-button type="default"
                              style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                              v-show="initDaKaRecord">
-                    打卡正常
+                    打卡正常z
                   </mt-button>
                   <mt-button type="default"
                              style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                              v-show="lateStatus">
-                    迟到打卡
+                    您迟到了
                   </mt-button>
                   <mt-button type="default"
                              style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
@@ -232,12 +232,12 @@
           clickfunction:true, //为了区别上班还是下班
           zcDownShowSpan:false, //下班打卡后显示的文字
           isYellow:false, //区域外面打卡 yellow
+          isYellow2:false, //区分迟到颜色 yellow2
           isNormal:true, //正常打卡 灰色
           absenteeismStatus:false, //旷工打卡
           lateStatus:false, //迟到状态
           lateStatusAddW:false, //迟到状态
           isYellowAddQ:false,  //迟到+区域外
-
           initDaKaRecord:false, //查询打卡记录是否有  span
           toDaKaStatusIs:'',
 
@@ -266,7 +266,7 @@
             this.data=response.body.result.punchDate;
             this.initToTime=response.body.result.twTime; //上班时间
             var zhuan=new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-            this.initToTime=zhuan.substring(8);
+            this.initToTime=zhuan.substring(9); //原有是8
 
             this.toClickSpan=false;
             this.downClickSpan=true;
@@ -289,7 +289,7 @@
             this.data=response.body.result.punchDate;
             this.goToTime=response.body.result.owTime;  //下班时间
             var zhuan=new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-            this.goToTime=zhuan.substring(8);
+            this.goToTime=zhuan.substring(9);
 
             this.toClickSpan=true;
             this.downClickSpan=false;
@@ -336,6 +336,7 @@
                   "record":{"twOutside":0}
                 }
                 this.$http.post('api/v1.0/client/punchCardLog',updakaObj).then(response => { //打卡
+
                   if(response.body.message=='打卡失败'){
                       alert('系统打卡失败,请看接口返回结果');
                   }else{
@@ -346,25 +347,31 @@
                       this.downTimeMiddleShow=false;
                       this.toTimeMiddleShow=true;
                       var zhuan=new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-                      this.initToTime=zhuan.substring(8);
+                      this.initToTime=zhuan.substring(9);//原有是8
+                      console.log('77'+this.toDaKaStatusIs)
 
-                      if(this.toDaKaStatusIs==0){//正常打卡显示
+                      this.toDaKaStatusIs=0;
+                      //写死的状态  虽然没有打卡记录要给我一条状态（事先要判断给我这个是否迟到）
+
+
+                      if(this.toDaKaStatusIs==1){//正常打卡显示
                         this.initDaKaRecord=true;
-                        console.log(this.toDaKaStatusIs)
                       }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
                         this.lateStatus=true;
-                        this.isYellow=true;
-
-                      }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==false){ //迟到+区域外打卡显示
+                        this.isYellow2=true;
+                        this.initDaKaRecord=false;
+                        console.log(11111111)
+                      }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==true){ //迟到+区域外打卡显示
                         this.lateStatus=true;
                         this.isYellow=true;
                         this.isYellowAddQ=true;
-                      }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
+                      }else if(this.toDaKaStatusIs==0){ //旷工打卡显示
                         this.absenteeismStatus=true;
                       }
 
-
                     }else if ( this.toDaKaStatusIs!==null){ //下班打卡
+
+//                      this.toDaKaStatusIs==0;
                       console.log(this.toDaKaStatusIs);
                       this.zcDownShowSpan=true;
                       this.alertToSpan=false;//sapn 上班
@@ -372,27 +379,32 @@
                       this.popupVisible=true; //弹出的模态框打卡
                       console.log(response.body);
                       var zhuan=new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-                      this.goToTime=zhuan.substring(8);
+                      this.goToTime=zhuan.substring(9);
                       this.downTimeMiddleShow=true;
                       this.toTimeMiddleShow=false;
 
                       if(this.toDaKaStatusIs==0){//正常打卡显示
                         this.initDaKaRecord=true;
-                        console.log(this.toDaKaStatusIs)
+                        this.absenteeismStatus=false;
+                        console.log('166'+this.toDaKaStatusIs)
+
                       }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
                         this.lateStatus=true;
                         this.isYellow=true;
+                        this.absenteeismStatus=false;
 
-                      }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==false){ //迟到+区域外打卡显示
+                      }else if(this.toDaKaStatusIs== 1&&this.toDaKaStatusIs.twOutside==true){ //迟到+区域外打卡显示
                         this.lateStatus=true;
                         this.isYellow=true;
                         this.initDaKaRecord=false;
 
+                        this.absenteeismStatus=false;
                         this.isYellowAddQ=true;
                         this.lateStatusAddW=true;
 
                       }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
                         this.absenteeismStatus=true;
+
                       }
                     }
                   }
@@ -416,40 +428,39 @@
           this.zcDownShow=true;
           this.zcToUpShow=false;
           this.currentTimeSpan();//显示在list上的日志
-          this.daKaHide=false; //下班打卡后不可再打卡
+//          this.daKaHide=false; //下班打卡后不可再打卡
 
+          if(this.toDaKaStatusIs==100){//正常打卡显示
+            console.log('5'+this.toDaKaStatusIs)
 
-
-          if(this.toDaKaStatusIs==0){//正常打卡显示
-
-            this.alertToSpan=true;//sapn 上班
-            this.alertDownSpan=true; //sapn 下班
+            this.alertToSpan=false;//sapn 上班
+            this.alertDownSpan=false; //sapn 下班
             this.initDaKaRecord=true;
-            console.log(this.toDaKaStatusIs)
           }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
             this.lateStatus=true;
-            this.isYellow=true;
+//            this.isYellow=true;
             this.initDaKaRecord=false;
+            this.isYellow=false;
+            this.absenteeismStatus=false;
+            console.log('6'+this.toDaKaStatusIs)
+
 
 
           }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==false){ //迟到+区域外打卡显示
             this.initDaKaRecord=false;
             this.lateStatusAddW=true;
             console.log(this.lateStatusAddW);
+            console.log('7'+this.toDaKaStatusIs)
+
 //            this.lateStatus=true;
 //            this.isYellowAddQ=true;
           }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
             this.absenteeismStatus=true;
             this.initDaKaRecord=false;
             this.lateStatus=true;
-
-
-
+            console.log('8'+this.toDaKaStatusIs)
 
           }
-
-
-
 
         }
 
@@ -721,6 +732,12 @@
     line-height: 1.5rem
   }
   .active{
+    width: 16rem;
+    height: 24rem;
+    border-radius: 4px;
+    background-color: rgb(255,204,0);
+  }
+  .active2{
     width: 16rem;
     height: 24rem;
     border-radius: 4px;

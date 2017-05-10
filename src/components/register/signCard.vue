@@ -4,12 +4,12 @@
         <img :src="imgSrc.comAddress" class="avatar">
       </div>
       <div class="siginRight">
-        <div style="text-align: left;">{{oneselfData.companyNmae}}</div>
+        <div style="text-indent: -66%">{{infoObj.companyName}}</div>
         <div>
-          <p class="signName"><span>{{oneselfData.department}}</span> <span>{{oneselfData.name}}</span></p>
+          <p class="signName"><span>{{infoObj.deptName}}</span> <span>{{oneselfData.name}}</span></p>
           <div class="signImg"><img :src="imgSrc.shezhiBackground" /></div>
         </div>
-        <div class="signTitle">{{oneselfData.position}}</div>
+        <div class="signTitle">{{infoObj.position}}</div>
       </div>
       <div>
         <mt-button
@@ -45,6 +45,7 @@ let oneselfData={};
             name:'刘易斯',
 
           },
+          infoObj:{},
           arryOneself:[],
           imgSrc: {
             comAddress:  require('../../assets/logo.png'),
@@ -102,18 +103,19 @@ let oneselfData={};
         };
 //        let arryOneself=[];
         this.$http.post('api/v1.0/client/findStaff',phoneObj).then(response => {
-          console.log("111",response.body.result);
+          console.log("111",response.body.result.record);
           this.arryOneself.push(response.body.result);
           console.log("rryOne",this.arryOneself);
+          this.infoObj=response.body.result.record;
           for(let i=0; i<this.arryOneself.length;i++){
             this.oneselfData={
-              companyNmae:this.arryOneself[i].finallyEmpCom,
-                department:this.arryOneself[i].graduateInst,
-                position:this.arryOneself[i].bankName,
+//              companyNmae:this.arryOneself[i].finallyEmpCom,
+//                department:this.arryOneself[i].theArcIns,
+//                position:this.arryOneself[i].record.postion,
                 name:this.arryOneself[i].name,
             }
           }
-
+          console.log(this.oneselfData);
 
        }, response => {
           console.log( 'error callback');
@@ -141,6 +143,7 @@ let oneselfData={};
   display: inline-block;
   width: 17.5rem;
   height: 5.2rem;
+  font-size: 1.2rem;
 }
   .avatar{
     width: 80%;
@@ -171,7 +174,7 @@ let oneselfData={};
   top: -0.6rem;
 }
   .signTitle {
-    text-align: left;
+    text-indent:-72.5%;
     padding-left: 0.33rem;
     height: 0.65rem;
     line-height: 0.65rem;

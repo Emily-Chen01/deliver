@@ -22,6 +22,7 @@
       name: 'manyCompany',
       data() {
         return {
+            uId:'',
           msg: '您的员工信息存在多家公司请选择',
           arryName:[
             {
@@ -35,9 +36,16 @@
       },
       created: function () {
         let phoneObj={
-          phone:18021611639
+          phone:18356081327
         }
-        this.$http.get('api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => {
+        this.$http.get('api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //初始化查询有没有公司
+            console.log('这个data是查询公司的'+response.body.result);
+            //若是没有公司在此处执行下一个页面  ?/？
+          console.log(response.body.result);
+          for(let i=0;i<response.body.result.length;i++){
+            this.uId=response.body.result[i].UID;
+          }
+          console.log(this.uId);
             this.arryName=response.body.result
         }, response => {
           console.log( 'error callback');
@@ -47,7 +55,7 @@
         handerComeCompany(item,ff) {
             let param={
               "openid":"2",
-              "companyUid":"1"
+              "companyUid":this.uId,
             }
             this.$http.post('api/v1.0/client/chooseCompany',param).then(response => {
               console.log('选择公司接口');

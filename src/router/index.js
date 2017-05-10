@@ -6,8 +6,11 @@ import signCard from "@/components/register/signCard"
 import signIn from "@/components/signIn/signIn"
 import quick from "@/components/register/quick"
 import myData from "@/components/staffData/myData"
-
-
+import leave from "@/components/leaves/leave"
+import forgetPunch from "@/components/leaves/forgetPunch"
+import outsideApply from "@/components/leaves/outsideApply"
+import overtimeApply from "@/components/leaves/overtimeApply"
+import attendanceRecord from "@/components/SignIn/attendanceRecord"
 
 
 
@@ -24,7 +27,6 @@ export default new Router({
       path: '/index',
       name: 'Index',
       component: Index,
-
     },
     {
       path: '/ManyCompany',  //多家公司选择
@@ -41,6 +43,26 @@ export default new Router({
     {
       path: '/myData',  //完善我的资料
       component: myData
+    },
+    {
+      path: '/leave',  //请假申请
+      component: leave
+    },
+    {
+      path: '/forgetPunch',  //忘记打卡申请
+      component: forgetPunch
+    },
+    {
+      path: '/outsideApply',  //外出申请
+      component: outsideApply
+    },
+    {
+      path: '/overtimeApply',  //加班申请
+      component: overtimeApply
+    },
+    {
+      path: '/attendanceRecord',  //我的考勤
+      component: attendanceRecord
     },
   ]
 })

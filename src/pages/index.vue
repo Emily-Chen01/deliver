@@ -29,9 +29,9 @@ export default {
     return {
       msg: '欢迎使用 EHR SAAS 员工自助服务',
       msgPhone: '您需要先绑定手机!',
-      phoneNumber:'18021611639',
+      phoneNumber:'18356081327',
       paramVerification:{
-        "phone":18601421739,
+        "phone":18356081327,
         "type":1,
         "code":"159216",
         "passwd":123456,
@@ -63,10 +63,11 @@ export default {
       this.$http.get('api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //查询员工是否有绑定手机
         console.log(response.body.code);
         if(response.body.code==500){
-          Toast({
-            message: '抱歉没有找到您的员工记录，请联系您的HR',
-            iconClass: 'mint-toast-icon mintui mintui-success'
-          });
+//          Toast({
+//            message: '抱歉没有找到您的员工记录，请联系您的HR',
+//            iconClass: 'mint-toast-icon mintui mintui-success'
+//          });
+          MessageBox('提示', '抱歉没有找到您的员工记录，请联系您的HR');
 
         }else if(response.body.code==200){
               this.handerCome();
