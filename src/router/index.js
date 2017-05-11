@@ -11,8 +11,7 @@ import forgetPunch from "@/components/leaves/forgetPunch"
 import outsideApply from "@/components/leaves/outsideApply"
 import overtimeApply from "@/components/leaves/overtimeApply"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
-
-
+import overApply from "@/components/leaves/overApply"
 
 
 Vue.use(Router);
@@ -63,6 +62,9 @@ export default new Router({
     {
       path: '/attendanceRecord',  //我的考勤
       component: attendanceRecord
+    },{
+      path: '/overApply',  //我的加班申请
+      component: overApply
     },
   ]
 })

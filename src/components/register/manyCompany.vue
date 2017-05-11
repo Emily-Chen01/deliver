@@ -52,9 +52,11 @@
         });
       },
       methods: {
-        handerComeCompany(item,ff) {
+        handerComeCompany(item,fff) {
+          let ff=JSON.parse(sessionStorage.obj);
+          console.log(ff.openIDD);
             let param={
-              "openid":"2",
+              "openid":ff.openIDD,
               "companyUid":this.uId,
             }
             this.$http.post('api/v1.0/client/chooseCompany',param).then(response => {

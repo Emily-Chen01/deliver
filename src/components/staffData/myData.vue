@@ -118,8 +118,12 @@
         },
         created: function () {
 
+
+          let ff=JSON.parse(sessionStorage.obj);
+          console.log(ff.openIDD);
+
           let phoneObj={
-            "openid":"2"
+            "openid":ff.openIDD
           }
           this.$http.post('api/v1.0/client/findStaff',phoneObj).then(response => { //查询
             this.stationObj=response.body.result.record;

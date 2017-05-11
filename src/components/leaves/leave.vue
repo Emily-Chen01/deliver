@@ -11,59 +11,150 @@
         <mt-tab-container-item id="1">
           <!--个人资料-->
           <mt-field label="申请分类"  >
-            <select v-model="selectedData" class="changeSelect">
+            <select v-model="selectedData" class="changeSelect" >
               <option v-for="option in options" v-bind:value="option.value">
                 {{ option.text }}
               </option>
             </select>
           </mt-field>
-          <mt-field label="假期分类"  >
-            <select v-model="selectedData" class="changeSelect">
-              <option v-for="option in options" v-bind:value="option.value">
-                {{ option.text }}
+          <div v-if="changeApply">
+            <mt-field label="假期分类"  >
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
               </option>
-            </select>
-          </mt-field>
-          <mt-field label="开始时间"  >
+              </select>
+            </mt-field>
+            <mt-field label="开始时间"  >
 
-          </mt-field>
-          <mt-field label="结束时间" >
-            <select v-model="selectedData" class="changeSelect">
-              <option v-for="option in options" v-bind:value="option.value">
-                {{ option.text }}
+            </mt-field>
+            <mt-field label="结束时间" >
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
               </option>
-            </select>
-          </mt-field>
-          <mt-field style="height: 8rem;line-height: 8rem;position: relative">
-            <div class="cardClass">
-              <a @@@click.native="handerClickUp()">
-                <img :src="imgSrc.shenFenIcon" class="CardImg">
-                <div>上传图片</div>
-              </a>
-            </div>
-          </mt-field>
-          <div style="width: 24rem;height: 7rem;">
-            <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
-            <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
-            <textarea placeholder="#请输入文字"
-                      style=" overflow: hidden;overflow-y: scroll;width: 20rem;height: 4rem;border-radius: 4px">
+              </select>
+            </mt-field>
+            <mt-field style="height: 8rem;line-height: 8rem;position: relative">
+              <div class="cardClass">
+                <a @@@click.native="handerClickUp()">
+                  <img :src="imgSrc.shenFenIcon" class="CardImg">
+                  <div>上传图片</div>
+                </a>
+              </div>
+            </mt-field>
+            <div style="width: 24rem;height: 7rem;">
+              <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+              <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
+              <textarea placeholder="#请输入文字"
+                        style=" overflow: hidden;overflow-y: scroll;width: 20rem;height: 4rem;border-radius: 4px">
             </textarea>
-          </div>
+            </div>
 
-          <mt-field label="审批人"  style="margin-top: 1rem">
-            <select v-model="selectedData" class="changeSelect">
-              <option v-for="option in options" v-bind:value="option.value">
-                {{ option.text }}
+            <mt-field label="审批人"  style="margin-top: 1rem">
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
               </option>
-            </select>
-          </mt-field>
-          <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+              </select>
+            </mt-field>
+          </div>
+          <div v-if="changeApplyForget">
+            <mt-field label="开始时间"  >
+
+            </mt-field>
+            <mt-field label="结束时间" >
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
+              </option>
+              </select>
+            </mt-field>
+            <mt-field style="height: 8rem;line-height: 8rem;position: relative">
+              <div class="cardClass">
+                <a @@@click.native="handerClickUp()">
+                  <img :src="imgSrc.shenFenIcon" class="CardImg">
+                  <div>上传图片</div>
+                </a>
+              </div>
+            </mt-field>
+            <div style="width: 24rem;height: 7rem;">
+              <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+              <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
+              <textarea placeholder="#请输入文字"
+                        style=" overflow: hidden;overflow-y: scroll;width: 20rem;height: 4rem;border-radius: 4px">
+            </textarea>
+            </div>
+
+            <mt-field label="审批人"  style="margin-top: 1rem">
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
+              </option>
+              </select>
+            </mt-field>
+          </div>
+          <div v-if="changeApplyOutside">
+            <mt-field label="开始时间"  >
+
+            </mt-field>
+            <mt-field label="结束时间" >
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
+              </option>
+              </select>
+            </mt-field>
+            <mt-field style="height: 8rem;line-height: 8rem;position: relative">
+              <div class="cardClass">
+                <a @@@click.native="handerClickUp()">
+                  <img :src="imgSrc.shenFenIcon" class="CardImg">
+                  <div>上传图片</div>
+                </a>
+              </div>
+            </mt-field>
+            <div style="width: 24rem;height: 7rem;">
+              <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+              <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
+              <textarea placeholder="#请输入文字"
+                        style=" overflow: hidden;overflow-y: scroll;width: 20rem;height: 4rem;border-radius: 4px">
+            </textarea>
+            </div>
+
+            <mt-field label="审批人"  style="margin-top: 1rem">
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
+              </option>
+              </select>
+            </mt-field>
+          </div>
+          <div v-if="changeApplyOvertime">
+            <mt-field label="加班时长"  >
+
+            </mt-field>
+            <div style="width: 24rem;height: 7rem;">
+              <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+              <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
+              <textarea placeholder="#请输入文字"
+                        style=" overflow: hidden;overflow-y: scroll;width: 20rem;height: 4rem;border-radius: 4px">
+            </textarea>
+            </div>
+
+            <mt-field label="审批人"  style="margin-top: 1rem">
+              <select v-model="selectedData" class="changeSelect">
+                <option v-for="option in options" v-bind:value="option.value">
+                  {{ option.text }}
+              </option>
+              </select>
+            </mt-field>
+          </div>
 
           <div style="padding-top: 0.6rem">
             <mt-button type="primary"
                        style="background-color: rgb(139,156,172);width: 20rem;height:3rem;line-height: 3rem"
                        @click.native="handerDataSubmit()">提交
-        </mt-button>
+             </mt-button>
           </div>
         </mt-tab-container-item>
         <mt-tab-container-item id="2">
@@ -94,22 +185,6 @@
 
       </mt-tab-container>
 
-
-
-
-      <!--<div>-->
-        <!--&lt;!&ndash;测试datapicker&ndash;&gt;-->
-        <!--<mt-button type="primary"-->
-                   <!--style="background-color: rgb(139,156,172);width: 10rem;height:3rem;line-height: 3rem"-->
-        <!--&gt;更新我的资料-->
-                 <!--<mt-datetime-picker-->
-          <!--ref="picker"-->
-          <!--type="datetime"-->
-          <!--@confirm="handleConfirm"-->
-          <!--v-model="pickerValue">-->
-        <!--</mt-datetime-picker>-->
-        <!--</mt-button>-->
-      <!--</div>-->
     </div>
 </template>
 <script>
@@ -122,18 +197,53 @@
               selectedData:'',
               pickerValue:'',
               options: [
-                { text: '男', value: 'A' },
-                { text: '女', value: 'B' },
+                { text: '请假申请', value: 'A' },
+                { text: '忘记打卡申请', value: 'B' },
+                { text: '外出申请', value: 'C' },
+                { text: '加班申请', value: 'D' },
+
               ],
               imgSrc: {
                 shenFenIcon: require('../../assets/shenfenzheng.png'),
               },
+              changeApply:true,
+              changeApplyForget:false,
+              changeApplyOutside:false,
+              changeApplyOvertime:false,
             }
         },
         created: function () {
 
         },
+      watch:{
+        selectedData:function(val,oldVal){
+            console.log(val);
 
+            if(val=='A'){
+              this.changeApply=true;
+              this.changeApplyForget=false;
+              this.changeApplyOutside=false
+              this.changeApplyOvertime=false
+
+            }else if(val=='B'){
+              this.changeApplyForget=true;
+              this.changeApplyOutside=false;
+              this.changeApply=false;
+              this.changeApplyOvertime=false
+            }else if(val=='C'){
+                this.changeApplyOutside=true;
+                this.changeApplyForget=false;
+                this.changeApply=false;
+                this.changeApplyOvertime=false
+            }
+            else if(val=='D'){
+              this.changeApplyOvertime=true;
+              this.changeApplyOutside=false;
+              this.changeApplyForget=false;
+              this.changeApply=false;
+            }
+        }
+      },
         methods: {
           handerDataSubmit(){
 

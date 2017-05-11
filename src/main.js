@@ -9,13 +9,6 @@ import VueResource from 'vue-resource'
 
 
 
- //时间控件
-// import 'vue-event-calendar/dist/style.css' //^1.1.10, CSS has been extracted as one file, so you can easily update it.
-// import vueEventCalendar from 'vue-event-calendar'
-// Vue.use(vueEventCalendar, {locale: 'en'}) //locale can be 'zh' , 'en' , 'es', 'pt-br'
-
-
-
 Vue.use(Mint);
 Vue.use(VueResource);
 
@@ -35,15 +28,20 @@ Vue.component(DatetimePicker.name, DatetimePicker);
 
 
 let openId=2;
+
 Vue.http.interceptors.push(function (request, next) {
   // Vue.http.headers.common['token'] = sessionStorage.getItem('token');
   sessionStorage.setItem('openId', openId);
   request.headers.set('openId', sessionStorage.getItem('openId'));
+
+
+
   // continue to next interceptor
   next(response => {
     // console.log('inter', response);
   });
 });
+
 
 
 

@@ -4,7 +4,7 @@
         <img :src="imgSrc.comAddress" class="avatar">
       </div>
       <div class="siginRight">
-        <div style="text-indent: -66%">{{infoObj.companyName}}</div>
+        <div style="text-indent: -19%">{{infoObj.companyName}}</div>
         <div>
           <p class="signName"><span>{{infoObj.deptName}}</span> <span>{{oneselfData.name}}</span></p>
           <div class="signImg"><img :src="imgSrc.shezhiBackground" /></div>
@@ -20,7 +20,7 @@
         </mt-button>
       </div>
       <div style="margin-top: 3rem;">
-        <a href="/toast" class="mint-cell" v-for="item in arryName">
+        <a  class="mint-cell" v-for="(item,index) in arryName" @click="changeList(index)">
           <div class="mint-cell-wrapper">
             <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>{{item.name}}</span></div></div>
             <div class="mint-cell-value is-link"><span></span></div>
@@ -83,8 +83,11 @@ let oneselfData={};
     },
     methods: {
       handerSign(){
+        let ff=JSON.parse(sessionStorage.obj);
+        console.log(ff.openIDD);
+
         let signObj={
-          "openid":"2",
+          "openid":ff.openIDD,
           "record":{"twOutside":10}
         }
         this.$http.post('api/v1.0/client/punchCardLog',signObj).then(response => {
@@ -98,8 +101,10 @@ let oneselfData={};
 
       },
       searchStaff(){
+        let ff=JSON.parse(sessionStorage.obj);
+        console.log(ff.openIDD);
         let phoneObj={
-          "openid":"2",
+          "openid":ff.openIDD,
         };
 //        let arryOneself=[];
         this.$http.post('api/v1.0/client/findStaff',phoneObj).then(response => {
@@ -120,7 +125,24 @@ let oneselfData={};
        }, response => {
           console.log( 'error callback');
         });
-      }
+      },
+      changeList(indexX){
+
+          if(indexX==0){
+//              alert('点击了请假');
+            this.$router.push({path:'/leave'});
+
+//            this.$http.post('api/v1.0/client/findStaff',phoneObj).then(response => {
+//              console.log("111",response.body.result.record);
+//
+//              console.log(this.oneselfData);
+//
+//            }, response => {
+//              console.log( 'error callback');
+//            });
+          }
+
+      },
 
     },
 

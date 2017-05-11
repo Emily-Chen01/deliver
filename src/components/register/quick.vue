@@ -1,19 +1,39 @@
 <template>
     <div>
-        <div style="margin-top: 15rem">
+      <div style="text-align: center;color: chartreuse;font-size: 1.5rem">您好欢迎进入</div>
+      <div>openid:<input type="text" v-model="allOpenId"></div>
+      <div style="margin-top: 15rem;">
           <mt-button size="small" @click="handerClickBing()">员工绑定</mt-button>
           <mt-button size="small" @click="handerClickQuick">快捷打卡</mt-button>
         </div>
     </div>
 </template>
 <script>
-
+let openIdD;
     export default {
         data(){
-            return {}
+            return {
+              allOpenId:'',
+            }
         },
         created: function () {
 
+        },
+        watch:{
+          allOpenId:function(val){
+              console.log(val);
+            var obj = { openIDD:val};
+
+            var str = JSON.stringify(obj);
+//存入
+            sessionStorage.obj = str;
+//读取
+            str = sessionStorage.obj;
+//重新转换为对象
+            obj = JSON.parse(str);
+            console.log(obj)
+
+          }
         },
         methods: {
           handerClickBing(){
