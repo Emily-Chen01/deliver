@@ -83,16 +83,13 @@ let oneselfData={};
     },
     methods: {
       handerSign(){
-        let ff=JSON.parse(sessionStorage.obj);
-        console.log(ff.openIDD);
+
 
         let signObj={
-          "openid":ff.openIDD,
           "record":{"twOutside":10}
         }
         this.$http.post('api/v1.0/client/punchCardLog',signObj).then(response => {
           console.log(111);
-          console.log(response);
         }, response => {
           console.log( 'error callback');
         });
@@ -101,13 +98,8 @@ let oneselfData={};
 
       },
       searchStaff(){
-        let ff=JSON.parse(sessionStorage.obj);
-        console.log(ff.openIDD);
-        let phoneObj={
-          "openid":ff.openIDD,
-        };
-//        let arryOneself=[];
-        this.$http.post('api/v1.0/client/findStaff',phoneObj).then(response => {
+
+        this.$http.post('api/v1.0/client/findStaff').then(response => {
           console.log("111",response.body.result.record);
           this.arryOneself.push(response.body.result);
           console.log("rryOne",this.arryOneself);
@@ -122,7 +114,9 @@ let oneselfData={};
           }
           console.log(this.oneselfData);
 
-       }, response => {
+
+
+        }, response => {
           console.log( 'error callback');
         });
       },

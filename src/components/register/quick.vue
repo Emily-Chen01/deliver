@@ -9,7 +9,9 @@
     </div>
 </template>
 <script>
+  import { MessageBox } from 'mint-ui';
 let openIdD;
+
     export default {
         data(){
             return {
@@ -21,27 +23,13 @@ let openIdD;
         },
         watch:{
           allOpenId:function(val){
-              console.log(val);
-            var obj = { openIDD:val};
-
-            var str = JSON.stringify(obj);
-//存入
-            sessionStorage.obj = str;
-//读取
-            str = sessionStorage.obj;
-//重新转换为对象
-            obj = JSON.parse(str);
-            console.log(obj)
-
+            sessionStorage.setItem('openId', val);
           }
         },
         methods: {
           handerClickBing(){
 
-            let phoneObj={
-              "openid":"2"
-            }
-            this.$http.post('api/v1.0/client/checkStaffWechat',phoneObj).then(response => { //查询员工是否有绑定手机
+            this.$http.post('api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
               console.log(response.body.code);
               if(response.body.code==200){
                 this.$router.push({path:'/ManyCompany'});
@@ -54,15 +42,14 @@ let openIdD;
 
           },
           handerClickQuick(){
-            let phoneObj={
-              "openid":"2"
-            }
-            this.$http.post('api/v1.0/client/checkStaffWechat',phoneObj).then(response => { //查询员工是否有绑定手机
+            this.$http.post('api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
               console.log(response.body.code);
               if(response.body.code==200){
                 this.$router.push({path:'/signIn'});
-              }else if(response.body.code==200){
-
+              }else if(response.body.code==500){
+                MessageBox.confirm('暂未绑定，确认进行绑定').then(action => {
+                  this.$router.push({path:'/index'});
+                });
               }else  if(response.body.code==1001){
                 alert("登录超时");
               }

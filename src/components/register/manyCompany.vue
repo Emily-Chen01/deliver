@@ -28,8 +28,8 @@
             {
                 name:'苏州工业园区科技有限公司',
                 url:'www.baidu.com'
-            }
-          ]
+            },
+          ],
 
 
         }
@@ -42,9 +42,10 @@
             console.log('这个data是查询公司的'+response.body.result);
             //若是没有公司在此处执行下一个页面  ?/？
           console.log(response.body.result);
-          for(let i=0;i<response.body.result.length;i++){
-            this.uId=response.body.result[i].UID;
-          }
+//          for(let i=0;i<response.body.result.length;i++){
+//            this.uId=response.body.result[i].UID;
+//          }
+          this.arr= response.body.result
           console.log(this.uId);
             this.arryName=response.body.result
         }, response => {
@@ -53,16 +54,20 @@
       },
       methods: {
         handerComeCompany(item,fff) {
-          let ff=JSON.parse(sessionStorage.obj);
-          console.log(ff.openIDD);
+
+            console.log('yy'+item.UID)
+
             let param={
-              "openid":ff.openIDD,
-              "companyUid":this.uId,
+              "companyUid":item.UID,
             }
             this.$http.post('api/v1.0/client/chooseCompany',param).then(response => {
               console.log('选择公司接口');
+              if(response.body.code==200){
+                this.$router.push({path:'/signCard'});
+              }else{
+                  alert(接口返回异常);
+              }
 
-              this.$router.push({path:'/signCard'});
             }, response => {
               console.log( 'error callback');
             });

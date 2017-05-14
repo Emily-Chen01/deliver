@@ -7,7 +7,7 @@
         <div class="siginRight">
           <div>
             <div class="detailClassBao">
-              <div class="detailClass"><span>产品部</span> <span>刘佳安</span></div>
+              <div class="detailClass"><span>{{objNr.deptName}}</span> <span>{{objNr.name}}</span></div>
               <div class="timeClass"><span>{{year}}</span>年<span>{{month}}</span>月<span>{{data}}</span>日</div>
             </div>
           </div>
@@ -194,7 +194,7 @@
                   <mt-button type="default"
                              style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                              v-show="initDaKaRecord">
-                    打卡正常z
+                    打卡正常
                   </mt-button>
                   <mt-button type="default"
                              style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
@@ -240,7 +240,7 @@
 <script>
 
   import { Toast,MessageBox,Popup} from 'mint-ui';
-
+  let timer1 = null;
     export default {
       data(){
         return {
@@ -275,84 +275,88 @@
           initDaKaRecord:false, //查询打卡记录是否有  span
           leaveEarly:false,  //早退
           overTime:false,  //加班
+          toDaKaStatusIsInit:'', //初始上班状态显示
+          toDaKaStatusIsOutsideInit:'', //初始下班状态显示是否在区域外
+          toDownKaStatusIsInit:'', //初始下班状态显示
+          toDownKaStatusIsOutsideInit:'', //初始下班状态显示是否在区域外
           toDaKaStatusIs:'', //上班状态显示
+          toDaKaStatusIsOutside:'', //上班是否在区域外
           toDownKaStatusIs:'', //下班状态显示
           toDownKaStatusIsOutside:'', //下班状态显示是否在区域外
           toDownAbsenteeismStatus:false, //下班提交请假span
           toDownLateStatusAddW:false, //下班状态span 区域外
           toDownLateStatus:false, //下班状态span 迟到
-
+          objNr:{},
           addtime:1.5,
+          sumNumber:'',
 
 
 
           clickStaus:'打卡正常',
-          imgSrc: {
-            daKaIcon: require('../../assets/dakachenggong.png'),
-            daKaPostionIcon: require('../../assets/weizhi.png'),
-          },
+
         }
       },
       created: function () {
 
 
-        setInterval(this.handerSign,1000);
-        let initUpDakaObj={
-          "openid":"2",
-        }
-        this.$http.post('api/v1.0/client/findPunchCardLog',initUpDakaObj).then(response => { //查询是否有打卡
+        timer1=setInterval(this.handerSign,1000);
+
+
+        this.$http.post('api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
           console.log('初始化上班已经打卡');
           console.log(response.body.result);
-          this.toDaKaStatusIs=response.body.result.twStatus; //上班状态赋值
-          this.toDownKaStatusIs=response.body.result.owStatus;//下班状态赋值
-          this.toDownKaStatusIsOutside=response.body.result.owOutside; //下班是否在区域外
+          this.toDaKaStatusIsInit=response.body.result.twStatus; //上班状态赋值
+          this.toDaKaStatusIsOutsideInit=response.body.result.owOutside //上班是否在区域外
+          this.toDownKaStatusIsInit=response.body.result.owStatus;//下班状态赋值
+          this.toDownKaStatusIsOutsideInit=response.body.result.owOutside; //下班是否在区域外
 
 
 
           //我知道开始
+            if(this.toDaKaStatusIsInit==0||this.toDaKaStatusIsInit==1||this.toDaKaStatusIsInit==2){        //上班点击完成后进行页面展示内容
 
-          if(this.toDaKaStatusIs==0||this.toDaKaStatusIs==1||this.toDaKaStatusIs==2){        //上班点击完成后进行页面展示内容
+              if(this.toDaKaStatusIsInit==0){//正常打卡显示
+                console.log('5'+this.toDaKaStatusIsInit)
 
-            if(this.toDaKaStatusIs==0){//正常打卡显示
-              console.log('5'+this.toDaKaStatusIs)
-
-              this.alertToSpan=false;//sapn 上班
-              this.alertDownSpan=false; //sapn 下班
-              this.initDaKaRecord=true;
-              this.lateStatus=false;
-            }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
-              this.lateStatus=true;
+                this.alertToSpan=false;//sapn 上班
+                this.alertDownSpan=false; //sapn 下班
+                this.initDaKaRecord=true;
+                this.lateStatus=false;
+              }else if(this.toDaKaStatusIsInit==1){ //迟到打卡显示
+                this.lateStatus=true;
 //            this.isYellow=true;
-              this.initDaKaRecord=false;
-              this.isYellow=false;
-              this.absenteeismStatus=false;
-              console.log('6'+this.toDaKaStatusIs)
+                this.initDaKaRecord=false;
+                this.isYellow=false;
+                this.absenteeismStatus=false;
+                console.log('6'+this.toDaKaStatusIsInit)
 
-            }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==1){ //迟到+区域外打卡显示
-              this.initDaKaRecord=false;
-              this.lateStatusAddW=true;
+              }else if(this.toDaKaStatusIsInit==1&&this.toDaKaStatusIsOutsideInit==1){ //迟到+区域外打卡显示
+                this.initDaKaRecord=false;
+                this.lateStatusAddW=true;
 
-              console.log(this.lateStatusAddW);
-              console.log('7'+this.toDaKaStatusIs)
+                console.log(this.lateStatusAddW);
+                console.log('7'+this.toDaKaStatusIsInit)
 
 //            this.lateStatus=true;
 //            this.isYellowAddQ=true;
-            }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
-              this.absenteeismStatus=true;
-              this.initDaKaRecord=false;
+              }else if(this.toDaKaStatusIsInit==2){ //旷工打卡显示
+                this.absenteeismStatus=true;
+                this.initDaKaRecord=false;
 //              this.lateStatus=true;
-              this.lateStatus=false;
+                this.lateStatus=false;
 
-              console.log('8'+this.toDaKaStatusIs)
+                console.log('8'+this.toDaKaStatusIsInit)
+
+              }
 
             }
 
-          }
-          if(this.toDownKaStatusIs==0||this.toDownKaStatusIs==1||this.toDownKaStatusIs==2){     //****下班点击完成后进行页面展示内容
-//            alert('进行下班打卡span'+this.toDownKaStatusIs);
 
-            if(this.toDownKaStatusIs==0){//正常打卡显示
-              console.log('toDaKaStatusIs状态'+this.toDaKaStatusIs)
+          if(this.toDownKaStatusIsInit==0||this.toDownKaStatusIsInit==1||this.toDownKaStatusIsInit==2){     //****下班点击完成后进行页面展示内容
+//            alert('进行下班打卡span'+this.toDownKaStatusIsInit);
+
+            if(this.toDownKaStatusIsInit==0){//正常打卡显示
+              console.log('toDaKaStatusIsInit状态'+this.toDaKaStatusIsInit)
               this.zcDownShowSpan=true; //下班总线所展示的所有文字
               this.toDownAbsenteeismStatus=false; //下班提交文字sapn
               this.absenteeismStatus=false;
@@ -360,25 +364,25 @@
               this.alertDownSpan=false; //sapn 下班
               this.lateStatus=false;
               this.initDaKaRecord=true;
-            }else if(this.toDownKaStatusIs==1){ //早退打卡显示
+            }else if(this.toDownKaStatusIsInit==1){ //早退打卡显示
               this.zcDownShowSpan=true; //下班总线所展示的所有文字
               this.leaveEarly=true; //下班早退
 
 
-            }else if(this.toDownKaStatusIs==1&&this.toDownKaStatusIs.twOutside==false){ //早退+区域外打卡显示
+            }else if(this.toDownKaStatusIsInit==1&&this.toDownKaStatusIsOutsideInit==1){ //早退+区域外打卡显示
               this.zcDownShowSpan=true; //下班总线所展示的所有文字
               this.toDownAbsenteeismStatus=true; //下班提交请假span
               this.toDownLateStatusAddW=true; //下班状态span 区域外
               this.toDownLateStatus=false; //下班状态span 迟到
               this.leaveEarly=true; //下班早退
 
-            }else if(this.toDownKaStatusIs==20000){ //加班打卡显示
+            }else if(this.toDownKaStatusIsInit==20000){ //加班打卡显示
               this.toDownAbsenteeismStatus=true; //下班提交请假span
               this.overTime=true;
 
               this.zcDownShowSpan=true;
 //              this.overTime=true?true:false;
-              console.log('8'+this.toDaKaStatusIs)
+              console.log('8'+this.toDaKaStatusIsInit)
             }
             this.daKaHide=false;  //有下班打卡后按钮隐藏
           }
@@ -419,100 +423,135 @@
 
                 this.currentTime();
                 this.clickfunction=false;
+                let sum=0;
+
                 let updakaObj={
-                  "openid":"2",
                   "record":{"twOutside":0}
                 }
                 this.$http.post('api/v1.0/client/punchCardLog',updakaObj).then(response => { //打卡
+
+
+                  //现在缺少判断的赋值条件......................... 在此处填写 和我知道的部分也要改写
+
+                  this.toDaKaStatusIs=response.body.result.twStatus; //上班状态赋值
+                  this.toDaKaStatusIsOutside=response.body.result.owOutside; //上班班是否在区域外
+                  this.toDownKaStatusIs=response.body.result.owStatus;//下班状态赋值
+                  this.toDownKaStatusIsOutside=response.body.result.owOutside; //下班是否在区域外
 
                   if(response.body.message=='打卡失败'){
                       alert('系统打卡失败,请看接口返回结果');
                   }else{
                     if( this.toDaKaStatusIs==null){ //上班打卡
-                      this.toUp=false;
-                      this.Obtain=true;
-                      this.popupVisible=true;
-                      this.downTimeMiddleShow=false;
-                      this.toTimeMiddleShow=true;
-                      var zhuan=new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-                      this.initToTime=zhuan.substring(9);//原有是8
-                      console.log('77'+this.toDaKaStatusIs)
+                      if(sum==0){
+                        this.toUp=false;
+                        this.Obtain=true;
+                        this.popupVisible=true;
+                        this.downTimeMiddleShow=false;
+                        this.toTimeMiddleShow=true;
+                        var zhuan=new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+                        this.initToTime=zhuan.substring(9);//原有是8
+                        console.log('77'+this.toDaKaStatusIs)
 
-                      this.toDaKaStatusIs=0;
-                      //写死的状态  虽然没有打卡记录要给我一条状态（事先要判断给我这个是否迟到）
-                      //在此处调用接口范围 进行确定当前员工位置状态
+//                        this.toDaKaStatusIs=0;
+                        //写死的状态  虽然没有打卡记录要给我一条状态（事先要判断给我这个是否迟到）
+                        //在此处调用接口范围 进行确定当前员工位置状态
 
+                        console.log(this.toDaKaStatusIs)
+                        if(this.toDaKaStatusIs==0){//正常打卡显示
+                          alert('上班正常打卡');
+                          this.initDaKaRecord=true;
+                        }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
+                          this.lateStatus=true;
+                          this.isYellow2=true;
+                          this.initDaKaRecord=false;
+                          alert('上班迟到打卡');
 
-                      if(this.toDaKaStatusIs==0){//正常打卡显示
-                        this.initDaKaRecord=true;
-                      }else if(this.toDaKaStatusIs==1){ //迟到打卡显示
-                        this.lateStatus=true;
-                        this.isYellow2=true;
-                        this.initDaKaRecord=false;
-                        console.log(11111111)
-                      }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==1){ //迟到+区域外打卡显示
-                        this.lateStatus=true;
-                        this.isYellow=true;
-                        this.isYellowAddQ=true;
-                      }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
-                        this.absenteeismStatus=true;
-                      }
+                        }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIsOutside==1){ //迟到+区域外打卡显示
+                          this.lateStatus=true;
+                          this.isYellow=true;
+                          this.isYellowAddQ=true;
+                          alert('上班正迟到区域外');
+
+                        }else if(this.toDaKaStatusIs==2){ //旷工打卡显示
+                          this.absenteeismStatus=true;
+                          alert('上班旷工打卡');
+
+                        }
 //                      this.toClickSpan=false;
+                        this.sumNumber=sum+1;
+                        console.log('ww'+this.sumNumber);
+
+                      }else {
+                          alert('今天已经上班打卡完毕，请勿重复打卡');
+                      }
 
                     }else if ( this.toDaKaStatusIs!==null){ //下班打卡
-                    //在下班打卡前要确定是否在范围内 然后返回结果  进行打卡状态展示
-                      this.toDownKaStatusIs==0; //此处写死状态进行调试
-                      console.log(this.toDownKaStatusIs);
-                      this.zcDownShowSpan=true;
-                      this.alertToSpan=false;//sapn 上班
-                      this.alertDownSpan=true; //sapn 下班
-                      this.popupVisible=true; //弹出的模态框打卡
-                      console.log(response.body);
-                      var zhuan=new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-                      this.goToTime=zhuan.substring(9);
-                      this.downTimeMiddleShow=true;
-                      this.toTimeMiddleShow=false;
+                      if(this.sumNumber==1){
+                        //在下班打卡前要确定是否在范围内 然后返回结果  进行打卡状态展示
+//                        this.toDownKaStatusIs==0; //此处写死状态进行调试
+                        console.log(this.toDownKaStatusIs);
+                        this.zcDownShowSpan=true;
+                        this.alertToSpan=false;//sapn 上班
+                        this.alertDownSpan=true; //sapn 下班
+                        this.popupVisible=true; //弹出的模态框打卡
+                        console.log(response.body);
+                        var zhuan=new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+                        this.goToTime=zhuan.substring(9);
+                        this.downTimeMiddleShow=true;
+                        this.toTimeMiddleShow=false;
 
-                      if(this.toDownKaStatusIs==0){//正常打卡显示
-                        this.initDaKaRecord=true;
-                        this.absenteeismStatus=false;
-                        this.lateStatus=false;
-                        console.log('166'+this.toDownKaStatusIs)
-
-
-
-                        this.overTime=false; //加班隐藏
-                        alert('我是this.overTime'+this.overTime);
+                        if(this.toDownKaStatusIs==0){//正常打卡显示
+                          alert('下班正常')
+                          this.initDaKaRecord=true;
+                          this.absenteeismStatus=false;
+                          this.lateStatus=false;
+                          console.log('166'+this.toDownKaStatusIs)
 
 
-                      }else if(this.toDownKaStatusIs==1){ //早退打卡显示
-                        this.isYellow=true;
-                        this.absenteeismStatus=false;
-                        this.lateStatus=false;
-                        this.leaveEarly=true;
+
+                          this.overTime=false; //加班隐藏
+                          alert('我是this.overTime'+this.overTime);
+
+
+                        }else if(this.toDownKaStatusIs==1){ //早退打卡显示
+                          this.isYellow=true;
+                          this.absenteeismStatus=false;
+                          this.lateStatus=false;
+                          this.leaveEarly=true;
 //                        this.isNormal=false;
-                        console.log('167'+this.toDownKaStatusIs)
+                          console.log('167'+this.toDownKaStatusIs)
+                          alert('下班早退正常')
 
-                      }else if(this.toDownKaStatusIsOutside==1){ //区域外打卡显示
-                        this.isYellow=true;
-                        this.absenteeismStatus=false;
-                        this.lateStatus=false;
-                        this.absenteeismStatus=false;
-                        this.initDaKaRecord=false;
-                        this.isYellowAddQ=true;
-                        console.log('1688'+this.toDownKaStatusIs)
-                      }else if(this.toDownKaStatusIs==1&&this.toDownKaStatusIsOutside==1){ //早退+区域外打卡显示
-                        this.isYellow=true;
-                        this.absenteeismStatus=false;
-                        this.lateStatus=false;
-                        this.leaveEarly=true;
-                        this.isYellowAddQ=true;
-                      }else if(this.toDownKaStatusIs==2){ //加班打卡显示
-                        this.absenteeismStatus=false;
-                        this.lateStatus=false;
-                        this.overTime=true;
-                        console.log('169'+this.toDownKaStatusIs)
 
+                        }else if(this.toDownKaStatusIsOutside==1){ //区域外打卡显示
+                          alert('下班区域外正常')
+
+                          this.isYellow=true;
+                          this.absenteeismStatus=false;
+                          this.lateStatus=false;
+                          this.absenteeismStatus=false;
+                          this.initDaKaRecord=false;
+                          this.isYellowAddQ=true;
+                          console.log('1688'+this.toDownKaStatusIs)
+                        }else if(this.toDownKaStatusIs==1&&this.toDownKaStatusIsOutside==1){ //早退+区域外打卡显示
+                          alert('下班早退+区域外')
+
+                          this.isYellow=true;
+                          this.absenteeismStatus=false;
+                          this.lateStatus=false;
+                          this.leaveEarly=true;
+                          this.isYellowAddQ=true;
+                        }else if(this.toDownKaStatusIs==2){ //加班打卡显示
+                          this.absenteeismStatus=false;
+                          this.lateStatus=false;
+                          this.overTime=true;
+                          console.log('169'+this.toDownKaStatusIs)
+                          alert('下班加班')
+
+
+                        }
+                      }else {
+                          alert('今天已经下班打卡完毕，请勿重复打卡')
                       }
                     }
                   }
@@ -555,7 +594,7 @@
               this.absenteeismStatus=false;
               console.log('6'+this.toDaKaStatusIs)
 
-            }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIs.twOutside==1){ //迟到+区域外打卡显示
+            }else if(this.toDaKaStatusIs==1&&this.toDaKaStatusIsOutside==1){ //迟到+区域外打卡显示
               this.initDaKaRecord=false;
               this.lateStatusAddW=true;
               console.log(this.lateStatusAddW);
@@ -590,7 +629,7 @@
               this.toDownAbsenteeismStatus=true;
 
 
-            }else if(this.toDownKaStatusIs==1&&this.toDownKaStatusIs.twOutside==false){ //早退+区域外打卡显示
+            }else if(this.toDownKaStatusIs==1&&this.toDownKaStatusIsOutside==false){ //早退+区域外打卡显示
               this.toDownAbsenteeismStatus=true; //下班提交请假span
               this.toDownLateStatusAddW=true; //下班状态span 区域外
               this.toDownLateStatus=true; //下班状态span 迟到
@@ -600,14 +639,14 @@
               this.overTime=true;
               console.log('8'+this.toDaKaStatusIs)
             }
-
-
-
         }
-
-
       }
-      }
+    },
+      beforeDestroy: function () {
+        clearInterval(timer1);
+        timer1 = null;
+        console.log('销毁完成timer1')
+      },
 
     }
 

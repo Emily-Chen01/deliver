@@ -44,13 +44,11 @@ export default {
         console.log(this.paramVerification)
     },
     handerSubmit(){
-      let ff=JSON.parse(sessionStorage.obj);
-      console.log(ff.openIDD);
+
         let bindingObj={
-          "openid":ff.openIDD,
           "phone":this.phoneNumber
         }
-      this.$http.post('api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
+        this.$http.post('api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);
         console.log(response);
         this.handerList();

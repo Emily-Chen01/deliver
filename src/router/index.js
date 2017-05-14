@@ -62,7 +62,8 @@ export default new Router({
     {
       path: '/attendanceRecord',  //我的考勤
       component: attendanceRecord
-    },{
+    },
+    {
       path: '/overApply',  //我的加班申请
       component: overApply
     },
