@@ -480,7 +480,7 @@
                           alert('上班旷工打卡');
 
                         }
-//                      this.toClickSpan=false;
+                      this.toClickSpan=false;
                         this.sumNumber=sum+1;
                         console.log('ww'+this.sumNumber);
 

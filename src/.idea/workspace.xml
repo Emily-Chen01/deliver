@@ -18,8 +18,8 @@
       <file leaf-file-name="signIn.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/components/SignIn/signIn.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
-              <caret line="290" column="23" lean-forward="true" selection-start-line="290" selection-start-column="23" selection-end-line="290" selection-end-column="23" />
+            <state relative-caret-position="180">
+              <caret line="573" column="34" lean-forward="true" selection-start-line="573" selection-start-column="34" selection-end-line="573" selection-end-column="34" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
@@ -99,8 +99,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>esponse</find>
-      <find>sum</find>
       <find>searchStaff</find>
       <find>handerSign</find>
       <find>token</find>
@@ -129,6 +127,8 @@
       <find>timeTitle</find>
       <find>daKaPostionIcon</find>
       <find>&lt;img</find>
+      <find>上班打卡</find>
+      <find>toClickSpan</find>
     </findStrings>
     <replaceStrings>
       <replace>4</replace>
@@ -179,8 +179,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="614" />
-    <option name="y" value="87" />
+    <option name="x" value="477" />
+    <option name="y" value="38" />
     <option name="width" value="1375" />
     <option name="height" value="1069" />
   </component>
@@ -440,15 +440,15 @@
       <workItem from="1494656518177" duration="9518000" />
       <workItem from="1494667399092" duration="626000" />
       <workItem from="1494743576982" duration="12881000" />
-      <workItem from="1494809637047" duration="2221000" />
+      <workItem from="1494809637047" duration="3359000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="215704000" />
+    <option name="totallyTimeSpent" value="216842000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="614" y="87" width="1375" height="1069" extended-state="0" />
+    <frame x="477" y="38" width="1375" height="1069" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15452538" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -972,8 +972,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/components/SignIn/signIn.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="290" column="23" lean-forward="true" selection-start-line="290" selection-start-column="23" selection-end-line="290" selection-end-column="23" />
+        <state relative-caret-position="180">
+          <caret line="573" column="34" lean-forward="true" selection-start-line="573" selection-start-column="34" selection-end-line="573" selection-end-column="34" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
