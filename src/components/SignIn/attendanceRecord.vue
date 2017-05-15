@@ -153,9 +153,8 @@
               };
               this.objToSpan=arrNr;
             }else {
-                alert('超出时间了');
+                alert('超出打卡时间了');
             }
-
 
           },
 
@@ -165,6 +164,7 @@
             console.log('start'+start)
             console.log('end'+end)
             console.log('current'+current)
+
 
           },
 

@@ -289,7 +289,9 @@
           objNr:{},
           addtime:1.5,
           sumNumber:'',
-
+          imgSrc: {
+            daKaPostionIcon: require('../../assets/weizhi.png'),
+          },
 
 
           clickStaus:'打卡正常',
