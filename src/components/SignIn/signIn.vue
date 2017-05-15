@@ -291,6 +291,7 @@
           sumNumber:'',
           imgSrc: {
             daKaPostionIcon: require('../../assets/weizhi.png'),
+            daKaIcon: require('../../assets/dakachenggong.png'),
           },
 
 
