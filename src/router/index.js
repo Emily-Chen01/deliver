@@ -12,6 +12,8 @@ import outsideApply from "@/components/leaves/outsideApply"
 import overtimeApply from "@/components/leaves/overtimeApply"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import overApply from "@/components/leaves/overApply"
+import mySalary from "@/components/signIn/mySalary"
+
 
 
 Vue.use(Router);
@@ -66,6 +68,10 @@ export default new Router({
     {
       path: '/overApply',  //我的加班申请
       component: overApply
+    },
+    {
+      path: '/mySalary',  //我的工资条
+      component: mySalary
     },
   ]
 })

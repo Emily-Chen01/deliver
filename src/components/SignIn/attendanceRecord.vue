@@ -50,7 +50,7 @@
             <div class="toWorkRight">
               <div class="toWorkRightTimeSpan">
                 <span>{{objToSpan.toTime}}</span>
-                <span>{{objToSpan.type}}</span>
+                <span>{{objToSpan.toType}}</span>
               </div>
             </div>
           </div>
@@ -58,8 +58,8 @@
             <div class="toWorkLeft"><div>下</div></div>
             <div class="toWorkRight">
               <div class="toWorkRightTimeSpan">
-                <span>{{objDownSpan.downTime}}</span>
-                <span>{{objDownSpan.downType}}</span>
+                <span>{{objToSpan.downTime}}</span>
+                <span>{{objToSpan.downType}}</span>
               </div>
             </div>
           </div>
@@ -80,56 +80,76 @@
         data(){
             return {
               fcEvents: [
-                {
-                  title : '',
-                  start : '2017-05-4',
-                  end : '2017-05-4',
-                  desc:'09:25:11',
-                  cssClass:'normal',
-                  YOUR_DATA  : {}
-                },
-                {
-                  title : '',
-                  start : '2017-05-5',
-                  end : '2017-05-5',
-                  desc:'09:25:11',
-                  cssClass:'normal',
-                  YOUR_DATA  : {}
-                },
-                {
-                  title : '',
-                  start : '2017-05-6',
-                  end : '2017-05-6',
-                  desc:'11:25:11',
-                  cssClass:'leave',
-
-                },
-                {
-                  title : '',
-                  start : '2017-05-7',
-                  end : '2017-05-7',
-                  desc:'19:25:11',
-                  cssClass:'abnormal',
-
-                }
+//                {
+//                  title : '',
+//                  start : '2017-05-4',
+//                  end : '2017-05-4',
+//                  cssClass:'normal',
+//                  YOUR_DATA  : {}
+//                },
+//                {
+//                  title : '',
+//                  start : '2017-05-5',
+//                  end : '2017-05-5',
+//                  cssClass:'normal',
+//                  YOUR_DATA  : {}
+//                },
+//                {
+//                  title : '',
+//                  start : '2017-05-6',
+//                  end : '2017-05-6',
+//                  cssClass:'leave',
+//
+//                },
+//                {
+//                  title : '',
+//                  start : '2017-05-7',
+//                  end : '2017-05-7',
+//                  cssClass:'abnormal',
+//
+//                }
 
               ],
               objToSpan: {
-                  toTime:'08:11:22',
-                  type:1000,
-                }
+                toTime:'08:11:22',
+                downTime:'18:11:22',
+                downType:'正常打卡',
+                toType:'迟到打卡',
+              }
               ,
               objDownSpan: {
                   downTime:'19:11:22',
                   downType:10,
-                }
+                },
+              tozhang:'', //
+              downzhang:'' ,  //
+
+              connectTime:{}
               ,
+              toSapnTime:'',
+              downSapnTime:'',
               imgSrc: {
                 timeIcon: require('../../assets/time.png'),
               },
             }
         },
         created: function () {
+            //初始化查询当月考勤开始
+          this.$http.get('api/v1.0/client/findMonthAttends').then(response => { //查询当月考勤接口
+              console.log(response.body.result.records);
+              for(let i=0;i<response.body.result.records.length;i++){
+                this.connectTime.start=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
+                this.connectTime.end=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
+                this.connectTime.cssClass=response.body.result.records[i].desc;
+              }
+             console.log( this.connectTime);
+            this.fcEvents.push(this.connectTime);
+            console.log( this.fcEvents);
+
+          }, response => {
+            console.log( 'error callback');
+          });
+          //初始化查询当月考勤结束
 
         },
 
@@ -137,24 +157,91 @@
           'dayClick' (day, jsEvent) {
             //  点击日历，获取日期
             //  转换日期格式
-
             //  检测假日里是否已经含有点击的这一天
-           console.log(day);
-           console.log('d'+jsEvent);
-          //再此处调用每一次日期的接口 进行传值
+           //再此处调用每一次日期的接口 进行传值
+  //点击当天进行查询打卡状态开始
+    //格式化时间开始
+            function AddZero(n){
+              if(n<10){
+                return '0'+n;
+              }
+              return ''+n;
+            };
+            var d=day;
+            let data=AddZero(d.getDate());
+            let Month=AddZero((d.getMonth() + 1));
+            var kk=  d.getFullYear() + '/' + Month + '/' + data;
+            console.log(kk);
+    //格式化时间结束
+
+            let param={
+              "date":kk
+            }
+            this.$http.post('api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
+              console.log(response);
+
+              if(response.body.result.twTime!==null){
+                var zhuanStart = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+                this.toSapnTime = zhuanStart.substring(9,19);//原有是8
+
+              }
+
+              if(response.body.result.owTime!==null){
+                var zhuanEnd = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+                this.downSapnTime = zhuanEnd.substring(9,19);//原有是8
+
+              }
+
+              console.log('ff'+response.body.result.twStatus);
+
+              if(response.body.result.twStatus){  //判断状态转换文字
+                  if(response.body.result.twStatus=0){
+                    this.tozhang='正常打卡'
+                  }else if (response.body.result.twStatus=1){
+                    this.tozhang='迟到打卡'
+                  }else if (response.body.result.twStatus=2){
+                    this.tozhang='旷工打卡'
+
+                  }
+              }
+              if(response.body.result.owStatus){  //判断状态转换文字
+                if(response.body.result.owStatus=0){
+                  this.downzhang='正常打卡'
+                }else if (response.body.result.owStatus=1){
+                  this.downzhang='早退打卡'
+                }else if (response.body.result.owStatus=2){
+                  this.downzhang='加班打卡'
+
+                }
+              }
+
+              if(day.getTime()<=new Date().getTime()){
+                let arrNr={
+                  toTime:this.toSapnTime,
+                  downTime:this.downSapnTime,
+                  toType:this.tozhang,
+                  downType:this.downzhang,
+
+                };
+
+                this.objToSpan=arrNr;
+              }else {
+                alert('超出打卡时间了');
+              }
+
+
+            }, response => {
+              console.log( 'error callback');
+            });
+            //点击当天进行查询打卡状态结束
+
+
+
 
             console.log('当前'+new Date().getTime());
             console.log('点击时间'+day.getTime());
             console.log(new Date().getTime());
-            if(day.getTime()<=new Date().getTime()){
-              let arrNr={
-                toTime:'23:11:22',
-                type:'正常打卡',
-              };
-              this.objToSpan=arrNr;
-            }else {
-                alert('超出打卡时间了');
-            }
+
 
           },
 

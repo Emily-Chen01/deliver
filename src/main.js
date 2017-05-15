@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Field } from 'mint-ui';
+import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Field,Header } from 'mint-ui';
 import Mint from 'mint-ui';
 import VueResource from 'vue-resource'
 import fullCalendar from 'vue-fullcalendar'
@@ -24,6 +24,7 @@ Vue.component(Popup.name, Popup);
 Vue.component(Field.name, Field);
 Vue.component(DatetimePicker.name, DatetimePicker);
 Vue.component('full-calendar', fullCalendar);
+Vue.component(Header.name, Header);
 
 
 
