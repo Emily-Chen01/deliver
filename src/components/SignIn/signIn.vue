@@ -480,12 +480,16 @@
                           alert('上班旷工打卡');
 
                         }
-                      this.toClickSpan=false;
-                        this.sumNumber=sum+1;
+                        this.toClickSpan=false;
+//                      this.sumNumber=sum+1;
+                        this.sumNumber=1;
                         console.log('ww'+this.sumNumber);
 
                       }else {
+                        this.toClickSpan=false;
+                        this.sumNumber=1;
                           alert('今天已经上班打卡完毕，请勿重复打卡');
+
                       }
 
                     }else if ( this.toDaKaStatusIs!==null){ //下班打卡

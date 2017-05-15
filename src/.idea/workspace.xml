@@ -18,8 +18,8 @@
       <file leaf-file-name="signIn.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/components/SignIn/signIn.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="573" column="34" lean-forward="true" selection-start-line="573" selection-start-column="34" selection-end-line="573" selection-end-column="34" />
+            <state relative-caret-position="80">
+              <caret line="484" column="41" lean-forward="true" selection-start-line="484" selection-start-column="41" selection-end-line="484" selection-end-column="41" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
@@ -99,8 +99,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>searchStaff</find>
-      <find>handerSign</find>
       <find>token</find>
       <find>postion</find>
       <find>position</find>
@@ -129,6 +127,8 @@
       <find>&lt;img</find>
       <find>上班打卡</find>
       <find>toClickSpan</find>
+      <find>initToTime</find>
+      <find>sum</find>
     </findStrings>
     <replaceStrings>
       <replace>4</replace>
@@ -440,12 +440,12 @@
       <workItem from="1494656518177" duration="9518000" />
       <workItem from="1494667399092" duration="626000" />
       <workItem from="1494743576982" duration="12881000" />
-      <workItem from="1494809637047" duration="3359000" />
+      <workItem from="1494809637047" duration="4292000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="216842000" />
+    <option name="totallyTimeSpent" value="217775000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="477" y="38" width="1375" height="1069" extended-state="0" />
@@ -972,8 +972,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/components/SignIn/signIn.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="573" column="34" lean-forward="true" selection-start-line="573" selection-start-column="34" selection-end-line="573" selection-end-column="34" />
+        <state relative-caret-position="80">
+          <caret line="484" column="41" lean-forward="true" selection-start-line="484" selection-start-column="41" selection-end-line="484" selection-end-column="41" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
