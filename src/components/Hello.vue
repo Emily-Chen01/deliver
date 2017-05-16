@@ -13,31 +13,49 @@
     </div>
 
 
-
   </div>
 </template>
 
-<script type="text/ecmascript-6">
-import { Navbar, TabItem,Toast,mtTabContainerItem } from 'mint-ui';
+<script>
+import { Navbar, TabItem,Toast,MessageBox } from 'mint-ui';
 export default {
   name: 'hello',
   data() {
     return {
       msg: '欢迎使用 EHR SAAS 员工自助服务',
-      msgPhone: '您需要先绑定手机',
-      phoneNumber:'185500454656'
+      msgPhone: '您需要先绑定手机!',
+      phoneNumber:'18550045759',
+      paramVerification:{
+        "phone":18601421739,
+        "type":1,
+        "code":"159216",
+        "passwd":123456,
+        "confirmPasswd":123456
+      }
 
     }
   },
-  mounted:{
+  created() {
+
+  },
+  mounted: function() {
 
   },
   methods: {
     handerClick(){
-        console.log(this.phoneNumber)
+        console.log(this.paramVerification)
+//      MessageBox('提示', '请联系您的HR绑定手机');
+      this.$http.post('api/v1.0/account/signup',this.paramVerification).then(response => {
+        console.log(1234);
+        console.log(response);
+      }, response => {
+        console.log( 'error callback');
+      });
     },
 
   },
+  components: {
+  }
 
 }
 </script>
@@ -59,7 +77,6 @@ export default {
   font-size: 1rem;
   display: inline-block;
   margin-bottom: 2rem;
-
 }
 .verification span{
   font-size: 0.7rem;
@@ -79,38 +96,5 @@ export default {
 }
 .confirmBinding button{
   width: 99%;
-}
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-.dd{
-  font-size: 1.2rem;
-  width: 9.4rem;
-  height: 3rem;
-  display: inline-block;
-}
-p{
-  text-align: center;
-  font-size: 1.1rem;
-  height: 1rem;
-  font-weight: 600;
-}
- .titlesSmall{
-  font-size: 1rem;
-  height: 0.8rem;
-   font-weight: 600;
- }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
 }
 </style>

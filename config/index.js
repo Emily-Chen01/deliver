@@ -30,7 +30,9 @@ module.exports = {
     proxyTable: {
 		 //  接口专用配置
       '/api': {
-        target: 'http://192.168.140.215:8082/',
+        // target: 'http://192.168.140.215:8082/',
+        target: 'http://192.168.140.72:8080/',
+
       }
 	},
     // CSS Sourcemaps off by default because relative paths are "buggy"
