@@ -65,6 +65,7 @@ let oneselfData={};
         }
       },
     created: function () {
+
 //          let param={
 //            "openid":"2",
 //            "companyUid":"d713a5e1-4624-4301-8602-b1eb5f869663"
@@ -103,6 +104,7 @@ let oneselfData={};
           console.log("111",response.body.result.record);
           this.arryOneself.push(response.body.result);
           console.log("rryOne",this.arryOneself);
+
           this.infoObj=response.body.result.record;
           for(let i=0; i<this.arryOneself.length;i++){
             this.oneselfData={
@@ -110,6 +112,13 @@ let oneselfData={};
 //                department:this.arryOneself[i].theArcIns,
 //                position:this.arryOneself[i].record.postion,
                 name:this.arryOneself[i].name,
+            };
+            if(this.arryOneself[i].staffPhoUrl){
+              this.imgSrc.comAddress=this.arryOneself[i].staffPhoUrl;
+              sessionStorage.setItem('avatarImages',  this.imgSrc.comAddress);
+
+            }else {
+              console.log('record.staffPhoUrl的images值为空')
             }
           }
           console.log(this.oneselfData);
@@ -134,6 +143,14 @@ let oneselfData={};
 //            }, response => {
 //              console.log( 'error callback');
 //            });
+          }else if(indexX==1){
+            this.$router.push({path:'/attendanceRecord'});
+
+          }else if(indexX==2){
+            this.$router.push({path:'/mySalary'});
+
+
+
           }
 
       },

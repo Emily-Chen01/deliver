@@ -194,7 +194,7 @@
         data(){
             return {
               selected: '1',
-              selectedData:'',
+              selectedData:'A',
               pickerValue:'',
               options: [
                 { text: '请假申请', value: 'A' },
