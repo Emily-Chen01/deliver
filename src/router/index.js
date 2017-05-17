@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Index from '@/pages/index'
 import ManyCompany from "@/components/register/manyCompany"
 import signCard from "@/components/register/signCard"
-import signIn from "@/components/signIn/signIn"
+import signIn from "@/components/SignIn/signIn"
 import quick from "@/components/register/quick"
 import myData from "@/components/staffData/myData"
 import leave from "@/components/leaves/leave"
@@ -12,7 +12,7 @@ import outsideApply from "@/components/leaves/outsideApply"
 import overtimeApply from "@/components/leaves/overtimeApply"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import overApply from "@/components/leaves/overApply"
-import mySalary from "@/components/signIn/mySalary"
+import mySalary from "@/components/SignIn/mySalary"
 
 
 

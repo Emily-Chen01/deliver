@@ -1,9 +1,9 @@
 <template>
     <div>
       <div class="titleHeard">
-        <div class="titleLeft">> </div>
+        <div class="titleLeft" @click="handleClickUp()">< </div>
         <div class="titleMiddle">2017年2月薪资</div>
-        <div class="titleRight"><</div>
+        <div class="titleRight" @click="handleClickDown()"> ></div>
 
       </div>
     </div>
