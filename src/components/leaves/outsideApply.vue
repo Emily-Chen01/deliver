@@ -51,6 +51,12 @@
           </select>
         </mt-field>
         <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+        <div>
+
+          <h3>请选择图片文件：JPG/GIF</h3>
+          <input type="file" id="choose" accept="image/*">
+
+        </div>
 
         <div style="padding-top: 0.6rem">
           <mt-button type="primary"
@@ -114,13 +120,16 @@
     methods: {
       handerDataSubmit(){
 
+
       },
       handleConfirm(){
         alert(11)
       },
       openPicker() {
         this.$refs.picker.open();
-      }
+      },
+
+
     },
 
     components: {

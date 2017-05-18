@@ -222,6 +222,12 @@
                 </mt-button>
                 <mt-button type="default"
                            style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
+                           v-show="initDownRecord">
+                  打卡正常
+                </mt-button>
+
+                <mt-button type="default"
+                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                            v-show="lateStatus">
                   您迟到了
                 </mt-button>
@@ -430,6 +436,9 @@
             this.isYellow = false;
             this.absenteeismStatus = false;
             console.log('6' + this.toDaKaStatusIsInit)
+              this.initDaKaRecordWeiZhi=true;
+
+
 //            alert('走了单独迟到');
           }
 
@@ -487,10 +496,7 @@
               this.zcDownShowSpan = true; //下班总线所展示的所有文字
               this.toDownAbsenteeismStatus = false; //下班提交文字sapn
               this.absenteeismStatus = false;
-              this.alertToSpan = false;//sapn 上班
-              this.alertDownSpan = false; //sapn 下班
-              this.lateStatus = false;
-              this.initDaKaRecord = true;
+              this.initDownRecord = true;
 //              alert('我是正常上班');
 
 //**************上面的这个与上班打卡正常冲突
@@ -693,9 +699,10 @@
               this.toTimeMiddleShow = false;
 
               if (this.toDownKaStatusIs == 0) {//正常打卡显示
-                this.initDaKaRecord = true;
+                this.initDownRecord = true;
                 this.absenteeismStatus = false;
                 this.lateStatus = false;
+                this.isYellow2=false;
                 console.log('166' + this.toDownKaStatusIs)
                 this.overTime = false; //加班隐藏
 

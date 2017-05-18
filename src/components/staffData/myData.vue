@@ -143,7 +143,7 @@
     </div>
 </template>
 <script>
-  import { Navbar, TabItem ,mtTabContainerItem} from 'mint-ui';
+  import { Navbar, TabItem ,mtTabContainerItem,Toast } from 'mint-ui';
     export default {
         data(){
             return {
@@ -171,14 +171,9 @@
         },
         created: function () {
 
-
-//          let ff=JSON.parse(sessionStorage.obj);
-//          console.log(ff.openIDD);
-
-//          let phoneObj={
-//            "openid":ff.openIDD
-//          }
           this.$http.post('api/v1.0/client/findStaff').then(response => { //查询
+
+            //岗位信息查询赋值开始
             this.stationObj=response.body.result.record;
             var firstWork=new Date(parseInt(this.stationObj.fristWork)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
             var zhuanWork=new Date(parseInt(this.stationObj.fristWorkTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
@@ -186,6 +181,15 @@
             this.stationObj.firstWork=firstWork;
             this.stationObj.zhuanWork=zhuanWork;
             console.log(this.stationObj);
+
+            //岗位信息查询赋值结束
+
+            //个人资料查询赋值开始
+
+
+            //个人资料查询赋值结束
+
+
 
           }, response => {
             console.log( 'error callback');
@@ -199,6 +203,19 @@
           handerDataSubmit(){
             this.submitDivShow=false;
               this.submitDivHide=true;
+
+//            this.$http.post('api/v1.0/client/findStaff').then(response => {
+//              console.log('查询个人资料');
+//              console.log(response);
+//
+//
+//            }, response => {
+//              console.log( 'error callback');
+//            });
+          },
+          handerDataSubmit2(){
+            this.submitDivShow=true;
+            this.submitDivHide=false;
             let param={
               phone:this.phone,
               address:this.address,
@@ -207,16 +224,16 @@
               openBank:this.openBank,
               bankCard:this.bankCard,
             }
-//            this.$http.post('api/v1.0/client/updateStaff',param).then(response => {
-//              console.log('修改个人资料');
-//
-//            }, response => {
-//              console.log( 'error callback');
-//            });
-          },
-          handerDataSubmit2(){
-            this.submitDivShow=true;
-              this.submitDivHide=false;
+          this.$http.post('api/v1.0/client/updateStaff',param).then(response => {
+              console.log('修改个人资料');
+
+            }, response => {
+              console.log( 'error callback');
+            })
+            Toast({
+              message: '个人资料保存成功',
+              iconClass: 'icon icon-success'
+            })
           },
           handerClickUp(){
             alert(11);
