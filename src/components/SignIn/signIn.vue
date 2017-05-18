@@ -590,11 +590,11 @@
           this.clickfunction = false;
           if (this.toDaKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"twOutside":  0}
+              "record": {"twOutside":this.toDaKaStatusIsOutsideInit?true:0}
             }
           } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"owOutside": 'true'}//0  'true'
+              "record": {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}//0  'true'
             }
           } else {
             alert("不能重复打卡");
