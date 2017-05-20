@@ -3,13 +3,30 @@
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>HR SAAS</title>
+	<link rel="stylesheet" href="static/calendar/css/LCalendar.css">
+
   </head>
+  <script src="static/calendar/js/lCalendar.js"></script>
+
   <script>
     let html = document.documentElement;
-    window.rem = html.getBoundingClientRect().width / 25 ;
+    window.rem = document.documentElement.clientWidth/ 25 ;
     html.style.fontSize = window.rem + 'px';
+
 //    alert(html.style.fontSize);
+    var userAgentInfo = navigator.userAgent;
+    var Agents = [ "iPhone", "iPad"];
+
+    for (var v = 0; v < Agents.length; v++) {
+      if (userAgentInfo.indexOf(Agents[v]) > 0) {
+        let html = document.documentElement;
+        window.rem = document.documentElement.clientWidth/ 25 ;
+        html.style.fontSize = window.rem + 'px';
+      }
+    }
+
   </script>
+
   <style>
     html{
       font-size: 32px;

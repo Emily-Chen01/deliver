@@ -170,6 +170,10 @@
                 <!--absenteeismStatus  旷工-->
                 提交请假/外出申请
               </mt-button>
+              <mt-button type="default" class="toDaKaStatusAdd" v-show="toDownAddTimeStatus" @click="submitApplyRouter">
+                <!--absenteeismStatus  旷工-->
+                加班申请
+              </mt-button>
             </div>
           </div>
         </div>
@@ -335,6 +339,7 @@
         lateStatusTo:false, //上班的迟到状态
         addTimeAlert:'', //alert加班时间
         initDownRecord:'',//下班正常
+        toDownAddTimeStatus:'', //加班申请
       }
     },
     created: function () {
@@ -532,14 +537,10 @@
 
               if (this.toDownKaStatusIsInit == 2) { //加班打卡显示
 //                alert('我是加班');
-
                 this.toDownAbsenteeismStatus = false; //下班提交请假span
               this.overTime = true;
               this.zcDownShowSpan = true;
-
-
-
-              this.toDownAbsenteeismStatus=true;
+              this.toDownAddTimeStatus=true;
               console.log('8' + this.toDaKaStatusIsInit)
             }
             if (this.toDownKaStatusIsInit == 2 && this.toDownKaStatusIsOutsideInit) { //加班+区域外打卡显示
@@ -1108,6 +1109,15 @@
     background-color: rgb(139, 156, 172);
     color: #ffffff;
     width: 9.8rem;
+    height: 1.8rem;
+    top: 0.5rem;
+    font-size: 0.3rem;
+    border-radius: 8px
+  }
+  .toDaKaStatusAdd{
+    background-color: rgb(139, 156, 172);
+    color: #ffffff;
+    width: 5.8rem;
     height: 1.8rem;
     top: 0.5rem;
     font-size: 0.3rem;

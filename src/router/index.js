@@ -13,6 +13,8 @@ import overtimeApply from "@/components/leaves/overtimeApply"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import overApply from "@/components/leaves/overApply"
 import mySalary from "@/components/SignIn/mySalary"
+import datePick from "@/components/components/datePick"
+
 
 
 
@@ -72,6 +74,10 @@ export default new Router({
     {
       path: '/mySalary',  //我的工资条
       component: mySalary
+    },
+    {
+      path: '/datePick',  //我的datepick
+      component: datePick
     },
   ]
 })

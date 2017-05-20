@@ -11,39 +11,37 @@
           <div v-if="submitDivShow">
             <!--展示-->
             <mt-field label="性别"  >
-              <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+              <div class="showARightSpan">{{myDataSearch.xingbie}}</div>
             </mt-field>
             <mt-field v-model="phone" label="手机号" placeholder="" type="number">
-              <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+              <div class="showARightSpan">{{myDataSearch.phone}}</div>
             </mt-field>
             <mt-field v-model="address" label="国家/地区" placeholder=""  >
-              <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+              <div class="showARightSpan">{{myDataSearch.city}}</div>
             </mt-field>
             <mt-field v-model="card" label="身份证号" placeholder="" type="number" >
-              <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+              <div class="showARightSpan">{{myDataSearch.shenfeng}}</div>
             </mt-field>
             <mt-field  label="" placeholder=""  style="height: 8.2rem;line-height: 8.2rem" >
-              <div class="cardClass">
+              <div class="cardClassSearch">
                 <a @click.native="handerClickUp()">
-                  <img :src="imgSrc.shenFenIcon" class="CardImg">
-                  <div>上传身份证正面</div>
+                  <img :src="myDataSearch.shenfengzheng" class="CardImgSearch">
                 </a>
               </div>
-              <div class="cardClass">
+              <div class="cardClassSearch">
                 <a @click.native="handerClickUp()">
-                  <img :src="imgSrc.shenFenIcon" class="CardImg">
-                  <div>上传身份证背面</div>
+                  <img :src="myDataSearch.shenfengbei" class="CardImgSearch">
                 </a>
               </div>
             </mt-field>
             <mt-field v-model="gold" label="公积金账号" placeholder="" type="number">
-              <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+              <div class="showARightSpan">{{myDataSearch.gongjijin}}</div>
             </mt-field>
             <mt-field v-model="bankCard" label="银行卡号" placeholder="" type="number"  >
-              <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+              <div class="showARightSpan">{{myDataSearch.bankcard}}</div>
             </mt-field>
             <mt-field v-model="openBank" label="开户行" placeholder=""  >
-              <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+              <div class="showARightSpan">{{myDataSearch.kaihuhang}}</div>
             </mt-field>
           </div>
 
@@ -61,16 +59,33 @@
             <mt-field v-model="card" label="身份证号" placeholder="请输入身份证号" type="number" ></mt-field>
             <mt-field  label="" placeholder=""  style="height: 8.2rem;line-height: 8.2rem" >
               <div class="cardClass">
-                <a @click.native="handerClickUp()">
-                  <img :src="imgSrc.shenFenIcon" class="CardImg">
-                  <div>上传身份证正面</div>
-                </a>
+                  <div>
+                    <vue-core-image-upload
+                      :crop="false"
+                      @imageuploaded="imageuploaded"
+                      :data="data"
+                      :headers="tokenHeader"
+                      :max-file-size="5242880"
+                      url="api/v1.0/client/upload" >
+                      <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  />
+                    </vue-core-image-upload>
+                  </div>
+                <!--<div class="imgclassShen">身份证正面</div>-->
+
               </div>
               <div class="cardClass">
-                <a @click.native="handerClickUp()">
-                  <img :src="imgSrc.shenFenIcon" class="CardImg">
-                  <div>上传身份证背面</div>
-                </a>
+                  <div>
+                    <vue-core-image-upload
+                      :crop="false"
+                      @imageuploaded="imageuploadedbei"
+                      :data="data"
+                      :max-file-size="5242880"
+                      :headers="tokenHeader"
+                      url="api/v1.0/client/upload" >
+                      <img width="150" :src="imgSrc.shenFenIconbei" class="CardImg"  />
+                    </vue-core-image-upload>
+                  </div>
+                <!--<div class="imgclassShen">身份证背面</div>-->
               </div>
             </mt-field>
             <mt-field v-model="gold" label="公积金账号" placeholder="请输入公积金账号" type="number"></mt-field>
@@ -78,7 +93,7 @@
             <mt-field v-model="openBank" label="开户行" placeholder="请输入开户行"  ></mt-field>
           </div>
 
-          <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+          <!--<div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>-->
           <div style="padding-top: 0.6rem" v-if="submitDivShow">
             <mt-button type="primary"
                        style="background-color: rgb(139,156,172);width: 20rem;height:3rem;line-height: 3rem"
@@ -97,7 +112,7 @@
         <mt-tab-container-item id="2">
           <!--岗位信息-->
           <mt-field label="入职日期" placeholder="" type="number">
-            <div class="showARightSpan">{{stationObj.baseSalary}}</div>
+            <div class="showARightSpan">{{stationObj.dateOfEntry}}</div>
           </mt-field>
           <mt-field label="聘用形式" placeholder=""  >
             <div class="showARightSpan">{{stationObj.baseSalary}}</div>
@@ -144,9 +159,16 @@
 </template>
 <script>
   import { Navbar, TabItem ,mtTabContainerItem,Toast } from 'mint-ui';
-    export default {
+  import VueCoreImageUpload from 'vue-core-image-upload'
+
+  export default {
         data(){
             return {
+              openId:'',
+              tokenHeader: {
+                openId: sessionStorage.getItem('openId')
+              },
+              data:{},
               phone:'',  //手机号
               address:'',  //地区
               card:'',  //身份证
@@ -157,15 +179,19 @@
               selected: '1',
               selectedData:'1',
               stationObj:{},
+              myDataSearch:{},
               options: [
                 { text: '男', value: '1' },
                 { text: '女', value: '2' },
               ],
               imgSrc: {
                 shenFenIcon: require('../../assets/shenfenzheng.png'),
-              },
+                shenFenIconbei: require('../../assets/shenfenzheng.png'),
+
+        },
               submitDivShow:true,
               submitDivHide:false,
+              uid:'',
 
             }
         },
@@ -180,24 +206,34 @@
 
             this.stationObj.firstWork=firstWork;
             this.stationObj.zhuanWork=zhuanWork;
-            console.log(this.stationObj);
+            console.log(response);
 
             //岗位信息查询赋值结束
 
             //个人资料查询赋值开始
+            this.myDataSearch.phone =response.body.result.mobile; //手机号
+            this.myDataSearch.city=response.body.result.nativePlace; //国家
+            this.myDataSearch.shenfeng=response.body.result.idcard; //身份证
+            this.myDataSearch.shenfengzheng=response.body.result.idcardPhoUrl; //正身份证照片
+            this.myDataSearch.shenfengbei=response.body.result.idcardPhoUrlRev;//背身份证照片
+            this.myDataSearch.gongjijin=response.body.result.accfuNum; //公积金
+            this.myDataSearch.bankcard=response.body.result.cardNumber; //银行卡号
+            this.myDataSearch.kaihuhang=response.body.result.openingBank; //开户行
+            if(response.body.result.gender){//性别
+                if(response.body.result.gender==1){
+                  this.myDataSearch.xingbie='男';
+                }else if (response.body.result.gender==0){
+                  this.myDataSearch.xingbie='女';
+                }
+            }
 
-
+            this.uid=response.body.result.uid;
             //个人资料查询赋值结束
-
-
-
           }, response => {
             console.log( 'error callback');
           });
-
-
+          console.log('ddd'+this.imgSrc.shenFenIcon);
         },
-
         methods: {
 
           handerDataSubmit(){
@@ -217,12 +253,16 @@
             this.submitDivShow=true;
             this.submitDivHide=false;
             let param={
-              phone:this.phone,
-              address:this.address,
-              card:this.card,
-              gold:this.gold,
-              openBank:this.openBank,
-              bankCard:this.bankCard,
+                'uid':this.uid,
+              'gender':this.selectedData,
+              'mobile':this.phone,
+              'nativePlace':this.address,
+              'idcard':this.card,
+              'idcardPhoUrl':this.imgSrc.shenFenIcon,
+              'idcardPhoUrlRev':this.imgSrc.shenFenIconbei,
+              'accfuNum':this.gold,
+              'cardNumber':this.bankCard,
+              'openingBank':this.openBank,
             }
           this.$http.post('api/v1.0/client/updateStaff',param).then(response => {
               console.log('修改个人资料');
@@ -238,10 +278,28 @@
           handerClickUp(){
             alert(11);
           },
+
+          imageuploaded(res) {
+              console.log(res);
+            if (res) {
+              this.imgSrc.shenFenIcon = res.result;
+              console.log(this.imgSrc.shenFenIcon);
+            }
+
+          },
+          imageuploadedbei(res) {
+            console.log(res);
+            if (res) {
+              this.imgSrc.shenFenIconbei = res.result;
+              console.log(this.imgSrc.shenFenIconbei);
+            }
+
+          }
+
         },
-        components: {
-            //      ManyCompany
-        }
+    components: {
+      'vue-core-image-upload': VueCoreImageUpload,
+    },
     }
 
 </script>
@@ -268,14 +326,20 @@
     line-height: 6rem;
     float: left;
     position: relative;
-    padding-bottom: 1rem;
+  }
+  .cardClassSearch{
+    width: 11rem;
+    height: 6rem;
+    line-height: 6rem;
+    float: left;
+    position: relative;
   }
   .cardClass div{
     width: 9rem;
-    height: 1.2rem;
     position: absolute;
-    top:3.5rem;
     font-size: 1.1rem;
+    height: 6.2rem;
+    line-height: 6.2rem;
   }
   .CardImg{
     display: block;
@@ -284,10 +348,21 @@
     padding-left: 0.6rem;
 
   }
+  .CardImgSearch{
+    display: block;
+    width: 80%;
+    height: 90%;
+    padding-left: 0.6rem;
+    padding-top: 0.2rem;
+  }
   .showARightSpan{
     width: 15rem;
     height:2rem;
     line-height: 2rem;
     text-align: left;
+  }
+  .imgclassShen{
+    position: absolute;
+    top:3rem;
   }
 </style>

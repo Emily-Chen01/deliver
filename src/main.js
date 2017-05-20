@@ -7,6 +7,9 @@ import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Fiel
 import Mint from 'mint-ui';
 import VueResource from 'vue-resource'
 import fullCalendar from 'vue-fullcalendar'
+import 'mint-ui/lib/style.css'
+
+
 
 
 Vue.use(Mint);
