@@ -55,7 +55,13 @@
               </select>
             </mt-field>
             <mt-field v-model="phone" label="手机号" placeholder="请输入手机号" type="number"></mt-field>
-            <mt-field v-model="address" label="国家/地区" placeholder="大陆地区"  ></mt-field>
+            <mt-field v-model="address" label="国家/地区" placeholder="大陆地区"  >
+              <select v-model="selectedDataCity" class="changeSelect"  >
+                <option v-for="option in optionsCity" :value="option.value" >
+                  {{ option.text }}
+              </option>
+                </select>
+            </mt-field>
             <mt-field v-model="card" label="身份证号" placeholder="请输入身份证号" type="number" ></mt-field>
             <mt-field  label="" placeholder=""  style="height: 8.2rem;line-height: 8.2rem" >
               <div class="cardClass">
@@ -175,7 +181,7 @@
               gold:'',   //公积金
               openBank:'',  //开户行
               bankCard:'',  //银行卡
-
+              selectedDataCity:'',
               selected: '1',
               selectedData:'1',
               stationObj:{},
@@ -183,6 +189,12 @@
               options: [
                 { text: '男', value: '1' },
                 { text: '女', value: '2' },
+              ],
+              optionsCity: [
+                {text: '大陆地区', value: '1', type: 'da'},
+                {text: '港澳地区', value: '2', type: 'gang'},
+                {text: '台湾地区', value: '2', type: 'tai'},
+
               ],
               imgSrc: {
                 shenFenIcon: require('../../assets/shenfenzheng.png'),
@@ -195,6 +207,13 @@
 
             }
         },
+    watch: {
+      selectedDataCity:function (val, oldVal) {
+        console.log('我是国家地区' + val);
+        this.cityParam= val.type
+
+      },
+    },
         created: function () {
 
           this.$http.post('api/v1.0/client/findStaff').then(response => { //查询

@@ -82,7 +82,17 @@
           </div>
         </mt-tab-container-item>
         <mt-tab-container-item id="2">
-          <!--我的申请-->
+
+          <!--进行编辑内容开始-->
+          <div>
+
+          </div>
+
+
+
+          <!--//进行编辑内容结束-->
+
+<!--我的申请-->
           <div class="myApply">
             <div class="myApplyTitle">
               <div class="myApplyTitleLeft">病假申请</div>
@@ -176,18 +186,12 @@
               textareaString:'',
               qingjiauidParam:'',
               shengqingParam:'',
+              shengqingParamType:'', //判断加班申请param的类型
               imagestring:'',
 
             }
         },
         mounted:function(){
-//          var calendar = new lCalendar();
-//          calendar.init({
-//            'trigger': '#demo1,#demo2',//标签id
-//            'type': 'datetime',//date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择
-//            'minDate':'1900-1-1',//最小日期 注意：该值会覆盖标签内定义的日期范围
-//            'maxDate':'2020-1-1'//最大日期 注意：该值会覆盖标签内定义的日期范围
-//          });
 
         },
         created: function () {
@@ -248,7 +252,8 @@
       watch:{
         addTimeValue:function(val,oldVal){
           console.log('我是加班时间'+val);
-          
+          this.addTimeValue=val
+
         },
 //        selectedDataApply:function(val,oldVal){
 ////            console.log(val);
@@ -296,17 +301,42 @@
             this.endTimeValue=timestamp3;
           },
           handerDataSubmit(){
-              let params ={
-                approvalConfigUid:this.shengqingParam,
+              let params;
+              if(this.shengqingParamType=='q'){ //请假申请所需参数
+                params ={
+                  approvalConfigUid:this.shengqingParam,//申请分类
+                  currentApprover:this.approvalTypeObj.UID,
+                  leaveUid:this.qingjiauidParam,
+                  startTime: this.startTimeValue,
+                  endTime:this.endTimeValue,
+                  image:this.imagestring,
+                  remarks:this.textareaString
+                };
+              };
+            if(this.shengqingParamType=='w'||this.shengqingParamType=='wc'){ //忘打卡或外出申请所需参数
+              params ={
+                approvalConfigUid:this.shengqingParam,//申请分类
                 currentApprover:this.approvalTypeObj.UID,
-                leaveUid:this.qingjiauidParam,
                 startTime: this.startTimeValue,
                 endTime:this.endTimeValue,
                 image:this.imagestring,
                 remarks:this.textareaString
+              };
+            };
+              if( this.shengqingParamType=='j'){ //加班所需参数
+                 params ={
+                  approvalConfigUid:this.shengqingParam,  //申请分类
+                  currentApprover:this.approvalTypeObj.UID,
+                  remarks:this.textareaString,
+
+                },
+                alert('jiaban');
 
               }
+            alert('提交成功');
+
             this.$http.post('api/v1.0/client/apply',params).then(response => { //提交请假申请
+              alert('提交成功');
 //              this.holidayTypeArray=response.body.result;
 //              console.log(this.holidayTypeArray);
 //            for(let i=0;i<this.applyTypeArray.length;i++){
@@ -333,16 +363,30 @@
               console.log('我是开始时间'+this.startTimeValue);
           },
           shengqingclick(value){
+              console.log("value dianji" +value)
             this.shengqingParam= value.uid;
+            this.shengqingParamType= value.type;
             console.log('我是选中的申请类型'+ this.shengqingParam);
             if(value.type=='q'){ //请假
                 console.log('选择请假路线')
+              this.changeApply=true; //假期隐藏
+              this.changeApplyTime=true; //时间隐藏
+              this.updateImage=true; //上传图片隐藏
+              this.changeApplyOvertime=false; //加班时间显示
             }
             if(value.type=='w'){
               console.log('忘记打卡路线')
+              this.changeApply=false; //假期隐藏
+              this.changeApplyTime=true; //时间隐藏
+              this.updateImage=true; //上传图片隐藏
+              this.changeApplyOvertime=false; //加班时间显示
             }
             if(value.type=='wc'){
               console.log('外出申请路线')
+              this.changeApply=false; //假期隐藏
+              this.changeApplyTime=true; //时间隐藏
+              this.updateImage=true; //上传图片隐藏
+              this.changeApplyOvertime=false; //加班时间显示
             }
             if(value.type=='j'){
               console.log('加班路线')
