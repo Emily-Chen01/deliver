@@ -464,7 +464,6 @@
             if(this.toDaKaStatusIsOutsideInit){ //区域外打卡
               this.lateStatusAddW = true;
               this.initDaKaRecord=false;
-
               this.initDaKaRecordWeiZhi=true;
               this.absenteeismStatus=true;
 //              this.absenteeismStatus = true;//上班显示提交span

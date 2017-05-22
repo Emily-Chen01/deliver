@@ -11,27 +11,27 @@
         <div class="egClass"><span class="publicStyle abnormalStyle"></span>&nbsp考勤异常</div>
         <div class="egClass"><span class="publicStyle leaveStyle"></span>&nbsp请假</div>
       </div>
-      <!--<div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem"></div>-->
+      <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem"></div>
 
-      <!--<div>-->
-        <!--<div class="spanStatus">-->
-          <!--<div class="">0</div>-->
-          <!--<div class="">迟到</div>-->
-        <!--</div>-->
-        <!--<div class="spanStatus">-->
-          <!--<div class="">0</div>-->
-          <!--<div class="">早退</div>-->
-        <!--</div>-->
-        <!--<div class="spanStatus">-->
-          <!--<div class="">0</div>-->
-          <!--<div class="">旷工</div>-->
-        <!--</div>-->
-        <!--<div class="spanStatus">-->
-          <!--<div class="">0</div>-->
-          <!--<div class="">外出</div>-->
-        <!--</div>-->
+      <div>
+        <div class="spanStatus">
+          <div class="">{{connectTime.chidao}}</div>
+          <div class="">迟到</div>
+        </div>
+        <div class="spanStatus">
+          <div class="">{{connectTime.zaotui}}</div>
+          <div class="">早退</div>
+        </div>
+        <div class="spanStatus">
+          <div class="">{{connectTime.kuanggong}}</div>
+          <div class="">旷工</div>
+        </div>
+        <div class="spanStatus">
+          <div class="">{{connectTime.waichu}}</div>
+          <div class="">外出</div>
+        </div>
 
-      <!--</div>-->
+      </div>
 
 
       <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem"></div>
@@ -42,7 +42,7 @@
             <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
           <div class="timeSpanClass">
-            今日工时共计：<span>9</span>小时<span>5</span>分钟
+            今日工时共计：{{connectTime.totalTime}}小时
           </div>
           <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem"></div>
           <div class="spanListClass">
@@ -136,11 +136,20 @@
         created: function () {
             //初始化查询当月考勤开始
           this.$http.get('api/v1.0/client/findMonthAttends').then(response => { //查询当月考勤接口
-              console.log(response.body.result.records);
+              console.log(response.body.result);
               for(let i=0;i<response.body.result.records.length;i++){
                 this.connectTime.start=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
                 this.connectTime.end=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
                 this.connectTime.cssClass=response.body.result.records[i].desc;
+                this.connectTime.totalTime=response.body.result.records[i].duration?response.body.result.records[i].duration:0;
+                this.connectTime.chidao=response.body.result.belateTimes;
+                this.connectTime.zaotui=response.body.result.leaveearlyTimes;
+                this.connectTime.kuanggong=response.body.result.absentTimes;
+                this.connectTime.waichu=response.body.result.outsideTimes;
+
+
+
+
               }
              console.log( this.connectTime);
             this.fcEvents.push(this.connectTime);
@@ -178,7 +187,8 @@
               "date":kk
             }
             this.$http.post('api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
-              console.log(response);
+              console.log(response.body.result.duration);
+              this.connectTime.totalTime=response.body.result.duration?response.body.result.duration:0;
 
               if(response.body.result.twTime!==null){
                 var zhuanStart = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");

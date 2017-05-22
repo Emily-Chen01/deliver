@@ -29,9 +29,9 @@ export default {
     return {
       msg: '欢迎使用 EHR SAAS 员工自助服务',
       msgPhone: '您需要先绑定手机!',
-      phoneNumber:'18356081327',
+      phoneNumber:'18552252525',
       paramVerification:{
-        "phone":18356081327,
+        "phone":18552252525,
         "type":1,
         "code":"159216",
         "passwd":123456,

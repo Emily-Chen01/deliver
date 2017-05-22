@@ -55,6 +55,10 @@
                 </div>
               </div>
             </mt-field>
+            <div v-if="changeApplyOvertime">
+              <mt-field label="加班时长" v-model="addTimeValue" >
+              </mt-field>
+            </div>
             <div  style="width: 24rem;height: 7rem;">
               <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
               <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
@@ -63,10 +67,6 @@
                         style=" overflow: hidden;overflow-y: scroll;width: 20rem;height: 4rem;border-radius: 4px">
             </textarea>
             </div>
-          <div v-if="changeApplyOvertime">
-            <mt-field label="加班时长" v-model="addTimeValue" >
-            </mt-field>
-          </div>
 
             <mt-field label="审批人"  style="margin-top: 1rem">
               <div class="showARightSpan">{{approvalTypeObj.NAME}}</div>
@@ -84,35 +84,56 @@
         <mt-tab-container-item id="2">
 
           <!--进行编辑内容开始-->
-          <div>
+          <div    class="changeTitleClass">
+            <div  @click="changeShow(1)" class="changeShowList" :class="{  active:isActive}">全部 </div>
+            <div  @click="changeShow(2)" class="changeShowList" :class="{  active2:isActive2}">审核中</div>
+            <div  @click="changeShow(3)" class="changeShowList" :class="{  active3:isActive3}">已通过 </div>
+            <div  @click="changeShow(4)" class="changeShowList" :class="{  active4:isActive4}">未通过</div>
 
           </div>
 
-
-
           <!--//进行编辑内容结束-->
 
-<!--我的申请-->
-          <div class="myApply">
+      <!--我的申请-->
+          <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord!==null">
             <div class="myApplyTitle">
-              <div class="myApplyTitleLeft">病假申请</div>
-              <div class="myApplyTitleRight">审核中</div>
-              <div style="clear: both;width: 22rem;height: 1px;margin-left:0.7rem;background: #000000"></div>
+              <div class="myApplyTitleLeft">{{item.name}}申请</div>
+              <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
+              <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
+              <div class="myApplyTitleRight" v-else-if="item.status==2">未通过</div>
+              <div style="clear: both;"></div>
             </div>
             <div class="myApplyContent">
               <div class="myApplyContentLeft">起止日期</div>
 
-              <div class="myApplyContentNr">521315-231251</div>
+              <div class="myApplyContentNr">{{item.startTime}}-{{item.endTime}}</div>
               <div class="myApplyContentLeft">事由</div>
-              <div class="myApplyContentNr">难受中</div>
-              <div style="clear: both;width: 22rem;margin: 0.8rem 1rem; height: 1px;margin-left:0.7rem;background: #000000"></div>
+              <div class="myApplyContentNr">{{item.remarks}}</div>
+              <div v-if="item.image" style="clear: both;width: 22rem;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
             </div>
-            <div class="myApplyBottom">
+            <div class="myApplyBottom" v-if="item.image">
               <div>
                 <div class="myApplyBottomNrLeft">附件内容 ：</div>
-                <div class="myApplyBottomNrRight">xxxxx.jpg</div>
+                <div class="myApplyBottomNrRight">
+                  <mt-button size="small" type="primary" @click="lookImages">
+                    查看图片
+                    <mt-popup
+                      v-model="popupVisible"
+                      class="imageClass"
+                      closeOnClickModal="true"
+                      >
+                    <img width="150" :src="imgSrc.shenFenIcon"  class="alertImages"  />
+                    <div @click="closeImage" style="background: red;width: 20rem;height: 2rem;color: #000000;">
+                      关闭
+                    </div>
+                  </mt-popup>
+                  </mt-button>
+                </div>
               </div>
             </div>
+          </div>
+          <div  class="myApply"  v-else-if="searchApplyRecord==null">
+            没有数据
           </div>
 
         </mt-tab-container-item>
@@ -122,17 +143,21 @@
     </div>
 </template>
 <script>
-  import { DatetimePicker } from 'mint-ui';
+  import { DatetimePicker ,Radio ,Popup } from 'mint-ui';
   import VueCoreImageUpload from 'vue-core-image-upload'
   import datePick from "@/components/components/datePick"
   import endDatePick from "@/components/components/endDatePick"
-
-
-
+//  import { TabContainer, TabContainerItem } from 'mint-ui';
 
   export default {
         data(){
             return {
+              popupVisible:false,
+              closeOnClickModal:true,
+              isActive:false, //显示下滑线
+              isActive2:false, //显示下滑线
+              isActive3:false, //显示下滑线
+              isActive4:false, //显示下滑线
               tokenHeader: {
                 openId: sessionStorage.getItem('openId')
               },
@@ -141,17 +166,17 @@
               selectedDataApply:0,
               selectedDataApproval:0,
               pickerValue:'',
-              options: [
-                { text: '端午节', value: 'A' },
-                { text: '元宵', value: 'B' },
-                { text: '元旦', value: 'C' },
-                { text: '申请', value: 'D' },
-
-              ],
+//              options: [
+//                { text: '端午节', value: 'A' },
+//                { text: '元宵', value: 'B' },
+//                { text: '元旦', value: 'C' },
+//                { text: '申请', value: 'D' },
+//
+//              ],
             optionsApproval: {},
               optionsApply: [
                 { text: '请假申请', value: 0 ,uid:12,type:'q'},
-                { text: '忘记打卡申请', value: 1 ,uid:22 ,type:'w'},
+                { text: '忘记打卡申请', value: 2 ,uid:22 ,type:'w'},
                 { text: '外出申请', value: 2 ,uid:32 ,type:'wc'},
                 { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
@@ -188,6 +213,7 @@
               shengqingParam:'',
               shengqingParamType:'', //判断加班申请param的类型
               imagestring:'',
+              searchApplyRecord:[], //搜索申请记录
 
             }
         },
@@ -195,11 +221,6 @@
 
         },
         created: function () {
-//          this.optionsApply= [
-//            { text: '请选择', value: 0 ,uid:2},],
-
-
-
 
           this.$http.get('api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
             this.applyTypeArray=response.body.result;
@@ -213,7 +234,7 @@
                   }
                   )
             }
-            console.log(this.applyTypeName);
+            console.log('我是申请类型data'+this.applyTypeName);
             this.optionsApply=this.applyTypeName
 
           }, response => {
@@ -244,7 +265,20 @@
             console.log(this.optionsHoliday);
 
           }, response => {
-            console.log( 'error callback');
+            console.log( '假期分类 error callback');
+          });
+
+          let params={
+            "status":"-1",
+            "pageSize":100,
+            "pageNumber":1
+          };
+          this.$http.post('api/v1.0/client/findApplys',params).then(response => { //查询请假记录
+            console.log(response.body.result);
+            this.searchApplyRecord=response.body.result;
+
+          }, response => {
+            console.log( '查询请假记录 error callback');
           });
 
 
@@ -285,9 +319,65 @@
         holidayModel:function(val,oldVal){ //备注value 用于上传参数
             console.log(val);
             this.textareaString=val;
-        }
+        },
+
+
       },
         methods: {
+          changeShow(val){ //动态设置下划线显示
+            let params
+            if(val==1){
+              this.isActive=true;
+              this.isActive2=false;
+              this.isActive3=false;
+              this.isActive4=false;
+              params={
+                "status":"-1",
+                "pageSize":100,
+                "pageNumber":1
+              }
+            }
+            if(val==2){
+              this.isActive2=true;
+              this.isActive=false;
+              this.isActive3=false;
+              this.isActive4=false;
+              params={
+                "status":"0",
+                "pageSize":100,
+                "pageNumber":1
+              }
+            }
+            if(val==3){
+              this.isActive3=true;
+              this.isActive2=false;
+              this.isActive=false;
+              this.isActive4=false;
+              params={
+                "status":"1",
+                "pageSize":100,
+                "pageNumber":1
+              }
+            }
+            if(val==4){
+              this.isActive4=true;
+              this.isActive3=false;
+              this.isActive2=false;
+              this.isActive=false;
+              params={
+                "status":"2",
+                "pageSize":100,
+                "pageNumber":1
+              }
+            }
+            this.$http.post('api/v1.0/client/findApplys',params).then(response => { //查询请假接口
+              console.log(response);
+              this.searchApplyRecord=response.body.result;
+            }, response => {
+              console.log( 'error callback');
+            });
+
+          },
           ieventStart(...data){
             var timestamp2 = new Date(data[0]).getTime();
             this.startTimeValue=timestamp2;
@@ -302,7 +392,7 @@
           },
           handerDataSubmit(){
               let params;
-              if(this.shengqingParamType=='q'){ //请假申请所需参数
+              if(this.shengqingParamType=='0'){ //请假申请所需参数
                 params ={
                   approvalConfigUid:this.shengqingParam,//申请分类
                   currentApprover:this.approvalTypeObj.UID,
@@ -313,7 +403,7 @@
                   remarks:this.textareaString
                 };
               };
-            if(this.shengqingParamType=='w'||this.shengqingParamType=='wc'){ //忘打卡或外出申请所需参数
+            if(this.shengqingParamType=='2'){ //忘打卡或外出申请所需参数
               params ={
                 approvalConfigUid:this.shengqingParam,//申请分类
                 currentApprover:this.approvalTypeObj.UID,
@@ -323,7 +413,7 @@
                 remarks:this.textareaString
               };
             };
-              if( this.shengqingParamType=='j'){ //加班所需参数
+              if( this.shengqingParamType=='3'){ //加班所需参数
                  params ={
                   approvalConfigUid:this.shengqingParam,  //申请分类
                   currentApprover:this.approvalTypeObj.UID,
@@ -333,10 +423,14 @@
                 alert('jiaban');
 
               }
-            alert('提交成功');
-
             this.$http.post('api/v1.0/client/apply',params).then(response => { //提交请假申请
-              alert('提交成功');
+              console.log(response.status);
+
+              if(response.status===200){
+                alert('提交成功');
+              }else{
+                  alert('提交失败');
+              }
 //              this.holidayTypeArray=response.body.result;
 //              console.log(this.holidayTypeArray);
 //            for(let i=0;i<this.applyTypeArray.length;i++){
@@ -344,7 +438,6 @@
 //            }
 //            console.log(this.applyTypeName);
 //            this.optionsApply=this.applyTypeName
-              console.log(response);
 
             }, response => {
               console.log( 'error callback');
@@ -365,30 +458,30 @@
           shengqingclick(value){
               console.log("value dianji" +value)
             this.shengqingParam= value.uid;
-            this.shengqingParamType= value.type;
+            this.shengqingParamType= value.value;
             console.log('我是选中的申请类型'+ this.shengqingParam);
-            if(value.type=='q'){ //请假
+            if(value.value=='0'){ //请假
                 console.log('选择请假路线')
               this.changeApply=true; //假期隐藏
               this.changeApplyTime=true; //时间隐藏
               this.updateImage=true; //上传图片隐藏
               this.changeApplyOvertime=false; //加班时间显示
             }
-            if(value.type=='w'){
+            if(value.value=='2'){
               console.log('忘记打卡路线')
               this.changeApply=false; //假期隐藏
               this.changeApplyTime=true; //时间隐藏
               this.updateImage=true; //上传图片隐藏
               this.changeApplyOvertime=false; //加班时间显示
             }
-            if(value.type=='wc'){
+            if(value.value=='2'){
               console.log('外出申请路线')
               this.changeApply=false; //假期隐藏
               this.changeApplyTime=true; //时间隐藏
               this.updateImage=true; //上传图片隐藏
               this.changeApplyOvertime=false; //加班时间显示
             }
-            if(value.type=='j'){
+            if(value.value=='3'){
               console.log('加班路线')
               this.changeApply=false; //假期隐藏
               this.changeApplyTime=false; //时间隐藏
@@ -405,6 +498,14 @@
             this.qingjiauidParam= value.uid;
             console.log('我是选中的假期类型'+ this.qingjiauidParam);
 
+          },
+          lookImages(){ //查看图片
+            console.log('图片')
+            this.popupVisible=true;
+          },
+          closeImage(){
+            this.popupVisible=false;
+            console.log('关闭');
           }
 
         },
@@ -419,6 +520,24 @@
 </script>
 
 <style scoped>
+  .alertImages{
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .imageClass{
+    width: 20rem;
+    top: 10rem;
+    height: 24rem;
+    line-height: 24rem;
+
+  }
+  .myApplyTitle{
+    background: #d3dde7;
+  }
+  .myApplyBottom{
+    padding-bottom: 1rem;
+  }
   .showARightSpan{
     width: 15rem;
     height:2rem;
@@ -467,7 +586,7 @@
   }
   .myApply{
     width: 23.2rem;
-    height: 14.5rem;
+    min-height: 12rem;
     margin-top: 1rem;
     border-radius: 6px;
     border: 1px solid #cccccc;
@@ -520,5 +639,33 @@
     float: right;
     font-weight: 600;
     font-size:1.3rem ;
+  }
+  .changeShowList{
+    flex: 1;
+  }
+  .changeTitleClass{
+    display: flex;
+    background: rgb(29,139,224);
+    color:#ffffff;
+    height: 2.5rem;
+    line-height: 2.5rem;
+  }
+  .active{
+    width: 24%;
+    border-bottom: 0.2rem solid;
+  }
+  .active2{
+    width: 24%;
+    border-bottom: 0.2rem solid;
+
+  }
+  .active3{
+    width: 24%;
+    border-bottom: 0.2rem solid;
+  }
+  .active4{
+    width: 24%;
+    border-bottom: 0.2rem solid;
+
   }
 </style>

@@ -5,18 +5,43 @@
 
       <mt-datetime-picker ref="picker" type="data" v-model="pickerValue"></mt-datetime-picker>
         <!--<button >选择时间</button>-->
+
+
+<div style="background: pink;line-height: 9rem;width: 10rem">
+  <mt-navbar v-model="selected">
+    <mt-tab-item id="tab-container1">选项一</mt-tab-item>
+    <mt-tab-item id="tab-container2">选项二</mt-tab-item>
+    <mt-tab-item id="tab-container3">选项三</mt-tab-item>
+  </mt-navbar>
+  <mt-tab-container v-model="active">
+    <mt-tab-container-item id="tab-container1">
+      dsfs
+    </mt-tab-container-item>
+    <mt-tab-container-item id="tab-container2">
+      fdgf dhgf
+      </mt-tab-container-item>
+    <mt-tab-container-item id="tab-container3">
+      dfgfdg shg
+     </mt-tab-container-item>
+  </mt-tab-container>
+</div>
+
+
   </div>
 </template>
 <script>
   import Vue from 'vue'
   import { DatetimePicker } from 'mint-ui';
   import VueCoreImageUpload from 'vue-core-image-upload'
+  import { TabContainer, TabContainerItem } from 'mint-ui';
+  Vue.component(TabContainer.name, TabContainer);
+  Vue.component(TabContainerItem.name, TabContainerItem);
   Vue.component(DatetimePicker.name, DatetimePicker);
   export default {
     data(){
       return {
 //        data:{},
-
+        active:'',
         selected: '1',
         selectedData:'',
         options: [
