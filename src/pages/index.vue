@@ -55,6 +55,7 @@ export default {
   methods: {
     handerClick(){
       sessionStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
+      alert('获取验证码');
 
       let number={
           phone :this.phoneNumber,
