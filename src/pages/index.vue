@@ -8,7 +8,7 @@
       </div>
       <div class="verification"><mt-button type="default" @click.native="handerClick" style="background-color: rgb(191,205,218);"><span>获取短息验证码</span></mt-button> </div>
     </div>
-    <div class="inputValidation"><input type="text" class="inputStyle"  placeholder="请输入验证码"/> </div>
+    <div class="inputValidation"><input type="text"  v-model="phoneNumberValue" class="inputStyle"  placeholder="请输入验证码"/> </div>
     <div class="confirmBinding">
       <mt-button type="primary" style="background-color: rgb(139,156,172);" @click.native="handerSubmit">绑定手机号</mt-button>
     </div>
@@ -29,24 +29,29 @@ export default {
     return {
       msg: '欢迎使用 EHR SAAS 员工自助服务',
       msgPhone: '您需要先绑定手机!',
-      phoneNumber:'18552252525',
-      paramVerification:{
-        "phone":18552252525,
-        "type":1,
-        "code":"159216",
-        "passwd":123456,
-        "confirmPasswd":123456
-      },
+      phoneNumber:'',
+      phoneNumberValue:'',//验证码值
     }
   },
   methods: {
     handerClick(){
-        console.log(this.paramVerification)
+      sessionStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
+
+      let number={
+          phone :this.phoneNumber,
+      };
+      this.$http.get('api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
+
+      }, response => {
+        console.log( 'error callback');
+      });
     },
     handerSubmit(){
 
         let bindingObj={
-          "phone":this.phoneNumber
+          "code":this.phoneNumberValue,
+          "phone":this.phoneNumber,
+
         }
         this.$http.post('api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);

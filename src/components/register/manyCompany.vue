@@ -36,7 +36,7 @@
       },
       created: function () {
         let phoneObj={
-          phone:18552252525
+          phone:sessionStorage.getItem('iphoneNumber'),
         }
         this.$http.get('api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //初始化查询有没有公司
             console.log('这个data是查询公司的'+response.body.result);

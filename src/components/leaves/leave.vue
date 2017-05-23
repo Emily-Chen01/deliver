@@ -117,17 +117,18 @@
                 <div class="myApplyBottomNrRight">
                   <mt-button size="small" type="primary" @click="lookImages">
                     查看图片
-                    <mt-popup
-                      v-model="popupVisible"
-                      class="imageClass"
-                      closeOnClickModal="true"
-                      >
-                    <img width="150" :src="imgSrc.shenFenIcon"  class="alertImages"  />
-                    <div @click="closeImage" style="background: red;width: 20rem;height: 2rem;color: #000000;">
+                  </mt-button>
+                  <mt-popup
+                    v-model="popupVisible"
+                    class="imageClass"
+                    position="top"
+                    closeOnClickModal="true"
+                  >
+                    <img width="150" :src="item.image"  class="alertImages" v-if="item.image"  />
+                    <div @click="closeImage" class="colseClass">
                       关闭
                     </div>
                   </mt-popup>
-                  </mt-button>
                 </div>
               </div>
             </div>
@@ -506,6 +507,7 @@
           closeImage(){
             this.popupVisible=false;
             console.log('关闭');
+            //做到这里
           }
 
         },
@@ -520,6 +522,14 @@
 </script>
 
 <style scoped>
+  .colseClass{
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    background: #26a2ff;
+    width: 20rem;
+    color: #ffffff;
+  }
   .alertImages{
     width: 100%;
     height: 100%;

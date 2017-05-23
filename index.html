@@ -10,48 +10,58 @@
   <script src="static/calendar/js/lCalendar.js"></script>
 
   <script>
-    let html = document.documentElement;
-    let maxWidth=document.documentElement.clientWidth;
-    if(maxWidth>480){
-      maxWidth=480;
-    }
-    window.rem = maxWidth/ 25 ;
-    html.style.fontSize = window.rem + 'px';
+//    let html = document.documentElement;
+//    let maxWidth=document.documentElement.clientWidth;
+//    if(maxWidth>480){
+//      maxWidth=480;
+//    }
+//    window.rem = maxWidth/ 25 ;
+//    html.style.fontSize = window.rem + 'px';
+
+  let html = document.documentElement;
+  let maxWidth=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth;
+  if(maxWidth>480){
+    maxWidth=480;
+    alert(maxWidth);
+  }
+  window.rem = maxWidth/ 25 ;
+  html.style.fontSize = window.rem + 'px';
+
 
 //    开始测试
 
-    var match,
-      scale,
-      TARGET_WIDTH = 320;
-
-    if (match = navigator.userAgent.match(/Android (\d+\.\d+)/)) {
-      if (parseFloat(match[1]) < 4.4) {
-        if (TARGET_WIDTH == 320) TARGET_WIDTH++;
-        var scale = window.screen.width / TARGET_WIDTH;
-        document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=' + TARGET_WIDTH + ', initial-scale = ' + scale + ', target-densitydpi=device-dpi');
-      }
-    } else {
-      document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=' + TARGET_WIDTH);
-    }
+//    var match,
+//      scale,
+//      TARGET_WIDTH = 320;
+//
+//    if (match = navigator.userAgent.match(/Android (\d+\.\d+)/)) {
+//      if (parseFloat(match[1]) < 4.4) {
+//        if (TARGET_WIDTH == 320) TARGET_WIDTH++;
+//        var scale = window.screen.width / TARGET_WIDTH;
+//        document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=' + TARGET_WIDTH + ', initial-scale = ' + scale + ', target-densitydpi=device-dpi');
+//      }
+//    } else {
+//      document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=' + TARGET_WIDTH);
+//    }
 //    结束测试
 
-    var userAgentInfo = navigator.userAgent;
-    var Agents = [ "iPhone", "iPad"];
-
-    for (var v = 0; v < Agents.length; v++) {
-      if (userAgentInfo.indexOf(Agents[v]) > 0) {
-
-        let maxWidth=document.documentElement.clientWidth;
-        if(maxWidth>480){
-          maxWidth=480;
-        }
-        window.rem = maxWidth/ 25 ;
-        console.log('你的屏幕宽度是d'+maxWidth);
-        html.style.fontSize = window.rem + 'px';
-
-
-      }
-    }
+//    var userAgentInfo = navigator.userAgent;
+//    var Agents = [ "iPhone", "iPad"];
+//
+//    for (var v = 0; v < Agents.length; v++) {
+//      if (userAgentInfo.indexOf(Agents[v]) > 0) {
+//
+//        let maxWidth=document.documentElement.clientWidth;
+//        if(maxWidth>480){
+//          maxWidth=480;
+//        }
+//        window.rem = maxWidth/ 25 ;
+//        console.log('你的屏幕宽度是d'+maxWidth);
+//        html.style.fontSize = window.rem + 'px';
+//
+//
+//      }
+//    }
 
   </script>
 
