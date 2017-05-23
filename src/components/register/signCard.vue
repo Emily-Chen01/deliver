@@ -70,7 +70,7 @@ let oneselfData={};
 //            "openid":"2",
 //            "companyUid":"d713a5e1-4624-4301-8602-b1eb5f869663"
 //          }
-//      this.$http.post('api/v1.0/client/chooseCompany',param).then(response => {
+//      this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => {
 //        console.log(123);
 //        console.log(response);
 //      }, response => {
@@ -89,7 +89,7 @@ let oneselfData={};
         let signObj={
           "record":{"twOutside":10}
         }
-        this.$http.post('api/v1.0/client/punchCardLog',signObj).then(response => {
+        this.$http.post('/api/v1.0/client/punchCardLog',signObj).then(response => {
           console.log(111);
         }, response => {
           console.log( 'error callback');
@@ -100,7 +100,7 @@ let oneselfData={};
       },
       searchStaff(){
 
-        this.$http.post('api/v1.0/client/findStaff').then(response => {
+        this.$http.post('/api/v1.0/client/findStaff').then(response => {
           console.log("111",response.body.result.record);
           this.arryOneself.push(response.body.result);
           console.log("rryOne",this.arryOneself);
@@ -135,7 +135,7 @@ let oneselfData={};
 //              alert('点击了请假');
             this.$router.push({path:'/leave'});
 
-//            this.$http.post('api/v1.0/client/findStaff',phoneObj).then(response => {
+//            this.$http.post('/api/v1.0/client/findStaff',phoneObj).then(response => {
 //              console.log("111",response.body.result.record);
 //
 //              console.log(this.oneselfData);

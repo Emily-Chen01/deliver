@@ -216,7 +216,7 @@
     },
         created: function () {
 
-          this.$http.post('api/v1.0/client/findStaff').then(response => { //查询
+          this.$http.post('/api/v1.0/client/findStaff').then(response => { //查询
 
             //岗位信息查询赋值开始
             this.stationObj=response.body.result.record;
@@ -259,7 +259,7 @@
             this.submitDivShow=false;
               this.submitDivHide=true;
 
-//            this.$http.post('api/v1.0/client/findStaff').then(response => {
+//            this.$http.post('/api/v1.0/client/findStaff').then(response => {
 //              console.log('查询个人资料');
 //              console.log(response);
 //
@@ -283,7 +283,7 @@
               'cardNumber':this.bankCard,
               'openingBank':this.openBank,
             }
-          this.$http.post('api/v1.0/client/updateStaff',param).then(response => {
+          this.$http.post('/api/v1.0/client/updateStaff',param).then(response => {
               console.log('修改个人资料');
 
             }, response => {

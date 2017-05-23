@@ -38,7 +38,7 @@
         let phoneObj={
           phone:18552252525
         }
-        this.$http.get('api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //初始化查询有没有公司
+        this.$http.get('/api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //初始化查询有没有公司
             console.log('这个data是查询公司的'+response.body.result);
             //若是没有公司在此处执行下一个页面  ?/？
           console.log(response.body.result);
@@ -60,7 +60,7 @@
             let param={
               "companyUid":item.UID,
             }
-            this.$http.post('api/v1.0/client/chooseCompany',param).then(response => {
+            this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => {
               console.log('选择公司接口');
               if(response.body.code==200){
                 this.$router.push({path:'/signCard'});

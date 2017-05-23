@@ -358,7 +358,7 @@
       doSearch(){
           var imageString=sessionStorage.getItem('avatarImages');
         this.imgSrc.comAddress=imageString;
-        this.$http.post('api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
+        this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
           //时间赋值开始
           this.year=response.body.result.punchYear
@@ -606,7 +606,7 @@
             alert("不能重复打卡");
           }
 
-          this.$http.post('api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
+          this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
             console.log('shiann' + response.body.result.overTime);
 
             //现在缺少判断的赋值条件......................... 在此处填写 和我知道的部分也要改写

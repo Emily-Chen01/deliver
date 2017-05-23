@@ -222,7 +222,7 @@
         },
         created: function () {
 
-          this.$http.get('api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
+          this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
             this.applyTypeArray=response.body.result;
             console.log(this.applyTypeArray);
             for(let i=0;i<this.applyTypeArray.length;i++){
@@ -241,7 +241,7 @@
             console.log( 'error callback');
           });
 
-          this.$http.get('api/v1.0/client/findReporter').then(response => { //审批人列表
+          this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人列表
             this.approvalTypeObj=response.body.result;
             console.log(this.approvalTypeObj);
 
@@ -250,7 +250,7 @@
           }, response => {
             console.log( 'error callback');
           });
-          this.$http.get('api/v1.0/client/findValidLeaves').then(response => { //假期分类
+          this.$http.get('/api/v1.0/client/findValidLeaves').then(response => { //假期分类
             this.holidayTypeArray=response.body.result;
             console.log(this.holidayTypeArray);
             for(let i=0;i<this.holidayTypeArray.length;i++){
@@ -273,7 +273,7 @@
             "pageSize":100,
             "pageNumber":1
           };
-          this.$http.post('api/v1.0/client/findApplys',params).then(response => { //查询请假记录
+          this.$http.post('/api/v1.0/client/findApplys',params).then(response => { //查询请假记录
             console.log(response.body.result);
             this.searchApplyRecord=response.body.result;
 
@@ -370,7 +370,7 @@
                 "pageNumber":1
               }
             }
-            this.$http.post('api/v1.0/client/findApplys',params).then(response => { //查询请假接口
+            this.$http.post('/api/v1.0/client/findApplys',params).then(response => { //查询请假接口
               console.log(response);
               this.searchApplyRecord=response.body.result;
             }, response => {
@@ -423,7 +423,7 @@
                 alert('jiaban');
 
               }
-            this.$http.post('api/v1.0/client/apply',params).then(response => { //提交请假申请
+            this.$http.post('/api/v1.0/client/apply',params).then(response => { //提交请假申请
               console.log(response.status);
 
               if(response.status===200){

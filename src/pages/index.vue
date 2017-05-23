@@ -48,7 +48,7 @@ export default {
         let bindingObj={
           "phone":this.phoneNumber
         }
-        this.$http.post('api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
+        this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);
         console.log(response);
         this.handerList();
@@ -60,7 +60,7 @@ export default {
       let phoneObj={
         "phone":this.phoneNumber
       }
-      this.$http.get('api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //查询员工是否有绑定手机
+      this.$http.get('/api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //查询员工是否有绑定手机
         console.log(response.body.code);
         if(response.body.code==500){
 //          Toast({

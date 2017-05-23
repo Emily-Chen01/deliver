@@ -124,7 +124,7 @@
             let param={
               "date":sum
             };
-            this.$http.get('api/v1.0/client/findMonthSalaryReport',param).then(response => {
+            this.$http.get('/api/v1.0/client/findMonthSalaryReport',param).then(response => {
 
               console.log(response);
 //              this.dateGrid=response.body.result;

@@ -135,7 +135,7 @@
         },
         created: function () {
             //初始化查询当月考勤开始
-          this.$http.get('api/v1.0/client/findMonthAttends').then(response => { //查询当月考勤接口
+          this.$http.get('/api/v1.0/client/findMonthAttends').then(response => { //查询当月考勤接口
               console.log(response.body.result);
               for(let i=0;i<response.body.result.records.length;i++){
                 this.connectTime.start=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
@@ -186,7 +186,7 @@
             let param={
               "date":kk
             }
-            this.$http.post('api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
+            this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
               console.log(response.body.result.duration);
               this.connectTime.totalTime=response.body.result.duration?response.body.result.duration:0;
 
