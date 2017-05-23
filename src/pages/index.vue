@@ -33,6 +33,25 @@ export default {
       phoneNumberValue:'',//验证码值
     }
   },
+  created: function () {
+    console.log( window.location.href);
+    var _href=window.location.href;
+
+    function getUrlParam(url, name) { //获取地址栏的参数
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = url.substring(url.indexOf('?') + 1).match(reg);
+      if (r != null) return unescape(r[2]);
+      return null;
+    }
+//    getUrlParam(_href, "openid");
+   var openID=getUrlParam(_href, "openid");
+    if (openID==null) {
+         window.location.href="http://192.168.140.72:8080/api/v1.0/wechat";
+         return;
+    }
+    console.log(openID);
+    sessionStorage.setItem('openId', openID);
+  },
   methods: {
     handerClick(){
       sessionStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
@@ -40,7 +59,7 @@ export default {
       let number={
           phone :this.phoneNumber,
       };
-      this.$http.get('api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
+      this.$http.get('/api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
 
       }, response => {
         console.log( 'error callback');

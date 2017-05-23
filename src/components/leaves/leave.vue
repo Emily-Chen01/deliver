@@ -104,9 +104,21 @@
               <div style="clear: both;"></div>
             </div>
             <div class="myApplyContent">
-              <div class="myApplyContentLeft">起止日期</div>
+              <div v-if="item.startTime">
+                <div class="myApplyContentLeft">起止日期</div>
+                <div class="myApplyContentNr" >
+                  {{  new Date(parseInt( item.startTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ").substring(0,15)}}
+                 -
+               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ").substring(0,15)}}
+                </div>
+              </div>
+              <div v-if="item.overworkTime">
+                <div class="myApplyContentLeft">加班时长</div>
+                <div class="myApplyContentNr" >
+                  {{item.overworkTime}}小时
+                </div>
+              </div>
 
-              <div class="myApplyContentNr">{{item.startTime}}-{{item.endTime}}</div>
               <div class="myApplyContentLeft">事由</div>
               <div class="myApplyContentNr">{{item.remarks}}</div>
               <div v-if="item.image" style="clear: both;width: 22rem;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
@@ -418,11 +430,10 @@
                  params ={
                   approvalConfigUid:this.shengqingParam,  //申请分类
                   currentApprover:this.approvalTypeObj.UID,
+                  overworkTime:this.addTimeValue,
                   remarks:this.textareaString,
 
-                },
-                alert('jiaban');
-
+                }
               }
             this.$http.post('/api/v1.0/client/apply',params).then(response => { //提交请假申请
               console.log(response.status);

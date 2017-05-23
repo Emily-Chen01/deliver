@@ -19,7 +19,19 @@ let openIdD;
             }
         },
         created: function () {
+//          this.$http.get('/api/v1.0/wechat').then(response => { //opind
+//            console.log(response);
+//
+//
+//          }, response => {
+//            console.log( 'error callback');
+//          });
+//          window.location.href= "http://192.168.140.72:8080/api/v1.0/wechat";
+          var thisHREF = document.location.href;
+//          alert(thisHREF);
+//          console.log( window.location);
 
+//          alert()
         },
         watch:{
           allOpenId:function(val){
