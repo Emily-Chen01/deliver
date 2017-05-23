@@ -45,7 +45,7 @@ export default {
     handerClick(){
         console.log(this.paramVerification)
 //      MessageBox('提示', '请联系您的HR绑定手机');
-      this.$http.post('api/v1.0/account/signup',this.paramVerification).then(response => {
+      this.$http.post('/api/v1.0/account/signup',this.paramVerification).then(response => {
         console.log(1234);
         console.log(response);
       }, response => {
