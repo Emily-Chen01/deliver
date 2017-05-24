@@ -19,6 +19,8 @@ let openIdD;
             }
         },
         created: function () {
+
+
 //          this.$http.get('/api/v1.0/wechat').then(response => { //opind
 //            console.log(response);
 //

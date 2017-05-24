@@ -65,11 +65,11 @@
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus">
+                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter">
                   <!--lateStatus  迟到块-->
                   忘打卡？
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="tokuangWdk">
+                <mt-button type="default" class="toDaKaStatusWj" v-show="tokuangWdk" @click="submitApplyRouter">
                   <!--lateStatus  迟到块-->
                   忘打卡？
                 </mt-button>
@@ -116,7 +116,7 @@
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus">
+                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter">
                   <!--lateStatus  迟到块-->
                   忘打卡？
                 </mt-button>
@@ -498,8 +498,6 @@
             if (this.toDownKaStatusIsInit == 0) {//正常打卡显示
               console.log('toDaKaStatusIsInit状态' + this.toDaKaStatusIsInit)
               this.zcDownShowSpan = true; //下班总线所展示的所有文字
-              this.toDownAbsenteeismStatus = false; //下班提交文字sapn
-              this.absenteeismStatus = false;
               this.initDownRecord = true;
 //              alert('我是正常上班');
 

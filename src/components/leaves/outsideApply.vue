@@ -1,30 +1,10 @@
 <template>
   <div>
-    <!--外出申请-->
-      <mt-button @click="openPicker" type="default">default</mt-button>
-
-      <mt-datetime-picker ref="picker" type="data" v-model="pickerValue"></mt-datetime-picker>
-        <!--<button >选择时间</button>-->
 
 
-<div style="background: pink;line-height: 9rem;width: 10rem">
-  <mt-navbar v-model="selected">
-    <mt-tab-item id="tab-container1">选项一</mt-tab-item>
-    <mt-tab-item id="tab-container2">选项二</mt-tab-item>
-    <mt-tab-item id="tab-container3">选项三</mt-tab-item>
-  </mt-navbar>
-  <mt-tab-container v-model="active">
-    <mt-tab-container-item id="tab-container1">
-      dsfs
-    </mt-tab-container-item>
-    <mt-tab-container-item id="tab-container2">
-      fdgf dhgf
-      </mt-tab-container-item>
-    <mt-tab-container-item id="tab-container3">
-      dfgfdg shg
-     </mt-tab-container-item>
-  </mt-tab-container>
-</div>
+    <div style="background: pink;line-height: 9rem;width: 10rem">
+     少时诵诗书所所所所所所
+    </div>
 
 
   </div>

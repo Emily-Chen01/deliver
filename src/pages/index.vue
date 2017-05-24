@@ -35,22 +35,22 @@ export default {
   },
   created: function () {
     console.log( window.location.href);
-    var _href=window.location.href;
-
-    function getUrlParam(url, name) { //获取地址栏的参数
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-      var r = url.substring(url.indexOf('?') + 1).match(reg);
-      if (r != null) return unescape(r[2]);
-      return null;
-    }
-//    getUrlParam(_href, "openid");
-   var openID=getUrlParam(_href, "openid");
-    if (openID==null) {
-         window.location.href="http://192.168.140.72:8080/api/v1.0/wechat";
-         return;
-    }
-    console.log(openID);
-    sessionStorage.setItem('openId', openID);
+//    var _href=window.location.href;
+//
+//    function getUrlParam(url, name) { //获取地址栏的参数
+//      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+//      var r = url.substring(url.indexOf('?') + 1).match(reg);
+//      if (r != null) return unescape(r[2]);
+//      return null;
+//    }
+////    getUrlParam(_href, "openid");
+//   var openID=getUrlParam(_href, "openid");
+//    if (openID==null) {
+//         window.location.href="http://192.168.140.72:8080/api/v1.0/wechat";
+//         return;
+//    }
+//    console.log(openID);
+//    sessionStorage.setItem('openId', openID);
   },
   methods: {
     handerClick(){

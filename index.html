@@ -7,25 +7,36 @@
 	<link rel="stylesheet" href="static/calendar/css/lCalendar.css">
   </head>
   <script src="static/calendar/js/lCalendar.min.js"></script>
+  <script src="static/jq/jquery-3.2.1.min.js"></script>
   <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 
   <script>
-//    let html = document.documentElement;
-//    let maxWidth=document.documentElement.clientWidth;
-//    if(maxWidth>480){
-//      maxWidth=480;
-//    }
-//    window.rem = maxWidth/ 25 ;
-//    html.style.fontSize = window.rem + 'px';
+    let html = document.documentElement;
+    let maxWidth=document.documentElement.clientWidth;
+    if(maxWidth>480){
+      maxWidth=480;
+    }
+    window.rem = maxWidth/ 25 ;
+    html.style.fontSize = window.rem + 'px';
+//    alert(maxWidth);
 
-  let html = document.documentElement;
-  let maxWidth=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth;
-  if(maxWidth>480){
-    maxWidth=480;
-    alert(maxWidth);
-  }
-  window.rem = maxWidth/ 25 ;
-  html.style.fontSize = window.rem + 'px';
+//  let html = document.documentElement;
+//let maxWidth=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth;
+//if(maxWidth>480){
+//  maxWidth=480;
+//  alert(maxWidth);
+//}
+//window.rem = maxWidth/ 25 ;
+//html.style.fontSize = window.rem + 'px';
+//
+//      //手机获取宽度
+//$(document).ready(function(){
+//  alert($(window).width()); //浏览器当前窗口可视区域宽度
+////  console.log($(document).width());//浏览器当前窗口文档对象宽度
+//  alert($(document.body).outerWidth(true));//浏览器当前窗口文档body的总宽度 包括border padding margin
+//
+//})
+      //手机获取宽度
 //
 //
 //    //经纬度开始测试
