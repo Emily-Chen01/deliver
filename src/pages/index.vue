@@ -12,7 +12,7 @@
     <div class="confirmBinding">
       <mt-button type="primary" style="background-color: rgb(139,156,172);" @click.native="handerSubmit">绑定手机号</mt-button>
     </div>
-    <!--<baidu-map :center="center" @ready="handler" ></baidu-map>-->
+    <baidu-map :center="center" @ready="handler" ></baidu-map>
 
     <!--<router-link to="/manyCompany"@click.native="handerCome" >点击</router-link>-->
     <!--<router-view></router-view>-->
@@ -22,7 +22,7 @@
 <script>
 import { Navbar, TabItem,Toast,MessageBox } from 'mint-ui';
 import ManyCompany from "@/components/register/manyCompany"
-
+    let jwresult={"lat":0.0, "lng":0.0};
 
 export default {
 
@@ -44,7 +44,8 @@ export default {
       latitude:'',
       longitude:'',
       radius: '',
-      yyy:false
+      yyy:false,
+      result:{"lat":0.0, "lng":0.0},
 
     }
   },
@@ -171,7 +172,9 @@ export default {
 //        haha(ManyCompany)
 //      })
     },
-//    handler ({BMap, map}) {
+
+
+    handler ({BMap, map}) {
 //      console.log(BMap, map);
 //      console.log(this.latitude);
 //      console.log(this.latitude);
@@ -215,18 +218,41 @@ export default {
 //          ],
 //          success: function (res) {
 //            wx.getLocation({
+//              type:'gcj02',
 //              success: function (res) {
-//                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-//                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+//                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+//                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+//                var speed = res.speed; // 速度，以米/每秒计
+//                var accuracy = res.accuracy; // 位置精度
+//                alert(speed);
+//                alert(accuracy);
 //
-//                alert('纬度'+this.latitude+'经度'+this.longitude);
-//                console.log('纬度'+this.latitude+'经度'+this.longitude);
-//                console.log('纬度'+this.latitude+'经度'+this.longitude);
-//                let distance=map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude));
+//             function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
+//                  var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+//                  var x = $lng;
+//                  var y = $lat;
+//                  var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+//                  var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+//                  $lng = z * Math.cos(theta) + 0.0065;
+//                  $lat = z * Math.sin(theta) + 0.006;
+//                  console.log( $lng,$lat);
+//                  $result.lat =$lat;
+//                  $result.lng =$lng ;
+//                  console.log($result);
+//                  console.log(this);
+//
+//               return  $result;
+//                };
+//                var shuzi=Convert_GCJ02_To_BD09(this.longitude,this.latitude,jwresult);
+//                console.log('下面是转后');
+//                console.log(shuzi);
+//
+//                alert('纬度'+shuzi.lat+'经度'+shuzi.lng);
+//                let distance=map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(shuzi.lng, shuzi.lat));
 //                if(distance<1000){
-//                  alert('区域内'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
+//                  alert('区域内'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(shuzi.lng, shuzi.lat)));
 //                }else{
-//                  alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
+//                  alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(shuzi.lng, shuzi.lat)));
 //                }
 //
 //              },
@@ -246,11 +272,11 @@ export default {
 //
 //
 //      });
-//
-//
-//
-//
-//    }
+
+
+
+
+    }
 
 
   },

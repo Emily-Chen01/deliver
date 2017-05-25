@@ -7,7 +7,7 @@
     <!--<baidu-map class="bm-view" :center="circlePath.center" :zoom="15" @ready="handler">-->
       <!--&lt;!&ndash;<bm-circle&ndash;&gt;-->
         <!--&lt;!&ndash;:center="circlePath.center"&ndash;&gt;-->
-        <!--&lt;!&ndash;:radius="circlePath.radius"&ndash;&gt;-->
+       <!--&lt;!&ndash;:radius="circlePath.radius"&ndash;&gt;-->
         <!--&lt;!&ndash;stroke-color="blue"&ndash;&gt;-->
         <!--&lt;!&ndash;:stroke-opacity="0.5"&ndash;&gt;-->
         <!--&lt;!&ndash;:stroke-weight="2"&ndash;&gt;-->
@@ -15,6 +15,7 @@
         <!--&lt;!&ndash;:editing="true">&ndash;&gt;-->
 
     <!--</baidu-map>-->
+    <button type="button" @click="Convert_GCJ02_To_BD09(31.264427,120.732506)">发发发</button>
     <baidu-map :center="center" @ready="handler"></baidu-map>
   </div>
 </template>
@@ -139,7 +140,19 @@
               alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
           }
 
-     }
+     },
+          Convert_GCJ02_To_BD09($lat,$lng){
+            var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+            var x = $lng;
+            var y = $lat;
+            var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+            var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+            $lng = z * Math.cos(theta) + 0.0065;
+            $lat = z * Math.sin(theta) + 0.006;
+            console.log( $lng,$lat);
+            return ;
+
+          },
 
 
     },

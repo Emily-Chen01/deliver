@@ -188,18 +188,18 @@
 //              ],
             optionsApproval: {},
               optionsApply: [
-                { text: '请假申请', value: 0 ,uid:12,type:'q'},
-                { text: '忘记打卡申请', value: 2 ,uid:22 ,type:'w'},
-                { text: '外出申请', value: 2 ,uid:32 ,type:'wc'},
-                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
+//                { text: '请假申请', value: 0 ,uid:12,type:'q'},
+//                { text: '忘记打卡申请', value: 2 ,uid:22 ,type:'w'},
+//                { text: '外出申请', value: 2 ,uid:32 ,type:'wc'},
+//                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
               ],
               selectedDataHoliday:0,
               optionsHoliday:[
-                { text: '端午节' },
-                { text: '元宵' },
-                { text: '元旦' },
-                { text: '申请' },
+//                { text: '端午节' },
+//                { text: '元宵' },
+//                { text: '元旦' },
+//                { text: '申请' },
               ],
               imgSrc: {
                 shenFenIcon: require('../../assets/shenfenzheng.png'),
@@ -248,7 +248,16 @@
                   )
             }
             console.log('我是申请类型data'+this.applyTypeName);
-            this.optionsApply=this.applyTypeName
+            this.$nextTick(()=>{
+              this.optionsApply=this.applyTypeName
+
+            });
+
+
+
+
+
+
 
           }, response => {
             console.log( 'error callback');
@@ -274,7 +283,11 @@
                     uid:this.holidayTypeArray[i].LEAVE_INFO_UID
                   })
             }
-            this.optionsHoliday=this.holidayTypeName
+            this.$nextTick(()=>{
+              this.optionsHoliday=this.holidayTypeName
+            });
+
+
             console.log(this.optionsHoliday);
 
           }, response => {
