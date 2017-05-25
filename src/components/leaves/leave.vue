@@ -3,7 +3,7 @@
       <!--请假申请-->
       <mt-navbar v-model="selected" class="dataTitle">
         <mt-tab-item id="1"  ><span>填写申请</span></mt-tab-item>
-        <mt-tab-item id="2"><span>我的申请</span></mt-tab-item>
+        <mt-tab-item id="2"  ><span  @click="changeShow(1)">我的申请</span></mt-tab-item>
       </mt-navbar>
 
       <!-- tab-container -->
@@ -449,11 +449,11 @@
                 }
               }
             this.$http.post('/api/v1.0/client/apply',params).then(response => { //提交请假申请
-              console.log(response.status);
+              console.log(response);
 
               if(response.status===200){
                 alert('提交成功');
-              }else{
+              }else if(response.status===500){
                   alert('提交失败');
               }
 //              this.holidayTypeArray=response.body.result;

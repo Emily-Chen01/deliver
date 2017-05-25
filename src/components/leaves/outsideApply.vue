@@ -4,19 +4,23 @@
     <div style="background: pink;line-height: 2rem;width: 10rem">
      所所所所所所
     </div>
-    <!--<baidu-map class="bm-view" :center="circlePath.center" :zoom="15" @ready="handler">-->
-      <!--&lt;!&ndash;<bm-circle&ndash;&gt;-->
-        <!--&lt;!&ndash;:center="circlePath.center"&ndash;&gt;-->
-       <!--&lt;!&ndash;:radius="circlePath.radius"&ndash;&gt;-->
-        <!--&lt;!&ndash;stroke-color="blue"&ndash;&gt;-->
-        <!--&lt;!&ndash;:stroke-opacity="0.5"&ndash;&gt;-->
-        <!--&lt;!&ndash;:stroke-weight="2"&ndash;&gt;-->
-        <!--&lt;!&ndash;@lineupdate="updateCirclePath"&ndash;&gt;-->
-        <!--&lt;!&ndash;:editing="true">&ndash;&gt;-->
-
-    <!--</baidu-map>-->
     <button type="button" @click="Convert_GCJ02_To_BD09(31.264427,120.732506)">发发发</button>
     <baidu-map :center="center" @ready="handler"></baidu-map>
+
+
+    <div v-for="item in array">
+      <div  style="width: 23.5rem;margin-left:1rem;height: 2px;line-height: 2rem">
+        <div>
+          {{item.a}}
+            <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
   </div>
 </template>
 <script>
@@ -35,6 +39,19 @@
         imgSrc: {
           shenFenIcon: require('../../assets/shenfenzheng.png'),
         },
+        array:[
+          {
+              a:'ddd',
+              b:'ffff123'
+          },
+          {
+            a:'hhh',
+            b:'ffhhhhhff123'
+          } ,{
+            a:'iiiii',
+            b:'iipppppppppp'
+          }
+        ]
 
 
       }
@@ -135,9 +152,9 @@
 
           let distance=map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude));
           if(distance<1000){
-            alert('区域内'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
+//            alert('区域内'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
           }else{
-              alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
+//              alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
           }
 
      },
