@@ -1,79 +1,160 @@
 <template>
   <div>
 
-
-    <div style="background: pink;line-height: 9rem;width: 10rem">
-     少时诵诗书所所所所所所
+    <div style="background: pink;line-height: 2rem;width: 10rem">
+     所所所所所所
     </div>
+    <!--<baidu-map class="bm-view" :center="circlePath.center" :zoom="15" @ready="handler">-->
+      <!--&lt;!&ndash;<bm-circle&ndash;&gt;-->
+        <!--&lt;!&ndash;:center="circlePath.center"&ndash;&gt;-->
+        <!--&lt;!&ndash;:radius="circlePath.radius"&ndash;&gt;-->
+        <!--&lt;!&ndash;stroke-color="blue"&ndash;&gt;-->
+        <!--&lt;!&ndash;:stroke-opacity="0.5"&ndash;&gt;-->
+        <!--&lt;!&ndash;:stroke-weight="2"&ndash;&gt;-->
+        <!--&lt;!&ndash;@lineupdate="updateCirclePath"&ndash;&gt;-->
+        <!--&lt;!&ndash;:editing="true">&ndash;&gt;-->
 
-
+    <!--</baidu-map>-->
+    <baidu-map :center="center" @ready="handler"></baidu-map>
   </div>
 </template>
 <script>
-  import Vue from 'vue'
-  import { DatetimePicker } from 'mint-ui';
-  import VueCoreImageUpload from 'vue-core-image-upload'
-  import { TabContainer, TabContainerItem } from 'mint-ui';
-  Vue.component(TabContainer.name, TabContainer);
-  Vue.component(TabContainerItem.name, TabContainerItem);
-  Vue.component(DatetimePicker.name, DatetimePicker);
+
+
   export default {
     data(){
       return {
-//        data:{},
-        active:'',
-        selected: '1',
-        selectedData:'',
-        options: [
-          { text: '男', value: 'A' },
-          { text: '女', value: 'B' },
-        ],
+          center: {
+            lng: 121.738688,
+            lat: 31.571045
+          },
+        latitude:'',
+        longitude:'',
+          radius: '',
         imgSrc: {
           shenFenIcon: require('../../assets/shenfenzheng.png'),
         },
-
-        imgUrls: [],
-        urlArr: [],
-        isPhoto: true,
-        btnTitle: '',
-        isModify: false,
-        previewImg:'',
-        isPreview: false,
-        pickerValue:new Date("January 12,2006")
 
 
       }
     },
     created: function () {
 
+
+
+      this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
+        console.log(response.body.result);
+        this.t1=response.body.result.appid;
+        console.log(this.t1);
+        this.t2=response.body.result.timestamp;
+        this.t3=response.body.result.nonceStr;
+        this.t4=response.body.result.signature;
+
+        wx.config({
+          debug: false,
+          appId: this.t1,
+          timestamp: this.t2,
+          nonceStr: this.t3,
+          signature: this.t4,
+          jsApiList: [
+            'getLocation'
+          ]
+        });
+
+      }, response => {
+        console.log( 'error callback');
+      });
+
+
+      wx.ready(function () {
+        wx.error(function(res){
+          alert('wx.error错误信息'+res)
+          console.log(res)
+          console.log(res)
+
+        });
+        wx.checkJsApi({
+          jsApiList: [
+            'getLocation'
+          ],
+          success: function (res) {
+            wx.getLocation({
+              success: function (res) {
+               this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+               this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+
+                alert('纬度'+this.latitude+'经度'+this.longitude);
+                console.log('纬度'+this.latitude+'经度'+this.longitude);
+                console.log('纬度'+this.latitude+'经度'+this.longitude);
+
+              },
+              cancel: function (res) {
+                alert('用户拒绝授权获取地理位置');
+              }
+            });
+//          alert('微信版本！');
+            // alert(JSON.stringify(res));
+            // alert(JSON.stringify(res.checkResult.getLocation));
+            if (res.checkResult.getLocation == false) {
+              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+              return;
+            }
+          }
+        });
+
+
+      });
+
+        //以上是获取经纬度
+      this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
+        console.log(response.body.result.locations)
+        for(let i=0;i<response.body.result.locations.length;i++){
+          this.circlePath={
+            center: {
+              lng: response.body.result.locations[i].LONGITUDE,
+              lat: response.body.result.locations[i].LATITUDE,
+            },
+            radius: response.body.result.locations[i].SCOPE
+          }
+        }
+      }, response => {
+        console.log('findPunchCardLog error callback');
+      });
+
+
     },
 
 
-    methods: {
-      handerDataSubmit(){
+      methods: {
+        handler ({BMap, map}) {
+        console.log(BMap, map);
+        console.log(this.latitude);
+          console.log(this.latitude);
+          console.log(this.latitude);
 
+          let distance=map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude));
+          if(distance<1000){
+            alert('区域内'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
+          }else{
+              alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
+          }
 
-      },
-      handleConfirm(){
-        alert(11)
-      },
-      openPicker() {
-//        alert(11);
-        this.$refs.picker.open();
-//        console.log(this.$refs.picker.open(1));
-      },
+     }
 
 
     },
 
     components: {
-      'vue-core-image-upload': VueCoreImageUpload,
     },
   }
 
 </script>
 
 <style scoped>
+  .bm-view {
+    width: 100%;
+    height: 300px;
+  }
   .dataTitle span{
     font-size: 1.4rem;
   }

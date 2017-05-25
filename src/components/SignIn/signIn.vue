@@ -356,7 +356,7 @@
       //初始开始
 
       doSearch(){
-          var imageString=sessionStorage.getItem('avatarImages');
+          var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
         this.imgSrc.comAddress=imageString;
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
@@ -370,7 +370,7 @@
 
 
           console.log('初始化上班已经打卡');
-          console.log(response.body.result);
+          console.log(response.body);
           this.toDaKaStatusIsInit = response.body.result.twStatus; //上班状态赋值
           this.toDaKaStatusIsOutsideInit = response.body.result.twOutside //上班是否在区域外
           this.toDownKaStatusIsInit = response.body.result.owStatus;//下班状态赋值

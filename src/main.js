@@ -9,7 +9,7 @@ import VueResource from 'vue-resource'
 import fullCalendar from 'vue-fullcalendar'
 import 'mint-ui/lib/style.css'
 
-
+import BaiduMap from 'vue-baidu-map'
 
 
 Vue.use(Mint);
@@ -31,6 +31,12 @@ Vue.component(Header.name, Header);
 Vue.component(TabContainer.name, TabContainer);
 Vue.component(TabContainerItem.name, TabContainerItem);
 Vue.component(Radio .name, Radio );
+
+
+Vue.use(BaiduMap, {
+  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+  ak: 'YOUR_APP_KEY'
+})
 
 
 

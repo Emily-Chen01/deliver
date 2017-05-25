@@ -12,8 +12,6 @@
     <div class="confirmBinding">
       <mt-button type="primary" style="background-color: rgb(139,156,172);" @click.native="handerSubmit">绑定手机号</mt-button>
     </div>
-    <!--<baidu-map :center="center" @ready="handler" ></baidu-map>-->
-
     <!--<router-link to="/manyCompany"@click.native="handerCome" >点击</router-link>-->
     <!--<router-view></router-view>-->
   </div>
@@ -37,37 +35,74 @@ export default {
       t2:'',
       t3:'',
       t4:'',
-      center: {
-        lng: 121.738688,
-        lat: 31.571045
-      },
-      latitude:'',
-      longitude:'',
-      radius: '',
-      yyy:false
 
     }
   },
   created: function () {
 
 
+    this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
+      console.log(response.body.result);
+      this.t1=response.body.result.appid;
+      console.log(this.t1);
+      this.t2=response.body.result.timestamp;
+      this.t3=response.body.result.nonceStr;
+      this.t4=response.body.result.signature;
 
+      wx.config({
+        debug: false,
+        appId: this.t1,
+        timestamp: this.t2,
+        nonceStr: this.t3,
+        signature: this.t4,
+        jsApiList: [
+          'getLocation'
+        ]
+      });
 
-
-    //以上是获取经纬度
-    this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
-      console.log(response.body.result.locations)
-      for(let i=0;i<response.body.result.locations.length;i++){
-        this.circlePath={
-          center: {
-            lng: response.body.result.locations[i].LONGITUDE,
-            lat: response.body.result.locations[i].LATITUDE,
-          },
-          radius: response.body.result.locations[i].SCOPE
-        }
-      }
     }, response => {
-      console.log('findPunchCardLog error callback');
+      console.log( 'error callback');
+    });
+
+
+    wx.ready(function () {
+      wx.error(function(res){
+        alert('wx.error错误信息'+res)
+        console.log(res)
+        console.log(res)
+
+      });
+      wx.checkJsApi({
+        jsApiList: [
+          'getLocation'
+        ],
+        success: function (res) {
+          wx.getLocation({
+            success: function (res) {
+              var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+              var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+              var speed = res.speed; // 速度，以米/每秒计
+              var accuracy = res.accuracy; // 位置精度
+             alert('纬度'+latitude+'经度'+longitude);
+              console.log('纬度'+latitude+'经度'+longitude);
+              console.log('纬度'+latitude+'经度'+longitude);
+
+            },
+            cancel: function (res) {
+              alert('用户拒绝授权获取地理位置');
+            }
+          });
+//          alert('微信版本！');
+          // alert(JSON.stringify(res));
+          // alert(JSON.stringify(res.checkResult.getLocation));
+          if (res.checkResult.getLocation == false) {
+            alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+            return;
+          }
+        }
+      });
+
+
     });
 
 
@@ -98,17 +133,6 @@ export default {
 //    }
 //    console.log(openID);
 //    sessionStorage.setItem('openId', openID);
-  },
-  watch:{
-    latitude:function(val,oldVal){
-        if(val!==undefined&&oldVal==undefined){
-            this.handler();
-        }
-
-
-    },
-
-
   },
   methods: {
     handerClick(){
@@ -170,87 +194,7 @@ export default {
 //        console.log('测试')
 //        haha(ManyCompany)
 //      })
-    },
-//    handler ({BMap, map}) {
-//      console.log(BMap, map);
-//      console.log(this.latitude);
-//      console.log(this.latitude);
-//      console.log(this.latitude);
-//      this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
-//        console.log(response.body.result);
-//        this.t1=response.body.result.appid;
-//        console.log(this.t1);
-//        this.t2=response.body.result.timestamp;
-//        this.t3=response.body.result.nonceStr;
-//        this.t4=response.body.result.signature;
-//        this.yyy=true;
-//
-//        wx.config({
-//          debug: false,
-//          appId: this.t1,
-//          timestamp: this.t2,
-//          nonceStr: this.t3,
-//          signature: this.t4,
-//          jsApiList: [
-//            'getLocation'
-//          ]
-//        });
-//
-//
-//      }, response => {
-//        console.log( 'error callback');
-//      });
-//
-//
-//      wx.ready(function () {
-//        wx.error(function(res){
-//          alert('wx.error错误信息'+res)
-//          console.log(res)
-//          console.log(res)
-//
-//        });
-//        wx.checkJsApi({
-//          jsApiList: [
-//            'getLocation'
-//          ],
-//          success: function (res) {
-//            wx.getLocation({
-//              success: function (res) {
-//                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-//                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-//
-//                alert('纬度'+this.latitude+'经度'+this.longitude);
-//                console.log('纬度'+this.latitude+'经度'+this.longitude);
-//                console.log('纬度'+this.latitude+'经度'+this.longitude);
-//                let distance=map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude));
-//                if(distance<1000){
-//                  alert('区域内'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
-//                }else{
-//                  alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(this.longitude, this.latitude)));
-//                }
-//
-//              },
-//              cancel: function (res) {
-//                alert('用户拒绝授权获取地理位置');
-//              }
-//            });
-////          alert('微信版本！');
-//            // alert(JSON.stringify(res));
-//            // alert(JSON.stringify(res.checkResult.getLocation));
-//            if (res.checkResult.getLocation == false) {
-//              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-//              return;
-//            }
-//          }
-//        });
-//
-//
-//      });
-//
-//
-//
-//
-//    }
+    }
 
 
   },
