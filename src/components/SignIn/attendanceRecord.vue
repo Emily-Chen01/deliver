@@ -49,8 +49,8 @@
             <div class="toWorkLeft"><div>上</div></div>
             <div class="toWorkRight">
               <div class="toWorkRightTimeSpan">
-                <span>{{objToSpan.toTime}}</span>
-                <span>{{objToSpan.toType}}</span>
+                <span>{{toSapnTime}}</span>
+                <span>{{tozhang}}</span>
               </div>
             </div>
           </div>
@@ -58,8 +58,8 @@
             <div class="toWorkLeft"><div>下</div></div>
             <div class="toWorkRight">
               <div class="toWorkRightTimeSpan">
-                <span>{{objToSpan.downTime}}</span>
-                <span>{{objToSpan.downType}}</span>
+                <span>{{downSapnTime}}</span>
+                <span>{{downzhang}}</span>
               </div>
             </div>
           </div>
@@ -111,10 +111,10 @@
 
               ],
               objToSpan: {
-                toTime:'08:11:22',
-                downTime:'18:11:22',
-                downType:'正常打卡',
-                toType:'迟到打卡',
+                toTime:'',
+                downTime:'',
+                downType:'',
+                toType:'',
               }
               ,
               objDownSpan: {
@@ -125,7 +125,6 @@
               downzhang:'' ,  //
 
               connectTime:{},
-              connectDate:{},
               toSapnTime:'',
               downSapnTime:'',
               imgSrc: {
@@ -164,8 +163,8 @@
             //  点击日历，获取日期
             //  转换日期格式
             //  检测假日里是否已经含有点击的这一天
-           //再此处调用每一次日期的接口 进行传值
-          //点击当天进行查询打卡状态开始
+            //再此处调用每一次日期的接口 进行传值
+            //点击当天进行查询打卡状态开始
     //格式化时间开始
             function AddZero(n){
               if(n<10){
@@ -184,71 +183,63 @@
               "date":kk
             }
             this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
-              console.log(response.body.result.duration);
+//              console.log(response.body.result.duration);
+              if(response.body.result==null){  //如果没有打卡记录清空时间和文字状态
+                this.tozhang='';
+                this.downzhang='';
+                this.toSapnTime='';
+                this.downSapnTime='';
+                this.connectTime.totalTime='';
+              }
               this.connectTime.totalTime=response.body.result.duration?response.body.result.duration:0;
 
-              if(response.body.result.twTime!==null){
                 var zhuanStart = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
                 this.toSapnTime = zhuanStart.substring(9,19);//原有是8
 
-              }
-
-              if(response.body.result.owTime!==null){
                 var zhuanEnd = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
                 this.downSapnTime = zhuanEnd.substring(9,19);//原有是8
 
-              }
+//                if(day.getTime()<=new Date().getTime()){
+//                  this.objToSpan={
+//                    toTime:this.toSapnTime,
+//                    downTime:this.downSapnTime,
+//                    toType:this.tozhang,
+//                    downType:this.downzhang,
+//                  };
+//                }else {
+//                  alert('超出打卡时间了');
+//                }
 
-              console.log('ff'+response.body.result.twStatus);
+              console.log('twStatus'+response.body.result.twStatus);
+              console.log('owStatus'+response.body.result.owStatus);
+              this.tozhang='';
+              this.downzhang='';
 
+              if(response.body.result.twStatus==0){//判断状态转换文字上班
+                  this.tozhang='正常打卡';
+//                  alert('正常打卡');
+                } if (response.body.result.twStatus==1){
+                  this.tozhang='迟到打卡';
+//                  alert('迟到打卡');
 
-                  if(response.body.result.twStatus==0){//判断状态转换文字上班
-                    this.tozhang='正常打卡';
-                    alert('正常打卡');
-                  }else if (response.body.result.twStatus==1){
-                    this.tozhang='迟到打卡';
-                    alert('迟到打卡');
+                } if (response.body.result.twStatus==2){
+                  this.tozhang='旷工打卡';
+//                  alert('旷工打卡');
 
-                  }else if (response.body.result.twStatus==2){
-                    this.tozhang='旷工打卡';
-                    alert('旷工打卡');
-
-                  }
-                if(response.body.result.owStatus){  //判断状态转换文字下班
+                }
                   if(response.body.result.owStatus==0){
                     this.downzhang='正常打卡';
-                    alert('正常打卡');
+//                    alert('正常打卡');
 
-                  }else if (response.body.result.owStatus==1){
+                  } if (response.body.result.owStatus==1){
                     this.downzhang='早退打卡';
-                    alert('早退打卡');
+//                    alert('早退打卡');
 
-                  }else if (response.body.result.owStatus==2){
+                  } if (response.body.result.owStatus==2){
                     this.downzhang='加班打卡';
-                    alert('加班打卡');
-
+//                    alert('加班打卡');
 
                   }
-                }
-
-                if(day.getTime()<=new Date().getTime()){
-                  let arrNr={
-                    toTime:this.toSapnTime,
-                    downTime:this.downSapnTime,
-                    toType:this.tozhang,
-                    downType:this.downzhang,
-
-                  };
-                  this.$nextTick(()=>{
-                    this.objToSpan=arrNr;
-                  });
-                }else {
-                  alert('超出打卡时间了');
-                }
-
-
-
-
             }, response => {
               console.log( 'error callback');
             });
@@ -277,8 +268,11 @@
                 date:tt
             }
             this.$http.post('/api/v1.0/client/findMonthAttends',param).then(response => { //查询当月考勤接口
+              this.tozhang='';
+              this.downzhang='';
+              this.toSapnTime ='',
+              this.downSapnTime='',
 //              console.log(response.body.result.records[0].year);
-              this.$nextTick(()=>{
                 this.connectTime={};
                 this.fcEvents=[];
                 for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态
@@ -288,14 +282,12 @@
                   connectDate.cssClass=response.body.result.records[i].desc;
                   connectDate.totalTime=response.body.result.records[i].duration?response.body.result.records[i].duration:0;
                   this.fcEvents.push(connectDate);
-
                 }
 
                 this.connectTime.chidao=response.body.result.belateTimes;   //赋值给查询出来的月总数
                 this.connectTime.zaotui=response.body.result.leaveearlyTimes;
                 this.connectTime.kuanggong=response.body.result.absentTimes;
                 this.connectTime.waichu=response.body.result.outsideTimes;
-              });
                 console.log( this.connectTime);
 
                 console.log( this.fcEvents);

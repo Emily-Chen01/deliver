@@ -136,7 +136,7 @@
             </div>
             <div class="toWorkRightTime" style="position: relative">
               <!--<mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">-->
-                <!--{{clickStaus}}-->
+              <!--{{clickStaus}}-->
               <!--</mt-button>-->
               <mt-button type="default" class="toDaKaStatus" v-show="initDownRecord">
                 {{clickStaus}}
@@ -269,6 +269,8 @@
           </mt-popup>
         </div>
       </div>
+      <!--<baidu-map :center="center" @ready="handler" ></baidu-map>-->
+      <!--使用地图 进行测距是否在区域为外-->
     </div>
   </div>
 </template>
@@ -276,6 +278,7 @@
 
   import {Toast, MessageBox, Popup} from 'mint-ui';
   let timer1 = null;
+  let jwresult={"lat":0.0, "lng":0.0};
   export default {
     data(){
       return {
@@ -311,7 +314,7 @@
         leaveEarly: false,  //早退
         overTime: false,  //加班
         toDaKaStatusIsInit: '', //初始上班状态显示
-        toDaKaStatusIsOutsideInit: '', //初始下班状态显示是否在区域外
+        toDaKaStatusIsOutsideInit: false, //初始下班状态显示是否在区域外
         toDownKaStatusIsInit: '', //初始下班状态显示
         toDownKaStatusIsOutsideInit: '', //初始下班状态显示是否在区域外
         toDaKaStatusIs: '', //上班状态显示
@@ -340,6 +343,7 @@
         addTimeAlert:'', //alert加班时间
         initDownRecord:'',//下班正常
         toDownAddTimeStatus:'', //加班申请
+        outsideObtainValue:false, //获取的经纬=判断的值是都区域外
       }
     },
     created: function () {
@@ -356,7 +360,7 @@
       //初始开始
 
       doSearch(){
-          var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
+        var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
         this.imgSrc.comAddress=imageString;
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
@@ -380,7 +384,7 @@
           if(response.body.result.overTime!==null){
             this.$nextTick(()=> {
               this.addtime = response.body.result.overTime;
-              });
+            });
           }
           console.log(this.addtime);
 
@@ -395,53 +399,55 @@
 
 
 
+
           if(response.body.result.twTime!==null){
-            var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+            var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/上|午/g, "").replace(/日/g, " ");
             this.initToTime = zhuan.substring(9);//原有是8
           }
-          var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+          var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|下|午/g, "").replace(/日/g, " ");
           this.goToTime = zhuan.substring(9);
+
 
 
 
           //我知道开始
 
-            if (this.toDaKaStatusIsInit == 0) {//正常打卡显示
-              console.log('5' + this.toDaKaStatusIsInit)
+          if (this.toDaKaStatusIsInit == 0) {//正常打卡显示
+            console.log('5' + this.toDaKaStatusIsInit)
 
-              this.alertToSpan = false;//sapn 上班
-              this.alertDownSpan = false; //sapn 下班
-              this.initDaKaRecord = true;
-              this.lateStatus = false;
-              this.lateStatusAddW=false;
-              this.absenteeismStatus=false;//旷工隐藏
+            this.alertToSpan = false;//sapn 上班
+            this.alertDownSpan = false; //sapn 下班
+            this.initDaKaRecord = true;
+            this.lateStatus = false;
+            this.lateStatusAddW=false;
+            this.absenteeismStatus=false;//旷工隐藏
 
 
-            }
+          }
 
-            if (this.toDaKaStatusIsInit == 1 && this.toDaKaStatusIsOutsideInit) { //迟到+区域外打卡显示
-              this.initDaKaRecord = false;
-              this.lateStatusAddW = true;
+          if (this.toDaKaStatusIsInit == 1 && this.toDaKaStatusIsOutsideInit) { //迟到+区域外打卡显示
+            this.initDaKaRecord = false;
+            this.lateStatusAddW = true;
 
-              this.tokuangWdk=false; //忘打卡隐藏
-              this.lateStatus=false; //第二个忘记打卡
-              this.lateStatusTo=true; //上班的迟到状态
-              this.$nextTick(()=>{
-                this.absenteeismStatus=false; //旷工和提交隐藏
-                this.absenteeismStatus2=true; //展示提交
-              });
+            this.tokuangWdk=false; //忘打卡隐藏
+            this.lateStatus=false; //第二个忘记打卡
+            this.lateStatusTo=true; //上班的迟到状态
+            this.$nextTick(()=>{
+              this.absenteeismStatus=false; //旷工和提交隐藏
+              this.absenteeismStatus2=true; //展示提交
+            });
 
 //              alert('迟到区域外');
 
 
 
-            }  else if (this.toDaKaStatusIsInit == 1) { //迟到打卡显示
+          }  else if (this.toDaKaStatusIsInit == 1) { //迟到打卡显示
             this.lateStatus = true;
             this.initDaKaRecord = false;
             this.isYellow = false;
             this.absenteeismStatus = false;
             console.log('6' + this.toDaKaStatusIsInit)
-              this.initDaKaRecordWeiZhi=true;
+            this.initDaKaRecordWeiZhi=true;
 
 
 //            alert('走了单独迟到');
@@ -449,26 +455,26 @@
 
 
           if (this.toDaKaStatusIsInit == 2) { //旷工打卡显示
-              this.absenteeismStatus = true;
-              this.initDaKaRecord = false;
-              //              this.lateStatus=true;
-              this.lateStatus = false;
+            this.absenteeismStatus = true;
+            this.initDaKaRecord = false;
+            //              this.lateStatus=true;
+            this.lateStatus = false;
 
-              console.log('8' + this.toDaKaStatusIsInit);
-              this.tokuangWdk=true;
-              this.initDaKaRecordWeiZhi=true;
+            console.log('8' + this.toDaKaStatusIsInit);
+            this.tokuangWdk=true;
+            this.initDaKaRecordWeiZhi=true;
 //              alert('有旷工显示');
 
-            }
+          }
 
-            if(this.toDaKaStatusIsOutsideInit){ //区域外打卡
-              this.lateStatusAddW = true;
-              this.initDaKaRecord=false;
-              this.initDaKaRecordWeiZhi=true;
-              this.absenteeismStatus=true;
+          if(this.toDaKaStatusIsOutsideInit){ //区域外打卡
+            this.lateStatusAddW = true;
+            this.initDaKaRecord=false;
+            this.initDaKaRecordWeiZhi=true;
+            this.absenteeismStatus=true;
 //              this.absenteeismStatus = true;//上班显示提交span
 //              this.initDaKaRecord=true;initDaKaRecord
-            }
+          }
           if(this.toDaKaStatusIsOutsideInit && this.toDaKaStatusIsInit == 0){ //区域外打卡+正常显示
 
             this.$nextTick(()=>{
@@ -532,9 +538,9 @@
               });
             }
 
-              if (this.toDownKaStatusIsInit == 2) { //加班打卡显示
+            if (this.toDownKaStatusIsInit == 2) { //加班打卡显示
 //                alert('我是加班');
-                this.toDownAbsenteeismStatus = false; //下班提交请假span
+              this.toDownAbsenteeismStatus = false; //下班提交请假span
               this.overTime = true;
               this.zcDownShowSpan = true;
               this.toDownAddTimeStatus=true;
@@ -543,11 +549,9 @@
             if (this.toDownKaStatusIsInit == 2 && this.toDownKaStatusIsOutsideInit) { //加班+区域外打卡显示
 //              alert('初始化加班+区域外');
               this.$nextTick(()=>{
-              this.toDownLateStatusAddW=true;
+                this.toDownLateStatusAddW=true;
 
               });
-
-
             }
 
             this.daKaHide = false;  //有下班打卡后按钮隐藏
@@ -592,17 +596,31 @@
           let updakaObj;
           this.currentTime();
           this.clickfunction = false;
+
+//          if (this.toDaKaStatusIsInit == null) {
+//            updakaObj = {
+//              "record": {"twOutside":this.this.toDaKaStatusIsOutsideInit?true:0}, //{"twOutside":this.toDaKaStatusIsOutsideInit?true:0}  this.outsideObtainValue
+//            }
+//          } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
+//            updakaObj = {
+//              "record": {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}//0  'true'  {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}  this.outsideObtainValue
+//            }
+//          } else {
+//            alert("不能重复打卡");
+//          }
+
           if (this.toDaKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"twOutside":this.toDaKaStatusIsOutsideInit?true:0}
+              "record": {"twOutside":this.toDaKaStatusIsOutsideInit?true:0}   //this.outsideObtainValue
             }
           } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}//0  'true'
+              "record": {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}//0  'true'  //this.outsideObtainValue
             }
           } else {
             alert("不能重复打卡");
           }
+
 
           this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
             console.log('shiann' + response.body.result.overTime);
@@ -627,9 +645,12 @@
 
 
               this.toTimeMiddleShow = true;
-              var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+//              var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+              var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ");
+
               this.initToTime = zhuan.substring(9);//原有是8
               console.log('77' + this.toDaKaStatusIs)
+
 
 //                        this.toDaKaStatusIs=0;
               //写死的状态  虽然没有打卡记录要给我一条状态（事先要判断给我这个是否迟到）
@@ -661,7 +682,7 @@
                 this.downClickSpan=true;
                 this.toClickSpan=false;
                 this.tokuangWdk=true;
-              //测试过
+                //测试过
 
               }
               if(this.toDaKaStatusIsOutside){ //区域外   条件？？？？？
@@ -669,11 +690,11 @@
 
               }
               if(this.toDaKaStatusIsOutside && this.toDaKaStatusIs == 0){ //区域外   条件？？？？？
-                  this.isYellowAddQ=true; //alert区域外
-                  this.lateStatusAddW=true; //区域外span
+                this.isYellowAddQ=true; //alert区域外
+                this.lateStatusAddW=true; //区域外span
 
-                  this.initDaKaRecord=false;
-                  this.isYellow2=true;
+                this.initDaKaRecord=false;
+                this.isYellow2=true;
 //                alert('也是区域外+正常');
                 console.log('同事区域外');
               }
@@ -691,7 +712,8 @@
               this.popupVisible = true; //弹出的模态框打卡
               this.overTime=false; //xinjia5-16 17:34加
               console.log(response.body);
-              var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+//              var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+              var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|下|午/g, "").replace(/日/g, " ");
               this.goToTime = zhuan.substring(9);
               this.downTimeMiddleShow = true;
               this.toTimeMiddleShow = false;
@@ -725,7 +747,7 @@
                 this.overTime=false;
                 console.log('1688' + this.toDownKaStatusIs)
 
-               console.log('区域外');
+                console.log('区域外');
 
               }
               if (this.toDownKaStatusIs == 2 && this.toDownKaStatusIsOutside) { //加班+区域外打卡显示
@@ -767,7 +789,7 @@
         this.popupVisible=false;
 
         if (this.toDaKaStatusIsInit == null) {//上班打卡
-            this.popupVisible=false;
+          this.popupVisible=false;
 //          this.winReload();
         }
         if(this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null){
@@ -790,10 +812,130 @@
 
       //提交申请跳转路由开始
 
-     submitApplyRouter(){
-       this.$router.push({path:'/leave'});
-     }
+      submitApplyRouter(){
+        this.$router.push({path:'/leave'});
+      },
       //提交申请跳转路由结束
+
+
+
+
+
+
+      //地图微信获取经纬度 转换经纬度 地图测距开始
+
+//
+//      handler ({BMap, map}) {
+//      console.log(BMap, map);
+//      console.log(this.latitude);
+//      console.log(this.latitude);
+//      console.log(this.latitude);
+//      this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
+//        console.log(response.body.result);
+//        this.t1=response.body.result.appid;
+//        console.log(this.t1);
+//        this.t2=response.body.result.timestamp;
+//        this.t3=response.body.result.nonceStr;
+//        this.t4=response.body.result.signature;
+//        this.yyy=true;
+//
+//        wx.config({
+//          debug: false,
+//          appId: this.t1,
+//          timestamp: this.t2,
+//          nonceStr: this.t3,
+//          signature: this.t4,
+//          jsApiList: [
+//            'getLocation'
+//          ]
+//        });
+//
+//
+//      }, response => {
+//        console.log( 'error callback');
+//      });
+//
+//
+//      wx.ready(function () {
+//        wx.error(function(res){
+//          alert('wx.error错误信息'+res)
+//          console.log(res)
+//          console.log(res)
+//
+//        });
+//        wx.checkJsApi({
+//          jsApiList: [
+//            'getLocation'
+//          ],
+//          success: function (res) {
+//            wx.getLocation({
+//              type:'gcj02',
+//              success: function (res) {
+//                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+//                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+//                var speed = res.speed; // 速度，以米/每秒计
+//                var accuracy = res.accuracy; // 位置精度
+//                alert(speed);
+//                alert(accuracy);
+//
+//             function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
+//                  var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+//                  var x = $lng;
+//                  var y = $lat;
+//                  var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+//                  var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+//                  $lng = z * Math.cos(theta) + 0.0065;
+//                  $lat = z * Math.sin(theta) + 0.006;
+//                  console.log( $lng,$lat);
+//                  $result.lat =$lat;
+//                  $result.lng =$lng ;
+//                  console.log($result);
+//                  console.log(this);
+//
+//               return  $result;
+//                };
+//                var shuzi=Convert_GCJ02_To_BD09(this.longitude,this.latitude,jwresult);
+//                console.log('下面是转后');
+//                console.log(shuzi);
+//
+//                alert('纬度'+shuzi.lat+'经度'+shuzi.lng);
+//                let distance=map.getDistance(new BMap.Point(120.73218304795796,31.264316268102142), new BMap.Point(shuzi.lng, shuzi.lat));
+//                if(distance<500){
+//                    this.outsideObtainValue=true;
+//                  alert('区域内'+map.getDistance(new BMap.Point(120.73218304795796,31.264316268102142), new BMap.Point(shuzi.lng, shuzi.lat)));
+//                }else{
+//                    this.outsideObtainValue=false;
+//                  alert('区域外'+map.getDistance(new BMap.Point(120.73218304795796,31.264316268102142), new BMap.Point(shuzi.lng, shuzi.lat)));
+//                }
+//
+//              },
+//              cancel: function (res) {
+//                alert('用户拒绝授权获取地理位置');
+//              }
+//            });
+////          alert('微信版本！');
+//            // alert(JSON.stringify(res));
+//            // alert(JSON.stringify(res.checkResult.getLocation));
+//            if (res.checkResult.getLocation == false) {
+//              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+//              return;
+//            }
+//          }
+//        });
+//
+//
+//      });
+//
+//
+//
+//
+//      }
+
+
+      //地图微信获取经纬度 转换经纬度 地图测距结束
+
+
+
 
 
 

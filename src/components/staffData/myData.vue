@@ -55,7 +55,7 @@
               </select>
             </mt-field>
             <mt-field v-model="phone" label="手机号" placeholder="请输入手机号" type="number"></mt-field>
-            <mt-field v-model="address" label="国家/地区" placeholder="大陆地区"  >
+            <mt-field v-model="address" label="国家/地区" placeholder=""  >
               <select v-model="selectedDataCity" class="changeSelect"  >
                 <option v-for="option in optionsCity" :value="option.value" >
                   {{ option.text }}

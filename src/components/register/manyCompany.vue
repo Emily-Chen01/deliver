@@ -45,7 +45,7 @@
 //          for(let i=0;i<response.body.result.length;i++){
 //            this.uId=response.body.result[i].UID;
 //          }
-          this.arr= response.body.result
+//          this.arr= response.body.result
           console.log(this.uId);
             this.arryName=response.body.result
         }, response => {

@@ -60,7 +60,7 @@
               </mt-field>
             </div>
             <div  style="width: 24rem;height: 7rem;">
-              <div style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+              <div   style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
               <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
               <textarea placeholder="#请输入文字"
                         v-model="holidayModel"
@@ -68,7 +68,7 @@
             </textarea>
             </div>
 
-            <mt-field label="审批人"  style="margin-top: 1rem">
+            <mt-field label="审批人"  style="margin-top: 1rem" v-if="approvalTypeObj.NAME">
               <div class="showARightSpan">{{approvalTypeObj.NAME}}</div>
             </mt-field>
 
@@ -107,9 +107,9 @@
               <div v-if="item.startTime">
                 <div class="myApplyContentLeft">起止日期</div>
                 <div class="myApplyContentNr" >
-                  {{  new Date(parseInt( item.startTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ").substring(0,15)}}
+                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,15))}}
                  -
-               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ").substring(0,15)}}
+               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,15)}}
                 </div>
               </div>
               <div v-if="item.overworkTime">
@@ -176,7 +176,7 @@
               },
               selected: '1',
               selectedData:0,
-              selectedDataApply:0,
+              selectedDataApply:'0',
               selectedDataApproval:0,
               pickerValue:'',
 //              options: [
@@ -210,7 +210,7 @@
               changeApplyOvertime:false, //加班时间div
               updateImage:true, //上传图片 div
               Remark:true, //备注div
-              addTimeValue:'',  //加班时间value
+              addTimeValue:1,  //加班时间value
               data:{},
               applyTypeArray:[], //申请
               applyTypeName:[], //申请
@@ -235,6 +235,7 @@
         },
         created: function () {
 
+
           this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
             this.applyTypeArray=response.body.result;
             console.log(this.applyTypeArray);
@@ -252,13 +253,6 @@
               this.optionsApply=this.applyTypeName
 
             });
-
-
-
-
-
-
-
           }, response => {
             console.log( 'error callback');
           });
@@ -421,7 +415,7 @@
               if(this.shengqingParamType=='0'){ //请假申请所需参数
                 params ={
                   approvalConfigUid:this.shengqingParam,//申请分类
-                  currentApprover:this.approvalTypeObj.UID,
+                  currentApprover:this.approvalTypeObj.UID?this.approvalTypeObj.UID:'',
                   leaveUid:this.qingjiauidParam,
                   startTime: this.startTimeValue,
                   endTime:this.endTimeValue,
@@ -432,7 +426,7 @@
             if(this.shengqingParamType=='2'){ //忘打卡或外出申请所需参数
               params ={
                 approvalConfigUid:this.shengqingParam,//申请分类
-                currentApprover:this.approvalTypeObj.UID,
+                currentApprover:this.approvalTypeObj.UID?this.approvalTypeObj.UID:'',
                 startTime: this.startTimeValue,
                 endTime:this.endTimeValue,
                 image:this.imagestring,
@@ -442,7 +436,7 @@
               if( this.shengqingParamType=='3'){ //加班所需参数
                  params ={
                   approvalConfigUid:this.shengqingParam,  //申请分类
-                  currentApprover:this.approvalTypeObj.UID,
+                  currentApprover:this.approvalTypeObj.UID?this.approvalTypeObj.UID:'',
                   overworkTime:this.addTimeValue,
                   remarks:this.textareaString,
 
@@ -451,10 +445,10 @@
             this.$http.post('/api/v1.0/client/apply',params).then(response => { //提交请假申请
               console.log(response);
 
-              if(response.status===200){
+              if(response.code==200){
                 alert('提交成功');
-              }else if(response.status===500){
-                  alert('提交失败');
+              }else{
+                  alert(response.message);
               }
 //              this.holidayTypeArray=response.body.result;
 //              console.log(this.holidayTypeArray);
@@ -481,6 +475,9 @@
               console.log('我是开始时间'+this.startTimeValue);
           },
           shengqingclick(value){
+
+//            alert(sessionStorage.getItem('Number'));
+            console.log('加班传来Number',sessionStorage.getItem('Number'));
               console.log("value dianji" +value)
             this.shengqingParam= value.uid;
             this.shengqingParamType= value.value;
@@ -492,7 +489,7 @@
               this.updateImage=true; //上传图片隐藏
               this.changeApplyOvertime=false; //加班时间显示
             }
-            if(value.value=='2'){
+            if(value.value=='1'){
               console.log('忘记打卡路线')
               this.changeApply=false; //假期隐藏
               this.changeApplyTime=true; //时间隐藏
@@ -512,10 +509,6 @@
               this.changeApplyTime=false; //时间隐藏
               this.updateImage=false; //上传图片隐藏
               this.changeApplyOvertime=true; //加班时间显示
-
-
-
-
 
             }
           },
@@ -626,7 +619,7 @@
     border: 1px solid #cccccc;
   }
   .myApplyTitleLeft{
-    width: 7rem;
+    width: 7.9rem;
     height: 3rem;
     line-height: 3rem;
     float: left;

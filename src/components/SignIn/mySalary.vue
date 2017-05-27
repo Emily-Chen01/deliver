@@ -105,8 +105,9 @@
                 this.upTime=12;
                 this.year=this.year-1;
               }
-              var jian=this.year+'/'+this.upTime;
-              console.log('jian'+jian);
+              var geshi= this.upTime<10?'0'+this.upTime:this.upTime;
+              var jian=this.year+'/'+geshi;
+                console.log('jian'+jian);
               this.initDate(jian);
           },
           handleClickDown(){
@@ -116,7 +117,8 @@
               this.upTime=1;
               this.year=this.year+1;
             }
-            var add=this.year+'/'+this.upTime;
+            var geshi2= this.upTime<10?'0'+this.upTime:this.upTime;
+            var add=this.year+'/'+geshi2;
             console.log('add'+add);
             this.initDate(add);
           },
@@ -124,9 +126,10 @@
             let param={
               "date":sum
             };
-            this.$http.get('/api/v1.0/client/findMonthSalaryReport',param).then(response => {
+            this.$http.post('/api/v1.0/client/findMonthSalaryReport',param).then(response => {
 
               console.log(response);
+              this.dateGrid=response.body;
 //              this.dateGrid=response.body.result;
 
             }, response => {

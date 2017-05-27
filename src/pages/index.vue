@@ -2,17 +2,17 @@
   <div class="hello">
     <p class="h1Class">{{ msg }}</p>
     <p class="titlesSmall">{{ msgPhone }}</p>
-    <div style="margin: 5rem 0 1.5rem 0">
+    <div style="margin: 5rem 0 1.5rem 0;display: flex;padding: 0 0.3rem;">
       <div class="insterInput">
         <input v-model="phoneNumber" type="text" class="inputStyle" placeholder="手机号" />
       </div>
-      <div class="verification"><mt-button type="default" @click.native="handerClick" style="background-color: rgb(191,205,218);"><span>获取短息验证码</span></mt-button> </div>
+      <div class="verification"><mt-button type="primary" @click.native="handerClick" ><span>获取验证码</span></mt-button> </div>
     </div>
     <div class="inputValidation"><input type="text"  v-model="phoneNumberValue" class="inputStyle"  placeholder="请输入验证码"/> </div>
     <div class="confirmBinding">
-      <mt-button type="primary" style="background-color: rgb(139,156,172);" @click.native="handerSubmit">绑定手机号</mt-button>
+      <mt-button type="primary"  @click.native="handerSubmit">绑定手机号</mt-button>
     </div>
-    <baidu-map :center="center" @ready="handler" ></baidu-map>
+    <!--<baidu-map :center="center" @ready="handler" ></baidu-map>-->
 
     <!--<router-link to="/manyCompany"@click.native="handerCome" >点击</router-link>-->
     <!--<router-view></router-view>-->
@@ -46,30 +46,46 @@ export default {
       radius: '',
       yyy:false,
       result:{"lat":0.0, "lng":0.0},
+      sumSearch:'',
+      sumSearchUid:[],
+//      isbing:'',
 
     }
   },
   created: function () {
 
 
+         this.handerList();        //先查询是否有绑定 有返回手机号
 
+
+
+
+
+
+
+//    (function() {
+//      let path = '/api/v1.0/wechat';
+//      let protocol = location.protocol;
+//      let hostname = location.hostname;
+//      console.log('customize', `${protocol}//${hostname}${path}`);
+//    })();
 
 
     //以上是获取经纬度
-    this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
-      console.log(response.body.result.locations)
-      for(let i=0;i<response.body.result.locations.length;i++){
-        this.circlePath={
-          center: {
-            lng: response.body.result.locations[i].LONGITUDE,
-            lat: response.body.result.locations[i].LATITUDE,
-          },
-          radius: response.body.result.locations[i].SCOPE
-        }
-      }
-    }, response => {
-      console.log('findPunchCardLog error callback');
-    });
+//    this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
+//      console.log(response.body.result.locations)
+//      for(let i=0;i<response.body.result.locations.length;i++){
+//        this.circlePath={
+//          center: {
+//            lng: response.body.result.locations[i].LONGITUDE,
+//            lat: response.body.result.locations[i].LATITUDE,
+//          },
+//          radius: response.body.result.locations[i].SCOPE
+//        }
+//      }
+//    }, response => {
+//      console.log('findPunchCardLog error callback');
+//    });
 
 
 
@@ -82,35 +98,42 @@ export default {
 
 
 
-    console.log( window.location.href);
-//    var _href=window.location.href;
+//    console.log( window.location.href);
+    if(sessionStorage.getItem('openId')==null){
+//      var _href=window.location.href;
 //
-//    function getUrlParam(url, name) { //获取地址栏的参数
-//      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-//      var r = url.substring(url.indexOf('?') + 1).match(reg);
-//      if (r != null) return unescape(r[2]);
-//      return null;
-//    }
+//      function getUrlParam(url, name) { //获取地址栏的参数
+//        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+//        var r = url.substring(url.indexOf('?') + 1).match(reg);
+//        if (r != null) return unescape(r[2]);
+//        return null;
+//      }
 ////    getUrlParam(_href, "openid");
-//   var openID=getUrlParam(_href, "openid");
-//    if (openID==null) {
-//         window.location.href="http://192.168.140.72:8080/api/v1.0/wechat";
-//         return;
-//    }
-//    console.log(openID);
-//    sessionStorage.setItem('openId', openID);
-  },
-  watch:{
-    latitude:function(val,oldVal){
-        if(val!==undefined&&oldVal==undefined){
-            this.handler();
-        }
-
-
-    },
+//      var openID=getUrlParam(_href, "openid");
+//      if (openID==null) {
+//        let path = '/api/v1.0/wechat';
+//        let protocol = location.protocol;
+//        let hostname = location.hostname;
+////        console.log(`${protocol}//${hostname}${path}`);
+//        window.location.href=`${protocol}//${hostname}${path}`;
+//        return;
+//      }
+//      alert('获取的真实openid',openID);
+//      sessionStorage.setItem('openId', openID);
+    }
 
 
   },
+//  watch:{
+//    latitude:function(val,oldVal){
+//        if(val!==undefined&&oldVal==undefined){
+//            this.handler();
+//        }
+//
+//    },
+
+
+//  },
   methods: {
     handerClick(){
       sessionStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
@@ -135,17 +158,20 @@ export default {
         this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);
         console.log(response);
-        this.handerList();
+//        this.handerList();
       }, response => {
         console.log( 'error callback');
       });
     },
     handerList:function (){
-      let phoneObj={
-        "phone":this.phoneNumber
-      }
-      this.$http.get('/api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //查询员工是否有绑定手机
-        console.log(response.body.code);
+      this.$http.post('/api/v1.0/client/checkStaffWechat/').then(response => { //查询员工是否有绑定手机
+        console.log('dddd',response);
+
+
+
+
+
+
         if(response.body.code==500){
 //          Toast({
 //            message: '抱歉没有找到您的员工记录，请联系您的HR',
@@ -154,7 +180,42 @@ export default {
           MessageBox('提示', '抱歉没有找到您的员工记录，请联系您的HR');
 
         }else if(response.body.code==200){
-              this.handerCome();
+         let isbing=response.body.result.phone;
+          sessionStorage.setItem('iphoneNumber', isbing); //缓存手机号码用于查看公司manyCompany
+
+
+              //初始化查询看是否有是一个公司进行跳转signCard  开始
+              let number={
+                phone :isbing,
+              };
+              this.$http.get('/api/v1.0/client/findCompanies/'+number.phone).then(response => { //初始化查询有没有公司
+                console.log('这个data是查询公司的'+response.body.result);
+                //若是没有公司在此处执行下一个页面  ?/？
+                console.log(response.body.result.length);
+                this.sumSearchUid=response.body.result;
+
+                if(response.body.result.length==1){
+                  this.sumSearch=1;
+                  if(this.sumSearch==1){  //如果等于1就进入 signCard 点击打卡
+                    let param={
+                      "companyUid":this.sumSearchUid[0].uid,
+                    }
+                    this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => {
+                      console.log('选择公司接口');
+                      if(response.body.code==200){
+                        this.$router.push({path:'/signCard'});
+                      }
+                    }, response => {
+                      console.log( 'error callback');
+                    });
+                  }
+                }
+              }, response => {
+                console.log( 'findCompanies error callback');
+              });
+              //初始化查询看是否有是一个公司进行跳转signCard  开始
+
+                  this.handerCome(); //如果不是只有一个公司进行选择公司
         }else  if(response.body.code==1001){
               alert("登录超时");
         }
@@ -163,7 +224,7 @@ export default {
       });
     },
     haha:function (){
-        alert(11);
+//        alert(11);
     },
     handerCome:function (){
       this.$router.push({path:'/ManyCompany'});
@@ -172,9 +233,22 @@ export default {
 //        haha(ManyCompany)
 //      })
     },
+    changeCompany(){
+      let param={
+        "companyUid":this.sumSearchUid.UID,
+      }
+      this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => {
+        console.log('选择公司接口');
+        if(response.body.code==200){
+          this.$router.push({path:'/signCard'});
+        }
+      }, response => {
+        console.log( 'error callback');
+      });
+    },
 
 
-    handler ({BMap, map}) {
+//    handler ({BMap, map}) {
 //      console.log(BMap, map);
 //      console.log(this.latitude);
 //      console.log(this.latitude);
@@ -276,7 +350,7 @@ export default {
 
 
 
-    }
+//    }
 
 
   },
@@ -292,8 +366,7 @@ export default {
   margin-top: 4rem;
 }
 .insterInput{
-  width: 14rem;
-  height: 2rem;
+  flex: 2.8;
   display: inline-block;
 }
 .insterInput input{
@@ -301,7 +374,7 @@ export default {
   width: 99%;
 }
 .verification{
-  width: 8.8rem;
+ flex: 1.2;
   height: 0.7rem;
   font-size: 1rem;
   display: inline-block;
