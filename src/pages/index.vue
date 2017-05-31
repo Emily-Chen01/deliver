@@ -118,7 +118,7 @@ export default {
         window.location.href=`${protocol}//${hostname}${path}`;
         return;
       }
-      alert('获取的真实openid',openID);
+//      alert('获取的真实openid',openID);
       sessionStorage.setItem('openId', openID);
     }
 
@@ -166,6 +166,7 @@ export default {
     handerList:function (number){
       this.$http.post('/api/v1.0/client/checkStaffWechat/').then(response => { //查询员工是否有绑定手机
         console.log('dddd',response);
+        alert('查询绑定');
 
         if(number==1){//此处判断是当提交的时候判断下是否已经绑定过
           if(response.body.code==500){
@@ -203,13 +204,15 @@ export default {
                       console.log( 'error callback');
                     });
                   }
+                }else{
+                  this.handerCome(); //如果不是只有一个公司进行选择公司
+
                 }
               }, response => {
                 console.log( 'findCompanies error callback');
               });
               //初始化查询看是否有是一个公司进行跳转signCard  开始
 
-                  this.handerCome(); //如果不是只有一个公司进行选择公司
         }else  if(response.body.code==1001){
               MessageBox('提示', response.body.message);
         }

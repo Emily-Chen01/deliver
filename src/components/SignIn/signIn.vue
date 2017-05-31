@@ -365,9 +365,12 @@
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
           //时间赋值开始
-          this.year=response.body.result.punchYear
-          this.month=response.body.result.punchMonth
-          this.data=response.body.result.punchDate
+          if(response.body.result.punchYear!==null){
+            this.year=response.body.result.punchYear;
+            this.month=response.body.result.punchMonth;
+            this.data=response.body.result.punchDate;
+          }
+
 
           //时间赋值结束
 
@@ -617,13 +620,14 @@
             updakaObj = {
               "record": {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}//0  'true'  //this.outsideObtainValue
             }
-          } else {
-            alert("不能重复打卡");
           }
+//          else {
+//            alert("不能重复打卡");
+//          }
 
 
           this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
-            console.log('shiann' + response.body.result.overTime);
+//            console.log('shiann' + response.body.result.overTime);
 
             //现在缺少判断的赋值条件......................... 在此处填写 和我知道的部分也要改写
 
