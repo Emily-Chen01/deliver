@@ -95,9 +95,8 @@ export default {
 
 
 
-//    console.log( window.location.href);
-    if(this.getCookie('openId')==null){  //获取openid
       var _href=window.location.href;
+    console.log( window.location.href);
 
       function getUrlParam(url, name) { //获取地址栏的参数
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -107,25 +106,33 @@ export default {
       }
 //    getUrlParam(_href, "openid");
       var openID=getUrlParam(_href, "openid");
+
       if (openID==null) {
         let path = '/api/v1.0/wechat';
         let protocol = location.protocol;
         let hostname = location.hostname;
 //        console.log(`${protocol}//${hostname}${path}`);
-        window.location.href=`${protocol}//${hostname}${path}`;
+        window.location.href = `${protocol}//${hostname}${path}`;
         return;
       }
+        this.setCookie('openId',openID,365);
+        alert('openid修改过的'+this.getCookie('openId'));
+
+
+
+
+
+
+
 //      alert('获取的真实openid'+openID);
 //      localStorage.setItem('openId', openID);
 
 
 //      setCookie('openId',openID,365);
 //          alert('openid111cc'+getCookie('openId'));
-      this.setCookie('openId',openID,365);
-      alert('openid修改过的'+this.getCookie('openId'));
 
 
-    }
+
 //    alert('openid修改过的ddddd'+this.getCookie('openId'));
 
 
@@ -167,6 +174,10 @@ export default {
         this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);
         console.log(response);
+          if(response.body.code==200){
+            this.$router.push({path:'/ManyCompany'});//进行跳转 条件还需增加5-31 19:20
+          };
+
 //        this.handerList(1); //提交的时候验证下是否有过绑定手机
       }, response => {
         console.log( 'error callback');

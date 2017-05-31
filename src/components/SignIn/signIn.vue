@@ -269,7 +269,7 @@
           </mt-popup>
         </div>
       </div>
-      <!--<baidu-map :center="center" @ready="handler" ></baidu-map>-->
+      <baidu-map :center="center" @ready="handler" ></baidu-map>
       <!--使用地图 进行测距是否在区域为外-->
     </div>
   </div>
@@ -832,59 +832,59 @@
       //地图微信获取经纬度 转换经纬度 地图测距开始
 
 //
-//      handler ({BMap, map}) {
-//      console.log(BMap, map);
-//      console.log(this.latitude);
-//      console.log(this.latitude);
-//      console.log(this.latitude);
-//      this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
-//        console.log(response.body.result);
-//        this.t1=response.body.result.appid;
-//        console.log(this.t1);
-//        this.t2=response.body.result.timestamp;
-//        this.t3=response.body.result.nonceStr;
-//        this.t4=response.body.result.signature;
-//        this.yyy=true;
-//
-//        wx.config({
-//          debug: false,
-//          appId: this.t1,
-//          timestamp: this.t2,
-//          nonceStr: this.t3,
-//          signature: this.t4,
-//          jsApiList: [
-//            'getLocation'
-//          ]
-//        });
-//
-//
-//      }, response => {
-//        console.log( 'error callback');
-//      });
-//
-//
-//      wx.ready(function () {
-//        wx.error(function(res){
-//          alert('wx.error错误信息'+res)
-//          console.log(res)
-//          console.log(res)
-//
-//        });
-//        wx.checkJsApi({
-//          jsApiList: [
-//            'getLocation'
-//          ],
-//          success: function (res) {
-//            wx.getLocation({
-//              type:'gcj02',
-//              success: function (res) {
-//                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-//                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
-//                var speed = res.speed; // 速度，以米/每秒计
-//                var accuracy = res.accuracy; // 位置精度
-//                alert(speed);
-//                alert(accuracy);
-//
+      handler ({BMap, map}) {
+      console.log(BMap, map);
+      console.log(this.latitude);
+      console.log(this.latitude);
+      console.log(this.latitude);
+      this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
+        console.log(response.body.result);
+        this.t1=response.body.result.appid;
+        console.log(this.t1);
+        this.t2=response.body.result.timestamp;
+        this.t3=response.body.result.nonceStr;
+        this.t4=response.body.result.signature;
+        this.yyy=true;
+
+        wx.config({
+          debug: false,
+          appId: this.t1,
+          timestamp: this.t2,
+          nonceStr: this.t3,
+          signature: this.t4,
+          jsApiList: [
+            'getLocation'
+          ]
+        });
+
+
+      }, response => {
+        console.log( 'error callback');
+      });
+
+
+      wx.ready(function () {
+        wx.error(function(res){
+          alert('wx.error错误信息'+res)
+          console.log(res)
+          console.log(res)
+
+        });
+        wx.checkJsApi({
+          jsApiList: [
+            'getLocation'
+          ],
+          success: function (res) {
+            wx.getLocation({
+              type:'gcj02',
+              success: function (res) {
+                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+                alert(speed);
+                alert(accuracy);
+
 //             function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
 //                  var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
 //                  var x = $lng;
@@ -901,42 +901,43 @@
 //
 //               return  $result;
 //                };
+
 //                var shuzi=Convert_GCJ02_To_BD09(this.longitude,this.latitude,jwresult);
 //                console.log('下面是转后');
 //                console.log(shuzi);
-//
+
 //                alert('纬度'+shuzi.lat+'经度'+shuzi.lng);
-//                let distance=map.getDistance(new BMap.Point(120.73218304795796,31.264316268102142), new BMap.Point(shuzi.lng, shuzi.lat));
-//                if(distance<500){
-//                    this.outsideObtainValue=true;
-//                  alert('区域内'+map.getDistance(new BMap.Point(120.73218304795796,31.264316268102142), new BMap.Point(shuzi.lng, shuzi.lat)));
-//                }else{
-//                    this.outsideObtainValue=false;
-//                  alert('区域外'+map.getDistance(new BMap.Point(120.73218304795796,31.264316268102142), new BMap.Point(shuzi.lng, shuzi.lat)));
-//                }
-//
-//              },
-//              cancel: function (res) {
-//                alert('用户拒绝授权获取地理位置');
-//              }
-//            });
-////          alert('微信版本！');
-//            // alert(JSON.stringify(res));
-//            // alert(JSON.stringify(res.checkResult.getLocation));
-//            if (res.checkResult.getLocation == false) {
-//              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-//              return;
-//            }
-//          }
-//        });
-//
-//
-//      });
-//
-//
-//
-//
-//      }
+                let distance=map.getDistance(new BMap.Point(120.73220002,31.26439192), new BMap.Point(this.longitude,this.latitude));
+                if(distance<500){
+                    this.outsideObtainValue=true;
+                  alert('区域内'+map.getDistance(new BMap.Point(120.73220002,31.26439192), new BMap.Point(this.longitude,this.latitude)));
+                }else{
+                    this.outsideObtainValue=false;
+                  alert('区域外'+map.getDistance(new BMap.Point(120.73220002,31.26439192), new BMap.Point(this.longitude,this.latitude)));
+                }
+
+              },
+              cancel: function (res) {
+                alert('用户拒绝授权获取地理位置');
+              }
+            });
+//          alert('微信版本！');
+            // alert(JSON.stringify(res));
+            // alert(JSON.stringify(res.checkResult.getLocation));
+            if (res.checkResult.getLocation == false) {
+              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+              return;
+            }
+          }
+        });
+
+
+      });
+
+
+
+
+      }
 
 
       //地图微信获取经纬度 转换经纬度 地图测距结束
