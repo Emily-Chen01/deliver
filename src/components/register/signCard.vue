@@ -31,6 +31,24 @@
           <i class="mint-cell-allow-right"></i>
         </a>
       </div>
+      <!--底部工具-->
+      <div class="bottomTool">
+        <div style="display: flex;position: relative">
+          <div style="flex: 2"  @click="routerTool(1)">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 5rem;">
+              <img :src="imgSrc.doIcon" class="avatar">
+            </div>
+            <div style="height: 1.5rem;position: absolute;left: 5rem;top:2.4rem">工作台</div>
+          </div>
+          <div style="flex: 2"  @click="routerTool(2)">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 16.5rem;">
+              <img :src="imgSrc.setIcon" class="avatar">
+            </div>
+            <div style="height: 1.5rem;position: absolute;left: 17rem;top:2.4rem">设置</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 </template>
 <script >
@@ -52,6 +70,8 @@ let oneselfData={};
           imgSrc: {
             comAddress:  require('../../assets/logo.png'),
             shezhiBackground:  require('../../assets/shezhi.png'),
+            doIcon: require('../../assets/ico_workbench_2.png'),
+            setIcon: require('../../assets/ico_setting_1.png'),
           },
           arryName:[
             {
@@ -159,6 +179,14 @@ let oneselfData={};
       routerMyData(){
         this.$router.push({path:'/MyData'});
       },
+      routerTool(number){
+        if(number==1){
+          this.$router.push({path:'/signCard'});
+        }
+        if(number==2){
+          this.$router.push({path:'/set'});
+        }
+      },
 
     },
 
@@ -177,6 +205,14 @@ let oneselfData={};
     /*color:red;*/
     /*font-weight:bold;*/
   /*}*/
+.bottomTool{
+  position:fixed;
+  bottom:0;
+  width: 100%;
+  height: 4rem;
+  /*line-height: 4rem;*/
+  background: rgb(250,250,250);
+}
 .siginLeft{
   display: inline-block;
   width: 5.2rem;

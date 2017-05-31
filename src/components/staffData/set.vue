@@ -13,18 +13,18 @@
         <div style="text-align: center;margin-top: 2rem">客服热线 ：0512-88998989</div>
       </div>
       <div class="bottomTool">
-        <div style="display: flex">
-          <div style="flex: 2">
-            <div style="height: 1.8rem">
+        <div style="display: flex;position: relative">
+          <div style="flex: 2"  @click="routerTool(1)">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 5rem;">
               <img :src="imgSrc.doIcon" class="avatar">
             </div>
-            <div style="height: 1.5rem">工作台</div>
+            <div style="height: 1.5rem;position: absolute;left: 5rem;top:2.4rem">工作台</div>
           </div>
-          <div style="flex: 2">
-            <div style="height: 1.8rem">
+          <div style="flex: 2"  @click="routerTool(2)">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 16.5rem;">
               <img :src="imgSrc.setIcon" class="avatar">
             </div>
-            <div style="height: 1.5rem">设置</div>
+            <div style="height: 1.5rem;position: absolute;left: 17rem;top:2.4rem">设置</div>
           </div>
         </div>
       </div>
@@ -58,6 +58,14 @@
         }, response => {
           console.log( 'error callback');
         });
+      },
+      routerTool(number){
+          if(number==1){
+            this.$router.push({path:'/signCard'});
+          }
+        if(number==2){
+          this.$router.push({path:'/set'});
+        }
       },
     },
 
