@@ -46,7 +46,7 @@
       }
     },
     created: function () {
-      this.imgSrc.shenFenIcon=sessionStorage.getItem('avatarImages')
+      this.imgSrc.shenFenIcon=this.getCookie('avatarImages');
 
     },
 

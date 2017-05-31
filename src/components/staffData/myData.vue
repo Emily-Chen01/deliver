@@ -279,7 +279,7 @@
             return {
               openId:'',
               tokenHeader: {
-                openId: sessionStorage.getItem('openId')
+                openId: this.getCookie('openId')
               },
               data:{},
               phone:'',  //手机号
@@ -322,6 +322,7 @@
       },
     },
         created: function () {
+          alert('openid111cc'+this.getCookie('openId'));
 
           this.$http.post('/api/v1.0/client/findStaff').then(response => { //查询
 

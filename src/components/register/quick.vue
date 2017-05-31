@@ -37,7 +37,9 @@ let openIdD;
         },
         watch:{
           allOpenId:function(val){
-            sessionStorage.setItem('openId', val);
+//            sessionStorage.setItem('openId', val);
+            this.setCookie('openId',val,365);
+
           }
         },
         methods: {

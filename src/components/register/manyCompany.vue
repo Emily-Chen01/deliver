@@ -35,8 +35,10 @@
         }
       },
       created: function () {
+//          alert('iphoneNumber'+this.getCookie('iphoneNumber'));
+
         let phoneObj={
-          phone:sessionStorage.getItem('iphoneNumber'),
+          phone: this.getCookie('iphoneNumber'),
         }
         this.$http.get('/api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //初始化查询有没有公司
             console.log('这个data是查询公司的'+response.body.result);

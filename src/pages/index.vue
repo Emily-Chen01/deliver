@@ -22,6 +22,8 @@
 <script>
 import { Navbar, TabItem,Toast,MessageBox } from 'mint-ui';
 import ManyCompany from "@/components/register/manyCompany"
+import Vue from 'vue'
+
     let jwresult={"lat":0.0, "lng":0.0};
 
 export default {
@@ -54,12 +56,7 @@ export default {
   },
   created: function () {
 
-
          this.handerList();        //先查询是否有绑定 有返回手机号
-
-
-
-
 
 
 
@@ -99,7 +96,7 @@ export default {
 
 
 //    console.log( window.location.href);
-    if(sessionStorage.getItem('openId')==null){  //获取openid
+    if(this.getCookie('openId')==null){  //获取openid
       var _href=window.location.href;
 
       function getUrlParam(url, name) { //获取地址栏的参数
@@ -118,9 +115,19 @@ export default {
         window.location.href=`${protocol}//${hostname}${path}`;
         return;
       }
-//      alert('获取的真实openid',openID);
-      sessionStorage.setItem('openId', openID);
+//      alert('获取的真实openid'+openID);
+//      localStorage.setItem('openId', openID);
+
+
+//      setCookie('openId',openID,365);
+//          alert('openid111cc'+getCookie('openId'));
+      this.setCookie('openId',openID,365);
+      alert('openid修改过的'+this.getCookie('openId'));
+
+
     }
+//    alert('openid修改过的ddddd'+this.getCookie('openId'));
+
 
 
   },
@@ -136,7 +143,9 @@ export default {
 //  },
   methods: {
     handerClick(){
-      sessionStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
+//      localStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
+      this.setCookie('iphoneNumber',this.phoneNumber,365);
+
       alert('获取验证码');
 
       let number={
@@ -164,7 +173,7 @@ export default {
       });
     },
     handerList:function (number){
-      this.$http.post('/api/v1.0/client/checkStaffWechat/').then(response => { //查询员工是否有绑定手机
+      this.$http.post('/api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
         console.log('dddd',response);
 //        alert('查询绑定');
 
@@ -176,7 +185,10 @@ export default {
 
             if(response.body.code==200){
          let isbing=response.body.result.phone;
-          sessionStorage.setItem('iphoneNumber', isbing); //缓存手机号码用于查看公司manyCompany
+//          localStorage.setItem('iphoneNumber', isbing); //缓存手机号码用于查看公司manyCompany
+              this.setCookie('iphoneNumber',isbing,365);//缓存手机号码用于查看公司manyCompany
+
+//              alert('iphoneNumber'+this.getCookie('iphoneNumber'));
 
 
               //初始化查询看是否有是一个公司进行跳转signCard  开始
@@ -205,13 +217,8 @@ export default {
                     });
                   }
                 }else{
-                    alert('进入多公司')
                   this.handerCome(); //如果不是只有一个公司进行选择公司
 
-                }
-                if(response.body.result.length!==1){
-                  alert('进入多ge公司')
-                  this.handerCome(); //如果不是只有一个公司进行选择公司
                 }
               }, response => {
                 console.log( 'findCompanies error callback');

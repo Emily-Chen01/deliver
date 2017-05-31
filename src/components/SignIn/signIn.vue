@@ -360,7 +360,10 @@
       //初始开始
 
       doSearch(){
-        var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
+//        var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
+
+                var imageString=this.getCookie('avatarImages'); //获取缓存的图片
+
         this.imgSrc.comAddress=imageString;
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 

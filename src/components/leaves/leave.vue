@@ -191,7 +191,7 @@
               isActive3:false, //显示下滑线
               isActive4:false, //显示下滑线
               tokenHeader: {
-                openId: sessionStorage.getItem('openId')
+                openId: this.getCookie('openId')
               },
               selected: '1',
               selectedData:0,
@@ -496,8 +496,10 @@
           shengqingclick(value){
 
 //            alert(sessionStorage.getItem('Number'));
-            console.log('加班传来Number',sessionStorage.getItem('Number'));
-              console.log("value dianji" +value)
+//            console.log('加班传来Number',sessionStorage.getItem('Number'));
+                        console.log('加班传来Number',this.getCookie('Number'));
+
+            console.log("value dianji" +value)
             this.shengqingParam= value.uid;
             this.shengqingParamType= value.value;
             console.log('我是选中的申请类型'+ this.shengqingParam);

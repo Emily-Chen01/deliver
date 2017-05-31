@@ -137,7 +137,8 @@ let oneselfData={};
             };
             if(this.arryOneself[i].staffPhoUrl){
               this.imgSrc.comAddress=this.arryOneself[i].staffPhoUrl;
-              sessionStorage.setItem('avatarImages',  this.imgSrc.comAddress);
+//              sessionStorage.setItem('avatarImages',  this.imgSrc.comAddress);
+              this.setCookie('avatarImages',this.imgSrc.comAddress,365);
 
             }else {
               console.log('record.staffPhoUrl的images值为空')

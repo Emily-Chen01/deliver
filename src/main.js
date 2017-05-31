@@ -49,8 +49,8 @@ Vue.use(BaiduMap, {
 Vue.http.interceptors.push(function (request, next) {
   // Vue.http.headers.common['token'] = sessionStorage.getItem('token');
   // sessionStorage.setItem('openId', openId);
-  console.log('openId', sessionStorage.getItem('openId'));
-  request.headers.set('openId', sessionStorage.getItem('openId'));
+  console.log('openId', this.getCookie('openId'));
+  request.headers.set('openId', this.getCookie('openId'));
 
 
 
@@ -64,10 +64,43 @@ Vue.http.interceptors.push(function (request, next) {
 });
 
 
+//cook开始
+Vue.prototype.setCookie=  function (c_name,value,expiredays)
+{
+  var exdate=new Date()
+  exdate.setDate(exdate.getDate()+expiredays)
+  document.cookie=c_name+ "=" +escape(value)+
+    ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+}
 
 
 
-Vue.config.productionTip = false
+//取回cookie
+Vue.prototype.getCookie=  function (c_name)
+
+{
+  var c_start;
+  var  c_end;
+
+  if (document.cookie.length>0)
+  {
+    c_start=document.cookie.indexOf(c_name + "=")
+    if (c_start!=-1)
+    {
+      c_start=c_start + c_name.length+1
+      c_end=document.cookie.indexOf(";",c_start)
+      if (c_end==-1) c_end=document.cookie.length
+      return unescape(document.cookie.substring(c_start,c_end))
+    }
+  }
+  return ""
+};
+//cook结束
+
+
+
+
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
