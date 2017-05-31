@@ -113,7 +113,10 @@
       <!--我的申请-->
           <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord!==null">
             <div class="myApplyTitle">
-              <div class="myApplyTitleLeft">{{item.name}}申请</div>
+              <div class="myApplyTitleLeft" style="display: flex">
+                <div style="flex: 0.2;padding-left: 0.5rem"><span >|</span></div>
+                <div style="flex: 2.8;">{{item.name}}申请</div>
+              </div>
               <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
               <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
               <div class="myApplyTitleRight" v-else-if="item.status==2">未通过</div>
@@ -654,7 +657,8 @@
     border: 1px solid #cccccc;
   }
   .myApplyTitleLeft{
-    width: 7.9rem;
+    width: 11rem;
+    text-align: left;
     height: 3rem;
     line-height: 3rem;
     float: left;
