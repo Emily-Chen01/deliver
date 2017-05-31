@@ -166,7 +166,7 @@ export default {
     handerList:function (number){
       this.$http.post('/api/v1.0/client/checkStaffWechat/').then(response => { //查询员工是否有绑定手机
         console.log('dddd',response);
-        alert('查询绑定');
+//        alert('查询绑定');
 
         if(number==1){//此处判断是当提交的时候判断下是否已经绑定过
           if(response.body.code==500){
@@ -208,6 +208,10 @@ export default {
                     alert('进入多公司')
                   this.handerCome(); //如果不是只有一个公司进行选择公司
 
+                }
+                if(response.body.result.length!==1){
+                  alert('进入多ge公司')
+                  this.handerCome(); //如果不是只有一个公司进行选择公司
                 }
               }, response => {
                 console.log( 'findCompanies error callback');
