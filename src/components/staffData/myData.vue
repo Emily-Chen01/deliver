@@ -10,39 +10,91 @@
         <mt-tab-container-item id="1">
           <div v-if="submitDivShow">
             <!--展示-->
-            <mt-field label="性别"  >
-              <div class="showARightSpan">{{myDataSearch.xingbie}}</div>
-            </mt-field>
-            <mt-field v-model="phone" label="手机号" placeholder="" type="number">
-              <div class="showARightSpan">{{myDataSearch.phone}}</div>
-            </mt-field>
-            <mt-field v-model="address" label="国家/地区" placeholder=""  >
-              <div class="showARightSpan">{{myDataSearch.city}}</div>
-            </mt-field>
-            <mt-field v-model="card" label="身份证号" placeholder="" type="number" >
-              <div class="showARightSpan">{{myDataSearch.shenfeng}}</div>
-            </mt-field>
-            <mt-field  label="" placeholder=""  style="height: 8.2rem;line-height: 8.2rem" >
-              <div class="cardClassSearch">
-                <a @click.native="handerClickUp()">
-                  <img :src="myDataSearch.shenfengzheng" class="CardImgSearch">
-                </a>
+            <!--<mt-field label="性别"  >-->
+              <!--<div class="showARightSpan">{{myDataSearch.xingbie}}</div>-->
+            <!--</mt-field>-->
+            <!--<mt-field v-model="phone" label="手机号" placeholder="" type="number">-->
+              <!--<div class="showARightSpan">{{myDataSearch.phone}}</div>-->
+            <!--</mt-field>-->
+            <!--<mt-field v-model="address" label="国家/地区" placeholder=""  >-->
+              <!--<div class="showARightSpan">{{myDataSearch.city}}</div>-->
+            <!--</mt-field>-->
+            <!--<mt-field v-model="card" label="身份证号" placeholder="" type="number" >-->
+              <!--<div class="showARightSpan">{{myDataSearch.shenfeng}}</div>-->
+            <!--</mt-field>-->
+            <!--<mt-field  label="" placeholder=""  style="height: 8.2rem;line-height: 8.2rem" >-->
+              <!--<div class="cardClassSearch">-->
+                <!--<a @click.native="handerClickUp()">-->
+                  <!--<img :src="myDataSearch.shenfengzheng" class="CardImgSearch">-->
+                <!--</a>-->
+              <!--</div>-->
+              <!--<div class="cardClassSearch">-->
+                <!--<a @click.native="handerClickUp()">-->
+                  <!--<img :src="myDataSearch.shenfengbei" class="CardImgSearch">-->
+                <!--</a>-->
+              <!--</div>-->
+            <!--</mt-field>-->
+            <!--<mt-field v-model="gold" label="公积金账号" placeholder="" type="number">-->
+              <!--<div class="showARightSpan">{{myDataSearch.gongjijin}}</div>-->
+            <!--</mt-field>-->
+            <!--<mt-field v-model="bankCard" label="银行卡号" placeholder="" type="number"  >-->
+              <!--<div class="showARightSpan">{{myDataSearch.bankcard}}</div>-->
+            <!--</mt-field>-->
+            <!--<mt-field v-model="openBank" label="开户行" placeholder=""  >-->
+              <!--<div class="showARightSpan">{{myDataSearch.kaihuhang}}</div>-->
+            <!--</mt-field>-->
+            <div class="hrClass"></div>
+            <div class="contentClass">
+              <div class="contentLeft" >性别</div>
+              <div class="contentRight" >{{myDataSearch.xingbie}}</div>
+            </div>
+            <div class="hrClass"></div>
+
+            <div class="contentClass">
+              <div class="contentLeft" >手机号</div>
+              <div class="contentRight" >{{myDataSearch.phone}}</div>
+            </div>
+            <div class="hrClass"></div>
+
+            <div class="contentClass">
+              <div class="contentLeft" >国家/地区</div>
+              <div class="contentRight" >{{myDataSearch.city}}</div>
+            </div>
+            <div class="hrClass"></div>
+
+            <div class="contentClass">
+              <div class="contentLeft" >身份证号</div>
+              <div class="contentRight" >{{myDataSearch.shenfeng}}</div>
+            </div>
+            <div class="hrClass"></div>
+
+            <div  style="height: 7.2rem;line-height: 7.2rem;padding: 1rem 0 0 1.2rem;" >
+              <div class="cardClassSearch" style="display:flex">
+                <img :src="myDataSearch.shenfengzheng" class="CardImgSearch" style="flex:2">
               </div>
               <div class="cardClassSearch">
-                <a @click.native="handerClickUp()">
-                  <img :src="myDataSearch.shenfengbei" class="CardImgSearch">
-                </a>
+                <img :src="myDataSearch.shenfengbei" class="CardImgSearch" style="flex:2">
               </div>
-            </mt-field>
-            <mt-field v-model="gold" label="公积金账号" placeholder="" type="number">
-              <div class="showARightSpan">{{myDataSearch.gongjijin}}</div>
-            </mt-field>
-            <mt-field v-model="bankCard" label="银行卡号" placeholder="" type="number"  >
-              <div class="showARightSpan">{{myDataSearch.bankcard}}</div>
-            </mt-field>
-            <mt-field v-model="openBank" label="开户行" placeholder=""  >
-              <div class="showARightSpan">{{myDataSearch.kaihuhang}}</div>
-            </mt-field>
+            </div>
+            <div class="hrClass"></div>
+
+            <div class="contentClass">
+              <div class="contentLeft" >公积金账号</div>
+              <div class="contentRight" >{{myDataSearch.gongjijin}}</div>
+            </div>
+            <div class="hrClass"></div>
+
+            <div class="contentClass">
+              <div class="contentLeft" >银行卡号</div>
+              <div class="contentRight" >{{myDataSearch.bankcard}}</div>
+            </div>
+            <div class="hrClass"></div>
+
+            <div class="contentClass">
+              <div class="contentLeft" >开户行</div>
+              <div class="contentRight" >{{myDataSearch.kaihuhang}}</div>
+            </div>
+
           </div>
 
           <div v-if="submitDivHide">
@@ -117,42 +169,97 @@
 
         <mt-tab-container-item id="2">
           <!--岗位信息-->
-          <mt-field label="入职日期" placeholder="" type="number">
-            <div class="showARightSpan">{{stationObj.dateOfEntry}}</div>
-          </mt-field>
-          <mt-field label="聘用形式" placeholder=""  >
-            <div class="showARightSpan">{{stationObj.baseSalary}}</div>
-          </mt-field>
-          <mt-field label="合同类型" placeholder=""  >
-            <div class="showARightSpan">{{stationObj.trialSalary}}</div>
-          </mt-field>
+          <!--<mt-field label="入职日期" placeholder="" type="number">-->
+            <!--<div class="showARightSpan">{{stationObj.dateOfEntry}}</div>-->
+          <!--</mt-field>-->
+          <!--<mt-field label="聘用形式" placeholder=""  >-->
+            <!--<div class="showARightSpan">{{stationObj.baseSalary}}</div>-->
+          <!--</mt-field>-->
+          <!--<mt-field label="合同类型" placeholder=""  >-->
+            <!--<div class="showARightSpan">{{stationObj.trialSalary}}</div>-->
+          <!--</mt-field>-->
 
-          <mt-field label="职位" placeholder="" type="number">
-            <div class="showARightSpan">{{stationObj.position}}</div>
-          </mt-field>
-          <mt-field label="所在部门" placeholder=""  >
-            <div class="showARightSpan">{{stationObj.deptName}}</div>
-          </mt-field>
-          <mt-field label="转正日期" placeholder=""  >
-            <div class="showARightSpan">{{stationObj.zhuanWork}}</div>
-          </mt-field>
+          <!--<mt-field label="职位" placeholder="" type="number">-->
+            <!--<div class="showARightSpan">{{stationObj.position}}</div>-->
+          <!--</mt-field>-->
+          <!--<mt-field label="所在部门" placeholder=""  >-->
+            <!--<div class="showARightSpan">{{stationObj.deptName}}</div>-->
+          <!--</mt-field>-->
+          <!--<mt-field label="转正日期" placeholder=""  >-->
+            <!--<div class="showARightSpan">{{stationObj.zhuanWork}}</div>-->
+          <!--</mt-field>-->
 
-          <mt-field label="司龄" placeholder="" type="number">
-            <div class="showARightSpan">{{stationObj.companyAge}}</div>
-          </mt-field>
-          <mt-field label="首次工作" placeholder=""  >
-            <div class="showARightSpan">{{stationObj.firstWork}}</div>
-          </mt-field>
-          <mt-field label="工作邮箱" placeholder=""  >
-            <div class="showARightSpan">{{stationObj.workEmail}}</div>
-          </mt-field>
+          <!--<mt-field label="司龄" placeholder="" type="number">-->
+            <!--<div class="showARightSpan">{{stationObj.companyAge}}</div>-->
+          <!--</mt-field>-->
+          <!--<mt-field label="首次工作" placeholder=""  >-->
+            <!--<div class="showARightSpan">{{stationObj.firstWork}}</div>-->
+          <!--</mt-field>-->
+          <!--<mt-field label="工作邮箱" placeholder=""  >-->
+            <!--<div class="showARightSpan">{{stationObj.workEmail}}</div>-->
+          <!--</mt-field>-->
 
-          <mt-field label="工作电话" placeholder="" type="number">
-            <div class="showARightSpan">{{stationObj.jobNumber}}</div>
-          </mt-field>
-          <mt-field label="工号" placeholder=""  >
-            <div class="showARightSpan">{{stationObj.serialVersionUID}}</div>
-          </mt-field>
+          <!--<mt-field label="工作电话" placeholder="" type="number">-->
+            <!--<div class="showARightSpan">{{stationObj.jobNumber}}</div>-->
+          <!--</mt-field>-->
+          <!--<mt-field label="工号" placeholder=""  >-->
+            <!--<div class="showARightSpan">{{stationObj.serialVersionUID}}</div>-->
+          <!--</mt-field>-->
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >入职日期</div>
+            <div class="contentRight" >{{stationObj.dateOfEntry}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >聘用形式</div>
+            <div class="contentRight" >{{stationObj.baseSalary}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >合同类型</div>
+            <div class="contentRight" >{{stationObj.trialSalary}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >职位</div>
+            <div class="contentRight" >{{stationObj.position}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >所在部门</div>
+            <div class="contentRight" >{{stationObj.deptName}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >转正日期</div>
+            <div class="contentRight" >{{stationObj.zhuanWork}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >司龄</div>
+            <div class="contentRight" >{{stationObj.companyAge}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >首次工作</div>
+            <div class="contentRight" >{{stationObj.firstWork}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >工作邮箱</div>
+            <div class="contentRight" >{{stationObj.workEmail}}</div>
+          </div>
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" >工作电话</div>
+            <div class="contentRight" >{{stationObj.jobNumber}}</div>
+          </div>
+          <div class="hrClass"></div> <div class="contentClass">
+          <div class="contentLeft" >工号</div>
+          <div class="contentRight" >{{stationObj.serialVersionUID}}</div>
+        </div>
+          <div class="hrClass"></div>
 
 
         </mt-tab-container-item>
@@ -272,7 +379,7 @@
             this.submitDivShow=true;
             this.submitDivHide=false;
             let param={
-                'uid':this.uid,
+              'uid':this.uid,
               'gender':this.selectedData,
               'mobile':this.phone,
               'nativePlace':this.address,
@@ -285,14 +392,14 @@
             }
           this.$http.post('/api/v1.0/client/updateStaff',param).then(response => {
               console.log('修改个人资料');
-
+                Toast({
+                  message: '个人资料保存成功',
+                  iconClass: 'icon icon-success'
+                })
             }, response => {
               console.log( 'error callback');
-            })
-            Toast({
-              message: '个人资料保存成功',
-              iconClass: 'icon icon-success'
-            })
+            });
+
           },
           handerClickUp(){
             alert(11);
@@ -324,10 +431,30 @@
 </script>
 
 <style scoped>
+
   is-selected {
     border-bottom: 3px solid #26a2ff;
     color: #26a2ff;
     margin-bottom: -3px;
+  }
+  .hrClass{
+    width: 23.5rem;
+    margin-left:0.8rem;
+    height: 1px;
+    background: #cccccc;
+    line-height: 1px
+  }
+  .contentClass{
+    display: flex;
+    padding: 1rem;
+  }
+  .contentLeft{
+    flex:1.2;
+    text-align: left;
+  }
+  .contentRight{
+    flex:2.8;
+    text-align: left;
   }
   .dataTitle span{
     font-size: 1.4rem;
@@ -369,7 +496,7 @@
   }
   .CardImgSearch{
     display: block;
-    width: 80%;
+    width: 94%;
     height: 90%;
     padding-left: 0.6rem;
     padding-top: 0.2rem;

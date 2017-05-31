@@ -1,8 +1,8 @@
 <template>
-  <div class="hello">
+  <div class="hello" style="padding: 8px">
     <p class="h1Class">{{ msg }}</p>
     <p class="titlesSmall">{{ msgPhone }}</p>
-    <div style="margin: 5rem 0 1.5rem 0;display: flex;padding: 0 0.3rem;">
+    <div style="margin: 5rem 0 1.5rem 0;display: flex;width: 99%">
       <div class="insterInput">
         <input v-model="phoneNumber" type="text" class="inputStyle" placeholder="手机号" />
       </div>
@@ -99,27 +99,27 @@ export default {
 
 
 //    console.log( window.location.href);
-    if(sessionStorage.getItem('openId')==null){
-//      var _href=window.location.href;
-//
-//      function getUrlParam(url, name) { //获取地址栏的参数
-//        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-//        var r = url.substring(url.indexOf('?') + 1).match(reg);
-//        if (r != null) return unescape(r[2]);
-//        return null;
-//      }
-////    getUrlParam(_href, "openid");
-//      var openID=getUrlParam(_href, "openid");
-//      if (openID==null) {
-//        let path = '/api/v1.0/wechat';
-//        let protocol = location.protocol;
-//        let hostname = location.hostname;
-////        console.log(`${protocol}//${hostname}${path}`);
-//        window.location.href=`${protocol}//${hostname}${path}`;
-//        return;
-//      }
-//      alert('获取的真实openid',openID);
-//      sessionStorage.setItem('openId', openID);
+    if(sessionStorage.getItem('openId')==null){  //获取openid
+      var _href=window.location.href;
+
+      function getUrlParam(url, name) { //获取地址栏的参数
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = url.substring(url.indexOf('?') + 1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+      }
+//    getUrlParam(_href, "openid");
+      var openID=getUrlParam(_href, "openid");
+      if (openID==null) {
+        let path = '/api/v1.0/wechat';
+        let protocol = location.protocol;
+        let hostname = location.hostname;
+//        console.log(`${protocol}//${hostname}${path}`);
+        window.location.href=`${protocol}//${hostname}${path}`;
+        return;
+      }
+      alert('获取的真实openid',openID);
+      sessionStorage.setItem('openId', openID);
     }
 
 
@@ -158,28 +158,22 @@ export default {
         this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);
         console.log(response);
-//        this.handerList();
+        this.handerList(1); //提交的时候验证下是否有过绑定手机
       }, response => {
         console.log( 'error callback');
       });
     },
-    handerList:function (){
+    handerList:function (number){
       this.$http.post('/api/v1.0/client/checkStaffWechat/').then(response => { //查询员工是否有绑定手机
         console.log('dddd',response);
 
+        if(number==1){//此处判断是当提交的时候判断下是否已经绑定过
+          if(response.body.code==500){
+            MessageBox('提示', response.body.message);
+          }
+        }
 
-
-
-
-
-        if(response.body.code==500){
-//          Toast({
-//            message: '抱歉没有找到您的员工记录，请联系您的HR',
-//            iconClass: 'mint-toast-icon mintui mintui-success'
-//          });
-          MessageBox('提示', '抱歉没有找到您的员工记录，请联系您的HR');
-
-        }else if(response.body.code==200){
+            if(response.body.code==200){
          let isbing=response.body.result.phone;
           sessionStorage.setItem('iphoneNumber', isbing); //缓存手机号码用于查看公司manyCompany
 
@@ -200,7 +194,7 @@ export default {
                     let param={
                       "companyUid":this.sumSearchUid[0].uid,
                     }
-                    this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => {
+                    this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => { //选择公司
                       console.log('选择公司接口');
                       if(response.body.code==200){
                         this.$router.push({path:'/signCard'});
@@ -217,14 +211,11 @@ export default {
 
                   this.handerCome(); //如果不是只有一个公司进行选择公司
         }else  if(response.body.code==1001){
-              alert("登录超时");
+              MessageBox('提示', response.body.message);
         }
       }, response => {
         console.log( 'error callback');
       });
-    },
-    haha:function (){
-//        alert(11);
     },
     handerCome:function (){
       this.$router.push({path:'/ManyCompany'});
@@ -384,13 +375,13 @@ export default {
   font-size: 0.7rem;
 }
 .verification button{
-  width: 96.5%;
+  width: 98%;
 }
 .inputValidation {
   margin: 1rem 0 0.5rem 0;
 }
 .inputValidation input{
-  width: 96%;
+  width: 100%;
   height: 2.6rem;
 }
 .confirmBinding{

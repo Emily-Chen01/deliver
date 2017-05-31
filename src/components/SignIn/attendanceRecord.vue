@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="padding: 8px">
       <full-calendar
         :events="fcEvents" locale="zh"
         @dayClick="dayClick"

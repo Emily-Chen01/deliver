@@ -10,36 +10,52 @@
       <mt-tab-container v-model="selected" style="margin-top: 1rem">
         <mt-tab-container-item id="1">
           <!--个人资料-->
-          <mt-field label="申请分类"  >
-            <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)">
-              <option v-for="option in optionsApply"  v-bind:value="option" >
-                {{ option.text }}
+
+          <div class="hrClass"></div>
+          <div class="contentClass">
+            <div class="contentLeft" style="padding-top: 0.3rem">申请分类</div>
+            <div class="contentRight" >
+              <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)">
+                <option v-for="option in optionsApply"  v-bind:value="option" >
+                  {{ option.text }}
               </option>
-            </select>
-          </mt-field>
-          <div v-if="changeApply">
-            <mt-field label="假期分类"  >
+              </select>
+            </div>
+          </div>
+
+          <div class="hrClass" v-if="changeApply"></div>
+          <div class="contentClass" v-if="changeApply">
+            <div class="contentLeft" style="padding-top: 0.3rem">假期分类</div>
+            <div class="contentRight" >
               <select v-model="selectedDataHoliday" class="changeSelect" @change="qingjiaclick(selectedDataHoliday)" >
                 <option v-for="option in optionsHoliday" v-bind:value="option">
                   {{ option.text }}
               </option>
               </select>
-            </mt-field>
+            </div>
           </div>
-          <div v-if="changeApplyTime">
-            <mt-field label="开始时间"  >
+          <div class="hrClass" v-if="changeApply"></div>
 
-                <div class="showARightSpan"   >
-                  <datePick @ieventStart = "ieventStart" ></datePick>
-                </div>
 
-              </mt-field>
-              <mt-field label="结束时间" >
-                <div class="showARightSpan">
-                  <endDatePick  @ieventEnd = "ieventEnd"></endDatePick>
-                </div>
-              </mt-field>
+          <div  v-if="changeApplyTime" class="hrClass" ></div>
+          <div  v-if="changeApplyTime" class="contentClass">
+            <div class="contentLeft" >开始时间</div>
+            <div class="contentRight" >
+              <datePick @ieventStart = "ieventStart" ></datePick>
+            </div>
           </div>
+          <div  v-if="changeApplyTime" class="hrClass" ></div>
+          <div  v-if="changeApplyTime" class="contentClass">
+            <div class="contentLeft" >结束时间</div>
+            <div class="contentRight" >
+              <endDatePick  @ieventEnd = "ieventEnd"></endDatePick>
+            </div>
+          </div>
+          <div  v-if="changeApplyTime" class="hrClass" ></div>
+
+
+
+
             <mt-field style="height: 8rem;line-height: 8rem;position: relative" v-if="updateImage">
               <div class="cardClass">
                 <div>
@@ -68,7 +84,7 @@
             </textarea>
             </div>
 
-            <mt-field label="审批人"  style="margin-top: 1rem" v-if="approvalTypeObj.NAME">
+            <mt-field label="审批人"  style="margin-top: 1rem" v-if="approvalTypeObj">
               <div class="showARightSpan">{{approvalTypeObj.NAME}}</div>
             </mt-field>
 
@@ -539,6 +555,25 @@
 </script>
 
 <style scoped>
+  .hrClass{
+    width: 23.5rem;
+    margin-left:0.8rem;
+    height: 1px;
+    background: #cccccc;
+    line-height: 1px
+  }
+  .contentClass{
+    display: flex;
+    padding: 0.5rem 1rem;
+  }
+  .contentLeft{
+    flex:1;
+    text-align: left;
+  }
+  .contentRight{
+    flex:3;
+  }
+
   .colseClass{
     height: 3rem;
     line-height: 3rem;
@@ -583,11 +618,11 @@
     font-size: 1.4rem;
   }
   .changeSelect{
-    width: 14rem;
+    width: 98%;
     display: block;
-    height: 2.5rem;
+    height: 2rem;
     border: none;
-    font-size: 1.22rem;
+    font-size: 1.1rem;
   }
   .cardClass{
     width: 11rem;

@@ -14,6 +14,8 @@ import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import overApply from "@/components/leaves/overApply"
 import mySalary from "@/components/SignIn/mySalary"
 import datePick from "@/components/components/datePick"
+import set from "@/components/staffData/set"
+
 
 
 
@@ -78,6 +80,10 @@ export default new Router({
     {
       path: '/datePick',  //我的datepick
       component: datePick
+    },
+    {
+      path: '/set',  //我的解除绑定
+      component: set
     },
   ]
 })

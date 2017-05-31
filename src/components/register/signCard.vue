@@ -1,24 +1,26 @@
 <template>
-    <div>
-      <div class="siginLeft">
-        <img :src="imgSrc.comAddress" class="avatar">
-      </div>
-      <div class="siginRight">
-        <div style="text-indent: -19%">{{infoObj.companyName}}</div>
-        <div>
-          <p class="signName"><span>{{infoObj.deptName}}</span> <span>{{oneselfData.name}}</span></p>
-          <div class="signImg"><img :src="imgSrc.shezhiBackground" /></div>
-        </div>
-        <div class="signTitle">{{infoObj.position}}</div>
-      </div>
-      <div>
-        <mt-button
-          type="primary"
-          style="background-color: rgb(139,156,172);width: 97%;margin-top: 2rem;"
-          @click="handerSign"
-        >签到打卡
+    <div >
+     <div style="">
+       <div class="siginLeft">
+         <img :src="imgSrc.comAddress" class="avatar">
+       </div>
+       <div class="siginRight">
+         <div style="text-indent: -19%">{{infoObj.companyName}}</div>
+         <div>
+           <p class="signName"><span>{{infoObj.deptName}}</span> <span>{{oneselfData.name}}</span></p>
+           <div class="signImg" @click="routerMyData"><img :src="imgSrc.shezhiBackground" /></div>
+         </div>
+         <div class="signTitle">{{infoObj.position}}</div>
+       </div>
+       <div>
+         <mt-button
+           type="primary"
+           style="background-color: rgb(139,156,172);width: 97%;margin-top: 2rem;"
+           @click="handerSign"
+         >签到打卡
         </mt-button>
-      </div>
+       </div>
+     </div>
       <div style="margin-top: 3rem;">
         <a  class="mint-cell" v-for="(item,index) in arryName" @click="changeList(index)">
           <div class="mint-cell-wrapper">
@@ -154,6 +156,9 @@ let oneselfData={};
           }
 
       },
+      routerMyData(){
+        this.$router.push({path:'/MyData'});
+      },
 
     },
 
@@ -165,6 +170,13 @@ let oneselfData={};
 </script>
 
 <style scoped>
+  /*.mint-cell-title:before*/
+  /*{*/
+    /*content:"台词：-";*/
+    /*background-color:yellow;*/
+    /*color:red;*/
+    /*font-weight:bold;*/
+  /*}*/
 .siginLeft{
   display: inline-block;
   width: 5.2rem;
