@@ -16,13 +16,13 @@
         <div style="display: flex">
           <div style="flex: 2">
             <div style="height: 1.8rem">
-              <!--<img :src="imgSrc.doIcon" class="avatar">-->
+              <img :src="imgSrc.doIcon" class="avatar">
             </div>
             <div style="height: 1.5rem">工作台</div>
           </div>
           <div style="flex: 2">
             <div style="height: 1.8rem">
-              <!--<img :src="imgSrc.setIcon" class="avatar">-->
+              <img :src="imgSrc.setIcon" class="avatar">
             </div>
             <div style="height: 1.5rem">设置</div>
           </div>
