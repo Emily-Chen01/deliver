@@ -195,7 +195,7 @@
               },
               selected: '1',
               selectedData:0,
-              selectedDataApply:'0',
+              selectedDataApply:0,
               selectedDataApproval:0,
               pickerValue:'',
 //              options: [

@@ -168,7 +168,7 @@
             <div>
               <mt-button type="default" class="toDaKaStatusQj" v-show="toDownAbsenteeismStatus" @click="submitApplyRouter">
                 <!--absenteeismStatus  旷工-->
-                提交请假/外出申请
+                提1交请假/外出申
               </mt-button>
               <mt-button type="default" class="toDaKaStatusAdd" v-show="toDownAddTimeStatus" @click="submitApplyRouter">
                 <!--absenteeismStatus  旷工-->

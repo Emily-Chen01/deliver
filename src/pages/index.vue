@@ -158,7 +158,7 @@ export default {
         this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);
         console.log(response);
-        this.handerList(1); //提交的时候验证下是否有过绑定手机
+//        this.handerList(1); //提交的时候验证下是否有过绑定手机
       }, response => {
         console.log( 'error callback');
       });

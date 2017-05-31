@@ -392,10 +392,13 @@
             }
           this.$http.post('/api/v1.0/client/updateStaff',param).then(response => {
               console.log('修改个人资料');
+              if(response.code==200){
                 Toast({
                   message: '个人资料保存成功',
                   iconClass: 'icon icon-success'
                 })
+              }
+
             }, response => {
               console.log( 'error callback');
             });
