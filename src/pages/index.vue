@@ -205,6 +205,7 @@ export default {
                     });
                   }
                 }else{
+                    alert('进入多公司')
                   this.handerCome(); //如果不是只有一个公司进行选择公司
 
                 }
