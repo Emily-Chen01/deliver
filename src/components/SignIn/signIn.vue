@@ -455,7 +455,7 @@
 
           //经纬度传值start
             this.searchLocationArray=response.body.result.locations;
-            alert('初始加载'+this.searchLocationArray);
+//            alert('初始加载'+this.searchLocationArray);
           //经纬度传值end
 
           //时间赋值开始
@@ -999,7 +999,7 @@
 
                       let arrayLonglat = self.searchLocationArray;
                       console.log('查询出的经纬度'+arrayLonglat);
-                      alert('查出的数据里面'+self.searchLocationArray);
+//                      alert('查出的数据里面'+self.searchLocationArray);
 
                       for (let i = 0; i < arrayLonglat.length; i++) {
 
