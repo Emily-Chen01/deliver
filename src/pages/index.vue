@@ -93,7 +93,7 @@ export default {
         return;
       }
         this.setCookie('openId',openID,365);
-        alert('openid修改过的'+this.getCookie('openId'));
+        console.log('openid修改过的'+this.getCookie('openId'));
 
 
 
