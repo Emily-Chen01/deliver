@@ -16,62 +16,90 @@
       <div style="width: 100%;height: 0.1rem;background: #cccccc;margin: 1rem 0"></div>
       <div v-show="zcToUpShow">
         <div>
-          <div class="toWorkLeft"><div>上</div></div>
+          <div class="toWorkLeft">
+            <div>上</div>
+          </div>
           <div class="toWorkRight">
             <div class="toWorkRightTimeSpan">上班时间</div>
             <div class="toWorkRightTimeSpan">
               {{initToTime}}
+
+
             </div>
             <div class="toWorkRightTime" style="position: relative">
               <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
                 {{clickStaus}}
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondQ" v-show="isYellow">
                 区域外
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondQ" v-show="lateStatusAddW">
                 <!--区域外+迟到显示-->
                 区域外
+
+
               </mt-button>
 
               <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatus">
                 <!--lateStatus-->
                 迟到了
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatusTo">
                 <!--lateStatus-->
                 迟到了
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondK" v-show="absenteeismStatus">
                 <!--absenteeismStatus-->
                 旷工
+
+
               </mt-button>
             </div>
             <div style="width: 17rem">
               <div v-show="initDaKaRecord">
                 <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
                 地理位置：范围内
+
+
               </div>
               <div v-show="initDaKaRecordWeiZhi">
                 <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
                 地理位置：范围内
+
+
               </div>
               <div>
                 <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter">
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
+
+
                 </mt-button>
                 <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus2" @click="submitApplyRouter">
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
+
+
                 </mt-button>
                 <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter">
                   <!--lateStatus  迟到块-->
                   忘打卡？
+
+
                 </mt-button>
                 <mt-button type="default" class="toDaKaStatusWj" v-show="tokuangWdk" @click="submitApplyRouter">
                   <!--lateStatus  迟到块-->
                   忘打卡？
+
+
                 </mt-button>
               </div>
             </div>
@@ -80,45 +108,65 @@
       </div>
       <div v-show="zcDownShow">
         <div>
-          <div class="toWorkLeft"><div>上 </div></div>
+          <div class="toWorkLeft">
+            <div>上 </div>
+          </div>
           <div class="toWorkRight">
             <div class="toWorkRightTimeSpan">上1班时间</div>
             <div class="toWorkRightTimeSpan">
               {{initToTime}}
+
+
             </div>
             <div class="toWorkRightTime" style="position: relative">
               <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
                 {{clickStaus}}
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondQ" v-show="isYellow">
                 区域外
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondQ" v-show="lateStatusAddW">
                 <!--区域外+迟到显示-->
                 区域外
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatus">
                 <!--lateStatus-->
                 迟到了
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondK" v-show="absenteeismStatus">
                 <!--absenteeismStatus-->
                 旷工1
+
+
               </mt-button>
             </div>
             <div style="width: 17rem">
               <div v-show="initDaKaRecord">
                 <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
                 地理位置：范围内
+
+
               </div>
               <div>
                 <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter">
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
+
+
                 </mt-button>
                 <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter">
                   <!--lateStatus  迟到块-->
                   忘打卡？
+
+
                 </mt-button>
               </div>
             </div>
@@ -128,11 +176,15 @@
       <div v-show="zcDownShowSpan">
         <div style="margin-top: 7rem">
           <!--上面的top原有是5rem 5-16晚改-->
-          <div class="toWorkLeft"><div>下</div></div>
+          <div class="toWorkLeft">
+            <div>下</div>
+          </div>
           <div class="toWorkRight">
             <div class="toWorkRightTimeSpan">下2班时间</div>
             <div class="toWorkRightTimeSpan">
               {{goToTime}}
+
+
             </div>
             <div class="toWorkRightTime" style="position: relative">
               <!--<mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">-->
@@ -140,39 +192,56 @@
               <!--</mt-button>-->
               <mt-button type="default" class="toDaKaStatus" v-show="initDownRecord">
                 {{clickStaus}}
+
+
               </mt-button>
               <mt-button type="default"
                          style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:5.5rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.3rem;border-radius: 8px"
                          v-show="leaveEarly">
                 早退
 
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondQ" v-show="toDownLateStatusAddW">
                 <!--区域外+迟到显示-->
                 区域外
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondC" v-show="toDownLateStatus">
                 <!--lateStatus-->
                 迟到了
+
+
               </mt-button>
               <mt-button type="default"
                          class="addTimeTotleClass"
                          v-show="overTime">
                 加班+{{addtime}}小时
+
+
               </mt-button>
             </div>
             <div style="width: 12rem">
               <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
               地理位置：范围内
+
+
             </div>
             <div>
-              <mt-button type="default" class="toDaKaStatusQj" v-show="toDownAbsenteeismStatus" @click="submitApplyRouter">
+              <mt-button type="default" class="toDaKaStatusQj" v-show="toDownAbsenteeismStatus"
+                         @click="submitApplyRouter">
                 <!--absenteeismStatus  旷工-->
                 提1交请假/外出申
+
+
               </mt-button>
               <mt-button type="default" class="toDaKaStatusAdd" v-show="toDownAddTimeStatus" @click="submitApplyRouter">
                 <!--absenteeismStatus  旷工-->
                 加班申请
+
+
               </mt-button>
             </div>
           </div>
@@ -180,11 +249,11 @@
       </div>
       <div style="clear:both;"></div>
       <div class="clickClass">
-        <div   v-show="daKaHide" style="position: absolute; top:-2.5rem;left:-2.6rem;width: 14rem;height: 14rem">
-          <img  v-show="toUp" :src="imgSrc.bg" style="width: 13rem;height: 13rem;line-height: 13rem" >
+        <div v-show="daKaHide" style="position: absolute; top:-2.5rem;left:-2.6rem;width: 14rem;height: 14rem">
+          <img v-show="toUp" :src="imgSrc.bg" style="width: 13rem;height: 13rem;line-height: 13rem">
         </div>
         <div style="position: relative" v-show="daKaHide">
-          <mt-button type="primary"  v-show="toUp" @click="handerClickEvent">
+          <mt-button type="primary" v-show="toUp" @click="handerClickEvent">
             <div>
               <p class="clickClassUp" v-show="toClickSpan">上班打卡 </p>
               <p class="clickClassUp" v-show="downClickSpan">下班打卡 </p>
@@ -223,38 +292,52 @@
                            style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                            v-show="initDaKaRecord">
                   打卡正常
+
+
                 </mt-button>
                 <mt-button type="default"
                            style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                            v-show="initDownRecord">
                   打卡正常
+
+
                 </mt-button>
 
                 <mt-button type="default"
                            style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                            v-show="lateStatus">
                   您迟到了
+
+
                 </mt-button>
                 <mt-button type="default"
                            style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                            v-show="absenteeismStatus">
                   旷工打卡
+
+
                 </mt-button>
                 <mt-button type="default"
                            style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 7.4rem;"
                            v-show="isYellowAddQ">
                   <!--迟到+区域外-->
                   区域外
+
+
                 </mt-button>
                 <mt-button type="default"
                            style=" width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
                            v-show="leaveEarly">
                   早退
+
+
                 </mt-button>
                 <mt-button type="default"
                            style="width: 11rem;height: 2.5rem;position: absolute;right: 0.5rem;top: 4.6rem;"
                            v-show="overTime">
                   加班+{{addTimeAlert}}小时
+
+
 
                 </mt-button>
               </div>
@@ -269,7 +352,7 @@
           </mt-popup>
         </div>
       </div>
-      <baidu-map :center="center" @ready="handler" ></baidu-map>
+      <baidu-map :center="center" @ready="handler"></baidu-map>
       <!--使用地图 进行测距是否在区域为外-->
     </div>
   </div>
@@ -278,7 +361,7 @@
 
   import {Toast, MessageBox, Popup} from 'mint-ui';
   let timer1 = null;
-  let jwresult={"lat":0.0, "lng":0.0};
+  let jwresult = {"lat": 0.0, "lng": 0.0};
   export default {
     data(){
       return {
@@ -328,22 +411,25 @@
         addtime: 1.5,
         sumNumber: '',
         imgSrc: {
-          comAddress:  require('../../assets/logo.png'),
-          shezhiBackground:  require('../../assets/shezhi.png'),
+          comAddress: require('../../assets/logo.png'),
+          shezhiBackground: require('../../assets/shezhi.png'),
           daKaPostionIcon: require('../../assets/weizhi.png'),
           daKaIcon: require('../../assets/dakachenggong.png'),
           bg: require('../../assets/0_gif.gif'),
         },
         clickStaus: '打卡正常',
         //下面是新增每种少的状态变量
-        tokuangWdk:false, //上班旷工显示的忘打卡 状态
-        initDaKaRecordWeiZhi:false,
-        absenteeismStatus2:false, //提交外出申请2span
-        lateStatusTo:false, //上班的迟到状态
-        addTimeAlert:'', //alert加班时间
-        initDownRecord:'',//下班正常
-        toDownAddTimeStatus:'', //加班申请
-        outsideObtainValue:false, //获取的经纬=判断的值是都区域外
+        tokuangWdk: false, //上班旷工显示的忘打卡 状态
+        initDaKaRecordWeiZhi: false,
+        absenteeismStatus2: false, //提交外出申请2span
+        lateStatusTo: false, //上班的迟到状态
+        addTimeAlert: '', //alert加班时间
+        initDownRecord: '',//下班正常
+        toDownAddTimeStatus: '', //加班申请
+        outsideObtainValue: '', //获取的经纬=判断的值是都区域外
+        outsideObtainValueEr: '', //获取的经纬=判断的值是都区域外
+        searchLocationArray:[],  //查询出来的locations经纬度
+
       }
     },
     created: function () {
@@ -362,21 +448,23 @@
       doSearch(){
 //        var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
 
-                var imageString=this.getCookie('avatarImages'); //获取缓存的图片
+        var imageString = this.getCookie('avatarImages'); //获取缓存的图片
 
-        this.imgSrc.comAddress=imageString;
+        this.imgSrc.comAddress = imageString;
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
+          //经纬度传值start
+          this.searchLocationArray=response.body.result.locations;
+          //经纬度传值end
+
           //时间赋值开始
-          if(response.body.result.punchYear!==null){
-            this.year=response.body.result.punchYear;
-            this.month=response.body.result.punchMonth;
-            this.data=response.body.result.punchDate;
+          if (response.body.result.punchYear !== null) {
+            this.year = response.body.result.punchYear;
+            this.month = response.body.result.punchMonth;
+            this.data = response.body.result.punchDate;
           }
 
-
           //时间赋值结束
-
 
 
           console.log('初始化上班已经打卡');
@@ -387,33 +475,28 @@
           this.toDownKaStatusIsOutsideInit = response.body.result.owOutside; //下班是否在区域外
 
 
-          if(response.body.result.overTime!==null){
-            this.$nextTick(()=> {
+          if (response.body.result.overTime !== null) {
+            this.$nextTick(() => {
               this.addtime = response.body.result.overTime;
             });
           }
           console.log(this.addtime);
 
-          if(response.body.result.twTime){
-            this.toClickSpan=false;
-            this.downClickSpan=true;
+          if (response.body.result.twTime) {
+            this.toClickSpan = false;
+            this.downClickSpan = true;
           }
           console.log('查询后的结果' + this.toDaKaStatusIsInit);
           console.log('查询后的结果111' + this.toDownKaStatusIsInit);
           console.log('查询后的结果' + this.toDownKaStatusIsOutsideInit);
 
 
-
-
-
-          if(response.body.result.twTime!==null){
+          if (response.body.result.twTime !== null) {
             var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/上|午/g, "").replace(/日/g, " ");
             this.initToTime = zhuan.substring(9);//原有是8
           }
           var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|下|午/g, "").replace(/日/g, " ");
           this.goToTime = zhuan.substring(9);
-
-
 
 
           //我知道开始
@@ -425,8 +508,8 @@
             this.alertDownSpan = false; //sapn 下班
             this.initDaKaRecord = true;
             this.lateStatus = false;
-            this.lateStatusAddW=false;
-            this.absenteeismStatus=false;//旷工隐藏
+            this.lateStatusAddW = false;
+            this.absenteeismStatus = false;//旷工隐藏
 
 
           }
@@ -435,25 +518,24 @@
             this.initDaKaRecord = false;
             this.lateStatusAddW = true;
 
-            this.tokuangWdk=false; //忘打卡隐藏
-            this.lateStatus=false; //第二个忘记打卡
-            this.lateStatusTo=true; //上班的迟到状态
-            this.$nextTick(()=>{
-              this.absenteeismStatus=false; //旷工和提交隐藏
-              this.absenteeismStatus2=true; //展示提交
+            this.tokuangWdk = false; //忘打卡隐藏
+            this.lateStatus = false; //第二个忘记打卡
+            this.lateStatusTo = true; //上班的迟到状态
+            this.$nextTick(() => {
+              this.absenteeismStatus = false; //旷工和提交隐藏
+              this.absenteeismStatus2 = true; //展示提交
             });
 
 //              alert('迟到区域外');
 
 
-
-          }  else if (this.toDaKaStatusIsInit == 1) { //迟到打卡显示
+          } else if (this.toDaKaStatusIsInit == 1) { //迟到打卡显示
             this.lateStatus = true;
             this.initDaKaRecord = false;
             this.isYellow = false;
             this.absenteeismStatus = false;
             console.log('6' + this.toDaKaStatusIsInit)
-            this.initDaKaRecordWeiZhi=true;
+            this.initDaKaRecordWeiZhi = true;
 
 
 //            alert('走了单独迟到');
@@ -467,32 +549,32 @@
             this.lateStatus = false;
 
             console.log('8' + this.toDaKaStatusIsInit);
-            this.tokuangWdk=true;
-            this.initDaKaRecordWeiZhi=true;
+            this.tokuangWdk = true;
+            this.initDaKaRecordWeiZhi = true;
 //              alert('有旷工显示');
 
           }
 
-          if(this.toDaKaStatusIsOutsideInit){ //区域外打卡
+          if (this.toDaKaStatusIsOutsideInit) { //区域外打卡
             this.lateStatusAddW = true;
-            this.initDaKaRecord=false;
-            this.initDaKaRecordWeiZhi=true;
-            this.absenteeismStatus=true;
+            this.initDaKaRecord = false;
+            this.initDaKaRecordWeiZhi = true;
+            this.absenteeismStatus = true;
 //              this.absenteeismStatus = true;//上班显示提交span
 //              this.initDaKaRecord=true;initDaKaRecord
           }
-          if(this.toDaKaStatusIsOutsideInit && this.toDaKaStatusIsInit == 0){ //区域外打卡+正常显示
+          if (this.toDaKaStatusIsOutsideInit && this.toDaKaStatusIsInit == 0) { //区域外打卡+正常显示
 
-            this.$nextTick(()=>{
+            this.$nextTick(() => {
               this.lateStatusAddW = true;
-              this.initDaKaRecord=false;
-              this.initDaKaRecordWeiZhi=true;
-              this.absenteeismStatus=false; //隐藏包含旷工和提交span
-              this.absenteeismStatus2=true;
+              this.initDaKaRecord = false;
+              this.initDaKaRecordWeiZhi = true;
+              this.absenteeismStatus = false; //隐藏包含旷工和提交span
+              this.absenteeismStatus2 = true;
 
 
-              this.tokuangWdk=false;
-              this.lateStatus=false;
+              this.tokuangWdk = false;
+              this.lateStatus = false;
 
             });
 
@@ -517,29 +599,29 @@
             }
             if (this.toDownKaStatusIsInit == 1 && this.toDownKaStatusIsOutsideInit) { //早退+区域外打卡显示
 //            alert('早退+区域外');
-              this.$nextTick(()=>{
+              this.$nextTick(() => {
                 this.zcDownShowSpan = true; //下班总线所展示的所有文字
                 this.toDownAbsenteeismStatus = true; //下班提交请假span
                 this.toDownLateStatus = false; //下班状态span 迟到
                 this.leaveEarly = true; //下班早退
-                this.toDownLateStatusAddW=true; //区域外早退
+                this.toDownLateStatusAddW = true; //区域外早退
 
 
               });
 
 
-            }else   if (this.toDownKaStatusIsInit == 1) { //早退打卡显示
+            } else if (this.toDownKaStatusIsInit == 1) { //早退打卡显示
               this.zcDownShowSpan = true; //下班总线所展示的所有文字
               this.leaveEarly = true; //下班早退
-              this.toDownAbsenteeismStatus=true;
+              this.toDownAbsenteeismStatus = true;
 //              alert('我是早退');
 
             }
-            if ( this.toDownKaStatusIsOutsideInit) { //区域外打卡显示
+            if (this.toDownKaStatusIsOutsideInit) { //区域外打卡显示
 //              alert('初始化区域外');
-              this.$nextTick(()=>{
-                this.toDownLateStatusAddW=true;
-                this.initDownRecord=false
+              this.$nextTick(() => {
+                this.toDownLateStatusAddW = true;
+                this.initDownRecord = false
 
               });
             }
@@ -549,13 +631,13 @@
               this.toDownAbsenteeismStatus = false; //下班提交请假span
               this.overTime = true;
               this.zcDownShowSpan = true;
-              this.toDownAddTimeStatus=true;
+              this.toDownAddTimeStatus = true;
               console.log('8' + this.toDaKaStatusIsInit)
             }
             if (this.toDownKaStatusIsInit == 2 && this.toDownKaStatusIsOutsideInit) { //加班+区域外打卡显示
 //              alert('初始化加班+区域外');
-              this.$nextTick(()=>{
-                this.toDownLateStatusAddW=true;
+              this.$nextTick(() => {
+                this.toDownLateStatusAddW = true;
 
               });
             }
@@ -597,7 +679,6 @@
       handerClickEvent(){  //打卡按钮   上班或下班
 
 
-
         MessageBox.confirm('“HR SAAS系统”，要使用你的地理位置，是否允许？').then(action => {
           let updakaObj;
           this.currentTime();
@@ -614,14 +695,15 @@
 //          } else {
 //            alert("不能重复打卡");
 //          }
+          alert('this.outsideObtainValue' + this.outsideObtainValue);
 
           if (this.toDaKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"twOutside":this.toDaKaStatusIsOutsideInit?true:0}   //this.outsideObtainValue
+              "record": {"twOutside": this.outsideObtainValue ? true : 0}   //this.outsideObtainValue toDaKaStatusIsOutsideInit
             }
           } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}//0  'true'  //this.outsideObtainValue
+              "record": {"owOutside": this.outsideObtainValue ? true : 0}//0  'true'  //this.outsideObtainValue  toDownKaStatusIsOutsideInit
             }
           }
 //          else {
@@ -639,7 +721,7 @@
             this.toDownKaStatusIs = response.body.result.owStatus;//下班状态赋值
             this.toDownKaStatusIsOutside = response.body.result.owOutside; //下班是否在区域外
 
-            this.addTimeAlert=response.body.result.overTime; //alert 加班时间
+            this.addTimeAlert = response.body.result.overTime; //alert 加班时间
 
             console.log('上1111下', this.toDaKaStatusIsOutside + '和' + this.toDownKaStatusIsInit);
 
@@ -669,44 +751,44 @@
                 this.toUp = true;
                 this.downClickSpan = true;
                 this.toUpYuanShow = false
-                this.lateStatusAddW=false;
-              }  if (this.toDaKaStatusIs == 1) { //迟到打卡显示
+                this.lateStatusAddW = false;
+              }
+              if (this.toDaKaStatusIs == 1) { //迟到打卡显示
                 this.lateStatus = true;
                 this.isYellow2 = true;
                 this.initDaKaRecord = false;
-                this.daKaHide=true;
-                this.downClickSpan=true;
-                this.toUp=true;
-                this.toUpYuanShow=false;
+                this.daKaHide = true;
+                this.downClickSpan = true;
+                this.toUp = true;
+                this.toUpYuanShow = false;
 
 
               }
               if (this.toDaKaStatusIs == 2) { //旷工打卡显示
                 this.absenteeismStatus = true;
-                this.daKaHide=true;
-                this.toUp=true;
-                this.Obtain=false;
-                this.downClickSpan=true;
-                this.toClickSpan=false;
-                this.tokuangWdk=true;
+                this.daKaHide = true;
+                this.toUp = true;
+                this.Obtain = false;
+                this.downClickSpan = true;
+                this.toClickSpan = false;
+                this.tokuangWdk = true;
                 //测试过
 
               }
-              if(this.toDaKaStatusIsOutside){ //区域外   条件？？？？？
-                this.isYellowAddQ=true; //alert区域外
+              if (this.toDaKaStatusIsOutside) { //区域外   条件？？？？？
+                this.isYellowAddQ = true; //alert区域外
 
               }
-              if(this.toDaKaStatusIsOutside && this.toDaKaStatusIs == 0){ //区域外   条件？？？？？
-                this.isYellowAddQ=true; //alert区域外
-                this.lateStatusAddW=true; //区域外span
+              if (this.toDaKaStatusIsOutside && this.toDaKaStatusIs == 0) { //区域外   条件？？？？？
+                this.isYellowAddQ = true; //alert区域外
+                this.lateStatusAddW = true; //区域外span
 
-                this.initDaKaRecord=false;
-                this.isYellow2=true;
+                this.initDaKaRecord = false;
+                this.isYellow2 = true;
 //                alert('也是区域外+正常');
                 console.log('同事区域外');
               }
               this.toClickSpan = false;
-
 
 
             } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) { //下班打卡
@@ -717,7 +799,7 @@
               this.alertToSpan = false;//sapn 上班
               this.alertDownSpan = true; //sapn 下班
               this.popupVisible = true; //弹出的模态框打卡
-              this.overTime=false; //xinjia5-16 17:34加
+              this.overTime = false; //xinjia5-16 17:34加
               console.log(response.body);
 //              var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
               var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|下|午/g, "").replace(/日/g, " ");
@@ -729,29 +811,30 @@
                 this.initDownRecord = true;
                 this.absenteeismStatus = false;
                 this.lateStatus = false;
-                this.isYellow2=false;
+                this.isYellow2 = false;
                 console.log('166' + this.toDownKaStatusIs)
                 this.overTime = false; //加班隐藏
 
 
-              }  if (this.toDownKaStatusIs == 1) { //早退打卡显示
+              }
+              if (this.toDownKaStatusIs == 1) { //早退打卡显示
                 this.leaveEarly = true;
                 console.log('167' + this.toDownKaStatusIs);
-                this.toDownAbsenteeismStatus=true; //早退内容显示提交请假5-16 17:39
-                this.overTime=false;
-                this.absenteeismStatus=false;
-                this.isYellow2=true;
-
+                this.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                this.overTime = false;
+                this.absenteeismStatus = false;
+                this.isYellow2 = true;
 
 
                 alert('早退');
 
-              }  if (this.toDownKaStatusIsOutside) { //区域外打卡显示
+              }
+              if (this.toDownKaStatusIsOutside) { //区域外打卡显示
 
                 this.isYellow2 = true;
                 this.isYellowAddQ = true;
 
-                this.overTime=false;
+                this.overTime = false;
                 console.log('1688' + this.toDownKaStatusIs)
 
                 console.log('区域外');
@@ -760,25 +843,25 @@
               if (this.toDownKaStatusIs == 2 && this.toDownKaStatusIsOutside) { //加班+区域外打卡显示
                 alert('加班+区域外');
 
-                this.lateStatus=false;
-                this.overTime=true;
+                this.lateStatus = false;
+                this.overTime = true;
 
-              }else if (this.toDownKaStatusIs == 2) { //加班打卡显示
+              } else if (this.toDownKaStatusIs == 2) { //加班打卡显示
 
                 this.lateStatus = false;
                 this.overTime = true;
                 console.log('169' + this.toDownKaStatusIs);
-                this.zcDownShowSpan=true;
-                this.zcToUpShow=true;
-                this.isYellowAddQ=false;
-                this.isNormal=true;
-                this.absenteeismStatus=false;
-                this.isYellow2=false;
+                this.zcDownShowSpan = true;
+                this.zcToUpShow = true;
+                this.isYellowAddQ = false;
+                this.isNormal = true;
+                this.absenteeismStatus = false;
+                this.isYellow2 = false;
 
                 alert('加班');
 
               }
-              this.toUp=false;
+              this.toUp = false;
 
             }
 
@@ -793,14 +876,14 @@
 
       },
       knowFunction(){
-        this.popupVisible=false;
+        this.popupVisible = false;
 
         if (this.toDaKaStatusIsInit == null) {//上班打卡
-          this.popupVisible=false;
+          this.popupVisible = false;
 //          this.winReload();
         }
-        if(this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null){
-          this.popupVisible=false;
+        if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
+          this.popupVisible = false;
 //          alert('下班知道');
 
         }
@@ -811,79 +894,75 @@
 //        this.winReload();//查询后执行刷新页面
 
 
-
       },
-      winReload:function(cond){
+      winReload: function (cond) {
         window.location.reload();
       },
 
       //提交申请跳转路由开始
 
       submitApplyRouter(){
-        this.$router.push({path:'/leave'});
+        this.$router.push({path: '/leave'});
       },
       //提交申请跳转路由结束
-
-
-
-
 
 
       //地图微信获取经纬度 转换经纬度 地图测距开始
 
 //
       handler ({BMap, map}) {
-      console.log(BMap, map);
-      console.log(this.latitude);
-      console.log(this.latitude);
-      console.log(this.latitude);
-      this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
-        console.log(response.body.result);
-        this.t1=response.body.result.appid;
-        console.log(this.t1);
-        this.t2=response.body.result.timestamp;
-        this.t3=response.body.result.nonceStr;
-        this.t4=response.body.result.signature;
-        this.yyy=true;
+        console.log(BMap, map);
+        console.log(this.latitude);
+        console.log(this.latitude);
+        console.log(this.latitude);
+        this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
+          console.log(response.body.result);
+          this.t1 = response.body.result.appid;
+          console.log(this.t1);
+          this.t2 = response.body.result.timestamp;
+          this.t3 = response.body.result.nonceStr;
+          this.t4 = response.body.result.signature;
+          this.yyy = true;
 
-        wx.config({
-          debug: false,
-          appId: this.t1,
-          timestamp: this.t2,
-          nonceStr: this.t3,
-          signature: this.t4,
-          jsApiList: [
-            'getLocation'
-          ]
+          wx.config({
+            debug: false,
+            appId: this.t1,
+            timestamp: this.t2,
+            nonceStr: this.t3,
+            signature: this.t4,
+            jsApiList: [
+              'getLocation'
+            ]
+          });
+
+
+        }, response => {
+          console.log('error callback');
         });
 
 
-      }, response => {
-        console.log( 'error callback');
-      });
+        wx.ready(function () {
+          wx.error(function (res) {
+            alert('wx.error错误信息' + res)
+            console.log(res)
+            console.log(res)
 
+          });
+          wx.checkJsApi({
+            jsApiList: [
+              'getLocation'
+            ],
+            success: function (res) {
+              wx.getLocation({
+                type: 'gcj02',
+                success: function (res) {
+                  this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+                  this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+                  var speed = res.speed; // 速度，以米/每秒计
+                  var accuracy = res.accuracy; // 位置精度
+                  alert('手机获取的精度'+this.longitude);
+                  alert('手机获取的维度'+this.latitude);
 
-      wx.ready(function () {
-        wx.error(function(res){
-          alert('wx.error错误信息'+res)
-          console.log(res)
-          console.log(res)
-
-        });
-        wx.checkJsApi({
-          jsApiList: [
-            'getLocation'
-          ],
-          success: function (res) {
-            wx.getLocation({
-              type:'gcj02',
-              success: function (res) {
-                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
-                var speed = res.speed; // 速度，以米/每秒计
-                var accuracy = res.accuracy; // 位置精度
-                alert(speed);
-                alert(accuracy);
 
 //             function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
 //                  var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
@@ -907,44 +986,79 @@
 //                console.log(shuzi);
 
 //                alert('纬度'+shuzi.lat+'经度'+shuzi.lng);
-                let distance=map.getDistance(new BMap.Point(120.73220002,31.26439192), new BMap.Point(this.longitude,this.latitude));
-                if(distance<500){
-                    this.outsideObtainValue=true;
-                  alert('区域内'+map.getDistance(new BMap.Point(120.73220002,31.26439192), new BMap.Point(this.longitude,this.latitude)));
-                }else{
-                    this.outsideObtainValue=false;
-                  alert('区域外'+map.getDistance(new BMap.Point(120.73220002,31.26439192), new BMap.Point(this.longitude,this.latitude)));
-                }
+                  let arrayLonglat = this.searchLocationArray;
+                  console.log('查询出的经纬度'+arrayLonglat);
 
-              },
-              cancel: function (res) {
-                alert('用户拒绝授权获取地理位置');
-              }
-            });
+                  for (let i = 0; i < arrayLonglat.length; i++) {
+
+                    let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(this.longitude, this.latitude));
+
+                    if (distance < arrayLonglat[i].SCOPE) {
+                      let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(this.longitude, this.latitude));
+                      alert('区域内' +juli );
+                      this.outsideObtainValue = false;
+                      break;
+                    } else {
+                      this.outsideObtainValue = true;
+                      alert('区域外' + map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(this.longitude, this.latitude)));
+                    }
+
+                  }
+
+
+
+                },
+                cancel: function (res) {
+                  alert('用户拒绝授权获取地理位置');
+                }
+              });
 //          alert('微信版本！');
-            // alert(JSON.stringify(res));
-            // alert(JSON.stringify(res.checkResult.getLocation));
-            if (res.checkResult.getLocation == false) {
-              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-              return;
+              // alert(JSON.stringify(res));
+              // alert(JSON.stringify(res.checkResult.getLocation));
+              if (res.checkResult.getLocation == false) {
+                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                return;
+              }
             }
-          }
+          });
+
+
         });
 
+        //临时测试
 
-      });
+//        let arrayLonglat = [
+//          {lng: 120.6548525, lat: 31.2545787441},
+//          {lng: 120.6648525, lat: 31.2645787441},
+//          {lng: 120.6348525, lat: 31.2345787441},
+//        ];
+
+//        let arrayLonglat = this.searchLocationArray;
+//        console.log('查询出的经纬度'+arrayLonglat);
+//        for (let i = 0; i < arrayLonglat.length; i++) {
+//
+//          let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(120.62084787, 31.300423891));
+//
+//          if (distance < arrayLonglat[i].SCOPE) {
+//            let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(120.62084787, 31.300423891))
+//            alert('区域内' +juli );
+//              this.outsideObtainValue = false;
+//              break;
+//          } else {
+//            this.outsideObtainValue = true;
+//            alert('区域外' + map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(120.62084787, 31.300423891)));
+//          }
+//
+//        }
+//
+//
 
 
 
 
       }
 
-
       //地图微信获取经纬度 转换经纬度 地图测距结束
-
-
-
-
 
 
     },
@@ -967,10 +1081,11 @@
     background-color: #cccccc;
     border-radius: 2.6rem;
   }
-  .avatar{
+
+  .avatar {
     width: 80%;
     display: block;
-    text-align: center!important;
+    text-align: center !important;
     /*padding-top: 0.3rem;*/
     padding: 1rem 0 0 0.7rem;
   }
@@ -1261,7 +1376,8 @@
     font-size: 0.3rem;
     border-radius: 8px
   }
-  .toDaKaStatusAdd{
+
+  .toDaKaStatusAdd {
     background-color: rgb(139, 156, 172);
     color: #ffffff;
     width: 5.8rem;
