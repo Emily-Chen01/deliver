@@ -175,7 +175,7 @@ export default {
         console.log(111);
         console.log(response);
           if(response.body.code==200){
-            this.$router.push({path:'/ManyCompany'});//进行跳转 条件还需增加5-31 19:20
+            this.$router.push({path:'/signCard'});//进行跳转 条件还需增加5-31 19:20
           };
 
 //        this.handerList(1); //提交的时候验证下是否有过绑定手机
