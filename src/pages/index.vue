@@ -1,5 +1,5 @@
 <template>
-  <div class="hello" style="padding: 8px">
+  <div class="hello" >
     <p class="h1Class">{{ msg }}</p>
     <p class="titlesSmall">{{ msgPhone }}</p>
     <div style="margin: 5rem 0 1.5rem 0;display: flex;width: 99%">
@@ -50,6 +50,7 @@ export default {
       result:{"lat":0.0, "lng":0.0},
       sumSearch:'',
       sumSearchUid:[],
+      isCompany:'',
 //      isbing:'',
 
     }
@@ -71,7 +72,7 @@ export default {
 
 
 
-
+    //获取openidstart
       var _href=window.location.href;
     console.log( window.location.href);
 
@@ -96,6 +97,7 @@ export default {
         console.log('openid修改过的'+this.getCookie('openId'));
 
 
+    //获取openid end
 
 
 
@@ -134,7 +136,43 @@ export default {
         console.log(111);
         console.log(response);
           if(response.body.code==200){
-            this.$router.push({path:'/signCard'});//进行跳转 条件还需增加5-31 19:20
+//            this.$router.push({path:'/signCard'});//进行跳转 条件还需增加5-31 19:20
+//            this.handerList();
+            this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
+                if(response.body.code==500){
+                  MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
+                  return;
+                }
+
+                if(response.body.code==200){
+                  if(response.body.result.length==1){
+                    //如果等于1就进入 signCard 点击打卡
+                    let param={
+                      "companyUid":this.sumSearchUid[0].uid,
+                    }
+                    this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => { //选择公司
+                      console.log('选择公司接口');
+//                      if(response.body.code==200){
+                      this.$router.push({path:'/signCard'});
+                      return;
+//                      }
+                    }, response => {
+                      console.log( 'error callback');
+                    });
+                  }else{
+                    this.handerCome(); //如果不是只有一个公司进行选择公司
+
+                  };
+
+                }
+
+            }, response => {
+              console.log( 'error callback');
+            });
+
+
+
+
           };
 
 //        this.handerList(1); //提交的时候验证下是否有过绑定手机
@@ -150,6 +188,7 @@ export default {
         if(number==1){//此处判断是当提交的时候判断下是否已经绑定过
           if(response.body.code==500){
             MessageBox('提示', response.body.message);
+
           }
         }
 
@@ -172,22 +211,25 @@ export default {
                 this.sumSearchUid=response.body.result;
 
                 if(response.body.result.length==1){
-                  this.sumSearch=1;
-                  if(this.sumSearch==1){  //如果等于1就进入 signCard 点击打卡
+                   //如果等于1就进入 signCard 点击打卡
                     let param={
                       "companyUid":this.sumSearchUid[0].uid,
                     }
                     this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => { //选择公司
                       console.log('选择公司接口');
-                      if(response.body.code==200){
+//                      if(response.body.code==200){
                         this.$router.push({path:'/signCard'});
-                      }
+//                      }
                     }, response => {
                       console.log( 'error callback');
                     });
-                  }
                 }else{
                   this.handerCome(); //如果不是只有一个公司进行选择公司
+
+                };
+                //添加查询是否有员工
+                if(response.body.code==500){
+                    this.isCompany=true;
 
                 }
               }, response => {

@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 8px">
+    <div >
       <!--请假申请-->
       <mt-navbar v-model="selected" class="dataTitle">
         <mt-tab-item id="1"  ><span>填写申请</span></mt-tab-item>
@@ -65,7 +65,7 @@
                     :data="data"
                     :headers="tokenHeader"
                     :max-file-size="5242880"
-                    url="api/v1.0/client/upload" >
+                    url="/api/v1.0/client/upload" >
                     <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  />
                   </vue-core-image-upload>
                 </div>
@@ -80,7 +80,7 @@
               <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
               <textarea placeholder="#请输入文字"
                         v-model="holidayModel"
-                        style=" overflow: hidden;overflow-y: scroll;width: 20rem;height: 4rem;border-radius: 4px">
+                        style=" overflow: hidden;overflow-y: scroll;width: 95%;margin:  1rem ;height: 4rem;border-radius: 4px">
             </textarea>
             </div>
 
@@ -434,28 +434,28 @@
               if(this.shengqingParamType=='0'){ //请假申请所需参数
                 params ={
                   approvalConfigUid:this.shengqingParam,//申请分类
-                  currentApprover:this.approvalTypeObj.UID?this.approvalTypeObj.UID:'',
+                  currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
                   leaveUid:this.qingjiauidParam,
                   startTime: this.startTimeValue,
                   endTime:this.endTimeValue,
-                  image:this.imagestring,
+                  image: this.imgSrc.shenFenIcon,
                   remarks:this.textareaString
                 };
               };
-            if(this.shengqingParamType=='2'){ //忘打卡或外出申请所需参数
+            if(this.shengqingParamType=='2'||this.shengqingParamType=='1'){ //忘打卡或外出申请所需参数
               params ={
                 approvalConfigUid:this.shengqingParam,//申请分类
-                currentApprover:this.approvalTypeObj.UID?this.approvalTypeObj.UID:'',
+                currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
                 startTime: this.startTimeValue,
                 endTime:this.endTimeValue,
-                image:this.imagestring,
+                image: this.imgSrc.shenFenIcon,
                 remarks:this.textareaString
               };
             };
               if( this.shengqingParamType=='3'){ //加班所需参数
                  params ={
                   approvalConfigUid:this.shengqingParam,  //申请分类
-                  currentApprover:this.approvalTypeObj.UID?this.approvalTypeObj.UID:'',
+                  currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
                   overworkTime:this.addTimeValue,
                   remarks:this.textareaString,
 
@@ -464,10 +464,10 @@
             this.$http.post('/api/v1.0/client/apply',params).then(response => { //提交请假申请
               console.log(response);
 
-              if(response.code==200){
-                alert('提交成功');
+              if(response.body.code==200){
+                alert(response.body.message);
               }else{
-                  alert(response.message);
+                  alert(response.body.message);
               }
 //              this.holidayTypeArray=response.body.result;
 //              console.log(this.holidayTypeArray);
@@ -483,7 +483,7 @@
           },
           imageuploaded(res) { //用于图片参数上传
             console.log(res);
-            this.imagestring=res.result;
+            this.imgSrc.shenFenIcon=res.result;
 //            if (res) {
 //              this.imgSrc.shenFenIcon = res.result;
 //              console.log(this.imgSrc.shenFenIcon);
@@ -561,8 +561,8 @@
 
 <style scoped>
   .hrClass{
-    width: 23.5rem;
-    margin-left:0.8rem;
+    width: 96%;
+    margin:0 0.8rem;
     height: 1px;
     background: #cccccc;
     line-height: 1px
@@ -652,9 +652,9 @@
 
   }
   .myApply{
-    width: 23.2rem;
+    width: 92%;
     min-height: 12rem;
-    margin-top: 1rem;
+    margin: 1rem 1rem 0 1rem;
     border-radius: 6px;
     border: 1px solid #cccccc;
   }

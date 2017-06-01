@@ -124,7 +124,7 @@
                       :data="data"
                       :headers="tokenHeader"
                       :max-file-size="5242880"
-                      url="api/v1.0/client/upload" >
+                      url="/api/v1.0/client/upload" >
                       <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  />
                     </vue-core-image-upload>
                   </div>
@@ -139,7 +139,7 @@
                       :data="data"
                       :max-file-size="5242880"
                       :headers="tokenHeader"
-                      url="api/v1.0/client/upload" >
+                      url="/api/v1.0/client/upload" >
                       <img width="150" :src="imgSrc.shenFenIconbei" class="CardImg"  />
                     </vue-core-image-upload>
                   </div>
@@ -322,44 +322,9 @@
       },
     },
         created: function () {
-          alert('openid111cc'+this.getCookie('openId'));
+//          alert('openid111cc'+this.getCookie('openId'));
+            this.initSearch();
 
-          this.$http.post('/api/v1.0/client/findStaff').then(response => { //查询
-
-            //岗位信息查询赋值开始
-            this.stationObj=response.body.result.record;
-            var firstWork=new Date(parseInt(this.stationObj.fristWork)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-            var zhuanWork=new Date(parseInt(this.stationObj.fristWorkTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-
-            this.stationObj.firstWork=firstWork;
-            this.stationObj.zhuanWork=zhuanWork;
-            console.log(response);
-
-            //岗位信息查询赋值结束
-
-            //个人资料查询赋值开始
-            this.myDataSearch.phone =response.body.result.mobile; //手机号
-            this.myDataSearch.city=response.body.result.nativePlace; //国家
-            this.myDataSearch.shenfeng=response.body.result.idcard; //身份证
-            this.myDataSearch.shenfengzheng=response.body.result.idcardPhoUrl; //正身份证照片
-            this.myDataSearch.shenfengbei=response.body.result.idcardPhoUrlRev;//背身份证照片
-            this.myDataSearch.gongjijin=response.body.result.accfuNum; //公积金
-            this.myDataSearch.bankcard=response.body.result.cardNumber; //银行卡号
-            this.myDataSearch.kaihuhang=response.body.result.openingBank; //开户行
-            if(response.body.result.gender){//性别
-                if(response.body.result.gender==1){
-                  this.myDataSearch.xingbie='男';
-                }else if (response.body.result.gender==0){
-                  this.myDataSearch.xingbie='女';
-                }
-            }
-
-            this.uid=response.body.result.uid;
-            //个人资料查询赋值结束
-          }, response => {
-            console.log( 'error callback');
-          });
-          console.log('ddd'+this.imgSrc.shenFenIcon);
         },
         methods: {
 
@@ -399,8 +364,10 @@
                   iconClass: 'icon icon-success'
                 })
               }
+            this.initSearch();  //提交后在查询一次
 
-            }, response => {
+
+          }, response => {
               console.log( 'error callback');
             });
 
@@ -424,6 +391,44 @@
               console.log(this.imgSrc.shenFenIconbei);
             }
 
+          },
+          initSearch(){
+            this.$http.post('/api/v1.0/client/findStaff').then(response => { //查询
+
+              //岗位信息查询赋值开始
+              this.stationObj=response.body.result.record;
+              var firstWork=new Date(parseInt(this.stationObj.fristWork)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+              var zhuanWork=new Date(parseInt(this.stationObj.fristWorkTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+
+              this.stationObj.firstWork=firstWork;
+              this.stationObj.zhuanWork=zhuanWork;
+              console.log(response);
+
+              //岗位信息查询赋值结束
+
+              //个人资料查询赋值开始
+              this.myDataSearch.phone =response.body.result.mobile; //手机号
+              this.myDataSearch.city=response.body.result.nativePlace; //国家
+              this.myDataSearch.shenfeng=response.body.result.idcard; //身份证
+              this.myDataSearch.shenfengzheng=response.body.result.idcardPhoUrl; //正身份证照片
+              this.myDataSearch.shenfengbei=response.body.result.idcardPhoUrlRev;//背身份证照片
+              this.myDataSearch.gongjijin=response.body.result.accfuNum; //公积金
+              this.myDataSearch.bankcard=response.body.result.cardNumber; //银行卡号
+              this.myDataSearch.kaihuhang=response.body.result.openingBank; //开户行
+              if(response.body.result.gender){//性别
+                if(response.body.result.gender==1){
+                  this.myDataSearch.xingbie='男';
+                }else if (response.body.result.gender==0){
+                  this.myDataSearch.xingbie='女';
+                }
+              }
+
+              this.uid=response.body.result.uid;
+              //个人资料查询赋值结束
+            }, response => {
+              console.log( 'error callback');
+            });
+            console.log('ddd'+this.imgSrc.shenFenIcon);
           }
 
         },
@@ -442,8 +447,8 @@
     margin-bottom: -3px;
   }
   .hrClass{
-    width: 23.5rem;
-    margin-left:0.8rem;
+    width: 96%;
+    margin:0 0.8rem;
     height: 1px;
     background: #cccccc;
     line-height: 1px
