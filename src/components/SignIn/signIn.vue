@@ -454,7 +454,8 @@
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
           //经纬度传值start
-          this.searchLocationArray=response.body.result.locations;
+            this.searchLocationArray=response.body.result.locations;
+            alert('初始加载'+this.searchLocationArray);
           //经纬度传值end
 
           //时间赋值开始
@@ -940,7 +941,7 @@
           console.log('error callback');
         });
 
-
+        let self = this;
         wx.ready(function () {
           wx.error(function (res) {
             alert('wx.error错误信息' + res)
@@ -953,15 +954,16 @@
               'getLocation'
             ],
             success: function (res) {
+
               wx.getLocation({
                 type: 'gcj02',
                 success: function (res) {
-                  this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                  this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+                  self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
                   var speed = res.speed; // 速度，以米/每秒计
                   var accuracy = res.accuracy; // 位置精度
-                  alert('手机获取的精度'+this.longitude);
-                  alert('手机获取的维度'+this.latitude);
+//                  alert('手机获取的精度'+self.longitude);
+//                  alert('手机获取的维度'+self.latitude);
 
 
 //             function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
@@ -986,26 +988,36 @@
 //                console.log(shuzi);
 
 //                alert('纬度'+shuzi.lat+'经度'+shuzi.lng);
-                  let arrayLonglat = this.searchLocationArray;
-                  console.log('查询出的经纬度'+arrayLonglat);
-
-                  for (let i = 0; i < arrayLonglat.length; i++) {
-
-                    let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(this.longitude, this.latitude));
-
-                    if (distance < arrayLonglat[i].SCOPE) {
-                      let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(this.longitude, this.latitude));
-                      alert('区域内' +juli );
-                      this.outsideObtainValue = false;
-                      break;
-                    } else {
-                      this.outsideObtainValue = true;
-                      alert('区域外' + map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(this.longitude, this.latitude)));
-                    }
-
-                  }
 
 
+                  self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
+
+                      //经纬度传值start
+                      self.searchLocationArray=response.body.result.locations;
+                      //经纬度传值end
+
+
+                      let arrayLonglat = self.searchLocationArray;
+                      console.log('查询出的经纬度'+arrayLonglat);
+                      alert('查出的数据里面'+self.searchLocationArray);
+
+                      for (let i = 0; i < arrayLonglat.length; i++) {
+
+                        let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
+
+                        if (distance < arrayLonglat[i].SCOPE) {
+                          let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
+                          alert('区域内' +juli );
+                          self.outsideObtainValue = false;
+                          break;
+                        } else {
+                          self.outsideObtainValue = true;
+                          alert('区域外' + map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude)));
+                        }
+                      }
+                  }, response => {
+                    console.log('error callback');
+                  });
 
                 },
                 cancel: function (res) {

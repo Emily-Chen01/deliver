@@ -68,29 +68,6 @@ export default {
 //    })();
 
 
-    //以上是获取经纬度
-//    this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
-//      console.log(response.body.result.locations)
-//      for(let i=0;i<response.body.result.locations.length;i++){
-//        this.circlePath={
-//          center: {
-//            lng: response.body.result.locations[i].LONGITUDE,
-//            lat: response.body.result.locations[i].LATITUDE,
-//          },
-//          radius: response.body.result.locations[i].SCOPE
-//        }
-//      }
-//    }, response => {
-//      console.log('findPunchCardLog error callback');
-//    });
-
-
-
-
-
-
-
-
 
 
 
@@ -124,30 +101,12 @@ export default {
 
 
 
-//      alert('获取的真实openid'+openID);
-//      localStorage.setItem('openId', openID);
-
-
-//      setCookie('openId',openID,365);
-//          alert('openid111cc'+getCookie('openId'));
-
-
-
-//    alert('openid修改过的ddddd'+this.getCookie('openId'));
-
 
 
   },
-//  watch:{
-//    latitude:function(val,oldVal){
-//        if(val!==undefined&&oldVal==undefined){
-//            this.handler();
-//        }
-//
-//    },
 
 
-//  },
+
   methods: {
     handerClick(){
 //      localStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
