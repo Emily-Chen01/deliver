@@ -1,30 +1,62 @@
 <template>
     <div >
-     <div style="">
-       <div class="siginLeft">
-         <img :src="imgSrc.comAddress" class="avatar">
-       </div>
-       <div class="siginRight">
-         <div style="text-indent: -19%">{{infoObj.companyName}}</div>
-         <div>
-           <p class="signName"><span>{{infoObj.deptName}}</span> <span>{{oneselfData.name}}</span></p>
-           <div class="signImg" @click="routerMyData"><img :src="imgSrc.shezhiBackground" /></div>
+     <div style="background: rgb(32,162,255)">
+       <div style="padding-top: 1rem;height: 8rem;color:#ffffff;display: flex;padding-left: 1rem">
+         <div class="siginLeft">
+           <img :src="imgSrc.comAddress" class="avatarTop">
          </div>
-         <div class="signTitle">{{infoObj.position}}</div>
+         <div class="siginRight" style="position: relative">
+           <div>
+             <div class="signTitle">{{oneselfData.name}}</div>
+             <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
+             <div style="display: flex; border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.5rem;height: 2rem; background: rgb(26,128,203); top:0;right:0" @click="routerMyData">
+               <img style="flex: 1;display: block;width: 35%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
+               <div style="font-size: 0.8rem;flex: 3;padding-top: 0.4rem">设置</div>
+             </div>
+           </div>
+           <div class="companyNameClass">{{infoObj.companyName}}</div>
+
+         </div>
+
        </div>
-       <div>
+       <div style="padding-bottom: 2rem;">
          <mt-button
            type="primary"
-           style="background-color: rgb(139,156,172);width: 97%;margin-top: 2rem;"
+           style="background-color: #57b9ff;width: 97%;"
            @click="handerSign"
          >签到打卡
         </mt-button>
        </div>
+
      </div>
-      <div style="margin-top: 3rem;">
-        <a  class="mint-cell" v-for="(item,index) in arryName" @click="changeList(index)">
+      <div style="margin-top: 1rem;">
+        <!--<a  class="mint-cell" v-for="(item,index) in arryName" @click="changeList(index)">-->
+          <!--<div class="mint-cell-wrapper">-->
+            <!--<div class="mint-cell-title">&lt;!&ndash;&ndash;&gt; <div><i class="indexicon icon-toast"></i> <span>{{item.name}}</span></div></div>-->
+            <!--<div class="mint-cell-value is-link"><span></span></div>-->
+          <!--</div>-->
+          <!--<div class="mint-cell-right"></div>-->
+          <!--<i class="mint-cell-allow-right"></i>-->
+        <!--</a>-->
+        <a  class="mint-cell" @click="changeList(0)">
           <div class="mint-cell-wrapper">
-            <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>{{item.name}}</span></div></div>
+            <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>请假申请</span></div></div>
+            <div class="mint-cell-value is-link"><span></span></div>
+          </div>
+          <div class="mint-cell-right"></div>
+          <i class="mint-cell-allow-right"></i>
+        </a>
+        <a  class="mint-cell" @click="changeList(1)">
+          <div class="mint-cell-wrapper">
+            <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>我的考勤</span></div></div>
+            <div class="mint-cell-value is-link"><span></span></div>
+          </div>
+          <div class="mint-cell-right"></div>
+          <i class="mint-cell-allow-right"></i>
+        </a>
+        <a  class="mint-cell" @click="changeList(2)">
+          <div class="mint-cell-wrapper">
+            <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>我的公司条</span></div></div>
             <div class="mint-cell-value is-link"><span></span></div>
           </div>
           <div class="mint-cell-right"></div>
@@ -62,16 +94,18 @@ let oneselfData={};
             companyNmae:'北京科锐国际人力资源股份有限公司',
             department:'产品部',
             position:'产品员工',
-            name:'刘易斯',
+            name:'',
 
           },
           infoObj:{},
           arryOneself:[],
           imgSrc: {
-            comAddress:  require('../../assets/logo.png'),
-            shezhiBackground:  require('../../assets/shezhi.png'),
+            comAddress:  require('../../assets/tou.png'),
+            shezhiBackground:  require('../../assets/ico_setting.png'),
             doIcon: require('../../assets/ico_workbench_2.png'),
             setIcon: require('../../assets/ico_setting_1.png'),
+            ico_leave: require('../../assets/ico_leave.png'),
+
           },
           arryName:[
             {
@@ -199,13 +233,19 @@ let oneselfData={};
 </script>
 
 <style scoped>
-  /*.mint-cell-title:before*/
-  /*{*/
+  .mint-cell-title::before
+  {
     /*content:"台词：-";*/
+    /*content: url(../../assets/ico_leave.png);*/
+    /*font-size: 0.5em;*/
+    /*background-size: 19px 20px;*/
+    /*display: inline-block;*/
     /*background-color:yellow;*/
     /*color:red;*/
     /*font-weight:bold;*/
-  /*}*/
+    /*width: 19px;*/
+    /*height: 20px;*/
+  }
 .bottomTool{
   position:fixed;
   bottom:0;
@@ -215,16 +255,18 @@ let oneselfData={};
   background: rgb(250,250,250);
 }
 .siginLeft{
-  display: inline-block;
-  width: 5.2rem;
+  flex: 1;
   height: 5.2rem;
-  background-color: #cccccc;
   border-radius: 2.6rem;
+  text-align: right;
+  background: #cccccc;
+  border: solid #ffffff 0.2rem;
 }
 .siginRight{
-  display: inline-block;
-  width: 17.5rem;
+  padding-left: 0.8rem ;
+  flex: 3;
   height: 5.2rem;
+  /*line-height: 5.2rem;*/
   font-size: 1.2rem;
 }
   .avatar{
@@ -234,12 +276,20 @@ let oneselfData={};
     /*padding-top: 0.3rem;*/
     padding: 1rem 0 0 0.7rem;
   }
+  .avatarTop{
+    width: 85%;
+    height: 90%;
+    display: block;
+    text-align: center!important;
+    padding: 0.1rem 0 0 0.5rem;
+    border-radius: 4rem;
+    z-index: 0;
+  }
   .signName{
-    display: inline-block;
-    width: 45%;
-    height: 0.5rem;
-    line-height: 0.5rem;
-    text-indent: -24%;
+    text-align: left;
+    /*width: 45%;*/
+    height: 1.8rem;
+    line-height: 1.8rem;
   }
   .signImg {
     display: inline-block;
@@ -256,10 +306,14 @@ let oneselfData={};
   top: -0.6rem;
 }
   .signTitle {
-    text-indent:-72.5%;
-    padding-left: 0.33rem;
-    height: 0.65rem;
-    line-height: 0.65rem;
+    text-align: left;
+    height: 1.8rem;
+    line-height: 1.8rem;
+  }
+  .companyNameClass{
+    text-align: left;
+    height: 1.8rem;
+    line-height: 1.8rem;
   }
 .mint-cell-title{
   background-image: -webkit-linear-gradient(top,#d9d9d9,#d9d9d9 50%,transparent 0);

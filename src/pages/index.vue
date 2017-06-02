@@ -1,8 +1,9 @@
 <template>
-  <div class="hello" >
+  <div class="hello" style="padding: 0 8px" >
+    <div class="logo"><img :src="imgSrc.bg" style="width: 50%;height: 99.5%"></div>
     <p class="h1Class">{{ msg }}</p>
     <p class="titlesSmall">{{ msgPhone }}</p>
-    <div style="margin: 5rem 0 1.5rem 0;display: flex;width: 99%">
+    <div style="margin: 5rem 0 1.5rem 0;display: flex;width: 97.5%">
       <div class="insterInput">
         <input v-model="phoneNumber" type="text" class="inputStyle" placeholder="手机号" />
       </div>
@@ -31,6 +32,9 @@ export default {
   name: 'hello',
   data() {
     return {
+      imgSrc: {
+        bg: require('../assets/indexLogo.png'),
+      },
       msg: '欢迎使用 EHR SAAS 员工自助服务',
       msgPhone: '您需要先绑定手机!',
       phoneNumber:'',
@@ -51,6 +55,7 @@ export default {
       sumSearch:'',
       sumSearchUid:[],
       isCompany:'',
+
 //      isbing:'',
 
     }
@@ -72,29 +77,29 @@ export default {
 
 
 
-    //获取openidstart
-      var _href=window.location.href;
-    console.log( window.location.href);
-
-      function getUrlParam(url, name) { //获取地址栏的参数
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-        var r = url.substring(url.indexOf('?') + 1).match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
-      }
-//    getUrlParam(_href, "openid");
-      var openID=getUrlParam(_href, "openid");
-
-      if (openID==null) {
-        let path = '/api/v1.0/wechat';
-        let protocol = location.protocol;
-        let hostname = location.hostname;
-//        console.log(`${protocol}//${hostname}${path}`);
-        window.location.href = `${protocol}//${hostname}${path}`;
-        return;
-      }
-        this.setCookie('openId',openID,365);
-        console.log('openid修改过的'+this.getCookie('openId'));
+    //获取openidstart  6-2早注释为了本地测试 提交需解除注释
+//      var _href=window.location.href;
+//    console.log( window.location.href);
+//
+//      function getUrlParam(url, name) { //获取地址栏的参数
+//        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+//        var r = url.substring(url.indexOf('?') + 1).match(reg);
+//        if (r != null) return unescape(r[2]);
+//        return null;
+//      }
+////    getUrlParam(_href, "openid");
+//      var openID=getUrlParam(_href, "openid");
+//
+//      if (openID==null) {
+//        let path = '/api/v1.0/wechat';
+//        let protocol = location.protocol;
+//        let hostname = location.hostname;
+////        console.log(`${protocol}//${hostname}${path}`);
+//        window.location.href = `${protocol}//${hostname}${path}`;
+//        return;
+//      }
+//        this.setCookie('openId',openID,365);
+//        console.log('openid修改过的'+this.getCookie('openId'));
 
 
     //获取openid end
@@ -127,17 +132,6 @@ export default {
     },
     handerSubmit(){
 
-        let bindingObj={
-          "code":this.phoneNumberValue,
-          "phone":this.phoneNumber,
-
-        }
-        this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
-        console.log(111);
-        console.log(response);
-          if(response.body.code==200){
-//            this.$router.push({path:'/signCard'});//进行跳转 条件还需增加5-31 19:20
-//            this.handerList();
             this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
                 if(response.body.code==500){
                   MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
@@ -145,6 +139,22 @@ export default {
                 }
 
                 if(response.body.code==200){
+
+                //查询是否有公司进行绑定start
+                  let bindingObj={
+                    "code":this.phoneNumberValue,
+                    "phone":this.phoneNumber,
+
+                  }
+                  this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
+                    console.log(111);
+                    console.log(response);
+
+                }, response => {
+                console.log( 'error callback');
+              });
+                  //查询是否有公司进行绑定end
+
                   if(response.body.result.length==1){
                     //如果等于1就进入 signCard 点击打卡
                     let param={
@@ -173,12 +183,9 @@ export default {
 
 
 
-          };
 
 //        this.handerList(1); //提交的时候验证下是否有过绑定手机
-      }, response => {
-        console.log( 'error callback');
-      });
+
     },
     handerList:function (number){
       this.$http.post('/api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
@@ -383,19 +390,21 @@ export default {
 .hello{
   margin-top: 4rem;
 }
+.logo{
+  width: 100%;
+  height: 3rem;
+}
 .insterInput{
   flex: 2.8;
-  display: inline-block;
 }
 .insterInput input{
   height: 2.6rem;
-  width: 99%;
+  width: 95%;
 }
 .verification{
  flex: 1.2;
-  height: 0.7rem;
+  height: 1.2rem;
   font-size: 1rem;
-  display: inline-block;
   margin-bottom: 2rem;
 }
 .verification span{
@@ -408,7 +417,7 @@ export default {
   margin: 1rem 0 0.5rem 0;
 }
 .inputValidation input{
-  width: 100%;
+  width: 96%;
   height: 2.6rem;
 }
 .confirmBinding{

@@ -10,7 +10,7 @@
          <div class="concentClassSpan">
            <div class="concentTop">
               <div style="text-align: center">
-                实际到账金额：{{dateGrid.total}}
+                实际到账金额：{{dateGrid.money}}
               </div>
            </div>
            <div class="concentMiddle">
@@ -23,7 +23,7 @@
                   <img :src="imgSrc.qianIcon" class="avatar" style="width: 100%">
                 </div>
               </div>
-              <div style="flex: 2">扣除金额：{{dateGrid.kou}}</div>
+              <div style="flex: 2">扣除金额：{{dateGrid.lost}}</div>
               <div style="flex: 1">
                 <div style="width: 2rem;height: 1rem;line-height: 1rem;padding-left:30%">
                   <img :src="imgSrc.qianIcon" class="avatar" style="width: 100%">
@@ -42,10 +42,10 @@
           <div class="concentBodyClassTitleSpan">小计</div>
         </div>
 
-        <div class="concentBodyClassTitle" v-for="item in dateGrid.records">
-          <div class="concentBodyClassTitleSpan">{{item.name}}</div>
-          <div class="concentBodyClassTitleSpanColor">无</div>
-          <div class="concentBodyClassTitleSpanColor">{{item.much}}元</div>
+        <div class="concentBodyClassTitle" v-for="item in dateGrid.detail">
+          <div class="concentBodyClassTitleSpanColor" style="text-overflow:ellipsis;overflow:hidden">{{item.remark}}</div>
+          <div class="concentBodyClassTitleSpanColor">{{item.deduct}}</div>
+          <div class="concentBodyClassTitleSpanColor">{{item.add}}</div>
           <div class="concentBodyClassTitleSpanColor">{{item.total}}元</div>
         </div>
         <!--<div class="concentBodyClassTitle">-->
@@ -71,21 +71,21 @@
              downTime:'',
              year:new Date().getFullYear(),
              dateGrid:{
-                total:'15215',
-                kou:'561',
-               'records': [
+               money:'15215',
+               lost:'561',
+               'detail': [
                  {
-                   name:'差旅费',
-                   much: 2000,
+                   remark:'差旅费',
+                   deduct: 2000,
                    total:1235
                  },{
-                   name:'加油费',
-                   much: 2000,
+                   remark:'加油费',
+                   deduct: 2000,
                    total:5235
                  }
                  ,{
-                   name:'停车费',
-                   much: 2000,
+                   remark:'停车费',
+                   deduct: 2000,
                    total:4235
                  }
                ]
@@ -126,10 +126,10 @@
             let param={
               "date":sum
             };
-            this.$http.post('/api/v1.0/client/findMonthSalaryReport',param).then(response => {
+            this.$http.post('/api/v1.0/client/findMonthSalaryReport',param).then(response => { //参数不传默认当月
 
               console.log(response);
-              this.dateGrid=response.body;
+              this.dateGrid=response.body.result;
 //              this.dateGrid=response.body.result;
 
             }, response => {
@@ -226,7 +226,7 @@
     background: #f8fbfb;
   }
   .concentBodyClassTitleSpan{
-    flex: 1;
+    flex: 2;
     height: 3rem;
     line-height: 3rem;
   }

@@ -78,10 +78,13 @@
             <div  style="width: 24rem;height: 7rem;">
               <div   style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
               <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
-              <textarea placeholder="#请输入文字"
-                        v-model="holidayModel"
-                        style=" overflow: hidden;overflow-y: scroll;width: 95%;margin:  1rem ;height: 4rem;border-radius: 4px">
+              <div style="width: 95%;margin:  1rem ;">
+                 <textarea placeholder="#请输入文字"
+                           v-model="holidayModel"
+                           style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px">
             </textarea>
+              </div>
+
             </div>
 
             <mt-field label="审批人"  style="margin-top: 1rem" v-if="approvalTypeObj">
