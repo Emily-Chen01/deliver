@@ -130,55 +130,110 @@ export default {
         console.log( 'error callback');
       });
     },
+//    handerSubmit(){
+//
+//            this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
+//                if(response.body.code==500){
+//                  MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
+//                  return;
+//                }
+//
+//                if(response.body.code==200){
+//
+//                //查询是否有公司进行绑定start
+//                  let bindingObj={
+//                    "code":this.phoneNumberValue,
+//                    "phone":this.phoneNumber,
+//
+//                  }
+//                  this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
+//                    console.log(111);
+//                    console.log(response);
+//
+//                }, response => {
+//                console.log( 'error callback');
+//              });
+//                  //查询是否有公司进行绑定end
+//
+//                  if(response.body.result.length==1){
+//                    //如果等于1就进入 signCard 点击打卡
+//                    let param={
+//                      "companyUid":this.sumSearchUid[0].uid,
+//                    }
+//                    this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => { //选择公司
+//                      console.log('选择公司接口');
+////                      if(response.body.code==200){
+//                      this.$router.push({path:'/signCard'});
+//                      return;
+////                      }
+//                    }, response => {
+//                      console.log( 'error callback');
+//                    });
+//                  }else{
+//                    this.handerCome(); //如果不是只有一个公司进行选择公司
+//
+//                  };
+//
+//                }
+//
+//            }, response => {
+//              console.log( 'error callback');
+//            });
     handerSubmit(){
 
-            this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
-                if(response.body.code==500){
-                  MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
-                  return;
+      let bindingObj={
+        "code":this.phoneNumberValue,
+        "phone":this.phoneNumber,
+
+      }
+      this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
+        console.log(111);
+        console.log(response);
+        if(response.body.code==200){
+//            this.$router.push({path:'/signCard'});//进行跳转 条件还需增加5-31 19:20
+//            this.handerList();
+          this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
+            if(response.body.code==500){
+              MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
+              return;
+            }
+
+            if(response.body.code==200){
+              if(response.body.result.length==1){
+                //如果等于1就进入 signCard 点击打卡
+                let param={
+                  "companyUid":this.sumSearchUid[0].uid,
                 }
-
-                if(response.body.code==200){
-
-                //查询是否有公司进行绑定start
-                  let bindingObj={
-                    "code":this.phoneNumberValue,
-                    "phone":this.phoneNumber,
-
-                  }
-                  this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
-                    console.log(111);
-                    console.log(response);
-
-                }, response => {
-                console.log( 'error callback');
-              });
-                  //查询是否有公司进行绑定end
-
-                  if(response.body.result.length==1){
-                    //如果等于1就进入 signCard 点击打卡
-                    let param={
-                      "companyUid":this.sumSearchUid[0].uid,
-                    }
-                    this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => { //选择公司
-                      console.log('选择公司接口');
+                this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => { //选择公司
+                  console.log('选择公司接口');
 //                      if(response.body.code==200){
-                      this.$router.push({path:'/signCard'});
-                      return;
+                  this.$router.push({path:'/signCard'});
+                  return;
 //                      }
-                    }, response => {
-                      console.log( 'error callback');
-                    });
-                  }else{
-                    this.handerCome(); //如果不是只有一个公司进行选择公司
+                }, response => {
+                  console.log( 'error callback');
+                });
+              }else{
+                this.handerCome(); //如果不是只有一个公司进行选择公司
 
-                  };
+              };
 
-                }
+            }
 
-            }, response => {
-              console.log( 'error callback');
-            });
+          }, response => {
+            console.log( 'error callback');
+          });
+
+
+
+
+        };
+
+//        this.handerList(1); //提交的时候验证下是否有过绑定手机
+      }, response => {
+        console.log( 'error callback');
+      });
+    },
 
 
 
