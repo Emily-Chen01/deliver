@@ -108,7 +108,7 @@
             </mt-field>
             <mt-field v-model="phone" label="手机号" placeholder="请输入手机号" type="number"></mt-field>
             <mt-field v-model="address" label="国家/地区" placeholder=""  >
-              <select v-model="selectedDataCity" class="changeSelect"  >
+              <select v-model="selectedDataCity" class="changeSelect"  @change="changeCity(selectedDataCity)" >
                 <option v-for="option in optionsCity" :value="option.value" >
                   {{ option.text }}
               </option>
@@ -125,7 +125,9 @@
                       :headers="tokenHeader"
                       :max-file-size="5242880"
                       url="/api/v1.0/client/upload" >
-                      <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  />
+                      <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="imginit" />
+                      <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  v-if=" this.imgSrc.shenFenIcon" />
+
                     </vue-core-image-upload>
                   </div>
                 <!--<div class="imgclassShen">身份证正面</div>-->
@@ -140,7 +142,9 @@
                       :max-file-size="5242880"
                       :headers="tokenHeader"
                       url="/api/v1.0/client/upload" >
-                      <img width="150" :src="imgSrc.shenFenIconbei" class="CardImg"  />
+                      <img width="150" :src="imgSrc.shenFenIconbeiShow" class="CardImg" v-if="imginit2" />
+                      <img width="150" :src="imgSrc.shenFenIconbei" class="CardImg" v-if="this.imgSrc.shenFenIconbei" />
+
                     </vue-core-image-upload>
                   </div>
                 <!--<div class="imgclassShen">身份证背面</div>-->
@@ -277,6 +281,8 @@
   export default {
         data(){
             return {
+              imginit:true,
+              imginit2:true,
               openId:'',
               tokenHeader: {
                 openId: this.getCookie('openId')
@@ -295,17 +301,20 @@
               myDataSearch:{},
               options: [
                 { text: '男', value: '1' },
-                { text: '女', value: '2' },
+                { text: '女', value: '0' },
               ],
               optionsCity: [
                 {text: '大陆地区', value: '1', type: 'da'},
                 {text: '港澳地区', value: '2', type: 'gang'},
-                {text: '台湾地区', value: '2', type: 'tai'},
+                {text: '台湾地区', value: '3', type: 'tai'},
 
               ],
               imgSrc: {
-                shenFenIcon: require('../../assets/shenfenzheng.png'),
-                shenFenIconbei: require('../../assets/shenfenzheng.png'),
+                shenFenIcon: '',
+                shenFenIconbei: '',
+
+                shenFenIconShow: require('../../assets/shenfenzheng.png'),
+                shenFenIconbeiShow: require('../../assets/shenfenzheng.png'),
 
         },
               submitDivShow:true,
@@ -315,11 +324,11 @@
             }
         },
     watch: {
-      selectedDataCity:function (val, oldVal) {
-        console.log('我是国家地区' + val);
-        this.cityParam= val.type
-
-      },
+//      selectedDataCity:function (val, oldVal) {
+//        console.log('我是国家地区' + val);
+//        this.cityParam= val.type
+//
+//      },
     },
         created: function () {
 //          alert('openid111cc'+this.getCookie('openId'));
@@ -327,10 +336,65 @@
 
         },
         methods: {
+          changeCity(value){
+              console.log(value);
+            this.cityParam=value;
+
+          },
 
           handerDataSubmit(){
             this.submitDivShow=false;
               this.submitDivHide=true;
+              console.log(this.myDataSearch)
+
+
+            //点击后把编辑的信息传过来start
+            this.gold=this.myDataSearch.gongjijin;
+            this.bankCard=this.myDataSearch.bankcard;
+            this.openBank=this.myDataSearch.kaihuhang;
+            this.imgSrc.shenFenIcon=this.myDataSearch.shenfengzheng;
+            this.imgSrc.shenFenIconbei=this.myDataSearch.shenfengbei;
+            this.card=this.myDataSearch.shenfeng;
+            this.phone=this.myDataSearch.phone;
+            this.cityParam=this.myDataSearch.city;
+
+            this.selectedData = this.myDataSearch.xingbie;
+            this.selectedDataCity = this.myDataSearch.city;
+            console.log(this.myDataSearch.city, 'this.selectedDataCity');
+
+
+            switch(this.myDataSearch.xingbie) {
+              case '男':
+                this.selectedData= 1;
+                break;
+              case '女':
+                this.selectedData = 0;
+                break;
+
+              default:
+                this.selectedDataCity = '';
+                break;
+            }
+
+            switch(this.myDataSearch.city) {
+              case '大陆地区':
+                this.selectedDataCity = 1;
+                break;
+              case '港澳地区':
+                this.selectedDataCity = 2;
+                break;
+              case '台湾地区':
+                this.selectedDataCity = 3;
+                break;
+              default:
+                this.selectedDataCity = '';
+                break;
+            }
+
+            //点击后把编辑的信息传过来end
+
+            this.imginit=false;
+            this.imginit2=false;
 
 //            this.$http.post('/api/v1.0/client/findStaff').then(response => {
 //              console.log('查询个人资料');
@@ -348,7 +412,7 @@
               'uid':this.uid,
               'gender':this.selectedData,
               'mobile':this.phone,
-              'nativePlace':this.address,
+              'nativePlace': this.selectedDataCity,
               'idcard':this.card,
               'idcardPhoUrl':this.imgSrc.shenFenIcon,
               'idcardPhoUrlRev':this.imgSrc.shenFenIconbei,
@@ -371,6 +435,9 @@
               console.log( 'error callback');
             });
 
+
+
+
           },
           handerClickUp(){
             alert(11);
@@ -379,7 +446,11 @@
           imageuploaded(res) {
               console.log(res);
             if (res) {
+                this.imginit=false;
               this.imgSrc.shenFenIcon = res.result;
+
+
+
               console.log(this.imgSrc.shenFenIcon);
             }
 
@@ -387,6 +458,8 @@
           imageuploadedbei(res) {
             console.log(res);
             if (res) {
+              this.imginit2=false;
+
               this.imgSrc.shenFenIconbei = res.result;
               console.log(this.imgSrc.shenFenIconbei);
             }
@@ -415,13 +488,43 @@
               this.myDataSearch.gongjijin=response.body.result.accfuNum; //公积金
               this.myDataSearch.bankcard=response.body.result.cardNumber; //银行卡号
               this.myDataSearch.kaihuhang=response.body.result.openingBank; //开户行
-              if(response.body.result.gender){//性别
-                if(response.body.result.gender==1){
-                  this.myDataSearch.xingbie='男';
-                }else if (response.body.result.gender==0){
-                  this.myDataSearch.xingbie='女';
-                }
+
+              console.log(response.body.result.nativePlace, 'response.body.result.nativePlace');
+              switch(response.body.result.nativePlace) {
+                case 1:
+                  this.myDataSearch.city = '大陆地区';
+                    break;
+                case 2:
+                  this.myDataSearch.city = '港澳地区';
+                  break;
+                case 3:
+                  this.myDataSearch.city = '台湾地区';
+                  break;
+                default:
+                  this.myDataSearch.city = '';
+                    break;
               }
+
+              switch(response.body.result.gender) {
+                case 1:
+                  this.myDataSearch.xingbie='男';
+                  break;
+                case 0:
+                  this.myDataSearch.xingbie='女';
+                  break;
+                default:
+                  this.myDataSearch.city = '';
+                  break;
+              }
+
+
+//              if(response.body.result.gender){//性别
+//                if(response.body.result.gender==1){
+//                  this.myDataSearch.xingbie='男';
+//                }else if (response.body.result.gender==0){
+//                  this.myDataSearch.xingbie='女';
+//                }
+//              }
 
               this.uid=response.body.result.uid;
               //个人资料查询赋值结束
