@@ -70,7 +70,7 @@
 </template>
 <script>
 
-  import fullCalendar from 'vue-fullcalendar'
+  import fullCalendar from '@/components/vue-fullcalendar/dist/vue-fullcalendar'
 
 
   export default {
@@ -303,7 +303,7 @@
         },
 
         components: {
-          'full-calendar': require('vue-fullcalendar')
+          fullCalendar
         }
     }
 

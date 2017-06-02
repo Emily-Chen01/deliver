@@ -40,7 +40,7 @@
         <!--</a>-->
         <a  class="mint-cell" @click="changeList(0)">
           <div class="mint-cell-wrapper">
-            <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>请假申请</span></div></div>
+            <div class="mint-cell-title qing"><!----> <div><i class="indexicon icon-toast"></i> <span>请假申请</span></div></div>
             <div class="mint-cell-value is-link"><span></span></div>
           </div>
           <div class="mint-cell-right"></div>
@@ -233,10 +233,13 @@ let oneselfData={};
 </script>
 
 <style scoped>
-  .mint-cell-title::before
+  .qing{
+    width: 5rem;
+  }
+  .qing::before
   {
     /*content:"台词：-";*/
-    /*content: url(../../assets/ico_leave.png);*/
+    content: url(../../assets/ico_leave.png);
     /*font-size: 0.5em;*/
     /*background-size: 19px 20px;*/
     /*display: inline-block;*/
