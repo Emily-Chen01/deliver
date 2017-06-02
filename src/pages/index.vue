@@ -189,7 +189,6 @@ export default {
       this.$http.post('/api/v1.0/client/bind',bindingObj).then(response => { //进行手机号码进行绑定
         console.log(111);
         console.log(response);
-        if(response.body.code==200){
 //            this.$router.push({path:'/signCard'});//进行跳转 条件还需增加5-31 19:20
 //            this.handerList();
           this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
@@ -226,8 +225,6 @@ export default {
 
 
 
-
-        };
 
 //        this.handerList(1); //提交的时候验证下是否有过绑定手机
       }, response => {
