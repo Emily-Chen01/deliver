@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="position: relative">
+    <div style="position: relative;height: 5.4rem;background: #20a1ff">
       <div class="siginLeft">
         <img :src="imgSrc.comAddress" class="avatar">
       </div>
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div style="clear:both;"></div>
-      <div style="width: 100%;height: 0.1rem;background: #cccccc;margin: 1rem 0"></div>
+      <div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>
       <div v-show="zcToUpShow">
         <div>
           <div class="toWorkLeft">
@@ -77,25 +77,25 @@
 
               </div>
               <div>
-                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter">
+                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter(0)">
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
 
 
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus2" @click="submitApplyRouter">
+                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus2" @click="submitApplyRouter(0)">
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
 
 
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter">
+                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter(1)">
                   <!--lateStatus  迟到块-->
                   忘打卡？
 
 
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="tokuangWdk" @click="submitApplyRouter">
+                <mt-button type="default" class="toDaKaStatusWj" v-show="tokuangWdk" @click="submitApplyRouter(1)">
                   <!--lateStatus  迟到块-->
                   忘打卡？
 
@@ -156,13 +156,13 @@
 
               </div>
               <div>
-                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter">
+                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter(0)">
                   <!--absenteeismStatus  旷工-->
                   提交请假/外出申请
 
 
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter">
+                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter(1)">
                   <!--lateStatus  迟到块-->
                   忘打卡？
 
@@ -231,13 +231,13 @@
             </div>
             <div>
               <mt-button type="default" class="toDaKaStatusQj" v-show="toDownAbsenteeismStatus"
-                         @click="submitApplyRouter">
+                         @click="submitApplyRouter(0)">
                 <!--absenteeismStatus  旷工-->
                 提1交请假/外出申
 
 
               </mt-button>
-              <mt-button type="default" class="toDaKaStatusAdd" v-show="toDownAddTimeStatus" @click="submitApplyRouter">
+              <mt-button type="default" class="toDaKaStatusAdd" v-show="toDownAddTimeStatus" @click="submitApplyRouter(3)">
                 <!--absenteeismStatus  旷工-->
                 加班申请
 
@@ -447,6 +447,7 @@
 
       doSearch(){
 //        var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
+
 
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
 
@@ -891,10 +892,6 @@
 
         this.doSearch();
 
-
-//        this.winReload();//查询后执行刷新页面
-
-
       },
       winReload: function (cond) {
         window.location.reload();
@@ -902,7 +899,9 @@
 
       //提交申请跳转路由开始
 
-      submitApplyRouter(){
+      submitApplyRouter(type){
+          this.setCookie('leaveType',type,365);
+          console.log(this.getCookie('leaveType'),'这是singIn的this.getCookie(leaveType)');
         this.$router.push({path: '/leave'});
       },
       //提交申请跳转路由结束
@@ -1121,7 +1120,8 @@
     float: right;
     height: 2rem;
     line-height: 2rem;
-    background-color: rgb(191, 205, 208);
+    background-color: #4db3ff;
+    color: #ffffff;
     border-radius: 4px;
   }
 
@@ -1159,7 +1159,7 @@
     text-align: center;
     position: absolute;
     top: 25rem;
-    left: 7.6rem;
+    left: 33%;
   }
 
   .clickClass button {

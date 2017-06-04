@@ -49,7 +49,6 @@ Vue.use(BaiduMap, {
 Vue.http.interceptors.push(function (request, next) {
   // Vue.http.headers.common['token'] = sessionStorage.getItem('token');
   // sessionStorage.setItem('openId', openId);
-  console.log('openId', this.getCookie('openId'));
   request.headers.set('openId', this.getCookie('openId'));
 
 
@@ -57,7 +56,7 @@ Vue.http.interceptors.push(function (request, next) {
   // continue to next interceptor
   next(response => {
     if (response.body.code === 4001) {
-      // console.log('inter', response.body.message);
+      console.log('inter', response.body.message);
       router.push({path: 'index'});
     }
   });

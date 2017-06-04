@@ -16,7 +16,7 @@
             <div class="contentLeft" style="padding-top: 0.3rem">申请分类</div>
             <div class="contentRight" >
               <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)">
-                <option v-for="option in optionsApply"  v-bind:value="option" >
+                <option v-for="option in optionsApply"  v-bind:value="option.value" >
                   {{ option.text }}
               </option>
               </select>
@@ -66,7 +66,9 @@
                     :headers="tokenHeader"
                     :max-file-size="5242880"
                     url="/api/v1.0/client/upload" >
-                    <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  />
+                    <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  />
+                    <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" />
+
                   </vue-core-image-upload>
                 </div>
               </div>
@@ -75,8 +77,9 @@
               <mt-field label="加班时长" v-model="addTimeValue" >
               </mt-field>
             </div>
-            <div  style="width: 24rem;height: 7rem;">
-              <div   style="width: 23.5rem;margin-left:1rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+          <div   style="width: 96%;margin:0 0.8rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+
+          <div  style="width: 100%;height: 7rem;">
               <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
               <div style="width: 95%;margin:  1rem ;">
                  <textarea placeholder="#请输入文字"
@@ -93,7 +96,7 @@
 
       <div>
       </div>
-          <div style="padding-top: 0.6rem">
+          <div style="padding-top: 2rem">
             <mt-button type="primary"
                        style="background-color: rgb(139,156,172);width: 20rem;height:3rem;line-height: 3rem"
                        @click.native="handerDataSubmit()">提交
@@ -210,10 +213,10 @@
 //              ],
             optionsApproval: {},
               optionsApply: [
-//                { text: '请假申请', value: 0 ,uid:12,type:'q'},
-//                { text: '忘记打卡申请', value: 2 ,uid:22 ,type:'w'},
-//                { text: '外出申请', value: 2 ,uid:32 ,type:'wc'},
-//                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
+                { text: '请假申请', value: 0 ,uid:12,type:'q'},
+                { text: '忘记打卡申请', value: 1 ,uid:2122 ,type:'w'},
+                { text: '外出申请', value: 2 ,uid:321152 ,type:'wc'},
+                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
               ],
               selectedDataHoliday:0,
@@ -224,8 +227,10 @@
 //                { text: '申请' },
               ],
               imgSrc: {
-                shenFenIcon: require('../../assets/shenfenzheng.png'),
-              },
+                shenFenIcon: '',
+                shenFenIconShow: require('../../assets/shenfenzheng.png'),
+
+        },
               changeApply:true,
               changeApplyTime:true,
 //              changeApplyOutside:false,
@@ -249,6 +254,7 @@
               shengqingParamType:'', //判断加班申请param的类型
               imagestring:'',
               searchApplyRecord:[], //搜索申请记录
+              initUpImage:true, //初始化加载的上传图片
 
             }
         },
@@ -257,10 +263,15 @@
         },
         created: function () {
 
+        //此区域是在在点击提交申请的时候进行选中传参start
+           this.selectedDataApply=this.getCookie('leaveType').toString();
+            this.shengqingclick(this.selectedDataApply);
+        //此区域是在在点击提交申请的时候进行选中传参end
+
 
           this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
             this.applyTypeArray=response.body.result;
-            console.log(this.applyTypeArray);
+            console.log(this.applyTypeArray,'查询申请类型列表');
             for(let i=0;i<this.applyTypeArray.length;i++){
               this.applyTypeName.push(
                   {
@@ -275,13 +286,15 @@
               this.optionsApply=this.applyTypeName
 
             });
+
+
           }, response => {
             console.log( 'error callback');
           });
 
           this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人列表
             this.approvalTypeObj=response.body.result;
-            console.log(this.approvalTypeObj);
+            console.log(this.approvalTypeObj,'审批人列表');
 
 //            this.optionsApproval=this.approvalTypeName
 
@@ -290,7 +303,7 @@
           });
           this.$http.get('/api/v1.0/client/findValidLeaves').then(response => { //假期分类
             this.holidayTypeArray=response.body.result;
-            console.log(this.holidayTypeArray);
+            console.log(this.holidayTypeArray,'假期分类');
             for(let i=0;i<this.holidayTypeArray.length;i++){
               this.holidayTypeName.push(
                   {
@@ -316,7 +329,7 @@
             "pageNumber":1
           };
           this.$http.post('/api/v1.0/client/findApplys',params).then(response => { //查询请假记录
-            console.log(response.body.result);
+            console.log(response.body.result,'查询请假记录');
             this.searchApplyRecord=response.body.result;
 
           }, response => {
@@ -331,33 +344,6 @@
           this.addTimeValue=val
 
         },
-//        selectedDataApply:function(val,oldVal){
-////            console.log(val);
-//
-//            if(val==0){
-//              this.changeApply=true;
-//              this.changeApplyTime=false;
-//              this.changeApplyOutside=false
-//              this.changeApplyOvertime=false
-//
-//            }else if(val==1){
-//              this.changeApplyTime=true;
-//              this.changeApplyOutside=false;
-//              this.changeApply=false;
-//              this.changeApplyOvertime=false
-//            }else if(val==2){
-//                this.changeApplyOutside=true;
-//                this.changeApplyTime=false;
-//                this.changeApply=false;
-//                this.changeApplyOvertime=false
-//            }
-//            else if(val==3){
-//              this.changeApplyOvertime=true;
-//              this.changeApplyOutside=false;
-//              this.changeApplyTime=false;
-//              this.changeApply=false;
-//            }
-//        },
         holidayModel:function(val,oldVal){ //备注value 用于上传参数
             console.log(val);
             this.textareaString=val;
@@ -366,7 +352,7 @@
 
       },
         methods: {
-          changeShow(val){ //动态设置下划线显示
+          changeShow(val){ //动态设置tab下划线显示
             let params
             if(val==1){
               this.isActive=true;
@@ -487,6 +473,7 @@
           imageuploaded(res) { //用于图片参数上传
             console.log(res);
             this.imgSrc.shenFenIcon=res.result;
+            this.initUpImage=false;  //把初始化的image隐藏
 //            if (res) {
 //              this.imgSrc.shenFenIcon = res.result;
 //              console.log(this.imgSrc.shenFenIcon);
@@ -496,38 +483,38 @@
           handerStartValue(){
               console.log('我是开始时间'+this.startTimeValue);
           },
-          shengqingclick(value){
+          shengqingclick(value){ //初始是选中一个select然后进行参数选中为了提交用
 
-//            alert(sessionStorage.getItem('Number'));
-//            console.log('加班传来Number',sessionStorage.getItem('Number'));
-                        console.log('加班传来Number',this.getCookie('Number'));
 
-            console.log("value dianji" +value)
-            this.shengqingParam= value.uid;
-            this.shengqingParamType= value.value;
-            console.log('我是选中的申请类型'+ this.shengqingParam);
-            if(value.value=='0'){ //请假
-                console.log('选择请假路线')
+            for(let i=0;i<this.optionsApply.length;i++){  //循环初始化的时候选中一个select属性值和参数
+              this.shengqingParam= this.optionsApply[this.selectedDataApply].uid;
+              this.shengqingParamType= this.optionsApply[this.selectedDataApply].value;
+            }
+            console.log(" this.shengqingParam uid" + this.shengqingParam);
+            console.log("value shengqingParamType:" +this.shengqingParamType);
+
+            if(this.selectedDataApply=='0'){ //请假
+                console.log('选择请假路线');
               this.changeApply=true; //假期隐藏
               this.changeApplyTime=true; //时间隐藏
               this.updateImage=true; //上传图片隐藏
               this.changeApplyOvertime=false; //加班时间显示
             }
-            if(value.value=='1'){
+            if(this.selectedDataApply=='1'){
               console.log('忘记打卡路线')
               this.changeApply=false; //假期隐藏
               this.changeApplyTime=true; //时间隐藏
               this.updateImage=true; //上传图片隐藏
               this.changeApplyOvertime=false; //加班时间显示
             }
-            if(value.value=='2'){
+            if(this.selectedDataApply=='2'){
               console.log('外出申请路线')
               this.changeApply=false; //假期隐藏
               this.changeApplyTime=true; //时间隐藏
               this.updateImage=true; //上传图片隐藏
               this.changeApplyOvertime=false; //加班时间显示
             }
-            if(value.value=='3'){
+            if(this.selectedDataApply=='3'){
               console.log('加班路线')
               this.changeApply=false; //假期隐藏
               this.changeApplyTime=false; //时间隐藏

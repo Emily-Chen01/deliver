@@ -67,16 +67,16 @@
       <div class="bottomTool">
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 5rem;">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 7rem;">
               <img :src="imgSrc.doIcon" class="avatar">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 5rem;top:2.4rem">工作台</div>
+            <div style="height: 1.5rem;position: absolute;left: 7rem;top:2.4rem">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 16.5rem;">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 18.5rem;">
               <img :src="imgSrc.setIcon" class="avatar">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 17rem;top:2.4rem">设置</div>
+            <div style="height: 1.5rem;position: absolute;left: 19rem;top:2.4rem">设置</div>
           </div>
         </div>
       </div>
@@ -233,13 +233,13 @@ let oneselfData={};
 </script>
 
 <style scoped>
-  .qing{
-    width: 5rem;
-  }
-  .qing::before
-  {
+  /*.qing{*/
+    /*width: 5rem;*/
+  /*}*/
+  /*.qing::before*/
+  /*{*/
     /*content:"台词：-";*/
-    content: url(../../assets/ico_leave.png);
+    /*content: url(../../assets/ico_leave.png);*/
     /*font-size: 0.5em;*/
     /*background-size: 19px 20px;*/
     /*display: inline-block;*/
@@ -248,7 +248,7 @@ let oneselfData={};
     /*font-weight:bold;*/
     /*width: 19px;*/
     /*height: 20px;*/
-  }
+  /*}*/
 .bottomTool{
   position:fixed;
   bottom:0;
