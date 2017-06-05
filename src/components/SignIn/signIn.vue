@@ -28,7 +28,7 @@
             </div>
             <div class="toWorkRightTime" style="position: relative">
               <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
-                {{clickStaus}}
+                打卡正常
 
 
               </mt-button>
@@ -63,15 +63,16 @@
 
               </mt-button>
             </div>
-            <div style="width: 17rem">
+            <div style="clear: both"></div>
+            <div style="width: 99%">
               <!--<div v-show="initDaKaRecord">-->
-                <!--<img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">-->
+                  <!--<img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">-->
                 <!--地理位置：范围内-->
               <!--</div>-->
               <div v-show="initDaKaRecordWeiZhi">
-                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
-                <span v-if="!outsideObtainValue">地理位置：范围内</span>
-                <span v-if="twRangeShow">地理位置：{{twRangeShow}}附近</span>
+                <img :src="imgSrc.PostionIcon" class="postionClassIcon" style="display: inline-block">
+                <span v-if="!outsideObtainValue" style="display: inline-block;line-height: 2rem">地理位置：范围内</span>
+                <span v-if="twRangeShow" style="display: inline-block;line-height: 2rem">地理位置：{{twRangeShow}}附近</span>
 
 
               </div>
@@ -172,8 +173,9 @@
           <!--</div>-->
         <!--</div>-->
       <!--</div>-->
+      <div style="clear:both;"></div>
       <div v-show="zcDownShowSpan">
-        <div style="margin-top: 7rem">
+        <div style="margin-top: 1.3rem">
           <!--上面的top原有是5rem 5-16晚改-->
           <div class="toWorkLeft">
             <div>下</div>
@@ -190,12 +192,12 @@
               <!--{{clickStaus}}-->
               <!--</mt-button>-->
               <mt-button type="default" class="toDaKaStatus" v-show="initDownRecord">
-                {{clickStaus}}
+                打卡正常
 
 
               </mt-button>
               <mt-button type="default"
-                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:5.5rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.3rem;border-radius: 8px"
+                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:6.7rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.3rem;border-radius: 8px"
                          v-show="leaveEarly">
                 早退
 
@@ -222,18 +224,19 @@
 
               </mt-button>
             </div>
-            <div style="width: 12rem">
-              <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
+            <div style="clear: both"></div>
+            <div style="width: 99%">
+              <img :src="imgSrc.PostionIcon" class="postionClassIcon" style="display: inline-block">
 
-              <span v-if="!outsideObtainValue">地理位置：范围内</span>
-              <span v-if="owRangeShow">地理位置：{{owRangeShow}}附近</span>
+              <span v-if="!outsideObtainValue" style="display: inline-block;line-height: 2rem">地理位置：范围内</span>
+              <span v-if="owRangeShow" style="display: inline-block;line-height: 2rem">地理位置：{{owRangeShow}}附近</span>
 
             </div>
             <div>
               <mt-button type="default" class="toDaKaStatusQj" v-show="toDownAbsenteeismStatus"
                          @click="submitApplyRouter(0)">
                 <!--absenteeismStatus  旷工-->
-                提1交请假/外出申
+                提交请假/外出申
 
 
               </mt-button>
@@ -289,14 +292,14 @@
               <div class="dakahr"></div>
               <div>
                 <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
+                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;"
                            v-show="initDaKaRecord">
                   打卡正常
 
 
                 </mt-button>
                 <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
+                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;"
                            v-show="initDownRecord">
                   打卡正常
 
@@ -414,6 +417,8 @@
           comAddress: require('../../assets/logo.png'),
           shezhiBackground: require('../../assets/shezhi.png'),
           daKaPostionIcon: require('../../assets/weizhi.png'),
+          PostionIcon: require('../../assets/ico_location_1.png'),
+
           daKaIcon: require('../../assets/dakachenggong.png'),
           bg: require('../../assets/0_gif.gif'),
         },
@@ -1142,14 +1147,17 @@
     height: 4.2rem;
     background-color: #cccccc;
     border-radius: 2.6rem;
+    margin: 1.5% 0 0 1.5%;
   }
 
   .avatar {
-    width: 80%;
+    width: 92%;
+    height: 94%;
     display: block;
-    text-align: center !important;
-    /*padding-top: 0.3rem;*/
-    padding: 1rem 0 0 0.7rem;
+    text-align: center!important;
+    padding: 0.1rem 0 0 0.2rem;
+    border-radius: 4rem;
+    z-index: 0;
   }
 
   .siginRight {
@@ -1181,8 +1189,8 @@
   }
 
   .toWorkLeft {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 6%;
+    /*height: 1.4rem;*/
     line-height: 1.4rem;
     float: left;
     padding-left: 0.38rem;
@@ -1195,12 +1203,13 @@
   }
 
   .toWorkRight {
-    width: 20.67rem;
-    height: 1.4rem;
+    width: 90%;
+    /*height: 1.4rem;*/
     line-height: 1.4rem;
-    float: left;
+    float: right;
+    padding-right: 1%;
     text-align: left;
-    padding-left: 1.3rem;
+    /*padding-left: 1.3rem;*/
   }
 
   .clickClass {
@@ -1245,7 +1254,7 @@
     width: 16rem;
     height: 24rem;
     border-radius: 4px;
-    background-color: rgb(191, 205, 218);
+    background-color: #6e83c5;
   }
 
   .daKaAlert {
@@ -1343,12 +1352,12 @@
   .toWorkRightTimeSpan {
     width: 5rem;
     height: 2rem;
-    line-height: 2rem;
+    line-height: 2.1rem;
     float: left;
   }
 
   .toDaKaStatus {
-    background-color: rgb(139, 156, 172);
+    background-color: #2acfbc;
     color: #000000;
     width: 5.7rem;
     left: -0.8rem;
@@ -1360,8 +1369,8 @@
   }
 
   .addTimeTotleClass {
-    background-color: rgb(139, 156, 172);
-    color: #000000;
+    background-color: #6e83c5;
+    color: #ffffff;
     width: 7.5rem;
     left: 3.69rem;
     height: 1.8rem;
@@ -1384,7 +1393,7 @@
   }
 
   .toDaKaStatusSecondQ {
-    background-color: rgb(255, 204, 0);
+    background-color: #b2c92b;
     color: #ffffff;
     width: 4.8rem;
     left: -0.9rem;
@@ -1397,10 +1406,10 @@
   }
 
   .toDaKaStatusSecondC {
-    background-color: rgb(255, 204, 0);
+    background-color: #f6bc2a;
     color: #ffffff;
     width: 5.2rem;
-    left: 5.2rem;
+    left: 6.7rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
@@ -1409,10 +1418,10 @@
   }
 
   .toDaKaStatusSecondK {
-    background-color: rgb(255, 102, 0);
-    color: #000000;
+    background-color: #f54435;
+    color: #ffffff;
     width: 5.7rem;
-    left: 5rem;
+    left: 6.5rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
@@ -1421,7 +1430,7 @@
   }
 
   .toDaKaStatusWj {
-    background-color: rgb(139, 156, 172);
+    background-color: rgb(32, 161, 255);
     color: #ffffff;
     width: 6rem;
     height: 1.8rem;
@@ -1431,7 +1440,7 @@
   }
 
   .toDaKaStatusQj {
-    background-color: rgb(139, 156, 172);
+    background-color: rgb(32, 161, 255);
     color: #ffffff;
     width: 9.8rem;
     height: 1.8rem;
@@ -1441,7 +1450,7 @@
   }
 
   .toDaKaStatusAdd {
-    background-color: rgb(139, 156, 172);
+    background-color: rgb(32, 161, 255);
     color: #ffffff;
     width: 5.8rem;
     height: 1.8rem;
@@ -1451,7 +1460,7 @@
   }
 
   .postionClassIcon {
-    width: 1.5rem;
+    width: 1.1rem;
     height: 1.5rem;
     line-height: 1.5rem
   }
@@ -1460,7 +1469,7 @@
     width: 16rem;
     height: 24rem;
     border-radius: 4px;
-    background-color: rgb(255, 204, 0);
+    background-color: #2acfbc;
   }
 
   .active2 {
@@ -1474,7 +1483,7 @@
     width: 16rem;
     height: 24rem;
     border-radius: 4px;
-    background-color: rgb(255, 102, 0);
+    background-color: #f54435;
   }
 
 </style>

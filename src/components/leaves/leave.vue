@@ -158,7 +158,6 @@
                   <mt-popup
                     v-model="popupVisible"
                     class="imageClass"
-                    position="top"
                     closeOnClickModal="true"
                   >
                     <img width="150" :src="item.image"  class="alertImages" v-if="item.image"  />
@@ -213,10 +212,10 @@
 //              ],
             optionsApproval: {},
               optionsApply: [
-                { text: '请假申请', value: 0 ,uid:12,type:'q'},
-                { text: '忘记打卡申请', value: 1 ,uid:2122 ,type:'w'},
-                { text: '外出申请', value: 2 ,uid:321152 ,type:'wc'},
-                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
+//                { text: '请假申请', value: 0 ,uid:12,type:'q'},
+//                { text: '忘记打卡申请', value: 1 ,uid:2122 ,type:'w'},
+//                { text: '外出申请', value: 2 ,uid:321152 ,type:'wc'},
+//                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
               ],
               selectedDataHoliday:0,
@@ -263,10 +262,7 @@
         },
         created: function () {
 
-        //此区域是在在点击提交申请的时候进行选中传参start
-           this.selectedDataApply=this.getCookie('leaveType').toString();
-            this.shengqingclick(this.selectedDataApply);
-        //此区域是在在点击提交申请的时候进行选中传参end
+
 
           this.addTimeValue=this.getCookie('leaveType');
           console.log(this.addTimeValue,'在打卡加班传来的加班时间');
@@ -286,6 +282,10 @@
             console.log('我是申请类型data'+this.applyTypeName);
             this.$nextTick(()=>{
               this.optionsApply=this.applyTypeName
+              //此区域是在在点击提交申请的时候进行选中传参start
+              this.selectedDataApply=this.getCookie('leaveType').toString();
+              this.shengqingclick(this.selectedDataApply);
+              //此区域是在在点击提交申请的时候进行选中传参end
 
             });
 
@@ -457,6 +457,7 @@
 
               if(response.body.code==200){
                 alert(response.body.message);
+                this.$router.push({path:'/signIn'});
               }else{
                   alert(response.body.message);
               }
@@ -486,7 +487,6 @@
               console.log('我是开始时间'+this.startTimeValue);
           },
           shengqingclick(value){ //初始是选中一个select然后进行参数选中为了提交用
-
 
             for(let i=0;i<this.optionsApply.length;i++){  //循环初始化的时候选中一个select属性值和参数
               this.shengqingParam= this.optionsApply[this.selectedDataApply].uid;
@@ -586,7 +586,7 @@
   }
   .imageClass{
     width: 20rem;
-    top: 10rem;
+    /*top: 10rem;*/
     height: 24rem;
     line-height: 24rem;
 

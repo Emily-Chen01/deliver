@@ -333,11 +333,11 @@ let oneselfData={};
     padding: 1rem 0 0 0.7rem;
   }
   .avatarTop{
-    width: 85%;
-    height: 90%;
+    width: 92%;
+    height: 94%;
     display: block;
     text-align: center!important;
-    padding: 0.1rem 0 0 0.5rem;
+    padding: 0.1rem 0 0 0.2rem;
     border-radius: 4rem;
     z-index: 0;
   }
