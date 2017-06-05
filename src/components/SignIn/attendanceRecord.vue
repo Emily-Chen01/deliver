@@ -4,7 +4,6 @@
         :events="fcEvents" locale="zh"
         @dayClick="dayClick"
         @changeMonth="changeMonth"
-        style="width: 23.6rem"
       ></full-calendar>
       <div>
         <div class="egClass"><span class="publicStyle normalStyle"></span>&nbsp正常出勤</div>
