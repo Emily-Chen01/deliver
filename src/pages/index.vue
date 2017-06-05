@@ -3,13 +3,15 @@
     <div class="logo"><img :src="imgSrc.bg" style="width: 50%;height: 99.5%"></div>
     <p class="h1Class">{{ msg }}</p>
     <p class="titlesSmall">{{ msgPhone }}</p>
-    <div style="margin: 5rem 0 1.5rem 0;display: flex;width: 97.5%">
-      <div class="insterInput">
-        <input v-model="phoneNumber" type="text" class="inputStyle" placeholder="手机号" />
+    <div style="clear:both"></div>
+      <div style="margin: 5rem 0 1.5rem 0;width: 97.5%">
+        <div class="insterInput">
+          <input v-model="phoneNumber" type="text" class="inputStyle" placeholder="手机号" />
+        </div>
+        <div class="verification"><mt-button type="primary" @click.native="handerClick" ><span>获取验证码</span></mt-button> </div>
       </div>
-      <div class="verification"><mt-button type="primary" @click.native="handerClick" ><span>获取验证码</span></mt-button> </div>
-    </div>
-    <div class="inputValidation"><input type="text"  v-model="phoneNumberValue" class="inputStyle"  placeholder="请输入验证码"/> </div>
+      <div style="clear:both"></div>
+      <div class="inputValidation"><input type="text"  v-model="phoneNumberValue" class="inputStyle"  placeholder="请输入验证码"/> </div>
     <div class="confirmBinding">
       <mt-button type="primary"  @click.native="handerSubmit">绑定手机号</mt-button>
     </div>
@@ -387,13 +389,18 @@ export default {
 .insterInput{
   flex: 2.8;
 }
+.insterInput{
+  width:70%;
+  float:left;
+}
 .insterInput input{
   height: 2.6rem;
   width: 95%;
 }
 .verification{
- flex: 1.2;
-  height: 1.2rem;
+  width:30%;
+  float:right;
+  height: 2.8rem;
   font-size: 1rem;
   margin-bottom: 2rem;
 }
@@ -402,9 +409,10 @@ export default {
 }
 .verification button{
   width: 98%;
+  height:100%;
 }
 .inputValidation {
-  margin: 1rem 0 0.5rem 0;
+  margin: 0.2rem 0 0.5rem 0;
 }
 .inputValidation input{
   width: 95%;

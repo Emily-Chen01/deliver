@@ -4,9 +4,14 @@
       <div>
         <div >
           <a  class="mint-cell" v-for="(item , $index) in arryName" @click="handerComeCompany(item,$index)" >
-            <div class="mint-cell-wrapper">
-              <div class="mint-cell-title"><!----> <div ><i class="indexicon icon-toast"></i> <span>{{item.COMP_NAME}}</span></div></div>
-              <div class="mint-cell-value is-link"><span></span></div>
+
+            <div class="mint-cell-title qing">
+              <div class="postionImages">
+                <img :src="imgSrc.ico_company" class="imgSize" >
+              </div>
+              <div>
+                <i class="indexicon icon-toast"></i>
+                <span>{{item.COMP_NAME}}</span></div>
             </div>
             <div class="mint-cell-right"></div>
             <i class="mint-cell-allow-right"></i>
@@ -30,6 +35,10 @@
                 url:'www.baidu.com'
             },
           ],
+          imgSrc: {
+            ico_company: require('../../assets/ico_company.png'),
+
+          },
 
 
         }
@@ -83,6 +92,30 @@
 </script>
 
 <style>
+  .qing{
+    width: 5rem;
+    postion:relative;
+  }
+  .qing::before
+  {
+    content:" ------- ";
+    /*content: url(../../assets/ico_leave.png);*/
+    /*font-size: 0.5em;*/
+    /*background-size: 19px 20px;*/
+    /*display: inline-block;*/
+    /*background-color:yellow;*/
+    color:#ffffff;
+    /*font-weight:bold;*/
+    width: 10%;
+    /*height: 20px;*/
+  }
+  .postionImages{
+    position:absolute;width:10%;height:1.6rem;left:2%
+  }
+  .imgSize{
+    width:70%;
+    height:90%
+  }
   .manyCompanyTitle{
     margin-top: 4rem;
     font-weight: 600;

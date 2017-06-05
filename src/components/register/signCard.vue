@@ -40,7 +40,14 @@
         <!--</a>-->
         <a  class="mint-cell" @click="changeList(0)">
           <div class="mint-cell-wrapper">
-            <div class="mint-cell-title qing"><!----> <div><i class="indexicon icon-toast"></i> <span>请假申请</span></div></div>
+            <div class="mint-cell-title qing">
+              <div class="postionImages">
+                <img :src="imgSrc.ico_leave" class="imgSize" >
+              </div>
+              <div>
+                <i class="indexicon icon-toast"></i>
+                <span>请假申请</span></div>
+            </div>
             <div class="mint-cell-value is-link"><span></span></div>
           </div>
           <div class="mint-cell-right"></div>
@@ -48,7 +55,13 @@
         </a>
         <a  class="mint-cell" @click="changeList(1)">
           <div class="mint-cell-wrapper">
-            <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>我的考勤</span></div></div>
+            <div class="mint-cell-title qing">
+              <div class="postionImages">
+                <img :src="imgSrc.ico_attendance" class="imgSize" >
+              </div>
+              <div>
+                <i class="indexicon icon-toast"></i>
+                <span>我的考勤</span></div></div>
             <div class="mint-cell-value is-link"><span></span></div>
           </div>
           <div class="mint-cell-right"></div>
@@ -56,7 +69,13 @@
         </a>
         <a  class="mint-cell" @click="changeList(2)">
           <div class="mint-cell-wrapper">
-            <div class="mint-cell-title"><!----> <div><i class="indexicon icon-toast"></i> <span>我的公司条</span></div></div>
+            <div class="mint-cell-title qing">
+              <div class="postionImages">
+                <img :src="imgSrc.ico_wage" class="imgSize">
+              </div>
+              <div>
+                <i class="indexicon icon-toast"></i>
+                <span>我的公司条</span></div></div>
             <div class="mint-cell-value is-link"><span></span></div>
           </div>
           <div class="mint-cell-right"></div>
@@ -105,6 +124,8 @@ let oneselfData={};
             doIcon: require('../../assets/ico_workbench_2.png'),
             setIcon: require('../../assets/ico_setting_1.png'),
             ico_leave: require('../../assets/ico_leave.png'),
+            ico_attendance: require('../../assets/ico_attendance.png'),
+            ico_wage: require('../../assets/ico_wage.png'),
 
           },
           arryName:[
@@ -233,45 +254,55 @@ let oneselfData={};
 </script>
 
 <style scoped>
-  /*.qing{*/
-    /*width: 5rem;*/
-  /*}*/
-  /*.qing::before*/
-  /*{*/
-    /*content:"台词：-";*/
+  .qing{
+    width: 5rem;
+    postion:relative;
+  }
+  .qing::before
+  {
+    content:" ------- ";
     /*content: url(../../assets/ico_leave.png);*/
     /*font-size: 0.5em;*/
     /*background-size: 19px 20px;*/
     /*display: inline-block;*/
     /*background-color:yellow;*/
-    /*color:red;*/
+    color:#ffffff;
     /*font-weight:bold;*/
-    /*width: 19px;*/
+    width: 10%;
     /*height: 20px;*/
-  /*}*/
-.bottomTool{
-  position:fixed;
-  bottom:0;
-  width: 100%;
-  height: 4rem;
-  /*line-height: 4rem;*/
-  background: rgb(250,250,250);
-}
-.siginLeft{
-  flex: 1;
-  height: 5.2rem;
-  border-radius: 2.6rem;
-  text-align: right;
-  background: #cccccc;
-  border: solid #ffffff 0.2rem;
-}
-.siginRight{
-  padding-left: 0.8rem ;
-  flex: 3;
-  height: 5.2rem;
-  /*line-height: 5.2rem;*/
-  font-size: 1.2rem;
-}
+  }
+  .postionImages{
+    position:absolute;width:10%;height:1.6rem;left:2%
+  }
+  .imgSize{
+    width:70%;
+    height:90%
+  }
+  .bottomTool{
+    position:fixed;
+    bottom:0;
+    width: 100%;
+    height: 4rem;
+    /*line-height: 4rem;*/
+    background: rgb(250,250,250);
+  }
+  .siginLeft{
+    width:22%;
+    float:left;
+    height: 5.2rem;
+    border-radius: 2.6rem;
+    text-align: right;
+    background: #cccccc;
+    border: solid #ffffff 0.2rem;
+  }
+  .siginRight{
+    padding-left: 0.8rem ;
+    width:73%;
+    float:left;
+    height: 5.2rem;
+    /*line-height: 5.2rem;*/
+    font-size: 1.2rem;
+  }
   .avatar{
     width: 80%;
     display: block;
