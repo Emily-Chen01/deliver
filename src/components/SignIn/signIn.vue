@@ -20,7 +20,7 @@
             <div>上</div>
           </div>
           <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan">上班时间</div>
+            <div class="toWorkRightTimeSpan">上6班时间</div>
             <div class="toWorkRightTimeSpan">
               {{initToTime}}
 
@@ -64,15 +64,14 @@
               </mt-button>
             </div>
             <div style="width: 17rem">
-              <div v-show="initDaKaRecord">
-                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
-                地理位置：范围内
-
-
-              </div>
+              <!--<div v-show="initDaKaRecord">-->
+                <!--<img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">-->
+                <!--地理位置：范围内-->
+              <!--</div>-->
               <div v-show="initDaKaRecordWeiZhi">
                 <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
-                地理位置：范围内
+                <span v-if="!outsideObtainValue">地理位置：范围内</span>
+                <span v-if="twRangeShow">地理位置：{{twRangeShow}}附近</span>
 
 
               </div>
@@ -106,73 +105,73 @@
           </div>
         </div>
       </div>
-      <div v-show="zcDownShow">
-        <div>
-          <div class="toWorkLeft">
-            <div>上 </div>
-          </div>
-          <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan">上1班时间</div>
-            <div class="toWorkRightTimeSpan">
-              {{initToTime}}
+      <!--<div v-show="zcDownShow">-->
+        <!--<div>-->
+          <!--<div class="toWorkLeft">-->
+            <!--<div>上 </div>-->
+          <!--</div>-->
+          <!--<div class="toWorkRight">-->
+            <!--<div class="toWorkRightTimeSpan">上1班时间</div>-->
+            <!--<div class="toWorkRightTimeSpan">-->
+              <!--{{initToTime}}-->
 
 
-            </div>
-            <div class="toWorkRightTime" style="position: relative">
-              <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
-                {{clickStaus}}
+            <!--</div>-->
+            <!--<div class="toWorkRightTime" style="position: relative">-->
+              <!--<mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">-->
+                <!--{{clickStaus}}-->
 
 
-              </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondQ" v-show="isYellow">
-                区域外
+              <!--</mt-button>-->
+              <!--<mt-button type="default" class="toDaKaStatusSecondQ" v-show="isYellow">-->
+                <!--区域外-->
 
 
-              </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondQ" v-show="lateStatusAddW">
-                <!--区域外+迟到显示-->
-                区域外
+              <!--</mt-button>-->
+              <!--<mt-button type="default" class="toDaKaStatusSecondQ" v-show="lateStatusAddW">-->
+                <!--&lt;!&ndash;区域外+迟到显示&ndash;&gt;-->
+                <!--区域外-->
 
 
-              </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatus">
-                <!--lateStatus-->
-                迟到了
+              <!--</mt-button>-->
+              <!--<mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatus">-->
+                <!--&lt;!&ndash;lateStatus&ndash;&gt;-->
+                <!--迟到了-->
 
 
-              </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondK" v-show="absenteeismStatus">
-                <!--absenteeismStatus-->
-                旷工1
+              <!--</mt-button>-->
+              <!--<mt-button type="default" class="toDaKaStatusSecondK" v-show="absenteeismStatus">-->
+                <!--&lt;!&ndash;absenteeismStatus&ndash;&gt;-->
+                <!--旷工1-->
 
 
-              </mt-button>
-            </div>
-            <div style="width: 17rem">
-              <div v-show="initDaKaRecord">
-                <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
-                地理位置：范围内
+              <!--</mt-button>-->
+            <!--</div>-->
+            <!--<div style="width: 17rem">-->
+              <!--<div v-show="initDaKaRecord">-->
+                <!--<img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">-->
+                <!--地理位置：范围内-->
 
 
-              </div>
-              <div>
-                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter(0)">
-                  <!--absenteeismStatus  旷工-->
-                  提交请假/外出申请
+              <!--</div>-->
+              <!--<div>-->
+                <!--<mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus" @click="submitApplyRouter(0)">-->
+                  <!--&lt;!&ndash;absenteeismStatus  旷工&ndash;&gt;-->
+                  <!--提交请假/外出申请-->
 
 
-                </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter(1)">
-                  <!--lateStatus  迟到块-->
-                  忘打卡？
+                <!--</mt-button>-->
+                <!--<mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter(1)">-->
+                  <!--&lt;!&ndash;lateStatus  迟到块&ndash;&gt;-->
+                  <!--忘打卡？-->
 
 
-                </mt-button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                <!--</mt-button>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
       <div v-show="zcDownShowSpan">
         <div style="margin-top: 7rem">
           <!--上面的top原有是5rem 5-16晚改-->
@@ -225,8 +224,9 @@
             </div>
             <div style="width: 12rem">
               <img :src="imgSrc.daKaPostionIcon" class="postionClassIcon">
-              地理位置：范围内
 
+              <span v-if="!outsideObtainValue">地理位置：范围内</span>
+              <span v-if="owRangeShow">地理位置：{{owRangeShow}}附近</span>
 
             </div>
             <div>
@@ -429,6 +429,14 @@
         outsideObtainValue: '', //获取的经纬=判断的值是都区域外
         outsideObtainValueEr: '', //获取的经纬=判断的值是都区域外
         searchLocationArray:[],  //查询出来的locations经纬度
+        twRange:'', //上班span文字
+        twRangeShow:'' ,// 显示范围
+        owRangeShow:'' ,// 显示范围
+        twRangeNei:'', //范围内
+        owRange:'', //下班span文字
+        center: {lng: 0, lat: 0},
+
+
 
       }
     },
@@ -459,6 +467,13 @@
             this.searchLocationArray=response.body.result.locations;
 //            alert('初始加载'+this.searchLocationArray);
           //经纬度传值end
+
+          //进行给地理位置赋值start
+            this.twRangeShow=response.body.result.twLocation;
+            this.owRangeShow=response.body.result.owLocation;
+
+          //进行给地理位置赋值end
+
 
           //时间赋值开始
           if (response.body.result.punchYear !== null) {
@@ -683,8 +698,6 @@
         }
       },
       handerClickEvent(){  //打卡按钮   上班或下班
-
-
         MessageBox.confirm('“HR SAAS系统”，要使用你的地理位置，是否允许？').then(action => {
           let updakaObj;
           this.currentTime();
@@ -705,11 +718,18 @@
 
           if (this.toDaKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"twOutside": this.outsideObtainValue ? true : 0}   //this.outsideObtainValue toDaKaStatusIsOutsideInit
+              "record": {
+                  "twOutside": this.outsideObtainValue ? true : 0,
+                  "twLocation":this.twRange,
+              }   //this.outsideObtainValue toDaKaStatusIsOutsideInit
+
             }
           } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
             updakaObj = {
-              "record": {"owOutside": this.outsideObtainValue ? true : 0}//0  'true'  //this.outsideObtainValue  toDownKaStatusIsOutsideInit
+              "record": {
+                  "owOutside": this.outsideObtainValue ? true : 0,
+                "owLocation":this.twRange,
+              }//0  'true'  //this.outsideObtainValue  toDownKaStatusIsOutsideInit
             }
           }
 //          else {
@@ -914,11 +934,16 @@
       //地图微信获取经纬度 转换经纬度 地图测距开始
 
 //
-      handler ({BMap, map}) {
-        console.log(BMap, map);
-        console.log(this.latitude);
-        console.log(this.latitude);
-        console.log(this.latitude);
+      handler ({BMap, map,}) {
+        console.log(BMap ,'我是BMap');
+        console.log(map ,'我是map');
+        new BMap.Geocoder().getLocation(new BMap.Point(116.331398,39.897445), function(res) {
+          console.log('地址逆解析', res.address);
+
+          self.twRange=res.address;
+        });
+
+
         this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
           console.log(response.body.result);
           this.t1 = response.body.result.appid;
@@ -969,28 +994,30 @@
 //                  alert('手机获取的维度'+self.latitude);
 
 
-//             function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
-//                  var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
-//                  var x = $lng;
-//                  var y = $lat;
-//                  var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
-//                  var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
-//                  $lng = z * Math.cos(theta) + 0.0065;
-//                  $lat = z * Math.sin(theta) + 0.006;
-//                  console.log( $lng,$lat);
-//                  $result.lat =$lat;
-//                  $result.lng =$lng ;
-//                  console.log($result);
-//                  console.log(this);
-//
-//               return  $result;
-//                };
+                     function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
+                      var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+                      var x = $lng;
+                      var y = $lat;
+                      var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+                      var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+                      $lng = z * Math.cos(theta) + 0.0065;
+                      $lat = z * Math.sin(theta) + 0.006;
+                      console.log( $lng,$lat);
+                      $result.lat =$lat;
+                      $result.lng =$lng ;
+                      console.log($result);
+                      console.log(this);
 
-//                var shuzi=Convert_GCJ02_To_BD09(this.longitude,this.latitude,jwresult);
-//                console.log('下面是转后');
-//                console.log(shuzi);
+                   return  $result;
+                 };
 
-//                alert('纬度'+shuzi.lat+'经度'+shuzi.lng);
+                var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
+                console.log('下面是转后');
+                console.log(shuzi);
+
+//                alert('转纬度'+shuzi.lat+'转经度'+shuzi.lng);
+
+
 
 
                   self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
@@ -1001,6 +1028,9 @@
 
 
                       let arrayLonglat = self.searchLocationArray;
+//                            let arrayLonglat = [
+//                          {LONGITUDE: 120.6548525, LATITUDE: 31.2545787441},
+//                        ];
                       console.log('查询出的经纬度'+arrayLonglat);
 //                      alert('查出的数据里面'+self.searchLocationArray);
 
@@ -1009,12 +1039,24 @@
                         let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
 
                         if (distance < arrayLonglat[i].SCOPE) {
-                          let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
+                          let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude)); //self.longitude, self.latitude
                           alert('区域内' +juli );
                           self.outsideObtainValue = false;
                           break;
                         } else {
+
                           self.outsideObtainValue = true;
+                          if( self.outsideObtainValue){
+//                            alert('转'+shuzi.lat+'转域外'+shuzi.lng);
+
+                            new BMap.Geocoder().getLocation(new BMap.Point(shuzi.lng,shuzi.lat), function(res) { //进行给传值参数位置
+                              console.log('地址逆解析', res);
+
+                              self.twRange=res.addressComponents.district+res.addressComponents.street;
+                              alert(self.twRange);
+
+                            });
+                          }
                           alert('区域外' + map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude)));
                         }
                       }
@@ -1041,32 +1083,37 @@
         });
 
         //临时测试
-
-//        let arrayLonglat = [
-//          {lng: 120.6548525, lat: 31.2545787441},
-//          {lng: 120.6648525, lat: 31.2645787441},
-//          {lng: 120.6348525, lat: 31.2345787441},
-//        ];
-
-//        let arrayLonglat = this.searchLocationArray;
-//        console.log('查询出的经纬度'+arrayLonglat);
-//        for (let i = 0; i < arrayLonglat.length; i++) {
+//        self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
 //
-//          let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(120.62084787, 31.300423891));
+//          //经纬度传值start
+//          self.searchLocationArray=response.body.result.locations;
+//          //经纬度传值end
 //
-//          if (distance < arrayLonglat[i].SCOPE) {
-//            let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(120.62084787, 31.300423891))
-//            alert('区域内' +juli );
-//              this.outsideObtainValue = false;
+//
+//
+//          let arrayLonglat = self.searchLocationArray;
+//          console.log('查询出的经纬度'+arrayLonglat);
+////                      alert('查出的数据里面'+self.searchLocationArray);
+//
+//          for (let i = 0; i < arrayLonglat.length; i++) {
+//
+//            let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
+//
+//            if (distance < arrayLonglat[i].SCOPE) {
+//              let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
+//              alert('区域内' +juli );
+//              self.outsideObtainValue = false;
 //              break;
-//          } else {
-//            this.outsideObtainValue = true;
-//            alert('区域外' + map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(120.62084787, 31.300423891)));
+//            } else {
+//              self.outsideObtainValue = true;
+//              alert('区域外' + map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude)));
+//            }
 //          }
-//
-//        }
-//
-//
+//        }, response => {
+//          console.log('error callback');
+//        });
+
+        //临时测试end
 
 
 
