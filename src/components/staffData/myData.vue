@@ -572,7 +572,7 @@
     font-size: 1.4rem;
   }
  .changeSelect{
-   width: 14rem;
+   width: 12rem;
    display: block;
    height: 2.5rem;
    border: none;

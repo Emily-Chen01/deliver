@@ -16,13 +16,15 @@
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
             <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 7rem;">
-              <img :src="imgSrc.doIcon" class="avatar">
+              <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
+              <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
             <div style="height: 1.5rem;position: absolute;left: 7rem;top:2.4rem">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
             <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 18.5rem;">
-              <img :src="imgSrc.setIcon" class="avatar">
+              <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
+              <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
             <div style="height: 1.5rem;position: absolute;left: 19rem;top:2.4rem">设置</div>
           </div>
@@ -38,15 +40,26 @@
   export default {
     data(){
       return {
+          init:'',
+        initBlue:'',
+        initBlueSet:'',
+        initSet:'',
         imgSrc: {
           shenFenIcon: require('../../assets/shenfenzheng.png'),
           doIcon: require('../../assets/ico_workbench_2.png'),
-          setIcon: require('../../assets/ico_setting_1.png'),
+          doIconBlue: require('../../assets/ico_workbench_1.png'),
+
+          setIconBlue: require('../../assets/ico_setting_1.png'),
+          setIcon: require('../../assets/ico_setting_2.png'),
+
         },
       }
     },
     created: function () {
       this.imgSrc.shenFenIcon=this.getCookie('avatarImages');
+      this.init=true;
+      this.initBlueSet=true;
+      this.initSet=false;
 
     },
 
@@ -61,9 +74,14 @@
       },
       routerTool(number){
           if(number==1){
+            this.init=false;
+            this.initBlue=true;
+            this.initBlueSet=false;
+            this.initSet=true;
             this.$router.push({path:'/signCard'});
           }
         if(number==2){
+
           this.$router.push({path:'/set'});
         }
       },

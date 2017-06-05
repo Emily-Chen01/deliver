@@ -435,6 +435,7 @@
     created: function () {
 
 
+
       timer1 = setInterval(this.handerSign, 1000);
 
       this.doSearch(); //初始化页面查询数据
@@ -480,6 +481,9 @@
           if (response.body.result.overTime !== null) {
             this.$nextTick(() => {
               this.addtime = response.body.result.overTime;
+
+              this.setCookie('upAddTime', this.addtime,365);
+
             });
           }
           console.log(this.addtime);

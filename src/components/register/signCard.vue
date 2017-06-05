@@ -87,13 +87,15 @@
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
             <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 7rem;">
-              <img :src="imgSrc.doIcon" class="avatar">
+              <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
+              <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
             <div style="height: 1.5rem;position: absolute;left: 7rem;top:2.4rem">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
             <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 18.5rem;">
-              <img :src="imgSrc.setIcon" class="avatar">
+              <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
+              <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
             <div style="height: 1.5rem;position: absolute;left: 19rem;top:2.4rem">设置</div>
           </div>
@@ -121,11 +123,16 @@ let oneselfData={};
           imgSrc: {
             comAddress:  require('../../assets/tou.png'),
             shezhiBackground:  require('../../assets/ico_setting.png'),
-            doIcon: require('../../assets/ico_workbench_2.png'),
-            setIcon: require('../../assets/ico_setting_1.png'),
+//            doIcon: require('../../assets/ico_workbench_2.png'),
+//            setIcon: require('../../assets/ico_setting_1.png'),
             ico_leave: require('../../assets/ico_leave.png'),
             ico_attendance: require('../../assets/ico_attendance.png'),
             ico_wage: require('../../assets/ico_wage.png'),
+            doIcon: require('../../assets/ico_workbench_2.png'),
+            doIconBlue: require('../../assets/ico_workbench_1.png'),
+
+            setIconBlue: require('../../assets/ico_setting_1.png'),
+            setIcon: require('../../assets/ico_setting_2.png'),
 
           },
           arryName:[
@@ -138,10 +145,21 @@ let oneselfData={};
             {
               name:'我的工资条'
             }
-          ]
+          ],
+          init:'',
+          initBlue:'',
+          initBlueSet:'',
+          initSet:'',
+
         }
       },
     created: function () {
+      //设置的切换start
+      this.init=false;
+      this.initBlue=true;
+      this.initBlueSet=false;
+      this.initSet=true;
+
 
 //          let param={
 //            "openid":"2",

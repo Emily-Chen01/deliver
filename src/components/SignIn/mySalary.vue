@@ -71,7 +71,7 @@
              downTime:'',
              year:new Date().getFullYear(),
              dateGrid:{
-               money:'15215',
+               money:'',
                lost:'561',
                'detail': [
                  {
@@ -108,7 +108,9 @@
               var geshi= this.upTime<10?'0'+this.upTime:this.upTime;
               var jian=this.year+'/'+geshi;
                 console.log('jian'+jian);
-              this.initDate(jian);
+            this.dateGrid={};
+
+            this.initDate(jian);
           },
           handleClickDown(){
             console.log('下一个')
@@ -120,6 +122,8 @@
             var geshi2= this.upTime<10?'0'+this.upTime:this.upTime;
             var add=this.year+'/'+geshi2;
             console.log('add'+add);
+            this.dateGrid={};
+
             this.initDate(add);
           },
           initDate(sum){ //查询当月工资
@@ -127,7 +131,6 @@
               "date":sum
             };
             this.$http.post('/api/v1.0/client/findMonthSalaryReport',param).then(response => { //参数不传默认当月
-
               console.log(response);
               this.dateGrid=response.body.result;
 //              this.dateGrid=response.body.result;
@@ -150,8 +153,8 @@
 .titleHeard{
   display: flex;
   background: #26a2ff;
-  height: 2.6rem;
-  line-height: 2.6rem;
+  height: 3.2rem;
+  line-height: 3.2rem;
   color: #ffffff;
 }
 .titleLeft{
@@ -164,15 +167,15 @@
   flex: 1;
 }
   .concentClass{
-    width: 21.8rem;
-    margin: 1.5rem 1rem;
+    width: 93%;
+    margin: 1rem ;
     height: 8rem;
     line-height: 8rem;
     background: rgb(239,242,247);
     position: relative;
   }
   .concentClassNr{
-    width: 19.8rem;
+    width: 93%;
     height: 6.8rem;
     position: absolute;
     top:0.5rem;
@@ -181,7 +184,7 @@
     background: rgb(217,224,234);
   }
 .concentClassSpan{
-  width: 18.2rem;
+  width: 93%;
   height: 5.8rem;
   position: absolute;
   top: 0.5rem;
@@ -213,8 +216,8 @@
 
 }
 .concentBodyClass{
-  width: 21.8rem;
-  margin: 1.5rem 1rem;
+  width: 93%;
+  margin: 1rem;
   min-height: 9rem;
   font-size: 1rem;
   border: 1px solid #d2dce6;

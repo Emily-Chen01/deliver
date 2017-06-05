@@ -237,7 +237,7 @@
               changeApplyOvertime:false, //加班时间div
               updateImage:true, //上传图片 div
               Remark:true, //备注div
-              addTimeValue:1,  //加班时间value
+              addTimeValue:'',  //加班时间value
               data:{},
               applyTypeArray:[], //申请
               applyTypeName:[], //申请
@@ -268,6 +268,8 @@
             this.shengqingclick(this.selectedDataApply);
         //此区域是在在点击提交申请的时候进行选中传参end
 
+          this.addTimeValue=this.getCookie('leaveType');
+          console.log(this.addTimeValue,'在打卡加班传来的加班时间');
 
           this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
             this.applyTypeArray=response.body.result;
