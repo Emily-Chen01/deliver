@@ -80,28 +80,28 @@ export default {
 
 
     //获取openidstart  6-2早注释为了本地测试 提交需解除注释
-//      var _href=window.location.href;
-//    console.log( window.location.href);
-//
-//      function getUrlParam(url, name) { //获取地址栏的参数
-//        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-//        var r = url.substring(url.indexOf('?') + 1).match(reg);
-//        if (r != null) return unescape(r[2]);
-//        return null;
-//      }
-////    getUrlParam(_href, "openid");
-//      var openID=getUrlParam(_href, "openid");
-//
-//      if (openID==null) {
-//        let path = '/api/v1.0/wechat';
-//        let protocol = location.protocol;
-//        let hostname = location.hostname;
-////        console.log(`${protocol}//${hostname}${path}`);
-//        window.location.href = `${protocol}//${hostname}${path}`;
-//        return;
-//      }
-//        this.setCookie('openId',openID,365);
-//        console.log('openid修改过的'+this.getCookie('openId'));
+      var _href=window.location.href;
+    console.log( window.location.href);
+
+      function getUrlParam(url, name) { //获取地址栏的参数
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = url.substring(url.indexOf('?') + 1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+      }
+//    getUrlParam(_href, "openid");
+      var openID=getUrlParam(_href, "openid");
+
+      if (openID==null) {
+        let path = '/api/v1.0/wechat';
+        let protocol = location.protocol;
+        let hostname = location.hostname;
+//        console.log(`${protocol}//${hostname}${path}`);
+        window.location.href = `${protocol}//${hostname}${path}`;
+        return;
+      }
+        this.setCookie('openId',openID,365);
+        console.log('openid修改过的'+this.getCookie('openId'));
 
 
     //获取openid end
