@@ -10,39 +10,6 @@
         <mt-tab-container-item id="1">
           <div v-if="submitDivShow">
             <!--展示-->
-            <!--<mt-field label="性别"  >-->
-              <!--<div class="showARightSpan">{{myDataSearch.xingbie}}</div>-->
-            <!--</mt-field>-->
-            <!--<mt-field v-model="phone" label="手机号" placeholder="" type="number">-->
-              <!--<div class="showARightSpan">{{myDataSearch.phone}}</div>-->
-            <!--</mt-field>-->
-            <!--<mt-field v-model="address" label="国家/地区" placeholder=""  >-->
-              <!--<div class="showARightSpan">{{myDataSearch.city}}</div>-->
-            <!--</mt-field>-->
-            <!--<mt-field v-model="card" label="身份证号" placeholder="" type="number" >-->
-              <!--<div class="showARightSpan">{{myDataSearch.shenfeng}}</div>-->
-            <!--</mt-field>-->
-            <!--<mt-field  label="" placeholder=""  style="height: 8.2rem;line-height: 8.2rem" >-->
-              <!--<div class="cardClassSearch">-->
-                <!--<a @click.native="handerClickUp()">-->
-                  <!--<img :src="myDataSearch.shenfengzheng" class="CardImgSearch">-->
-                <!--</a>-->
-              <!--</div>-->
-              <!--<div class="cardClassSearch">-->
-                <!--<a @click.native="handerClickUp()">-->
-                  <!--<img :src="myDataSearch.shenfengbei" class="CardImgSearch">-->
-                <!--</a>-->
-              <!--</div>-->
-            <!--</mt-field>-->
-            <!--<mt-field v-model="gold" label="公积金账号" placeholder="" type="number">-->
-              <!--<div class="showARightSpan">{{myDataSearch.gongjijin}}</div>-->
-            <!--</mt-field>-->
-            <!--<mt-field v-model="bankCard" label="银行卡号" placeholder="" type="number"  >-->
-              <!--<div class="showARightSpan">{{myDataSearch.bankcard}}</div>-->
-            <!--</mt-field>-->
-            <!--<mt-field v-model="openBank" label="开户行" placeholder=""  >-->
-              <!--<div class="showARightSpan">{{myDataSearch.kaihuhang}}</div>-->
-            <!--</mt-field>-->
             <div class="hrClass"></div>
             <div class="contentClass">
               <div class="contentLeft" >性别</div>
@@ -173,42 +140,6 @@
 
         <mt-tab-container-item id="2">
           <!--岗位信息-->
-          <!--<mt-field label="入职日期" placeholder="" type="number">-->
-            <!--<div class="showARightSpan">{{stationObj.dateOfEntry}}</div>-->
-          <!--</mt-field>-->
-          <!--<mt-field label="聘用形式" placeholder=""  >-->
-            <!--<div class="showARightSpan">{{stationObj.baseSalary}}</div>-->
-          <!--</mt-field>-->
-          <!--<mt-field label="合同类型" placeholder=""  >-->
-            <!--<div class="showARightSpan">{{stationObj.trialSalary}}</div>-->
-          <!--</mt-field>-->
-
-          <!--<mt-field label="职位" placeholder="" type="number">-->
-            <!--<div class="showARightSpan">{{stationObj.position}}</div>-->
-          <!--</mt-field>-->
-          <!--<mt-field label="所在部门" placeholder=""  >-->
-            <!--<div class="showARightSpan">{{stationObj.deptName}}</div>-->
-          <!--</mt-field>-->
-          <!--<mt-field label="转正日期" placeholder=""  >-->
-            <!--<div class="showARightSpan">{{stationObj.zhuanWork}}</div>-->
-          <!--</mt-field>-->
-
-          <!--<mt-field label="司龄" placeholder="" type="number">-->
-            <!--<div class="showARightSpan">{{stationObj.companyAge}}</div>-->
-          <!--</mt-field>-->
-          <!--<mt-field label="首次工作" placeholder=""  >-->
-            <!--<div class="showARightSpan">{{stationObj.firstWork}}</div>-->
-          <!--</mt-field>-->
-          <!--<mt-field label="工作邮箱" placeholder=""  >-->
-            <!--<div class="showARightSpan">{{stationObj.workEmail}}</div>-->
-          <!--</mt-field>-->
-
-          <!--<mt-field label="工作电话" placeholder="" type="number">-->
-            <!--<div class="showARightSpan">{{stationObj.jobNumber}}</div>-->
-          <!--</mt-field>-->
-          <!--<mt-field label="工号" placeholder=""  >-->
-            <!--<div class="showARightSpan">{{stationObj.serialVersionUID}}</div>-->
-          <!--</mt-field>-->
           <div class="hrClass"></div>
           <div class="contentClass">
             <div class="contentLeft" >入职日期</div>
@@ -323,13 +254,6 @@
 
             }
         },
-    watch: {
-//      selectedDataCity:function (val, oldVal) {
-//        console.log('我是国家地区' + val);
-//        this.cityParam= val.type
-//
-//      },
-    },
         created: function () {
 //          alert('openid111cc'+this.getCookie('openId'));
             this.initSearch();
@@ -517,14 +441,6 @@
                   break;
               }
 
-
-//              if(response.body.result.gender){//性别
-//                if(response.body.result.gender==1){
-//                  this.myDataSearch.xingbie='男';
-//                }else if (response.body.result.gender==0){
-//                  this.myDataSearch.xingbie='女';
-//                }
-//              }
 
               this.uid=response.body.result.uid;
               //个人资料查询赋值结束
