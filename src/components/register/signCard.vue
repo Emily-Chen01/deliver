@@ -121,7 +121,8 @@ let oneselfData={};
           infoObj:{},
           arryOneself:[],
           imgSrc: {
-            comAddress:  require('../../assets/tou.png'),
+//            comAddress:  require('../../assets/tou.png'),
+            comAddress:  require('../../assets/tx.png'),
             shezhiBackground:  require('../../assets/ico_setting.png'),
 //            doIcon: require('../../assets/ico_workbench_2.png'),
 //            setIcon: require('../../assets/ico_setting_1.png'),

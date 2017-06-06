@@ -197,7 +197,7 @@
 
               </mt-button>
               <mt-button type="default"
-                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:6.7rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.3rem;border-radius: 8px"
+                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:7rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 8px"
                          v-show="leaveEarly">
                 早退
 
@@ -292,14 +292,14 @@
               <div class="dakahr"></div>
               <div>
                 <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;"
+                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;color:#ffffff;"
                            v-show="initDaKaRecord">
                   打卡正常
 
 
                 </mt-button>
                 <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;"
+                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;color:#ffffff;"
                            v-show="initDownRecord">
                   打卡正常
 
@@ -1194,7 +1194,7 @@
     line-height: 1.4rem;
     float: left;
     padding-left: 0.38rem;
-    padding-top: 0.3rem;
+    padding-top: 0.8rem;
   }
 
   .toWorkLeft div {
@@ -1358,13 +1358,13 @@
 
   .toDaKaStatus {
     background-color: #2acfbc;
-    color: #000000;
+    color: #ffffff;
     width: 5.7rem;
-    left: -0.8rem;
+    /*left: -0.8rem;*/
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1372,11 +1372,11 @@
     background-color: #6e83c5;
     color: #ffffff;
     width: 7.5rem;
-    left: 3.69rem;
+    left: 4.9rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1388,7 +1388,7 @@
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1396,12 +1396,12 @@
     background-color: #b2c92b;
     color: #ffffff;
     width: 4.8rem;
-    left: -0.9rem;
+    /*left: -0.9rem;*/
     /*这个地方与上1 右边的的迟到了有重叠原来是left：5*/
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1409,11 +1409,11 @@
     background-color: #f6bc2a;
     color: #ffffff;
     width: 5.2rem;
-    left: 6.7rem;
+    /*left: 6.7rem;*/
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1421,11 +1421,11 @@
     background-color: #f54435;
     color: #ffffff;
     width: 5.7rem;
-    left: 6.5rem;
+    left: 6.88rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1435,7 +1435,7 @@
     width: 6rem;
     height: 1.8rem;
     top: 0.5rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1445,7 +1445,7 @@
     width: 9.8rem;
     height: 1.8rem;
     top: 0.5rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 
@@ -1455,7 +1455,7 @@
     width: 5.8rem;
     height: 1.8rem;
     top: 0.5rem;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     border-radius: 8px
   }
 

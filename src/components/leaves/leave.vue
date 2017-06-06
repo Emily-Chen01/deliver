@@ -132,9 +132,9 @@
               <div v-if="item.startTime">
                 <div class="myApplyContentLeft">起止日期</div>
                 <div class="myApplyContentNr" >
-                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,15))}}
+                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,14))}}
                  -
-               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,15)}}
+               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,14)}}
                 </div>
               </div>
               <div v-if="item.overworkTime">
@@ -146,25 +146,15 @@
 
               <div class="myApplyContentLeft">事由</div>
               <div class="myApplyContentNr">{{item.remarks}}</div>
-              <div v-if="item.image" style="clear: both;width: 22rem;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
+              <div v-if="item.image" style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
             </div>
             <div class="myApplyBottom" v-if="item.image">
               <div>
                 <div class="myApplyBottomNrLeft">附件内容 ：</div>
                 <div class="myApplyBottomNrRight">
-                  <mt-button size="small" type="primary" @click="lookImages">
+                  <mt-button size="small" type="primary" @click="lookImages(item.image)">
                     查看图片
                   </mt-button>
-                  <mt-popup
-                    v-model="popupVisible"
-                    class="imageClass"
-                    closeOnClickModal="true"
-                  >
-                    <img width="150" :src="item.image"  class="alertImages" v-if="item.image"  />
-                    <div @click="closeImage" class="colseClass">
-                      关闭
-                    </div>
-                  </mt-popup>
                 </div>
               </div>
             </div>
@@ -176,7 +166,16 @@
         </mt-tab-container-item>
 
       </mt-tab-container>
-
+      <mt-popup
+        v-model="popupVisible"
+        class="imageClass"
+        closeOnClickModal="true"
+      >
+        <img width="150" :src="popImgSrc"  class="alertImages" v-if="popImgSrc"  />
+        <div @click="closeImage" class="colseClass">
+          关闭
+        </div>
+      </mt-popup>
     </div>
 </template>
 <script>
@@ -189,6 +188,7 @@
   export default {
         data(){
             return {
+              popImgSrc: '',
               popupVisible:false,
               closeOnClickModal:true,
               isActive:false, //显示下滑线
@@ -487,8 +487,16 @@
               console.log('我是开始时间'+this.startTimeValue);
           },
           shengqingclick(value){ //初始是选中一个select然后进行参数选中为了提交用
-
+//          alert(this.selectedDataApply);
+          console.log(this.optionsApply,'this.optionsApply')
             for(let i=0;i<this.optionsApply.length;i++){  //循环初始化的时候选中一个select属性值和参数
+
+              if(this.selectedDataApply>this.optionsApply.length-1){
+                  this.selectedDataApply=this.optionsApply.length-1
+              }
+
+
+
               this.shengqingParam= this.optionsApply[this.selectedDataApply].uid;
               this.shengqingParamType= this.optionsApply[this.selectedDataApply].value;
             }
@@ -530,8 +538,10 @@
             console.log('我是选中的假期类型'+ this.qingjiauidParam);
 
           },
-          lookImages(){ //查看图片
+          lookImages(imgSrc){ //查看图片
             console.log('图片')
+            if(imgSrc) this.popImgSrc = imgSrc;
+            else this.popImgSrc = '';
             this.popupVisible=true;
           },
           closeImage(){

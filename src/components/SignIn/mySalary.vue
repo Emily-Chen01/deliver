@@ -194,21 +194,22 @@
 }
   .concentTop{
     position: absolute;
-    width: 18rem;
+    width: 100%;
     height: 2rem;
     line-height: 2rem;
     font-weight: 600;
   }
 .concentMiddle{
   position: absolute;
-  width: 18rem;
+  width: 96%;
+  left: 2%;
   height: 0.5rem;
   line-height: 0.5rem;
   top:2.8rem;
 }
 .concentBottom {
   position: absolute;
-  width: 18rem;
+  width: 100%;
   height: 2rem;
   line-height: 2rem;
   top:3.5rem;

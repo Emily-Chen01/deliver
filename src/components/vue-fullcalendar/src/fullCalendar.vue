@@ -1,7 +1,7 @@
 <template>
   <div class="comp-full-calendar">
     <!-- header pick month -->
-    <fc-header :current-date="currentDate" 
+    <fc-header :current-date="currentDate"
       :title-format="titleFormat"
       :first-day="firstDay"
       :month-names="monthNames"
@@ -18,7 +18,7 @@
       </div>
     </fc-header>
     <!-- body display date day and events -->
-    <fc-body :current-date="currentDate" :events="events" :month-names="monthNames" 
+    <fc-body :current-date="currentDate" :events="events" :month-names="monthNames"
       :week-names="weekNames" :first-day="firstDay"
       @eventclick="emitEventClick" @dayclick="emitDayClick"
       @moreclick="emitMoreClick">
@@ -60,7 +60,7 @@
         type : Array,
         default () {
           return langSets[this.lang].monthNames
-        } 
+        }
       },
       weekNames : {
         type : Array,
@@ -97,7 +97,7 @@
       'fc-header' : require('./components/header')
     }
   }
-  
+
 </script>
 <style lang="scss">
   .comp-full-calendar{
