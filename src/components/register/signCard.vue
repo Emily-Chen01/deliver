@@ -19,7 +19,11 @@
          </div>
 
        </div>
-       <div style="padding-bottom: 2rem;">
+       <div style="padding-bottom: 2rem;position: relative">
+         <div style="position: absolute;width: 2.5rem;height: 1.5rem;z-index: 2;left:32%;top:11%">
+           <img :src="imgSrc.ico_pencil" class="imgSizePencil" >
+
+         </div>
          <mt-button
            type="primary"
            style="background-color: #57b9ff;width: 97%;"
@@ -135,7 +139,7 @@ let oneselfData={};
             setIconBlue: require('../../assets/ico_setting_1.png'),
             setIcon: require('../../assets/ico_setting_2.png'),
 
-            bg: require('../../assets/bgrepate.png'),
+            ico_pencil: require('../../assets/ico_pencil.png'),
             bg1: require('../../assets/bg.png'),
 
 
@@ -316,6 +320,10 @@ let oneselfData={};
   .bg{
     background-image: url("../../assets/bg.png");
     background-repeat: repeat-x;
+  }
+  .imgSizePencil{
+    width: 50%;
+    height: 80%;
   }
   .siginLeft{
     width:22%;
