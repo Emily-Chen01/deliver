@@ -95,6 +95,9 @@
 </script>
 
 <style scoped>
+  .confirmBinding{
+    padding: 0 0.5rem;
+  }
   .bottomTool{
     position:fixed;
     bottom:0;
