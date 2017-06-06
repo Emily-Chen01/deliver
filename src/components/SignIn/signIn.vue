@@ -2,7 +2,10 @@
   <div>
     <div style="position: relative;height: 5.4rem;background: #20a1ff">
       <div class="siginLeft">
-        <img :src="imgSrc.comAddress" class="avatar">
+        <!--<img :src="imgSrc.comAddress" class="avatar">-->
+        <div class="avatarBorder">
+          <img :src="imgSrc.comAddress" class="avatarTop">
+        </div>
       </div>
       <div class="siginRight">
         <div>
@@ -197,7 +200,7 @@
 
               </mt-button>
               <mt-button type="default"
-                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:7rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 8px"
+                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:7.3rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 8px"
                          v-show="leaveEarly">
                 早退
 
@@ -464,6 +467,9 @@
 
 
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
+        this.objNr = this.getCookie('infoObj'); //获取缓存的图片
+//        console.log(this.objNr,'this.objNr');
+
 
         this.imgSrc.comAddress = imageString;
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
@@ -1145,17 +1151,15 @@
     width: 4.2rem;
     float: left;
     height: 4.2rem;
-    background-color: #cccccc;
-    border-radius: 2.6rem;
     margin: 1.5% 0 0 1.5%;
   }
 
-  .avatar {
+  .avatarTop{
     width: 92%;
     height: 94%;
     display: block;
     text-align: center!important;
-    padding: 0.1rem 0 0 0.2rem;
+    padding: 0.22rem 0 0 0.23rem;
     border-radius: 4rem;
     z-index: 0;
   }
@@ -1165,6 +1169,12 @@
     width: 19.1rem;
     float: right;
     height: 4.2rem;
+  }
+  .avatarBorder{
+    width: 4rem;
+    height: 4rem;
+    border-radius: 2rem;
+    text-align: right;
   }
 
   .detailClass {
@@ -1396,7 +1406,7 @@
     background-color: #b2c92b;
     color: #ffffff;
     width: 4.8rem;
-    /*left: -0.9rem;*/
+    left: 1rem;
     /*这个地方与上1 右边的的迟到了有重叠原来是left：5*/
     height: 1.8rem;
     position: absolute;

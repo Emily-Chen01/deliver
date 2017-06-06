@@ -14,7 +14,10 @@
           <div class="hrClass"></div>
           <div class="contentClass">
             <div class="contentLeft" style="padding-top: 0.3rem">申请分类</div>
-            <div class="contentRight" >
+            <div class="contentRight" style="position: relative;" >
+              <div class="selectBao">
+                <img width="150" :src="imgSrc.selectShow"  class="selectShowImg"  />
+              </div>
               <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)">
                 <option v-for="option in optionsApply"  v-bind:value="option.value" >
                   {{ option.text }}
@@ -26,7 +29,10 @@
           <div class="hrClass" v-if="changeApply"></div>
           <div class="contentClass" v-if="changeApply">
             <div class="contentLeft" style="padding-top: 0.3rem">假期分类</div>
-            <div class="contentRight" >
+            <div class="contentRight" style="position: relative;" >
+              <div class="selectBao">
+                <img width="150" :src="imgSrc.selectShow"  class="selectShowImg"  />
+              </div>
               <select v-model="selectedDataHoliday" class="changeSelect" @change="qingjiaclick(selectedDataHoliday)" >
                 <option v-for="option in optionsHoliday" v-bind:value="option">
                   {{ option.text }}
@@ -55,25 +61,31 @@
 
 
 
+          <div style="clear:both;"></div>
+          <div class="hrClass" v-if="updateImage"></div>
+          <div v-if="updateImage" style="width:98%;height: 8rem;line-height: 8rem; position: relative">
+                <div class="cardClass">
+                  <div>
+                    <vue-core-image-upload
+                      :crop="false"
+                      @imageuploaded="imageuploaded"
+                      :data="data"
+                      :headers="tokenHeader"
+                      :max-file-size="5242880"
+                      url="/api/v1.0/client/upload" >
+                      <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  />
+                      <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" />
 
-            <mt-field style="height: 8rem;line-height: 8rem;position: relative" v-if="updateImage">
-              <div class="cardClass">
-                <div>
-                  <vue-core-image-upload
-                    :crop="false"
-                    @imageuploaded="imageuploaded"
-                    :data="data"
-                    :headers="tokenHeader"
-                    :max-file-size="5242880"
-                    url="/api/v1.0/client/upload" >
-                    <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  />
-                    <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" />
-
-                  </vue-core-image-upload>
+                    </vue-core-image-upload>
+                  </div>
                 </div>
               </div>
-            </mt-field>
-            <div v-if="changeApplyOvertime">
+          <div class="hrClass" v-if="updateImage"></div>
+
+
+          <div style="clear:both;"></div>
+
+          <div v-if="changeApplyOvertime">
               <mt-field label="加班时长" v-model="addTimeValue" >
               </mt-field>
             </div>
@@ -98,7 +110,7 @@
       </div>
           <div style="padding-top: 2rem">
             <mt-button type="primary"
-                       style="background-color: rgb(139,156,172);width: 20rem;height:3rem;line-height: 3rem"
+                       style="background-color: rgb(32, 161, 255);width: 20rem;height:3rem;line-height: 3rem"
                        @click.native="handerDataSubmit()">提交
              </mt-button>
           </div>
@@ -228,8 +240,10 @@
               imgSrc: {
                 shenFenIcon: '',
                 shenFenIconShow: require('../../assets/shenfenzheng.png'),
+                selectShow: require('../../assets/arrow_2.png'),
 
-        },
+
+              },
               changeApply:true,
               changeApplyTime:true,
 //              changeApplyOutside:false,
@@ -422,7 +436,7 @@
           },
           handerDataSubmit(){
               let params;
-              if(this.shengqingParamType=='0'){ //请假申请所需参数
+              if(this.selectedDataApply=='0'){ //请假申请所需参数
                 params ={
                   approvalConfigUid:this.shengqingParam,//申请分类
                   currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
@@ -433,7 +447,7 @@
                   remarks:this.textareaString
                 };
               };
-            if(this.shengqingParamType=='2'||this.shengqingParamType=='1'){ //忘打卡或外出申请所需参数
+            if(this.selectedDataApply=='2'||this.selectedDataApply=='1'){ //忘打卡或外出申请所需参数
               params ={
                 approvalConfigUid:this.shengqingParam,//申请分类
                 currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
@@ -443,7 +457,7 @@
                 remarks:this.textareaString
               };
             };
-              if( this.shengqingParamType=='3'){ //加班所需参数
+              if( this.selectedDataApply=='3'){ //加班所需参数
                  params ={
                   approvalConfigUid:this.shengqingParam,  //申请分类
                   currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
@@ -562,6 +576,29 @@
 </script>
 
 <style scoped>
+  /*.changeSelect::after*/
+  /*{*/
+    /*content:" ------- ";*/
+    /*!*content: url(../../assets/ico_leave.png);*!*/
+    /*!*font-size: 0.5em;*!*/
+    /*!*background-size: 19px 20px;*!*/
+    /*!*display: inline-block;*!*/
+    /*background-color:yellow;*/
+    /*!*color:#ffffff;*!*/
+    /*width: 10%;*/
+  /*}*/
+  .selectBao{
+    position: absolute;
+    width: 2rem;
+    height: 1.5rem;
+    /*background: pink;*/
+    top:0.3rem;
+    right:0
+  }
+  .selectShowImg{
+    width: 50%;
+    height: 50%;
+  }
   .hrClass{
     width: 96%;
     margin:0 0.8rem;
@@ -630,6 +667,7 @@
     height: 2rem;
     border: none;
     font-size: 1.1rem;
+    -webkit-appearance: none;
   }
   .cardClass{
     width: 11rem;
@@ -637,15 +675,15 @@
     line-height: 6rem;
     padding-bottom: 1rem;
     position: absolute;
-    left: -15rem;
-    top: -3rem;
+    left: 33%;
+    top: 0.6rem;
   }
-  .cardClass div{
-    width: 9rem;
-    height: 6.2rem;
-    position: absolute;
-    font-size: 1.1rem;
-  }
+  /*.cardClass div{*/
+    /*width: 9rem;*/
+    /*height: 6.2rem;*/
+    /*position: absolute;*/
+    /*font-size: 1.1rem;*/
+  /*}*/
   .CardImg{
     display: block;
     width: 80%;

@@ -3,13 +3,15 @@
      <div class="bg">
        <div style="padding-top: 1rem;height: 8rem;color:#ffffff;display: flex;padding-left: 1rem">
          <div class="siginLeft">
-           <img :src="imgSrc.comAddress" class="avatarTop">
+           <div class="avatarBorder">
+             <img :src="imgSrc.comAddress" class="avatarTop">
+           </div>
          </div>
          <div class="siginRight" style="position: relative">
            <div>
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
-             <div style="display: flex; border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.5rem;height: 2rem; background: rgb(26,128,203); top:0;right:0" @click="routerMyData">
+             <div style="display: flex; border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.5rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.3rem;" @click="routerMyData">
                <img style="flex: 1;display: block;width: 35%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
                <div style="font-size: 0.8rem;flex: 3;padding-top: 0.4rem">设置</div>
              </div>
@@ -210,6 +212,8 @@ let oneselfData={};
           console.log("rryOne",this.arryOneself);
 
           this.infoObj=response.body.result.record;
+//          this.setCookie('infoObj',this.infoObj,365);
+
           for(let i=0; i<this.arryOneself.length;i++){
             this.oneselfData={
 //              companyNmae:this.arryOneself[i].finallyEmpCom,
@@ -325,14 +329,19 @@ let oneselfData={};
     width: 50%;
     height: 80%;
   }
-  .siginLeft{
-    width:21%;
-    float:left;
-    height: 5.2rem;
+  .avatarBorder{
+    width: 5rem;
+    height: 5rem;
     border-radius: 2.6rem;
     text-align: right;
     background: #cccccc;
     border: solid #ffffff 0.2rem;
+  }
+  .siginLeft{
+    width:21%;
+    float:left;
+    height: 5.2rem;
+
   }
   .siginRight{
     padding-left: 0.8rem ;
@@ -354,7 +363,7 @@ let oneselfData={};
     height: 94%;
     display: block;
     text-align: center!important;
-    padding: 0.22rem 0 0 0.2rem;
+    padding: 0.22rem 0 0 0.23rem;
     border-radius: 4rem;
     z-index: 0;
   }
