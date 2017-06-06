@@ -1,6 +1,6 @@
 <template>
     <div >
-     <div style="background: rgb(32,162,255)">
+     <div class="bg">
        <div style="padding-top: 1rem;height: 8rem;color:#ffffff;display: flex;padding-left: 1rem">
          <div class="siginLeft">
            <img :src="imgSrc.comAddress" class="avatarTop">
@@ -134,6 +134,10 @@ let oneselfData={};
 
             setIconBlue: require('../../assets/ico_setting_1.png'),
             setIcon: require('../../assets/ico_setting_2.png'),
+
+            bg: require('../../assets/bgrepate.png'),
+            bg1: require('../../assets/bg.png'),
+
 
           },
           arryName:[
@@ -308,6 +312,10 @@ let oneselfData={};
     height: 4rem;
     /*line-height: 4rem;*/
     background: rgb(250,250,250);
+  }
+  .bg{
+    background-image: url("../../assets/bg.png");
+    background-repeat: repeat-x;
   }
   .siginLeft{
     width:22%;
