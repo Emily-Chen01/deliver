@@ -19,7 +19,7 @@
          </div>
 
        </div>
-       <div style="padding-bottom: 2rem;position: relative">
+       <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative">
          <div style="position: absolute;width: 2.5rem;height: 1.5rem;z-index: 2;left:32%;top:11%">
            <img :src="imgSrc.ico_pencil" class="imgSizePencil" >
 
