@@ -212,7 +212,7 @@ let oneselfData={};
           console.log("rryOne",this.arryOneself);
 
           this.infoObj=response.body.result.record;
-//          this.setCookie('infoObj',this.infoObj,365);
+
 
           for(let i=0; i<this.arryOneself.length;i++){
             this.oneselfData={
@@ -221,9 +221,19 @@ let oneselfData={};
 //                position:this.arryOneself[i].record.postion,
                 name:this.arryOneself[i].name,
             };
+
+
+//            let zu={};
+//            zu.position=this.infoObj.position;
+//            zu.name=this.oneselfData.name;
+            this.setCookie('infoObjPassPostion',this.infoObj.position,365);
+            this.setCookie('infoObjPassName',this.oneselfData.name,365);
+
+
+            this.setCookie('avatarImages',this.imgSrc.comAddress,365);
+
             if(this.arryOneself[i].staffPhoUrl){
               this.imgSrc.comAddress=this.arryOneself[i].staffPhoUrl;
-//              sessionStorage.setItem('avatarImages',  this.imgSrc.comAddress);
               this.setCookie('avatarImages',this.imgSrc.comAddress,365);
 
             }else {

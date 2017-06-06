@@ -40,7 +40,7 @@
               </select>
             </div>
           </div>
-          <div class="hrClass" v-if="changeApply"></div>
+          <!--<div class="hrClass" v-if="changeApply"></div>-->
 
 
           <div  v-if="changeApplyTime" class="hrClass" ></div>
@@ -62,7 +62,7 @@
 
 
           <div style="clear:both;"></div>
-          <div class="hrClass" v-if="updateImage"></div>
+          <!--<div class="hrClass" v-if="updateImage"></div>-->
           <div v-if="updateImage" style="width:98%;height: 8rem;line-height: 8rem; position: relative">
                 <div class="cardClass">
                   <div>
@@ -80,7 +80,7 @@
                   </div>
                 </div>
               </div>
-          <div class="hrClass" v-if="updateImage"></div>
+          <!--<div class="hrClass" v-if="updateImage"></div>-->
 
 
           <div style="clear:both;"></div>

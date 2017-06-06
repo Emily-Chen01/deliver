@@ -10,7 +10,7 @@
       <div class="siginRight">
         <div>
           <div class="detailClassBao">
-            <div class="detailClass"><span>{{objNr.deptName}}</span> <span>{{objNr.name}}</span></div>
+            <div class="detailClass"><span>{{objNr.fetchPostion}}</span> <span>{{objNr.fetchName}}</span></div>
             <div class="timeClass"><span>{{year}}</span>年<span>{{month}}</span>月<span>{{data}}</span>日</div>
           </div>
         </div>
@@ -463,12 +463,18 @@
       //初始开始
 
       doSearch(){
-//        var imageString=sessionStorage.getItem('avatarImages'); //获取缓存的图片
 
 
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
-        this.objNr = this.getCookie('infoObj'); //获取缓存的图片
-//        console.log(this.objNr,'this.objNr');
+        let fetchPostion= this.getCookie('infoObjPassPostion'); //获取的员工头部信息
+        let fetchName  = this.getCookie('infoObjPassName'); //获取的员工头部信息
+
+        this.objNr={
+          fetchPostion:this.getCookie('infoObjPassPostion'),
+          fetchName:this.getCookie('infoObjPassName'),
+        }
+        console.log( this.objNr,'this.objNr');
+
 
 
         this.imgSrc.comAddress = imageString;
@@ -1148,7 +1154,7 @@
 <style scoped>
   .siginLeft {
     /*display: inline-block;*/
-    width: 4.2rem;
+    width: 3.2rem;
     float: left;
     height: 4.2rem;
     margin: 1.5% 0 0 1.5%;
@@ -1166,7 +1172,7 @@
 
   .siginRight {
     /*display: inline-block;*/
-    width: 19.1rem;
+    width: 20.1rem;
     float: right;
     height: 4.2rem;
   }
@@ -1178,14 +1184,14 @@
   }
 
   .detailClass {
-    width: 8rem;
+    width: 9rem;
     float: left;
     height: 2rem;
     line-height: 2rem;
   }
 
   .timeClass {
-    width: 9rem;
+    width: 8rem;
     float: right;
     height: 2rem;
     line-height: 2rem;
@@ -1196,6 +1202,7 @@
 
   .detailClassBao {
     padding-top: 1.3rem;
+    color: #ffffff;
   }
 
   .toWorkLeft {
@@ -1204,7 +1211,7 @@
     line-height: 1.4rem;
     float: left;
     padding-left: 0.38rem;
-    padding-top: 0.8rem;
+    padding-top: 0.23rem;
   }
 
   .toWorkLeft div {
