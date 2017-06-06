@@ -326,7 +326,7 @@ let oneselfData={};
     height: 80%;
   }
   .siginLeft{
-    width:22%;
+    width:21%;
     float:left;
     height: 5.2rem;
     border-radius: 2.6rem;
@@ -336,7 +336,7 @@ let oneselfData={};
   }
   .siginRight{
     padding-left: 0.8rem ;
-    width:73%;
+    width:74%;
     float:left;
     height: 5.2rem;
     /*line-height: 5.2rem;*/
@@ -354,7 +354,7 @@ let oneselfData={};
     height: 94%;
     display: block;
     text-align: center!important;
-    padding: 0.1rem 0 0 0.2rem;
+    padding: 0.22rem 0 0 0.2rem;
     border-radius: 4rem;
     z-index: 0;
   }
