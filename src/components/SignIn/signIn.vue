@@ -1430,8 +1430,8 @@
   .addTimeTotleClass {
     background-color: #6e83c5;
     color: #ffffff;
-    width: 7.5rem;
-    left: 4.9rem;
+    width: 6.5rem;
+    left: 6.2rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
