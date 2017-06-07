@@ -490,7 +490,7 @@
           //如果为false不能显示打卡功能start
           if(response.body.code==500){
             MessageBox('提示', response.body.message);
-//            this.daKaHide=false;
+            this.daKaHide=false;
             return;
           }
 
@@ -774,7 +774,7 @@
 
             if(response.body.code==500){
               MessageBox('提示', response.body.message);
-//            this.daKaHide=false;
+            this.daKaHide=false;
               return;
             }
 

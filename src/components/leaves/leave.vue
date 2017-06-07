@@ -191,7 +191,9 @@
     </div>
 </template>
 <script>
-  import { DatetimePicker ,Radio ,Popup } from 'mint-ui';
+  import { DatetimePicker ,Radio  } from 'mint-ui';
+  import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+
   import VueCoreImageUpload from 'vue-core-image-upload'
   import datePick from "@/components/components/datePick"
   import endDatePick from "@/components/components/endDatePick"
@@ -473,8 +475,8 @@
               if(response.body.code==200){
                 alert(response.body.message);
                 this.$router.push({path:'/signIn'});
-              }else{
-                  alert(response.body.message);
+              }else if(response.body.code==500){
+                MessageBox('提示', response.body.message);
               }
 //              this.holidayTypeArray=response.body.result;
 //              console.log(this.holidayTypeArray);
