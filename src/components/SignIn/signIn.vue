@@ -468,6 +468,7 @@
       //初始开始
 
       doSearch(){
+        this.handler ({BMap, map,});
 
 
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
