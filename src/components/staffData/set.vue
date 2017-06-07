@@ -3,7 +3,7 @@
     <div >
       <div style="width: 100%;height: 8rem;margin-top: 4rem;">
         <div style="display: inline-block; width: 5.2rem;height: 5.2rem; background-color: #cccccc;border-radius: 2.6rem;">
-          <img :src="imgSrc.shenFenIcon" class="avatarTop">
+          <img :src="imgSrc.header" class="avatarTop">
         </div>
       </div>
       <div class="confirmBinding">
@@ -45,18 +45,25 @@
         initBlueSet:'',
         initSet:'',
         imgSrc: {
-          shenFenIcon: require('../../assets/shenfenzheng.png'),
+//          shenFenIcon: require('../../assets/shenfenzheng.png'),
           doIcon: require('../../assets/ico_workbench_2.png'),
           doIconBlue: require('../../assets/ico_workbench_1.png'),
 
           setIconBlue: require('../../assets/ico_setting_1.png'),
           setIcon: require('../../assets/ico_setting_2.png'),
 
+          header:  require('../../assets/tx.png'),
+
+
         },
       }
     },
     created: function () {
-      this.imgSrc.shenFenIcon=this.getCookie('avatarImages');
+        if(this.getCookie('avatarImages')){
+
+          this.imgSrc.header=this.getCookie('avatarImages');
+        }
+
       this.init=true;
       this.initBlueSet=true;
       this.initSet=false;

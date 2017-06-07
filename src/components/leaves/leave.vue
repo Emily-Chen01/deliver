@@ -144,9 +144,9 @@
               <div v-if="item.startTime">
                 <div class="myApplyContentLeft">起止日期</div>
                 <div class="myApplyContentNr" >
-                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,14))}}
+                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午|G|M|T|/g, "").replace(/日/g, " ").substring(0,14))}}
                  -
-               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,14)}}
+               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|G|M|T|/g, "").replace(/日/g, " ").substring(0,14)}}
                 </div>
               </div>
               <div v-if="item.overworkTime">
@@ -275,10 +275,11 @@
 
         },
         created: function () {
+            this.addTimeValue=this.getCookie('upAddTime');
 
 
 
-          this.addTimeValue=this.getCookie('leaveType');
+//          this.addTimeValue=this.getCookie('leaveType');
           console.log(this.addTimeValue,'在打卡加班传来的加班时间');
 
           this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表

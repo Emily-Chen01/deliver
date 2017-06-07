@@ -78,7 +78,7 @@ export default {
 
 
 
-/*
+
     //获取openidstart  6-2早注释为了本地测试 提交需解除注释
       var _href=window.location.href;
     console.log( window.location.href);
@@ -102,7 +102,7 @@ export default {
       }
         this.setCookie('openId',openID,365);
         console.log('openid修改过的'+this.getCookie('openId'));
-*/
+
 
     //获取openid end
 
