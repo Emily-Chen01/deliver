@@ -110,7 +110,11 @@
     /*height: 20px;*/
   }
   .postionImages{
-    position:absolute;width:10%;height:1.6rem;left:2%
+    position:absolute;
+    width:10%;
+    height:1.6rem;
+    left:2%;
+    top:24%;
   }
   .imgSize{
     width:70%;

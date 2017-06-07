@@ -365,7 +365,9 @@
 </template>
 <script>
 
-  import {Toast, MessageBox, Popup} from 'mint-ui';
+//  import {Toast, MessageBox, Popup} from 'mint-ui';
+  import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+
   let timer1 = null;
   let jwresult = {"lat": 0.0, "lng": 0.0};
   export default {
@@ -483,6 +485,16 @@
 
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
+
+          console.log(response.body.code,'responseresponse')
+          //如果为false不能显示打卡功能start
+          if(response.body.code==500){
+            MessageBox('提示', response.body.message);
+//            this.daKaHide=false;
+            return;
+          }
+
+
           //经纬度传值start
             this.searchLocationArray=response.body.result.locations;
 //            alert('初始加载'+this.searchLocationArray);
@@ -496,10 +508,6 @@
 
 
 
-          //如果为false不能显示打卡功能start
-          if(!response.body.result.punchCard){
-              this.daKaHide=false;
-          }
 
           //如果为false不能显示打卡功能start
 
@@ -734,17 +742,6 @@
           this.currentTime();
           this.clickfunction = false;
 
-//          if (this.toDaKaStatusIsInit == null) {
-//            updakaObj = {
-//              "record": {"twOutside":this.this.toDaKaStatusIsOutsideInit?true:0}, //{"twOutside":this.toDaKaStatusIsOutsideInit?true:0}  this.outsideObtainValue
-//            }
-//          } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
-//            updakaObj = {
-//              "record": {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}//0  'true'  {"owOutside": this.toDownKaStatusIsOutsideInit?true:0}  this.outsideObtainValue
-//            }
-//          } else {
-//            alert("不能重复打卡");
-//          }
           alert('this.outsideObtainValue' + this.outsideObtainValue);
 
           if (this.toDaKaStatusIsInit == null) {
@@ -768,10 +765,19 @@
 //          }
 
 
+
+
+
+
           this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
 //            console.log('shiann' + response.body.result.overTime);
 
-            //现在缺少判断的赋值条件......................... 在此处填写 和我知道的部分也要改写
+            if(response.body.code==500){
+              MessageBox('提示', response.body.message);
+//            this.daKaHide=false;
+              return;
+            }
+
 
             this.toDaKaStatusIs = response.body.result.twStatus; //上班状态赋值
             this.toDaKaStatusIsOutside = response.body.result.twOutside; //上班班是否在区域外
@@ -799,8 +805,6 @@
 
 
 //                        this.toDaKaStatusIs=0;
-              //写死的状态  虽然没有打卡记录要给我一条状态（事先要判断给我这个是否迟到）
-              //在此处调用接口范围 进行确定当前员工位置状态
 
               console.log('上班状态' + this.toDaKaStatusIs)
               if (this.toDaKaStatusIs == 0) {//正常打卡显示

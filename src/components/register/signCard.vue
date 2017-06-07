@@ -13,7 +13,7 @@
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
              <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
                <img style="display: block;width: 35%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
-               <div style="font-size: 0.8rem;top: 0.5rem; position: absolute;right: 0.5rem;">设置</div>
+               <div style="font-size: 0.8rem;top: 0.35rem; position: absolute;right: 0.5rem;">设置</div>
              </div>
            </div>
            <div class="companyNameClass">{{infoObj.companyName}}</div>
