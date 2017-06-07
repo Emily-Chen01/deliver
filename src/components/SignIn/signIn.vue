@@ -454,6 +454,157 @@
       }
     },
     created: function () {
+      let self = this;
+      let curl = {
+        location:location.href
+      };
+      this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
+        let BMap = this.BMap;
+        let map = this.map;
+        console.log(response.body.result);
+        this.t1 = response.body.result.appid;
+        console.log(this.t1);
+        this.t2 = response.body.result.timestamp;
+        this.t3 = response.body.result.nonceStr;
+        this.t4 = response.body.result.signature;
+        this.yyy = true;
+
+        wx.config({
+          debug: false,
+          appId: this.t1,
+          timestamp: this.t2,
+          nonceStr: this.t3,
+          signature: this.t4,
+          jsApiList: [
+            'getLocation'
+          ]
+        });
+
+        wx.error(function (res) {
+          alert('wx.error错误信息' + res)
+          console.log(res)
+          console.log(res)
+        });
+        wx.ready(function () {
+          wx.checkJsApi({
+            jsApiList: [
+              'getLocation'
+            ],
+            success: function (res) {
+
+              wx.getLocation({
+                type: 'gcj02',
+                success: function (res) {
+                  self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+                  var speed = res.speed; // 速度，以米/每秒计
+                  var accuracy = res.accuracy; // 位置精度
+//                  alert('手机获取的精度'+self.longitude);
+//                  alert('手机获取的维度'+self.latitude);
+
+
+                  function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
+                    var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+                    var x = $lng;
+                    var y = $lat;
+                    var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
+                    var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
+                    $lng = z * Math.cos(theta) + 0.0065;
+                    $lat = z * Math.sin(theta) + 0.006;
+                    console.log( $lng,$lat);
+                    $result.lat =$lat;
+                    $result.lng =$lng ;
+                    console.log($result);
+                    console.log(this);
+
+                    return  $result;
+                  };
+
+                  var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
+                  console.log('下面是转后');
+                  console.log(shuzi);
+
+//                alert('转纬度'+shuzi.lat+'转经度'+shuzi.lng);
+
+
+
+
+                  self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
+
+                    //经纬度传值start
+                    self.searchLocationArray=response.body.result.locations;
+                    //经纬度传值end
+
+
+                    let arrayLonglat = self.searchLocationArray;
+//                            let arrayLonglat = [
+//                          {LONGITUDE: 120.6548525, LATITUDE: 31.2545787441},
+//                        ];
+                    console.log('查询出的经纬度'+arrayLonglat);
+//                      alert('查出的数据里面'+self.searchLocationArray);
+
+
+
+
+                    if(arrayLonglat==false){
+                      self.outsideObtainValue = true;
+                      alert('区域数据没有 区域内');
+                      return;
+                    }
+
+                    for (let i = 0; i < arrayLonglat.length; i++) {
+
+                      let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
+
+                      if (distance < arrayLonglat[i].SCOPE) {
+                        self.twRange='';
+//                        let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
+//                        alert('区域内' +juli );
+                        alert('区域内')
+                        self.outsideObtainValue = false;
+                        break;
+                      }
+                    }
+
+                    if(self.outsideObtainValue) {
+                      self.outsideObtainValue = true;
+                      new BMap.Geocoder().getLocation(new BMap.Point(shuzi.lng,shuzi.lat), function(res) { //进行给传值参数位置
+                        console.log('地址逆解析', res);
+                        self.twRange=res.addressComponents.district+res.addressComponents.street;
+//                   alert('self.twRange'+self.twRange);
+                      });
+
+                      alert('区域外');
+                    }
+                    self.daKaHide=true;
+
+                  }, response => {
+                    console.log('error callback');
+                  });
+
+                },
+                cancel: function (res) {
+                  alert('用户拒绝授权获取地理位置');
+                }
+              });
+//          alert('微信版本！');
+              // alert(JSON.stringify(res));
+              // alert(JSON.stringify(res.checkResult.getLocation));
+              if (res.checkResult.getLocation == false) {
+                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                return;
+              }
+            }
+          });
+
+        });
+
+
+      }, response => {
+        console.log('error callback');
+      });
+      console.log(33333);
+//      this.handler ({BMap, map,});
 
 
 
@@ -468,7 +619,6 @@
       //初始开始
 
       doSearch(){
-        this.handler ({BMap, map,});
 
 
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
@@ -971,155 +1121,11 @@
 
 //
       handler ({BMap, map,}) {
+        this.BMap = BMap;
+        this.map = map;
         console.log(BMap ,'我是BMap');
         console.log(map ,'我是map');
-        let self = this;
-        let curl = {
-          location:location.href
-        };
-        this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
-          console.log(response.body.result);
-          this.t1 = response.body.result.appid;
-          console.log(this.t1);
-          this.t2 = response.body.result.timestamp;
-          this.t3 = response.body.result.nonceStr;
-          this.t4 = response.body.result.signature;
-          this.yyy = true;
 
-          wx.config({
-            debug: false,
-            appId: this.t1,
-            timestamp: this.t2,
-            nonceStr: this.t3,
-            signature: this.t4,
-            jsApiList: [
-              'getLocation'
-            ]
-          });
-
-          wx.error(function (res) {
-            alert('wx.error错误信息' + res)
-            console.log(res)
-            console.log(res)
-          });
-          wx.ready(function () {
-            wx.checkJsApi({
-              jsApiList: [
-                'getLocation'
-              ],
-              success: function (res) {
-
-                wx.getLocation({
-                  type: 'gcj02',
-                  success: function (res) {
-                    self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                    self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
-                    var speed = res.speed; // 速度，以米/每秒计
-                    var accuracy = res.accuracy; // 位置精度
-//                  alert('手机获取的精度'+self.longitude);
-//                  alert('手机获取的维度'+self.latitude);
-
-
-                    function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
-                      var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
-                      var x = $lng;
-                      var y = $lat;
-                      var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
-                      var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
-                      $lng = z * Math.cos(theta) + 0.0065;
-                      $lat = z * Math.sin(theta) + 0.006;
-                      console.log( $lng,$lat);
-                      $result.lat =$lat;
-                      $result.lng =$lng ;
-                      console.log($result);
-                      console.log(this);
-
-                      return  $result;
-                    };
-
-                    var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
-                    console.log('下面是转后');
-                    console.log(shuzi);
-
-//                alert('转纬度'+shuzi.lat+'转经度'+shuzi.lng);
-
-
-
-
-                    self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
-
-                      //经纬度传值start
-                      self.searchLocationArray=response.body.result.locations;
-                      //经纬度传值end
-
-
-                      let arrayLonglat = self.searchLocationArray;
-//                            let arrayLonglat = [
-//                          {LONGITUDE: 120.6548525, LATITUDE: 31.2545787441},
-//                        ];
-                      console.log('查询出的经纬度'+arrayLonglat);
-//                      alert('查出的数据里面'+self.searchLocationArray);
-
-
-
-
-                      if(arrayLonglat==false){
-                        self.outsideObtainValue = true;
-                        alert('区域数据没有 区域内');
-                        return;
-                      }
-
-                      for (let i = 0; i < arrayLonglat.length; i++) {
-
-                        let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
-
-                        if (distance < arrayLonglat[i].SCOPE) {
-                          self.twRange='';
-//                        let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
-//                        alert('区域内' +juli );
-                          alert('区域内')
-                          self.outsideObtainValue = false;
-                          break;
-                        }
-                      }
-
-                      if(self.outsideObtainValue) {
-                        self.outsideObtainValue = true;
-                        new BMap.Geocoder().getLocation(new BMap.Point(shuzi.lng,shuzi.lat), function(res) { //进行给传值参数位置
-                          console.log('地址逆解析', res);
-                          self.twRange=res.addressComponents.district+res.addressComponents.street;
-//                   alert('self.twRange'+self.twRange);
-                        });
-
-                        alert('区域外');
-                      }
-                      self.daKaHide=true;
-
-                    }, response => {
-                      console.log('error callback');
-                    });
-
-                  },
-                  cancel: function (res) {
-                    alert('用户拒绝授权获取地理位置');
-                  }
-                });
-//          alert('微信版本！');
-                // alert(JSON.stringify(res));
-                // alert(JSON.stringify(res.checkResult.getLocation));
-                if (res.checkResult.getLocation == false) {
-                  alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-                  return;
-                }
-              }
-            });
-
-          });
-
-
-        }, response => {
-          console.log('error callback');
-        });
 
 
 
