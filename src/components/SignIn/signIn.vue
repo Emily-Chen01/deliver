@@ -523,6 +523,7 @@
 
          this.fanwei= response.body.result.twLocation?true:false;
           this.fanweixia=response.body.result.owLocation?true:false;
+          console.log(response.body.result.twLocation,'888888')
           console.log('初始化上班已经打卡');
           console.log(response.body);
           this.toDaKaStatusIsInit = response.body.result.twStatus; //上班状态赋值
@@ -972,7 +973,10 @@
         console.log(BMap ,'我是BMap');
         console.log(map ,'我是map');
         let self = this;
-        this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
+        let curl = {
+          location:location.href
+        };
+        this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
           console.log(response.body.result);
           this.t1 = response.body.result.appid;
           console.log(this.t1);
@@ -982,7 +986,7 @@
           this.yyy = true;
 
           wx.config({
-            debug: true,
+            debug: false,
             appId: this.t1,
             timestamp: this.t2,
             nonceStr: this.t3,
