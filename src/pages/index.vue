@@ -390,7 +390,7 @@ export default {
   flex: 2.8;
 }
 .insterInput{
-  width:70%;
+  width:69%;
   float:left;
 }
 .insterInput input{
@@ -398,7 +398,7 @@ export default {
   width: 95%;
 }
 .verification{
-  width:30%;
+  width:29%;
   float:right;
   height: 2.8rem;
   font-size: 1rem;

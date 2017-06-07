@@ -44,15 +44,14 @@
         }
       },
       created: function () {
-//          alert('iphoneNumber'+this.getCookie('iphoneNumber'));
 
         let phoneObj={
           phone: this.getCookie('iphoneNumber'),
         }
         this.$http.get('/api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //初始化查询有没有公司
-            console.log('这个data是查询公司的'+response.body.result);
-            //若是没有公司在此处执行下一个页面  ?/？
-          console.log(response.body.result);
+            console.log(response,'这是查处的公司接口数据');
+
+          //若是没有公司在此处执行下一个页面  ?/？
 //          for(let i=0;i<response.body.result.length;i++){
 //            this.uId=response.body.result[i].UID;
 //          }
@@ -106,18 +105,19 @@
     /*background-color:yellow;*/
     color:#ffffff;
     /*font-weight:bold;*/
-    width: 10%;
+    width: 9%;
     /*height: 20px;*/
   }
   .postionImages{
     position:absolute;
     width:10%;
-    height:1.6rem;
-    left:2%;
-    top:24%;
+    height:1.2rem;
+    line-height: 1.2;
+    left: 0.2rem;
+    top:18%;
   }
   .imgSize{
-    width:70%;
+    width:54%;
     height:90%
   }
   .manyCompanyTitle{

@@ -23,7 +23,7 @@
             <div>上</div>
           </div>
           <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan">上6班时间</div>
+            <div class="toWorkRightTimeSpan">上班时间</div>
             <div class="toWorkRightTimeSpan">
               {{initToTime}}
 
@@ -184,7 +184,7 @@
             <div>下</div>
           </div>
           <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan">下2班时间</div>
+            <div class="toWorkRightTimeSpan">下班时间</div>
             <div class="toWorkRightTimeSpan">
               {{goToTime}}
 
@@ -521,8 +521,8 @@
 
           //时间赋值结束
 
-         this.fanwei= response.body.result.twLocation;
-          this.fanweixia=response.body.result.owLocation;
+         this.fanwei= response.body.result.twLocation?true:false;
+          this.fanweixia=response.body.result.owLocation?true:false;
           console.log('初始化上班已经打卡');
           console.log(response.body);
           this.toDaKaStatusIsInit = response.body.result.twStatus; //上班状态赋值
@@ -551,10 +551,10 @@
 
 
           if (response.body.result.twTime !== null) {
-            var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/上|午|G|M|T|/g, "").replace(/日/g, " ");
+            var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/上|午||下G|M|T|/g, "").replace(/日/g, " ");
             this.initToTime = zhuan.substring(9);//原有是8
           }
-          var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|午|G|M|T|/g, "").replace(/日/g, " ");
+          var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|午|下|G|M|T|/g, "").replace(/日/g, " ");
           this.goToTime = zhuan.substring(9);
 
 
@@ -657,7 +657,6 @@
 //**************上面的这个与上班打卡正常冲突
             }
             if (this.toDownKaStatusIsInit == 1 && this.toDownKaStatusIsOutsideInit) { //早退+区域外打卡显示
-//            alert('早退+区域外');
               this.$nextTick(() => {
                 this.zcDownShowSpan = true; //下班总线所展示的所有文字
                 this.toDownAbsenteeismStatus = true; //下班提交请假span
@@ -972,7 +971,7 @@
       handler ({BMap, map,}) {
         console.log(BMap ,'我是BMap');
         console.log(map ,'我是map');
-
+        let self = this;
         this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
           console.log(response.body.result);
           this.t1 = response.body.result.appid;
@@ -983,7 +982,7 @@
           this.yyy = true;
 
           wx.config({
-            debug: false,
+            debug: true,
             appId: this.t1,
             timestamp: this.t2,
             nonceStr: this.t3,
@@ -993,37 +992,30 @@
             ]
           });
 
-
-        }, response => {
-          console.log('error callback');
-        });
-
-        let self = this;
-        wx.ready(function () {
           wx.error(function (res) {
             alert('wx.error错误信息' + res)
             console.log(res)
             console.log(res)
-
           });
-          wx.checkJsApi({
-            jsApiList: [
-              'getLocation'
-            ],
-            success: function (res) {
+          wx.ready(function () {
+            wx.checkJsApi({
+              jsApiList: [
+                'getLocation'
+              ],
+              success: function (res) {
 
-              wx.getLocation({
-                type: 'gcj02',
-                success: function (res) {
-                  self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
-                  var speed = res.speed; // 速度，以米/每秒计
-                  var accuracy = res.accuracy; // 位置精度
+                wx.getLocation({
+                  type: 'gcj02',
+                  success: function (res) {
+                    self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+                    self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+                    var speed = res.speed; // 速度，以米/每秒计
+                    var accuracy = res.accuracy; // 位置精度
 //                  alert('手机获取的精度'+self.longitude);
 //                  alert('手机获取的维度'+self.latitude);
 
 
-                     function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
+                    function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
                       var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
                       var x = $lng;
                       var y = $lat;
@@ -1037,19 +1029,19 @@
                       console.log($result);
                       console.log(this);
 
-                   return  $result;
-                 };
+                      return  $result;
+                    };
 
-                var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
-                console.log('下面是转后');
-                console.log(shuzi);
+                    var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
+                    console.log('下面是转后');
+                    console.log(shuzi);
 
 //                alert('转纬度'+shuzi.lat+'转经度'+shuzi.lng);
 
 
 
 
-                  self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
+                    self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
 
                       //经纬度传值start
                       self.searchLocationArray=response.body.result.locations;
@@ -1066,58 +1058,64 @@
 
 
 
-                    if(arrayLonglat==false){
-                      self.outsideObtainValue = true;
-                      alert('区域数据没有 区域内');
-                      return;
-                    }
+                      if(arrayLonglat==false){
+                        self.outsideObtainValue = true;
+                        alert('区域数据没有 区域内');
+                        return;
+                      }
 
-                    for (let i = 0; i < arrayLonglat.length; i++) {
+                      for (let i = 0; i < arrayLonglat.length; i++) {
 
-                      let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
+                        let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
 
-                      if (distance < arrayLonglat[i].SCOPE) {
-                        self.twRange='';
+                        if (distance < arrayLonglat[i].SCOPE) {
+                          self.twRange='';
 //                        let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
 //                        alert('区域内' +juli );
-                        alert('区域内')
-                        self.outsideObtainValue = false;
-                        break;
+                          alert('区域内')
+                          self.outsideObtainValue = false;
+                          break;
+                        }
                       }
-                    }
 
-                    if(self.outsideObtainValue) {
-                      self.outsideObtainValue = true;
-                      new BMap.Geocoder().getLocation(new BMap.Point(shuzi.lng,shuzi.lat), function(res) { //进行给传值参数位置
-                        console.log('地址逆解析', res);
-                        self.twRange=res.addressComponents.district+res.addressComponents.street;
+                      if(self.outsideObtainValue) {
+                        self.outsideObtainValue = true;
+                        new BMap.Geocoder().getLocation(new BMap.Point(shuzi.lng,shuzi.lat), function(res) { //进行给传值参数位置
+                          console.log('地址逆解析', res);
+                          self.twRange=res.addressComponents.district+res.addressComponents.street;
 //                   alert('self.twRange'+self.twRange);
-                      });
+                        });
 
-                      alert('区域外');
-                    }
+                        alert('区域外');
+                      }
 
 
-                  }, response => {
-                    console.log('error callback');
-                  });
+                    }, response => {
+                      console.log('error callback');
+                    });
 
-                },
-                cancel: function (res) {
-                  alert('用户拒绝授权获取地理位置');
-                }
-              });
+                  },
+                  cancel: function (res) {
+                    alert('用户拒绝授权获取地理位置');
+                  }
+                });
 //          alert('微信版本！');
-              // alert(JSON.stringify(res));
-              // alert(JSON.stringify(res.checkResult.getLocation));
-              if (res.checkResult.getLocation == false) {
-                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-                return;
+                // alert(JSON.stringify(res));
+                // alert(JSON.stringify(res.checkResult.getLocation));
+                if (res.checkResult.getLocation == false) {
+                  alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                  return;
+                }
               }
-            }
+            });
+
           });
 
+
+        }, response => {
+          console.log('error callback');
         });
+
 
 
         //临时测试

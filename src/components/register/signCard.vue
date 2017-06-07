@@ -13,7 +13,7 @@
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
              <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
                <img style="display: block;width: 35%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
-               <div style="font-size: 0.8rem;top: 0.35rem; position: absolute;right: 0.5rem;">设置</div>
+               <div style="font-size: 0.8rem;top: 0.48rem; position: absolute;right: 0.5rem;">设置</div>
              </div>
            </div>
            <div class="companyNameClass">{{infoObj.companyName}}</div>
@@ -35,22 +35,15 @@
        </div>
 
      </div>
-      <div style="margin-top: 1rem;">
-        <!--<a  class="mint-cell" v-for="(item,index) in arryName" @click="changeList(index)">-->
-          <!--<div class="mint-cell-wrapper">-->
-            <!--<div class="mint-cell-title">&lt;!&ndash;&ndash;&gt; <div><i class="indexicon icon-toast"></i> <span>{{item.name}}</span></div></div>-->
-            <!--<div class="mint-cell-value is-link"><span></span></div>-->
-          <!--</div>-->
-          <!--<div class="mint-cell-right"></div>-->
-          <!--<i class="mint-cell-allow-right"></i>-->
-        <!--</a>-->
+      <div style="margin-top: 1rem;height: 10rem">
         <a  class="mint-cell" @click="changeList(0)">
           <div class="mint-cell-wrapper">
             <div class="mint-cell-title qing">
               <div class="postionImages">
                 <img :src="imgSrc.ico_leave" class="imgSize" >
               </div>
-              <div>
+              <div class="showSpan">{{recordShow.apply}}</div>
+            <div>
                 <i class="indexicon icon-toast"></i>
                 <span>请假申请</span></div>
             </div>
@@ -65,6 +58,7 @@
               <div class="postionImages">
                 <img :src="imgSrc.ico_attendance" class="imgSize" >
               </div>
+              <div class="showSpan">{{recordShow.punchCard}}</div>
               <div>
                 <i class="indexicon icon-toast"></i>
                 <span>我的考勤</span></div></div>
@@ -79,9 +73,10 @@
               <div class="postionImages">
                 <img :src="imgSrc.ico_wage" class="imgSize">
               </div>
+              <div class="showSpan">{{recordShow.salary}}</div>
               <div>
                 <i class="indexicon icon-toast"></i>
-                <span>我的公司条</span></div></div>
+                <span>我的工资条</span></div></div>
             <div class="mint-cell-value is-link"><span></span></div>
           </div>
           <div class="mint-cell-right"></div>
@@ -146,17 +141,7 @@ let oneselfData={};
 
 
           },
-          arryName:[
-            {
-              name:'请假申请'
-            },
-            {
-              name:'我的考勤'
-            },
-            {
-              name:'我的工资条'
-            }
-          ],
+          recordShow:{},
           init:'',
           initBlue:'',
           initBlueSet:'',
@@ -172,34 +157,16 @@ let oneselfData={};
       this.initSet=true;
 
 
-//          let param={
-//            "openid":"2",
-//            "companyUid":"d713a5e1-4624-4301-8602-b1eb5f869663"
-//          }
-//      this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => {
-//        console.log(123);
-//        console.log(response);
-//      }, response => {
-//        console.log( 'error callback');
-//      });
+      this.$http.get('/api/v1.0/client/status').then(response => {
+        console.log(response.body.result);
+        this.recordShow=response.body.result;
+      }, response => {
+        console.log( 'error callback');
+      });
       this.searchStaff();
-//      this.$nextTick(() => {
-//        this.searchStaff();
-//      });
-
     },
     methods: {
       handerSign(){
-
-
-        let signObj={
-          "record":{"twOutside":10}
-        }
-        this.$http.post('/api/v1.0/client/punchCardLog',signObj).then(response => {
-          console.log(111);
-        }, response => {
-          console.log( 'error callback');
-        });
 
         this.$router.push({path:'/signIn'}); //进入打卡页
 
@@ -295,6 +262,15 @@ let oneselfData={};
 </script>
 
 <style scoped>
+  .showSpan{
+    position: absolute;
+    width: 45%;
+    height: 1.9rem;
+    line-height: 1.9;
+    text-align: right;
+    right: 2.5rem;
+    top: 0.6rem;
+  }
   .qing{
     width: 5rem;
     postion:relative;
@@ -315,9 +291,9 @@ let oneselfData={};
   .postionImages{
     position:absolute;
     width:10%;
-    height:1.6rem;
+    height:1.9rem;
     left:2%;
-    top:24%;
+    top:20%;
   }
   .imgSize{
     width:70%;

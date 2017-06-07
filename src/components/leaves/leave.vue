@@ -18,8 +18,8 @@
               <div class="selectBao">
                 <img width="150" :src="imgSrc.selectShow"  class="selectShowImg"  />
               </div>
-              <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)">
-                <option v-for="option in optionsApply"  v-bind:value="option.value" >
+              <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)"> <!--shengqingclick(selectedDataApply)-->
+                <option v-for="option in optionsApply"  v-bind:value="option.value">
                   {{ option.text }}
               </option>
               </select>
@@ -73,8 +73,10 @@
                       :headers="tokenHeader"
                       :max-file-size="5242880"
                       url="/api/v1.0/client/upload" >
-                      <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  />
-                      <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" />
+                      <div class="CardImg">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  /></div>
+                      <div class="CardImg">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" /></div>
+
+
 
                     </vue-core-image-upload>
                   </div>
@@ -144,9 +146,9 @@
               <div v-if="item.startTime">
                 <div class="myApplyContentLeft">起止日期</div>
                 <div class="myApplyContentNr" >
-                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午|G|M|T|/g, "").replace(/日/g, " ").substring(0,14))}}
+                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午||下G|M|T|/g, "").replace(/日/g, " ").substring(0,14))}}
                  -
-               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|G|M|T|/g, "").replace(/日/g, " ").substring(0,14)}}
+               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下|G|M|T|/g, "").replace(/日/g, " ").substring(0,14)}}
                 </div>
               </div>
               <div v-if="item.overworkTime">
@@ -505,17 +507,17 @@
           },
           shengqingclick(value){ //初始是选中一个select然后进行参数选中为了提交用
 //          alert(this.selectedDataApply);
+            console.log(value, typeof value);
+//            return;
           console.log(this.optionsApply,'this.optionsApply')
             for(let i=0;i<this.optionsApply.length;i++){  //循环初始化的时候选中一个select属性值和参数
 
-              if(this.selectedDataApply>this.optionsApply.length-1){
-                  this.selectedDataApply=this.optionsApply.length-1
+              if(+value === this.optionsApply[i].value){
+                this.shengqingParam = this.optionsApply[i].uid;
+                this.shengqingParamType = this.optionsApply[i].value;
               }
-
-
-
-              this.shengqingParam= this.optionsApply[this.selectedDataApply].uid;
-              this.shengqingParamType= this.optionsApply[this.selectedDataApply].value;
+              this.shengqingParam = this.optionsApply[this.selectedDataApply].uid;
+              this.shengqingParamType = this.optionsApply[this.selectedDataApply].value;
             }
             console.log(" this.shengqingParam uid" + this.shengqingParam);
             console.log("value shengqingParamType:" +this.shengqingParamType);
@@ -670,6 +672,7 @@
     height: 2rem;
     border: none;
     font-size: 1.1rem;
+    background: #ffffff;
     -webkit-appearance: none;
   }
   .cardClass{
@@ -679,7 +682,7 @@
     padding-bottom: 1rem;
     position: absolute;
     left: 33%;
-    top: 0.6rem;
+    top: 1.6rem;
   }
   /*.cardClass div{*/
     /*width: 9rem;*/
