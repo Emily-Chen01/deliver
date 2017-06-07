@@ -8,7 +8,7 @@
   </mt-navbar>
 
   <!-- tab-container -->
-  <mt-tab-container v-model="selected">
+  <mt-tab-container :class="{invisible: invisible}" v-model="selected">
     <mt-tab-container-item id="1">
 
       <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth" ref="personFm">
@@ -574,6 +574,10 @@
         </el-form-item>
       </el-form>
 
+      <div class="save-wrapper">
+        <mt-button class="save" type="primary" @click="save">保存并更新</mt-button>
+      </div>
+
     </mt-tab-container-item>
 
     <mt-tab-container-item id="2">
@@ -894,15 +898,11 @@
         </el-form-item>
 
       </el-form>
-
-
     </mt-tab-container-item>
 
   </mt-tab-container>
 
-  <div class="save-wrapper">
-    <mt-button class="save" type="primary" @click="save">保存并更新</mt-button>
-  </div>
+  
 
 </div>
 </template>
@@ -928,6 +928,7 @@ export default {
   data() {
     return {
       selected: '1',
+      invisible: true,
       emp: null,
       tokenHeader: {
         charset: 'utf-8',
@@ -2067,6 +2068,7 @@ export default {
           res = res.body;
           if(res.code === 200) {
             this.$message.success({message: '保存并更新成功！', showClose: true});
+            this.$router.push({path:'/signCard'});
 
             // this.reset();
             // this.selected = '1';
@@ -2336,6 +2338,7 @@ export default {
           // return;
           this.emp = res.result;
           if(res.code === 200) makeEmp(res.result);
+          this.invisible = false;
         })
         .catch(err => console.log(err.status, err.statusText));
     },
@@ -2519,87 +2522,9 @@ export default {
   // .el-select-dropdown__item span {
   //   font-size: 12px;
   // }
+  .invisible {
+    visibility: hidden;
+  }
 
 }
-
-
-// .is-selected {
-//   border-bottom: 3px solid #26a2ff;
-//   color: #26a2ff;
-//   margin-bottom: -3px;
-// }
-// .hrClass{
-//   width: 96%;
-//   margin:0 0.8rem;
-//   height: 1px;
-//   background: #cccccc;
-//   line-height: 1px
-// }
-// .contentClass{
-//   display: flex;
-//   padding: 1rem;
-// }
-// .contentLeft{
-//   flex:1.2;
-//   text-align: left;
-// }
-// .contentRight{
-//   flex:2.8;
-//   text-align: left;
-// }
-// .dataTitle span{
-//   font-size: 1.4rem;
-// }
-// .changeSelect{
-//   width: 12rem;
-//   display: block;
-//   height: 2.5rem;
-//   border: none;
-//   font-size: 1.22rem;
-// }
-// .cardClass{
-//   width: 11rem;
-//   height: 6rem;
-//   line-height: 6rem;
-//   float: left;
-//   position: relative;
-// }
-// .cardClassSearch{
-//   width: 11rem;
-//   height: 6rem;
-//   line-height: 6rem;
-//   float: left;
-//   position: relative;
-// }
-// .cardClass div{
-//   width: 9rem;
-//   position: absolute;
-//   font-size: 1.1rem;
-//   height: 6.2rem;
-//   line-height: 6.2rem;
-// }
-// .CardImg{
-//   display: block;
-//   width: 80%;
-//   height: 90%;
-//   padding-left: 0.6rem;
-
-// }
-// .CardImgSearch{
-//   display: block;
-//   width: 94%;
-//   height: 90%;
-//   padding-left: 0.6rem;
-//   padding-top: 0.2rem;
-// }
-// .showARightSpan{
-//   width: 15rem;
-//   height:2rem;
-//   line-height: 2rem;
-//   text-align: left;
-// }
-// .imgclassShen{
-//   position: absolute;
-//   top:3rem;
-// }
 </style>
