@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 8px">
+    <div >
       <full-calendar
         :events="fcEvents" locale="zh"
         @dayClick="dayClick"
@@ -320,7 +320,7 @@
 .egClass{
   width:7.5rem;
   height: 2rem;
-  line-height: 2rem;
+  line-height: 3rem;
   display: inline-block;
 }
 .timeTitle{

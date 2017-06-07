@@ -14,9 +14,12 @@
           <div class="hrClass"></div>
           <div class="contentClass">
             <div class="contentLeft" style="padding-top: 0.3rem">申请分类</div>
-            <div class="contentRight" >
-              <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)">
-                <option v-for="option in optionsApply"  v-bind:value="option.value" >
+            <div class="contentRight" style="position: relative;" >
+              <div class="selectBao">
+                <img width="150" :src="imgSrc.selectShow"  class="selectShowImg"  />
+              </div>
+              <select v-model="selectedDataApply" class="changeSelect"  @change="shengqingclick(selectedDataApply)"> <!--shengqingclick(selectedDataApply)-->
+                <option v-for="option in optionsApply"  v-bind:value="option.value">
                   {{ option.text }}
               </option>
               </select>
@@ -26,7 +29,10 @@
           <div class="hrClass" v-if="changeApply"></div>
           <div class="contentClass" v-if="changeApply">
             <div class="contentLeft" style="padding-top: 0.3rem">假期分类</div>
-            <div class="contentRight" >
+            <div class="contentRight" style="position: relative;" >
+              <div class="selectBao">
+                <img width="150" :src="imgSrc.selectShow"  class="selectShowImg"  />
+              </div>
               <select v-model="selectedDataHoliday" class="changeSelect" @change="qingjiaclick(selectedDataHoliday)" >
                 <option v-for="option in optionsHoliday" v-bind:value="option">
                   {{ option.text }}
@@ -34,7 +40,7 @@
               </select>
             </div>
           </div>
-          <div class="hrClass" v-if="changeApply"></div>
+          <!--<div class="hrClass" v-if="changeApply"></div>-->
 
 
           <div  v-if="changeApplyTime" class="hrClass" ></div>
@@ -55,25 +61,33 @@
 
 
 
+          <div style="clear:both;"></div>
+          <!--<div class="hrClass" v-if="updateImage"></div>-->
+          <div v-if="updateImage" style="width:98%;height: 8rem;line-height: 8rem; position: relative">
+                <div class="cardClass">
+                  <div>
+                    <vue-core-image-upload
+                      :crop="false"
+                      @imageuploaded="imageuploaded"
+                      :data="data"
+                      :headers="tokenHeader"
+                      :max-file-size="5242880"
+                      url="/api/v1.0/client/upload" >
+                      <div class="CardImg">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  /></div>
+                      <div class="CardImg">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" /></div>
 
-            <mt-field style="height: 8rem;line-height: 8rem;position: relative" v-if="updateImage">
-              <div class="cardClass">
-                <div>
-                  <vue-core-image-upload
-                    :crop="false"
-                    @imageuploaded="imageuploaded"
-                    :data="data"
-                    :headers="tokenHeader"
-                    :max-file-size="5242880"
-                    url="/api/v1.0/client/upload" >
-                    <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  />
-                    <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" />
 
-                  </vue-core-image-upload>
+
+                    </vue-core-image-upload>
+                  </div>
                 </div>
               </div>
-            </mt-field>
-            <div v-if="changeApplyOvertime">
+          <!--<div class="hrClass" v-if="updateImage"></div>-->
+
+
+          <div style="clear:both;"></div>
+
+          <div v-if="changeApplyOvertime">
               <mt-field label="加班时长" v-model="addTimeValue" >
               </mt-field>
             </div>
@@ -98,7 +112,7 @@
       </div>
           <div style="padding-top: 2rem">
             <mt-button type="primary"
-                       style="background-color: rgb(139,156,172);width: 20rem;height:3rem;line-height: 3rem"
+                       style="background-color: rgb(32, 161, 255);width: 20rem;height:3rem;line-height: 3rem"
                        @click.native="handerDataSubmit()">提交
              </mt-button>
           </div>
@@ -132,9 +146,9 @@
               <div v-if="item.startTime">
                 <div class="myApplyContentLeft">起止日期</div>
                 <div class="myApplyContentNr" >
-                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,15))}}
+                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午||下G|M|T|/g, "").replace(/日/g, " ").substring(0,14))}}
                  -
-               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ").substring(0,15)}}
+               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下|G|M|T|/g, "").replace(/日/g, " ").substring(0,14)}}
                 </div>
               </div>
               <div v-if="item.overworkTime">
@@ -146,26 +160,15 @@
 
               <div class="myApplyContentLeft">事由</div>
               <div class="myApplyContentNr">{{item.remarks}}</div>
-              <div v-if="item.image" style="clear: both;width: 22rem;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
+              <div v-if="item.image" style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
             </div>
             <div class="myApplyBottom" v-if="item.image">
               <div>
                 <div class="myApplyBottomNrLeft">附件内容 ：</div>
                 <div class="myApplyBottomNrRight">
-                  <mt-button size="small" type="primary" @click="lookImages">
+                  <mt-button size="small" type="primary" @click="lookImages(item.image)">
                     查看图片
                   </mt-button>
-                  <mt-popup
-                    v-model="popupVisible"
-                    class="imageClass"
-                    position="top"
-                    closeOnClickModal="true"
-                  >
-                    <img width="150" :src="item.image"  class="alertImages" v-if="item.image"  />
-                    <div @click="closeImage" class="colseClass">
-                      关闭
-                    </div>
-                  </mt-popup>
                 </div>
               </div>
             </div>
@@ -177,11 +180,22 @@
         </mt-tab-container-item>
 
       </mt-tab-container>
-
+      <mt-popup
+        v-model="popupVisible"
+        class="imageClass"
+        closeOnClickModal="true"
+      >
+        <img width="150" :src="popImgSrc"  class="alertImages" v-if="popImgSrc"  />
+        <div @click="closeImage" class="colseClass">
+          关闭
+        </div>
+      </mt-popup>
     </div>
 </template>
 <script>
-  import { DatetimePicker ,Radio ,Popup } from 'mint-ui';
+  import { DatetimePicker ,Radio  } from 'mint-ui';
+  import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+
   import VueCoreImageUpload from 'vue-core-image-upload'
   import datePick from "@/components/components/datePick"
   import endDatePick from "@/components/components/endDatePick"
@@ -190,6 +204,7 @@
   export default {
         data(){
             return {
+              popImgSrc: '',
               popupVisible:false,
               closeOnClickModal:true,
               isActive:false, //显示下滑线
@@ -213,10 +228,10 @@
 //              ],
             optionsApproval: {},
               optionsApply: [
-                { text: '请假申请', value: 0 ,uid:12,type:'q'},
-                { text: '忘记打卡申请', value: 1 ,uid:2122 ,type:'w'},
-                { text: '外出申请', value: 2 ,uid:321152 ,type:'wc'},
-                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
+//                { text: '请假申请', value: 0 ,uid:12,type:'q'},
+//                { text: '忘记打卡申请', value: 1 ,uid:2122 ,type:'w'},
+//                { text: '外出申请', value: 2 ,uid:321152 ,type:'wc'},
+//                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
               ],
               selectedDataHoliday:0,
@@ -229,8 +244,10 @@
               imgSrc: {
                 shenFenIcon: '',
                 shenFenIconShow: require('../../assets/shenfenzheng.png'),
+                selectShow: require('../../assets/arrow_2.png'),
 
-        },
+
+              },
               changeApply:true,
               changeApplyTime:true,
 //              changeApplyOutside:false,
@@ -262,13 +279,11 @@
 
         },
         created: function () {
+            this.addTimeValue=this.getCookie('upAddTime');
 
-        //此区域是在在点击提交申请的时候进行选中传参start
-           this.selectedDataApply=this.getCookie('leaveType').toString();
-            this.shengqingclick(this.selectedDataApply);
-        //此区域是在在点击提交申请的时候进行选中传参end
 
-          this.addTimeValue=this.getCookie('leaveType');
+
+//          this.addTimeValue=this.getCookie('leaveType');
           console.log(this.addTimeValue,'在打卡加班传来的加班时间');
 
           this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
@@ -286,6 +301,10 @@
             console.log('我是申请类型data'+this.applyTypeName);
             this.$nextTick(()=>{
               this.optionsApply=this.applyTypeName
+              //此区域是在在点击提交申请的时候进行选中传参start
+              this.selectedDataApply=this.getCookie('leaveType').toString();
+              this.shengqingclick(this.selectedDataApply);
+              //此区域是在在点击提交申请的时候进行选中传参end
 
             });
 
@@ -422,7 +441,7 @@
           },
           handerDataSubmit(){
               let params;
-              if(this.shengqingParamType=='0'){ //请假申请所需参数
+              if(this.selectedDataApply=='0'){ //请假申请所需参数
                 params ={
                   approvalConfigUid:this.shengqingParam,//申请分类
                   currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
@@ -433,7 +452,7 @@
                   remarks:this.textareaString
                 };
               };
-            if(this.shengqingParamType=='2'||this.shengqingParamType=='1'){ //忘打卡或外出申请所需参数
+            if(this.selectedDataApply=='2'||this.selectedDataApply=='1'){ //忘打卡或外出申请所需参数
               params ={
                 approvalConfigUid:this.shengqingParam,//申请分类
                 currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
@@ -443,7 +462,7 @@
                 remarks:this.textareaString
               };
             };
-              if( this.shengqingParamType=='3'){ //加班所需参数
+              if( this.selectedDataApply=='3'){ //加班所需参数
                  params ={
                   approvalConfigUid:this.shengqingParam,  //申请分类
                   currentApprover:this.approvalTypeObj?this.approvalTypeObj.UID:'',
@@ -457,8 +476,9 @@
 
               if(response.body.code==200){
                 alert(response.body.message);
-              }else{
-                  alert(response.body.message);
+                this.$router.push({path:'/signIn'});
+              }else if(response.body.code==500){
+                MessageBox('提示', response.body.message);
               }
 //              this.holidayTypeArray=response.body.result;
 //              console.log(this.holidayTypeArray);
@@ -486,11 +506,18 @@
               console.log('我是开始时间'+this.startTimeValue);
           },
           shengqingclick(value){ //初始是选中一个select然后进行参数选中为了提交用
-
-
+//          alert(this.selectedDataApply);
+            console.log(value, typeof value);
+//            return;
+          console.log(this.optionsApply,'this.optionsApply')
             for(let i=0;i<this.optionsApply.length;i++){  //循环初始化的时候选中一个select属性值和参数
-              this.shengqingParam= this.optionsApply[this.selectedDataApply].uid;
-              this.shengqingParamType= this.optionsApply[this.selectedDataApply].value;
+
+              if(+value === this.optionsApply[i].value){
+                this.shengqingParam = this.optionsApply[i].uid;
+                this.shengqingParamType = this.optionsApply[i].value;
+              }
+              this.shengqingParam = this.optionsApply[this.selectedDataApply].uid;
+              this.shengqingParamType = this.optionsApply[this.selectedDataApply].value;
             }
             console.log(" this.shengqingParam uid" + this.shengqingParam);
             console.log("value shengqingParamType:" +this.shengqingParamType);
@@ -530,8 +557,10 @@
             console.log('我是选中的假期类型'+ this.qingjiauidParam);
 
           },
-          lookImages(){ //查看图片
+          lookImages(imgSrc){ //查看图片
             console.log('图片')
+            if(imgSrc) this.popImgSrc = imgSrc;
+            else this.popImgSrc = '';
             this.popupVisible=true;
           },
           closeImage(){
@@ -552,6 +581,29 @@
 </script>
 
 <style scoped>
+  /*.changeSelect::after*/
+  /*{*/
+    /*content:" ------- ";*/
+    /*!*content: url(../../assets/ico_leave.png);*!*/
+    /*!*font-size: 0.5em;*!*/
+    /*!*background-size: 19px 20px;*!*/
+    /*!*display: inline-block;*!*/
+    /*background-color:yellow;*/
+    /*!*color:#ffffff;*!*/
+    /*width: 10%;*/
+  /*}*/
+  .selectBao{
+    position: absolute;
+    width: 2rem;
+    height: 1.5rem;
+    /*background: pink;*/
+    top:0.3rem;
+    right:0
+  }
+  .selectShowImg{
+    width: 50%;
+    height: 50%;
+  }
   .hrClass{
     width: 96%;
     margin:0 0.8rem;
@@ -586,7 +638,7 @@
   }
   .imageClass{
     width: 20rem;
-    top: 10rem;
+    /*top: 10rem;*/
     height: 24rem;
     line-height: 24rem;
 
@@ -620,6 +672,8 @@
     height: 2rem;
     border: none;
     font-size: 1.1rem;
+    background: #ffffff;
+    -webkit-appearance: none;
   }
   .cardClass{
     width: 11rem;
@@ -627,15 +681,15 @@
     line-height: 6rem;
     padding-bottom: 1rem;
     position: absolute;
-    left: -15rem;
-    top: -3rem;
+    left: 33%;
+    top: 1.6rem;
   }
-  .cardClass div{
-    width: 9rem;
-    height: 6.2rem;
-    position: absolute;
-    font-size: 1.1rem;
-  }
+  /*.cardClass div{*/
+    /*width: 9rem;*/
+    /*height: 6.2rem;*/
+    /*position: absolute;*/
+    /*font-size: 1.1rem;*/
+  /*}*/
   .CardImg{
     display: block;
     width: 80%;

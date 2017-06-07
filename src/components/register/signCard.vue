@@ -1,17 +1,19 @@
 <template>
     <div >
-     <div style="background: rgb(32,162,255)">
+     <div class="bg">
        <div style="padding-top: 1rem;height: 8rem;color:#ffffff;display: flex;padding-left: 1rem">
          <div class="siginLeft">
-           <img :src="imgSrc.comAddress" class="avatarTop">
+           <div class="avatarBorder">
+             <img :src="imgSrc.comAddress" class="avatarTop">
+           </div>
          </div>
          <div class="siginRight" style="position: relative">
            <div>
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
-             <div style="display: flex; border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.5rem;height: 2rem; background: rgb(26,128,203); top:0;right:0" @click="routerMyData">
-               <img style="flex: 1;display: block;width: 35%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
-               <div style="font-size: 0.8rem;flex: 3;padding-top: 0.4rem">设置</div>
+             <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
+               <img style="display: block;width: 35%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
+               <div style="font-size: 0.8rem;top: 0.48rem; position: absolute;right: 0.5rem;">设置</div>
              </div>
            </div>
            <div class="companyNameClass">{{infoObj.companyName}}</div>
@@ -19,7 +21,11 @@
          </div>
 
        </div>
-       <div style="padding-bottom: 2rem;">
+       <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative">
+         <div style="position: absolute;width: 2.5rem;height: 1.5rem;z-index: 2;left:31%;top:16.5%">
+           <img :src="imgSrc.ico_pencil" class="imgSizePencil" >
+
+         </div>
          <mt-button
            type="primary"
            style="background-color: #57b9ff;width: 97%;"
@@ -29,22 +35,15 @@
        </div>
 
      </div>
-      <div style="margin-top: 1rem;">
-        <!--<a  class="mint-cell" v-for="(item,index) in arryName" @click="changeList(index)">-->
-          <!--<div class="mint-cell-wrapper">-->
-            <!--<div class="mint-cell-title">&lt;!&ndash;&ndash;&gt; <div><i class="indexicon icon-toast"></i> <span>{{item.name}}</span></div></div>-->
-            <!--<div class="mint-cell-value is-link"><span></span></div>-->
-          <!--</div>-->
-          <!--<div class="mint-cell-right"></div>-->
-          <!--<i class="mint-cell-allow-right"></i>-->
-        <!--</a>-->
+      <div style="margin-top: 1rem;height: 10rem">
         <a  class="mint-cell" @click="changeList(0)">
           <div class="mint-cell-wrapper">
             <div class="mint-cell-title qing">
               <div class="postionImages">
                 <img :src="imgSrc.ico_leave" class="imgSize" >
               </div>
-              <div>
+              <div class="showSpan">{{recordShow.apply}}</div>
+            <div>
                 <i class="indexicon icon-toast"></i>
                 <span>请假申请</span></div>
             </div>
@@ -59,6 +58,7 @@
               <div class="postionImages">
                 <img :src="imgSrc.ico_attendance" class="imgSize" >
               </div>
+              <div class="showSpan">{{recordShow.punchCard}}</div>
               <div>
                 <i class="indexicon icon-toast"></i>
                 <span>我的考勤</span></div></div>
@@ -73,9 +73,10 @@
               <div class="postionImages">
                 <img :src="imgSrc.ico_wage" class="imgSize">
               </div>
+              <div class="showSpan">{{recordShow.salary}}</div>
               <div>
                 <i class="indexicon icon-toast"></i>
-                <span>我的公司条</span></div></div>
+                <span>我的工资条</span></div></div>
             <div class="mint-cell-value is-link"><span></span></div>
           </div>
           <div class="mint-cell-right"></div>
@@ -86,18 +87,18 @@
       <div class="bottomTool">
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 7rem;">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 23%;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 7rem;top:2.4rem">工作台</div>
+            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.4rem">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 18.5rem;">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;right:29%;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 19rem;top:2.4rem">设置</div>
+            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.4rem">设置</div>
           </div>
         </div>
       </div>
@@ -121,7 +122,8 @@ let oneselfData={};
           infoObj:{},
           arryOneself:[],
           imgSrc: {
-            comAddress:  require('../../assets/tou.png'),
+//            comAddress:  require('../../assets/tou.png'),
+            comAddress:  require('../../assets/tx.png'),
             shezhiBackground:  require('../../assets/ico_setting.png'),
 //            doIcon: require('../../assets/ico_workbench_2.png'),
 //            setIcon: require('../../assets/ico_setting_1.png'),
@@ -134,18 +136,12 @@ let oneselfData={};
             setIconBlue: require('../../assets/ico_setting_1.png'),
             setIcon: require('../../assets/ico_setting_2.png'),
 
+            ico_pencil: require('../../assets/ico_pencil.png'),
+            bg1: require('../../assets/bg.png'),
+
+
           },
-          arryName:[
-            {
-              name:'请假申请'
-            },
-            {
-              name:'我的考勤'
-            },
-            {
-              name:'我的工资条'
-            }
-          ],
+          recordShow:{},
           init:'',
           initBlue:'',
           initBlueSet:'',
@@ -161,34 +157,16 @@ let oneselfData={};
       this.initSet=true;
 
 
-//          let param={
-//            "openid":"2",
-//            "companyUid":"d713a5e1-4624-4301-8602-b1eb5f869663"
-//          }
-//      this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => {
-//        console.log(123);
-//        console.log(response);
-//      }, response => {
-//        console.log( 'error callback');
-//      });
+      this.$http.get('/api/v1.0/client/status').then(response => {
+        console.log(response.body.result);
+        this.recordShow=response.body.result;
+      }, response => {
+        console.log( 'error callback');
+      });
       this.searchStaff();
-//      this.$nextTick(() => {
-//        this.searchStaff();
-//      });
-
     },
     methods: {
       handerSign(){
-
-
-        let signObj={
-          "record":{"twOutside":10}
-        }
-        this.$http.post('/api/v1.0/client/punchCardLog',signObj).then(response => {
-          console.log(111);
-        }, response => {
-          console.log( 'error callback');
-        });
 
         this.$router.push({path:'/signIn'}); //进入打卡页
 
@@ -201,6 +179,8 @@ let oneselfData={};
           console.log("rryOne",this.arryOneself);
 
           this.infoObj=response.body.result.record;
+
+
           for(let i=0; i<this.arryOneself.length;i++){
             this.oneselfData={
 //              companyNmae:this.arryOneself[i].finallyEmpCom,
@@ -208,9 +188,19 @@ let oneselfData={};
 //                position:this.arryOneself[i].record.postion,
                 name:this.arryOneself[i].name,
             };
+
+
+//            let zu={};
+//            zu.position=this.infoObj.position;
+//            zu.name=this.oneselfData.name;
+            this.setCookie('infoObjPassPostion',this.infoObj.position,365);
+            this.setCookie('infoObjPassName',this.oneselfData.name,365);
+
+
+            this.setCookie('avatarImages',this.imgSrc.comAddress,365);
+
             if(this.arryOneself[i].staffPhoUrl){
               this.imgSrc.comAddress=this.arryOneself[i].staffPhoUrl;
-//              sessionStorage.setItem('avatarImages',  this.imgSrc.comAddress);
               this.setCookie('avatarImages',this.imgSrc.comAddress,365);
 
             }else {
@@ -272,6 +262,15 @@ let oneselfData={};
 </script>
 
 <style scoped>
+  .showSpan{
+    position: absolute;
+    width: 45%;
+    height: 1.9rem;
+    line-height: 1.9;
+    text-align: right;
+    right: 2.5rem;
+    top: 0.6rem;
+  }
   .qing{
     width: 5rem;
     postion:relative;
@@ -292,9 +291,9 @@ let oneselfData={};
   .postionImages{
     position:absolute;
     width:10%;
-    height:1.6rem;
+    height:1.9rem;
     left:2%;
-    top:24%;
+    top:20%;
   }
   .imgSize{
     width:70%;
@@ -308,18 +307,31 @@ let oneselfData={};
     /*line-height: 4rem;*/
     background: rgb(250,250,250);
   }
-  .siginLeft{
-    width:22%;
-    float:left;
-    height: 5.2rem;
+  .bg{
+    background-image: url("../../assets/bg.png");
+    background-repeat: repeat-x;
+  }
+  .imgSizePencil{
+    width: 50%;
+    height: 80%;
+  }
+  .avatarBorder{
+    width: 5rem;
+    height: 5rem;
     border-radius: 2.6rem;
     text-align: right;
     background: #cccccc;
     border: solid #ffffff 0.2rem;
   }
+  .siginLeft{
+    width:21%;
+    float:left;
+    height: 5.2rem;
+
+  }
   .siginRight{
     padding-left: 0.8rem ;
-    width:73%;
+    width:74%;
     float:left;
     height: 5.2rem;
     /*line-height: 5.2rem;*/
@@ -333,11 +345,11 @@ let oneselfData={};
     padding: 1rem 0 0 0.7rem;
   }
   .avatarTop{
-    width: 85%;
-    height: 90%;
+    width: 92%;
+    height: 94%;
     display: block;
     text-align: center!important;
-    padding: 0.1rem 0 0 0.5rem;
+    padding: 0.22rem 0 0 0.23rem;
     border-radius: 4rem;
     z-index: 0;
   }

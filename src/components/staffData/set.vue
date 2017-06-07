@@ -3,7 +3,7 @@
     <div >
       <div style="width: 100%;height: 8rem;margin-top: 4rem;">
         <div style="display: inline-block; width: 5.2rem;height: 5.2rem; background-color: #cccccc;border-radius: 2.6rem;">
-          <img :src="imgSrc.shenFenIcon" class="avatar">
+          <img :src="imgSrc.header" class="avatarTop">
         </div>
       </div>
       <div class="confirmBinding">
@@ -15,18 +15,18 @@
       <div class="bottomTool">
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 7rem;">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 23%;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 7rem;top:2.4rem">工作台</div>
+            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.4rem">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 18.5rem;">
+            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;right: 29%;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 19rem;top:2.4rem">设置</div>
+            <div style="height: 1.5rem;position: absolute;right: 27.5%;top:2.4rem">设置</div>
           </div>
         </div>
       </div>
@@ -45,18 +45,25 @@
         initBlueSet:'',
         initSet:'',
         imgSrc: {
-          shenFenIcon: require('../../assets/shenfenzheng.png'),
+//          shenFenIcon: require('../../assets/shenfenzheng.png'),
           doIcon: require('../../assets/ico_workbench_2.png'),
           doIconBlue: require('../../assets/ico_workbench_1.png'),
 
           setIconBlue: require('../../assets/ico_setting_1.png'),
           setIcon: require('../../assets/ico_setting_2.png'),
 
+          header:  require('../../assets/tx.png'),
+
+
         },
       }
     },
     created: function () {
-      this.imgSrc.shenFenIcon=this.getCookie('avatarImages');
+        if(this.getCookie('avatarImages')){
+
+          this.imgSrc.header=this.getCookie('avatarImages');
+        }
+
       this.init=true;
       this.initBlueSet=true;
       this.initSet=false;
@@ -95,6 +102,9 @@
 </script>
 
 <style scoped>
+  .confirmBinding{
+    padding: 0 0.5rem;
+  }
   .bottomTool{
     position:fixed;
     bottom:0;
@@ -109,6 +119,15 @@
     text-align: center!important;
     /*padding-top: 0.3rem;*/
     padding: 1rem 0 0 0.7rem;
+  }
+  .avatarTop{
+    width: 92%;
+    height: 94%;
+    display: block;
+    text-align: center!important;
+    padding: 0.1rem 0 0 0.2rem;
+    border-radius: 4rem;
+    z-index: 0;
   }
   .dataTitle span{
     font-size: 1.4rem;
