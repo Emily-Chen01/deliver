@@ -382,7 +382,7 @@
         toTimeMiddleShow: true, //模态框上班时间
         alertToSpan: true, //初始弹出的模态款span上班
         alertDownSpan: false, //弹出的模态款span下班
-        daKaHide: true,//整个打卡区域
+        daKaHide: false,//整个打卡区域
         toUp: true,
         Obtain: false,
         closeOnClickModal: true,
@@ -1088,7 +1088,7 @@
 
                         alert('区域外');
                       }
-
+                      self.daKaHide=true;
 
                     }, response => {
                       console.log('error callback');
