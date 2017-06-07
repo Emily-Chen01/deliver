@@ -2068,6 +2068,7 @@ export default {
           res = res.body;
           if(res.code === 200) {
             this.$message.success({message: '保存并更新成功！', showClose: true});
+            this.$router.push({path:'/signCard'});
 
             // this.reset();
             // this.selected = '1';
