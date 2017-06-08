@@ -200,7 +200,7 @@
 
               </mt-button>
               <mt-button type="default"
-                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:7.3rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 8px"
+                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:4.5rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 4px"
                          v-show="leaveEarly">
                 早退
 
@@ -255,7 +255,7 @@
       </div>
       <div style="clear:both;"></div>
       <div class="clickClass">
-        <div v-show="daKaHide" style="position: absolute; top:-2.6rem;left:-2.6rem;width: 14rem;height: 14rem">
+        <div v-show="daKaHide" style="position: absolute; top:-2.2rem;left:-2.6rem;width: 14rem;height: 14rem">
           <img v-show="toUp" :src="imgSrc.bg" style="width: 13rem;height: 13rem;line-height: 13rem">
         </div>
         <div style="position: relative" v-show="daKaHide">
@@ -267,13 +267,15 @@
                 <span id="hour"></span>:<span id="minute"></span>:<span id="second"></span>
               </p>
             </div>
-            <div v-show="Obtain">
-              <p class="clickClassUp" v-show="toUpYuanShow">正在获取</p>
-              <p class="clickClassDown" v-show="toUpYuanShow">
-                当前位置
-              </p>
-            </div>
+
           </mt-button>
+
+          <div v-show="Obtain">
+            <p class="clickClassUp" v-show="toUpYuanShow">正在获取</p>
+            <p class="clickClassDown" v-show="toUpYuanShow">
+              当前位置
+            </p>
+          </div>
 
           <mt-popup
             v-model="popupVisible"
@@ -1042,7 +1044,7 @@
             this.yyy = true;
 
             wx.config({
-              debug: true,
+              debug: false,
               appId: this.t1,
               timestamp: this.t2,
               nonceStr: this.t3,
@@ -1053,7 +1055,7 @@
             });
 
             wx.error(function (res) {
-              alert('wx.error错误信息' + res.errMsg)
+//              alert('wx.error错误信息' + res.errMsg)
 //              console.log('err1', res)
             });
             wx.ready(function () {
@@ -1142,7 +1144,7 @@
 
 //                      alert('区域外');
                     }
-                    self.daKaHide=true;
+//                    self.daKaHide=true;
 
                   }, response => {
                     console.log('error callback');
@@ -1290,7 +1292,7 @@
 
 //                        alert('区域外');
                       }
-                      self.daKaHide=true;
+                      self.daKaHide=false;
 
                     }, response => {
                       console.log('error callback');
@@ -1622,24 +1624,24 @@
     background-color: #2acfbc;
     color: #ffffff;
     width: 5.7rem;
-    /*left: -0.8rem;*/
+    left: -0.8rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
     font-size: 0.8rem;
-    border-radius: 8px
+    border-radius: 4px
   }
 
   .addTimeTotleClass {
     background-color: #6e83c5;
     color: #ffffff;
     width: 6.5rem;
-    left: 6.2rem;
+    left: 4.5rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
     font-size: 0.8rem;
-    border-radius: 8px
+    border-radius: 4px
   }
 
   .toDaKaStatusSecond {
@@ -1658,37 +1660,37 @@
     background-color: #b2c92b;
     color: #ffffff;
     width: 4.8rem;
-    left: 1rem;
+    left: -0.8rem;
     /*这个地方与上1 右边的的迟到了有重叠原来是left：5*/
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
     font-size: 0.8rem;
-    border-radius: 8px
+    border-radius: 4px
   }
 
   .toDaKaStatusSecondC {
     background-color: #f6bc2a;
     color: #ffffff;
     width: 5.2rem;
-    /*left: 6.7rem;*/
+    left: 4.58rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
     font-size: 0.8rem;
-    border-radius: 8px
+    border-radius: 4px
   }
 
   .toDaKaStatusSecondK {
     background-color: #f54435;
     color: #ffffff;
     width: 5.7rem;
-    left: 6.88rem;
+    left: 4.48rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
     font-size: 0.8rem;
-    border-radius: 8px
+    border-radius: 4px
   }
 
   .toDaKaStatusWj {
