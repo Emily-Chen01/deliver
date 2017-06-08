@@ -8,7 +8,7 @@
   </mt-navbar>
 
   <!-- tab-container -->
-  <mt-tab-container :class="{invisible: invisible}" v-model="selected">
+  <mt-tab-container v-model="selected">
     <mt-tab-container-item id="1">
 
       <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth" ref="personFm">
@@ -377,9 +377,9 @@
         </el-form-item>
         
         <!-- DO NOT DEL -->
-        <el-form-item label="紧急联系人">
+        <el-form-item v-if="confList" label="紧急联系人">
         </el-form-item>
-        <div class="contacts-wrapper">
+        <div v-if="confList" class="contacts-wrapper">
           <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
             <el-form-item label="姓名" label-width="3.1em" :prop="'contacts[' + idx + '].emergContact'" :rules="{min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : ''}">
               <el-input v-model="item.emergContact"></el-input>
@@ -582,48 +582,36 @@
 
     <mt-tab-container-item id="2">
       
-      
       <el-form label-position="left" :model="model" :rules="rules" ref="postFm" :label-width="labelWidth">
 
-        <el-form-item v-if="staffRecord.contracMes" label="合同类型" prop="record.contract.contracType">
-          <el-select :disabled="!staffRecord.contracMes.isedit" clearable v-model="model.record.contract.contracType" placeholder="请选择">
-            <el-option
-              v-for="(v, k) in contractTypes"
-              :key="k"
-              :label="v"
-              :value="k">
-            </el-option>
-          </el-select>
+        <el-form-item v-if="staffRecord.contracMes" label="合同类型">
+          {{contractTypes && contractTypes[model.record.contract.contracType.toString()]}}
         </el-form-item>
 
         <!-- 劳动合同 -->
-        <el-form-item v-if="model.record.contract.contracType === '0'" label="合同生效日期" prop="record.contract.startTime">
-          <el-date-picker
-            :readonly="!staffRecord.contracMes.isedit"
-            v-model="model.record.contract.startTime"
-            type="date"
-            placeholder="选择日期"
-            :editable="false">
-          </el-date-picker>
+        <el-form-item v-if="model.record.contract.contracType === '0'" label="合同生效日期">
+          {{datefmt(model.record.contract.startTime)}}
         </el-form-item>
 
-        <el-form-item v-if="model.record.contract.contracType === '0'" label="合同期限" prop="record.contract.contractPeriod">
-          <el-select :disabled="!staffRecord.contracMes.isedit" clearable v-model="model.record.contract.contractPeriod" placeholder="请选择">
+        <el-form-item v-if="model.record.contract.contracType === '0'" label="合同期限">
+          {{model.record.contract.contractPeriod}}
+          <!--<el-select :disabled="!staffRecord.contracMes.isedit" clearable v-model="model.record.contract.contractPeriod" placeholder="请选择">
             <el-option
               v-for="item in contractPeriods"
               :key="item.val"
               :label="item.name"
               :value="item.val">
             </el-option>
-          </el-select>
+          </el-select>-->
         </el-form-item>
 
         <el-form-item v-if="model.record.contract.contracType === '0'" label="合同结束日期">
           {{ formalEndTime }}
         </el-form-item>
 
-        <el-form-item v-if="model.record.contract.contracType === '0'" label="合同附件" required>
-          <el-upload
+        <el-form-item v-if="model.record.contract.contracType === '0'" label="合同附件">
+          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
             action="/api/v1.0/common/upload"
             :show-file-list="false"
@@ -633,51 +621,57 @@
             <i class="el-icon-plus"> 上传合同附件</i>
           </el-upload>
           <p v-if="model.record.contract.contractUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.record.contract.contractUrl = ''"></i><a :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a></p>
-          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的合同附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的合同附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>-->
         </el-form-item>
 
-        <el-form-item v-if="model.record.contract.contracType === '0'" label="候选人来源渠道" prop="record.contract.recruitmentChannel">
-          <el-select :disabled="!staffRecord.contracMes.isedit" clearable v-model="model.record.contract.recruitmentChannel" placeholder="请选择">
+        <el-form-item v-if="model.record.contract.contracType === '0'" label="候选人来源渠道">
+          {{recruitmentChannels[+model.record.contract.recruitmentChannel]}}
+          <!--<el-select :disabled="!staffRecord.contracMes.isedit" clearable v-model="model.record.contract.recruitmentChannel" placeholder="请选择">
             <el-option
               v-for="(item, idx) in recruitmentChannels"
               :key="idx"
               :label="item"
               :value="idx">
             </el-option>
-          </el-select>
+          </el-select>-->
         </el-form-item>
 
-        <el-form-item v-if="model.record.contract.contracType === '0'" label="基础薪资" prop="record.baseSalary">
-          <el-input :readonly="!staffRecord.contracMes.isedit" v-model="model.record.baseSalary"></el-input>
+        <el-form-item v-if="model.record.contract.contracType === '0'" label="基础薪资">
+          {{model.record.baseSalary}}元
+          <!--<el-input :readonly="!staffRecord.contracMes.isedit" v-model="model.record.baseSalary"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="model.record.contract.contracType === '0'" label="试用薪资" prop="record.trialSalary">
-          <el-input :readonly="!staffRecord.contracMes.isedit" v-model="model.record.trialSalary"></el-input>
+        <el-form-item v-if="model.record.contract.contracType === '0'" label="试用薪资">
+          {{model.record.trialSalary}}元
+          <!--<el-input :readonly="!staffRecord.contracMes.isedit" v-model="model.record.trialSalary"></el-input>-->
         </el-form-item>
 
         <!-- 实习合同 -->
-        <el-form-item label="实习合同生效日期" prop="record.contract.startTime" v-if="model.record.contract.contracType === '1'" required>
-          <el-date-picker
+        <el-form-item label="实习合同生效日期" v-if="model.record.contract.contracType === '1'">
+          {{datefmt(model.record.contract.startTime)}}
+          <!--<el-date-picker
             :readonly="!staffRecord.contracMes.isedit"
             v-model="model.record.contract.startTime"
             type="date"
             placeholder="选择日期"
             :editable="false">
-          </el-date-picker>
+          </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item label="实习合同结束日期" prop="record.contract.endTime" v-if="model.record.contract.contracType === '1'" required>
-          <el-date-picker
+        <el-form-item label="实习合同结束日期" v-if="model.record.contract.contracType === '1'">
+          {{datefmt(model.record.contract.endTime)}}
+          <!--<el-date-picker
             :readonly="!staffRecord.contracMes.isedit"
             v-model="model.record.contract.endTime"
             type="date"
             placeholder="选择日期"
             :editable="false">
-          </el-date-picker>
+          </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1'" required>
-          <el-upload
+        <el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1'">
+          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
             action="/api/v1.0/common/upload"
             :show-file-list="false"
@@ -687,12 +681,13 @@
             <i class="el-icon-plus"> 上传实习合同附件</i>
           </el-upload>
           <p v-if="model.record.contract.contractUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.record.contract.contractUrl = ''"></i><a :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a></p>
-          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的实习合同附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的实习合同附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>-->
         </el-form-item>
 
         <!-- 返聘 -->
-        <el-form-item label="返聘协议" v-if="model.record.contract.contracType === '2'" required>
-          <el-upload
+        <el-form-item label="返聘协议" v-if="model.record.contract.contracType === '2'">
+          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
             action="/api/v1.0/common/upload"
             :show-file-list="false"
@@ -702,32 +697,35 @@
             <i class="el-icon-plus"> 上传返聘协议</i>
           </el-upload>
           <p v-if="model.record.contract.contractUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.record.contract.contractUrl = ''"></i><a :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a></p>
-          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的返聘协议附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的返聘协议附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>-->
         </el-form-item>
 
         <!-- 兼职 -->
-        <el-form-item label="兼职协议生效日期" prop="record.contract.startTime"  v-if="model.record.contract.contracType === '3'">
-          <el-date-picker
+        <el-form-item label="兼职协议生效日期"  v-if="model.record.contract.contracType === '3'">
+          {{datefmt(model.record.contract.startTime)}}
+          <!--<el-date-picker
             :readonly="!staffRecord.contracMes.isedit"
             v-model="model.record.contract.startTime"
             type="date"
             placeholder="选择日期"
             :editable="false">
-          </el-date-picker>
+          </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item label="兼职协议结束日期" prop="record.contract.endTime" v-if="model.record.contract.contracType === '3'">
-          <el-date-picker
+        <el-form-item label="兼职协议结束日期" v-if="model.record.contract.contracType === '3'">
+          {{datefmt(model.record.contract.endTime)}}
+          <!--<el-date-picker
             :readonly="!staffRecord.contracMes.isedit"
             v-model="model.record.contract.endTime"
             type="date"
             placeholder="选择日期"
             :editable="false">
-          </el-date-picker>
+          </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item label="兼职协议附件" v-if="model.record.contract.contracType === '3'" required>
-          <el-upload
+        <el-form-item label="兼职协议附件" v-if="model.record.contract.contracType === '3'">
+          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
             action="/api/v1.0/common/upload"
             :show-file-list="false"
@@ -737,36 +735,38 @@
             <i class="el-icon-plus"> 上传兼职协议附件</i>
           </el-upload>
           <p v-if="model.record.contract.contractUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.record.contract.contractUrl = ''"></i><a :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a></p>
-          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的兼职协议附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+          <p class="uploadErrorTip" v-show="recordContractUrlErrFlag">请上传正确的兼职协议附件(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.dateOfEntry" label="入职时间" prop="record.dateOfEntry">
-          <el-date-picker
+        <el-form-item v-if="staffRecord.dateOfEntry" label="入职时间">
+          {{datefmt(model.record.dateOfEntry)}}
+          <!--<el-date-picker
             :readonly="!staffRecord.dateOfEntry.isedit"
             v-model="model.record.dateOfEntry"
             type="datetime"
             placeholder="选择日期"
             :editable="false">
-          </el-date-picker>
+          </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用期" prop="record.probation">
-          <el-select :disabled="!staffRecord.contracMes.isedit" clearable v-model="model.record.probation" placeholder="请选择">
+        <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用期">
+          {{probations && probations[model.record.probation.toString()]}}
+          <!--<el-select :disabled="!staffRecord.contracMes.isedit" clearable v-model="model.record.probation" placeholder="请选择">
             <el-option
               v-for="(v, k) in probations"
               :key="k"
               :label="v"
               :value="k">
             </el-option>
-          </el-select>
+          </el-select>-->
         </el-form-item>
 
         <el-form-item label="司龄">
-          <p class="cmpt">{{typeof model.record.companyAge === 'number' ? model.record.companyAge.toFixed(1) : '0.0'}} 年(司龄计算是根据入职日期开始计算)</p>
+          {{typeof model.record.companyAge === 'number' ? model.record.companyAge.toFixed(1) : '0.0'}} 年(司龄计算是根据入职日期开始计算)
         </el-form-item>
 
-        <el-form-item label="所在部门" v-if="staffRecord.deptUid" x-prop="record.deptUid">
-          <span>{{emp && emp.record && emp.record.deptName}}</span>
+        <el-form-item label="所在部门" v-if="staffRecord.deptUid">
+          {{emp && emp.record && emp.record.deptName}}
           <!--<el-select clearable v-model="model.record.deptUid" placeholder="请选择">
             <el-option
               v-for="item in depts"
@@ -777,63 +777,72 @@
           </el-select>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.position" label="职位" prop="record.position">
-          <el-input :readonly="!staffRecord.position.isedit" v-model="model.record.position"></el-input>
+        <el-form-item v-if="staffRecord.position" label="职位">
+          {{model.record.position}}
+          <!--<el-input :readonly="!staffRecord.position.isedit" v-model="model.record.position"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.jobGrade" label="职级" prop="record.jobGrade">
-          <el-input :readonly="!staffRecord.jobGrade.isedit" v-model="model.record.jobGrade"></el-input>
+        <el-form-item v-if="staffRecord.jobGrade" label="职级">
+          {{model.record.jobGrade}}
+          <!--<el-input :readonly="!staffRecord.jobGrade.isedit" v-model="model.record.jobGrade"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="false" label="首次工作时间" prop="record.fristWorkTime">
-          <el-date-picker
+        <el-form-item v-if="false" label="首次工作时间">
+          {{datefmt(model.record.fristWorkTime)}}
+          <!--<el-date-picker
             v-model="model.record.fristWorkTime"
             type="date"
             placeholder="选择日期"
             :editable="false">
-          </el-date-picker>
+          </el-date-picker>-->
         </el-form-item>
 
         <el-form-item label="工龄">
-          <p class="cmpt">{{typeof model.record.workAge === 'number' ? model.record.workAge.toFixed(1) : '0.0'}} 年(工龄计算是根据首次参加工作时间开始计算)</p>
+          {{typeof model.record.workAge === 'number' ? model.record.workAge.toFixed(1) : '0.0'}} 年(工龄计算是根据首次参加工作时间开始计算)
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.jobNumber" label="工号" prop="record.jobNumber">
-          <el-input :readonly="!staffRecord.jobNumber.isedit" v-model="model.record.jobNumber"></el-input>
+        <el-form-item v-if="staffRecord.jobNumber" label="工号">
+          {{model.record.jobNumber}}
+          <!--<el-input :readonly="!staffRecord.jobNumber.isedit" v-model="model.record.jobNumber"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.workEmail" label="工作邮箱" prop="record.workEmail">
-          <el-input :readonly="!staffRecord.workEmail.isedit" v-model="model.record.workEmail"></el-input>
+        <el-form-item v-if="staffRecord.workEmail" label="工作邮箱">
+          {{model.record.workEmail}}
+          <!--<el-input :readonly="!staffRecord.workEmail.isedit" v-model="model.record.workEmail"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级" prop="record.reporterJobNumber">
-          <el-input :readonly="!staffRecord.reporterJobNumber.isedit" v-model="model.record.reporterJobNumber"></el-input>
+        <el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级">
+          {{model.record.reporterJobNumber}}
+          <!--<el-input :readonly="!staffRecord.reporterJobNumber.isedit" v-model="model.record.reporterJobNumber"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.workLocation" label="工作地省份" prop="record.workProvince">
-          <el-select :disabled="!staffRecord.workLocation.isedit" clearable v-model="model.record.workProvince" placeholder="请选择省" @change="queryWorkCities">
+        <el-form-item v-if="staffRecord.workLocation" label="工作地省份">
+          {{provinces && getPC(model.record.workProvince || '', model.record.workCity || '')}}
+          <!--<el-select :disabled="!staffRecord.workLocation.isedit" clearable v-model="model.record.workProvince" placeholder="请选择省" @change="queryWorkCities">
             <el-option
               v-for="p in provinces"
               :key="p.uid"
               :label="p.name"
               :value="p.uid">
             </el-option>
-          </el-select>
+          </el-select>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.workLocation" label="工作地城市" prop="record.workCity">
-          <el-select :disabled="!staffRecord.workLocation.isedit" clearable v-model="model.record.workCity" placeholder="请选择市">
+        <el-form-item v-if="staffRecord.workLocation" label="工作地城市">
+          {{staticWorkCity}}
+          <!--<el-select :disabled="!staffRecord.workLocation.isedit" clearable v-model="model.record.workCity" placeholder="请选择市">
             <el-option
               v-for="c in workCities"
               :key="c.uid"
               :label="c.name"
               :value="c.uid">
             </el-option>
-          </el-select>
+          </el-select>-->
         </el-form-item>
 
-        <el-form-item v-if="staffRecord.workLocation" label="工作地址" prop="record.workAddress">
-          <el-input :readonly="!staffRecord.workLocation.isedit" v-model="model.record.workAddress"></el-input>
+        <el-form-item v-if="staffRecord.workLocation" label="工作地址">
+          {{model.record.workAddress}}
+          <!--<el-input :readonly="!staffRecord.workLocation.isedit" v-model="model.record.workAddress"></el-input>-->
         </el-form-item>
 
       </el-form>
@@ -841,38 +850,44 @@
 
       <el-form label-position="left" :model="model" :rules="rules" ref="optionFm" :label-width="labelWidth">
 
-        <el-form-item v-if="staffShareOption.awardDate" label="授予日期" prop="shareOption.awardDate">
-          <el-date-picker
+        <el-form-item v-if="staffShareOption.awardDate" label="授予日期">
+          {{datefmt(model.shareOption.awardDate)}}
+          <!--<el-date-picker
             :readonly="!staffShareOption.awardDate.isedit"
             v-model="model.shareOption.awardDate"
             type="date"
             placeholder="选择日期"
             :editable="false">
-          </el-date-picker>
+          </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.awardAmount" label="授予总数量" prop="shareOption.awardAmount">
-          <el-input :readonly="!staffShareOption.awardAmount.isedit" type="number" v-model="model.shareOption.awardAmount"></el-input>
+        <el-form-item v-if="staffShareOption.awardAmount" label="授予总数量">
+          {{model.shareOption.awardAmount}}
+          <!--<el-input :readonly="!staffShareOption.awardAmount.isedit" type="number" v-model="model.shareOption.awardAmount"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.awardRound" label="授予轮次" prop="shareOption.awardRound">
-          <el-input :readonly="!staffShareOption.awardRound.isedit" type="number" v-model="model.shareOption.awardRound">
+        <el-form-item v-if="staffShareOption.awardRound" label="授予轮次">
+          {{model.shareOption.awardRound}}轮
+          <!--<el-input :readonly="!staffShareOption.awardRound.isedit" type="number" v-model="model.shareOption.awardRound">
             <template slot="append">轮</template>
-          </el-input>
+          </el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.exercSchedule" label="行权期" prop="shareOption.exercSchedule">
-          <el-input :readonly="!staffShareOption.exercSchedule.isedit" type="number" v-model="model.shareOption.exercSchedule">
+        <el-form-item v-if="staffShareOption.exercSchedule" label="行权期">
+          {{model.shareOption.exercSchedule}}月
+          <!--<el-input :readonly="!staffShareOption.exercSchedule.isedit" type="number" v-model="model.shareOption.exercSchedule">
             <template slot="append">月</template>
-          </el-input>
+          </el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.terminallyCount" label="每期数量" prop="shareOption.terminallyCount">
-          <el-input :readonly="!staffShareOption.terminallyCount.isedit" type="number" v-model="model.shareOption.terminallyCount"></el-input>
+        <el-form-item v-if="staffShareOption.terminallyCount" label="每期数量">
+          {{model.shareOption.terminallyCount}}
+          <!--<el-input :readonly="!staffShareOption.terminallyCount.isedit" type="number" v-model="model.shareOption.terminallyCount"></el-input>-->
         </el-form-item>
 
         <el-form-item v-if="staffShareOption.contractUrl" label="期权合同">
-          <el-upload
+          <a v-if="model.shareOption.contractUrl" :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<el-upload
             v-if="staffShareOption.contractUrl.isedit"
             action="/api/v1.0/common/upload"
             :show-file-list="false"
@@ -882,19 +897,21 @@
             <i class="el-icon-plus"> 上传期权合同</i>
           </el-upload>
           <p v-if="model.shareOption.contractUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.shareOption.contractUrl = ''"></i><a :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`">下载</a></p>
-          <p class="uploadErrorTip" v-show="contractUrlErrFlag">请上传正确的期权合同(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+          <p class="uploadErrorTip" v-show="contractUrlErrFlag">请上传正确的期权合同(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.awardRate" label="授予总比例" prop="shareOption.awardRate">
-          <el-input :readonly="!staffShareOption.awardRate.isedit" v-model="model.shareOption.awardRate">
+        <el-form-item v-if="staffShareOption.awardRate" label="授予总比例">
+          {{model.shareOption.awardRate}}%
+          <!--<el-input :readonly="!staffShareOption.awardRate.isedit" v-model="model.shareOption.awardRate">
             <template slot="append">%</template>
-          </el-input>
+          </el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.terminallyRate" label="每期比例" prop="shareOption.terminallyRate">
-          <el-input :readonly="!staffShareOption.terminallyRate.isedit" v-model="model.shareOption.terminallyRate">
+        <el-form-item v-if="staffShareOption.terminallyRate" label="每期比例">
+          {{model.shareOption.terminallyRate}}%
+          <!--<el-input :readonly="!staffShareOption.terminallyRate.isedit" v-model="model.shareOption.terminallyRate">
             <template slot="append">%</template>
-          </el-input>
+          </el-input>-->
         </el-form-item>
 
       </el-form>
@@ -928,8 +945,10 @@ export default {
   data() {
     return {
       selected: '1',
-      invisible: true,
+      // invisible: true,
+      confList: null,
       emp: null,
+      staticWorkCity: '',
       tokenHeader: {
         charset: 'utf-8',
         openId: this.getCookie('openId')
@@ -1511,6 +1530,33 @@ export default {
     }
   },
   methods: {
+    datefmt(str) {
+      if(str) return moment(str).format('YYYY-MM-DD');
+      else return '';
+    },
+    getPC(pid, cid) {
+      let p = '';
+      this.provinces.forEach(v => {
+        if(pid.toString() === v.uid) {
+          p = v.name;
+          this.$http.get(`/api/v1.0/common/query/city/${pid}`)
+            .then(res => {
+              res = res.body;
+              if(res.code === 200) {
+                res.result.forEach(v => {
+                  if(v.uid === cid.toString()) {
+                    this.staticWorkCity = v.name;
+                    return false;
+                  }
+                });
+                this.workCities = res.result;
+              }
+            })
+          return false;
+        }
+      });
+      return p;
+    },
     queryProvinces() {
       this.$http.get('/api/v1.0/common/query/province')
         .then(res => {
@@ -2145,6 +2191,7 @@ export default {
       .then(res => {
         res = res.body;
         if(res.code === 200) {
+          this.confList = res.result;
           res.result.forEach(item => {
             switch(item.tname) {
               case 'STAFF':
@@ -2338,7 +2385,7 @@ export default {
           // return;
           this.emp = res.result;
           if(res.code === 200) makeEmp(res.result);
-          this.invisible = false;
+          // this.invisible = false;
         })
         .catch(err => console.log(err.status, err.statusText));
     },
@@ -2508,11 +2555,11 @@ export default {
     padding-top: 0;
     line-height: 1.3
   }
-  .cmpt {
-    margin: 0;
-    line-height: 20px;
-    margin-top: 8px;
-  }
+  // .cmpt {
+  //   margin: 0;
+  //   line-height: 20px;
+  //   margin-top: 8px;
+  // }
   .el-select {
     display: block;
   }
@@ -2522,9 +2569,12 @@ export default {
   // .el-select-dropdown__item span {
   //   font-size: 12px;
   // }
-  .invisible {
-    visibility: hidden;
+  // .invisible {
+  //   visibility: hidden;
+  // }
+  a {
+    color: #26a2ff;
+    text-decoration: none;
   }
-
 }
 </style>
