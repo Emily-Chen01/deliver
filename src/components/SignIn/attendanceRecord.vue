@@ -70,7 +70,9 @@
 <script>
 
   import fullCalendar from '@/components/vue-fullcalendar/dist/vue-fullcalendar'
+  import moment from 'moment'
 
+  let df = 'HH:mm:ss';
 
   export default {
 
@@ -192,11 +194,16 @@
               }
               this.connectTime.totalTime=response.body.result.duration?response.body.result.duration:0;
 
-                var zhuanStart = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-                this.toSapnTime = zhuanStart.substring(9,19);//原有是8
 
-                var zhuanEnd = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-                this.downSapnTime = zhuanEnd.substring(9,19);//原有是8
+
+              if (response.body.result.twTime ) {
+                this.toSapnTime = moment(response.body.result.twTime).format(df);
+              }
+
+              if (response.body.result.owTime ) {
+                this.downSapnTime = moment(response.body.result.owTime).format(df);
+              }
+
 
 //                if(day.getTime()<=new Date().getTime()){
 //                  this.objToSpan={

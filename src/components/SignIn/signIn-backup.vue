@@ -74,7 +74,7 @@
               <!--</div>-->
               <div v-show="initDaKaRecordWeiZhi">
                 <img :src="imgSrc.PostionIcon" class="postionClassIcon" style="display: inline-block">
-                <span v-if="!fanwei" style="display: inline-block;line-height: 2rem">地理位置：范围内</span>
+                <span v-if="!twRangeShow" style="display: inline-block;line-height: 2rem">地理位置：范围内</span>
                 <span v-if="twRangeShow" style="display: inline-block;line-height: 2rem">地理位置：{{twRangeShow}}附近</span>
 
 
@@ -231,7 +231,7 @@
             <div style="width: 99%">
               <img :src="imgSrc.PostionIcon" class="postionClassIcon" style="display: inline-block">
 
-              <span v-if="!fanweixia" style="display: inline-block;line-height: 2rem">地理位置：范围内</span>
+              <span v-if="!owRangeShow" style="display: inline-block;line-height: 2rem">地理位置：范围内</span>
               <span v-if="owRangeShow" style="display: inline-block;line-height: 2rem">地理位置：{{owRangeShow}}附近</span>
 
             </div>
@@ -255,11 +255,11 @@
       </div>
       <div style="clear:both;"></div>
       <div class="clickClass">
-        <div v-show="daKaHide" style="position: absolute; top:-2.6rem;left:-2.6rem;width: 14rem;height: 14rem">
+        <div v-show="daKaHide" style="position: absolute; top:-2.5rem;left:-2.6rem;width: 14rem;height: 14rem">
           <img v-show="toUp" :src="imgSrc.bg" style="width: 13rem;height: 13rem;line-height: 13rem">
         </div>
         <div style="position: relative" v-show="daKaHide">
-          <mt-button type="primary" v-show="toUp" @click="handerClickEvent" style="background: rgba(255,255,255,0);">
+          <mt-button type="primary" v-show="toUp" @click="handerClickEvent">
             <div>
               <p class="clickClassUp" v-show="toClickSpan">上班打卡 </p>
               <p class="clickClassUp" v-show="downClickSpan">下班打卡 </p>
@@ -358,7 +358,7 @@
           </mt-popup>
         </div>
       </div>
-      <!--<baidu-map :center="center" @ready="handler"></baidu-map>-->
+      <baidu-map :center="center" @ready="handler"></baidu-map>
       <!--使用地图 进行测距是否在区域为外-->
     </div>
   </div>
@@ -366,10 +366,8 @@
 <script>
 
 //  import {Toast, MessageBox, Popup} from 'mint-ui';
-    import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
-    import moment from 'moment'
+  import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
 
-  let df = 'HH:mm:ss';
   let timer1 = null;
   let jwresult = {"lat": 0.0, "lng": 0.0};
   export default {
@@ -448,7 +446,7 @@
         owRangeShow:'' ,// 显示范围
         twRangeNei:'', //范围内
         owRange:'', //下班span文字
-//        center: {lng: 0, lat: 0},
+        center: {lng: 0, lat: 0},
         fanwei:'',
         fanweixia:'',
 
@@ -457,11 +455,8 @@
     },
     created: function () {
 
-  console.log(new Date());
+//      this.handler ({BMap, map,});
 
-
-
-      this.handler();
 
 
       timer1 = setInterval(this.handerSign, 1000);
@@ -497,7 +492,7 @@
           //如果为false不能显示打卡功能start
           if(response.body.code==500){
             MessageBox('提示', response.body.message);
-            this.daKaHide=false;
+//            this.daKaHide=false;
             return;
           }
 
@@ -528,8 +523,8 @@
 
           //时间赋值结束
 
-         this.fanwei= response.body.result.twOutside;
-          this.fanweixia=response.body.result.owOutside;
+         this.fanwei= response.body.result.twLocation?true:false;
+          this.fanweixia=response.body.result.owLocation?true:false;
           console.log(response.body.result.twLocation,'888888')
           console.log('初始化上班已经打卡');
           console.log(response.body);
@@ -558,13 +553,12 @@
           console.log('查询后的结果' + this.toDownKaStatusIsOutsideInit);
 
 
-          if (response.body.result.twTime ) {
-            this.initToTime = moment(response.body.result.twTime).format(df);
+          if (response.body.result.twTime !== null) {
+            var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/上|午||下G|M|T|/g, "").replace(/日/g, " ");
+            this.initToTime = zhuan.substring(9);//原有是8
           }
-          if(response.body.result.owTime){
-            this.goToTime =moment(response.body.result.owTime).format(df);
-          }
-
+          var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|午|下|G|M|T|/g, "").replace(/日/g, " ");
+          this.goToTime = zhuan.substring(9);
 
 
           //我知道开始
@@ -646,7 +640,7 @@
 
             });
 
-//            alert('我是初始区域外打卡+正常显示');
+            alert('我是初始区域外打卡+正常显示');
 //              this.absenteeismStatus = true;//上班显示提交span
 //              this.initDaKaRecord=true;initDaKaRecord
           }
@@ -750,7 +744,7 @@
           this.currentTime();
           this.clickfunction = false;
 
-//          alert('this.outsideObtainValue' + this.outsideObtainValue);
+          alert('this.outsideObtainValue' + this.outsideObtainValue);
 
           if (this.toDaKaStatusIsInit == null) {
             updakaObj = {
@@ -806,13 +800,10 @@
 
               this.toTimeMiddleShow = true;
 //              var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+              var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/上|午|下/g, "").replace(/日/g, " ");
 
-
-              if (response.body.result.twTime ) {
-                this.initToTime = moment(response.body.result.twTime).format(df);
-              }
-
-
+              this.initToTime = zhuan.substring(9);//原有是8
+              console.log('77' + this.toDaKaStatusIs)
 
 
 //                        this.toDaKaStatusIs=0;
@@ -873,11 +864,9 @@
               this.popupVisible = true; //弹出的模态框打卡
               this.overTime = false; //xinjia5-16 17:34加
               console.log(response.body);
-
-
-              if (response.body.result.owTime ) {
-                this.goToTime = moment(response.body.result.owTime).format(df);
-              }
+//              var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+              var zhuan = new Date(parseInt(response.body.result.owTime)).toLocaleString().replace(/上|下|午/g, "").replace(/日/g, " ");
+              this.goToTime = zhuan.substring(9);
               this.downTimeMiddleShow = true;
               this.toTimeMiddleShow = false;
 
@@ -954,7 +943,6 @@
 
         if (this.toDaKaStatusIsInit == null) {//上班打卡
           this.popupVisible = false;
-
 //          this.winReload();
         }
         if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
@@ -983,196 +971,16 @@
       //地图微信获取经纬度 转换经纬度 地图测距开始
 
 //
-      handler () {
+      handler ({BMap, map,}) {
 //        this.BMap = BMap;
 //        this.map = map;
-//        console.log(this);
-//        console.log(V.component('baidu-map'));
-        let BMap = null;
-        let map = null;
-        let self = this;
-        let curl;
-
-        //判断是不是安卓苹果
-        var u = navigator.userAgent;
-        var isAndroid='0';
-          isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-        if(isAndroid){
-          curl = {
-            location: location.href //安卓的参数
-          };
-//          alert('是否是Android：'+isAndroid);
-        }
-        if(!isAndroid){
-          curl = {
-            location: location.href.toString().split('#')[0] //苹果的参数
-          };
-        }
-
-     console.log(curl,'curl');
-        //判断结束
-
-
-        new Promise((resolve, reject) => {
-//            resolve('ok');
-//          resolve();
-          window._initBaiduMap = function () {
-//            resolve(window.BMap);
-            window.document.body.removeChild($script)
-//            global.BMap._preloader = null
-            window._initBaiduMap = null;
-            resolve();
-            BMap = window.BMap;
-            map = new BMap.Map();
-            console.log('bmap', BMap, map);
-          }
-          const $script = document.createElement('script')
-          window.document.body.appendChild($script)
-          $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`
-        }).then(() => {
-
-          this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
-
-            console.log('sd', response.body.result);
-            this.t1 = response.body.result.appid.toString();
-            console.log(this.t1);
-            this.t2 = response.body.result.timestamp.toString();
-            this.t3 = response.body.result.nonceStr.toString();
-            this.t4 = response.body.result.signature.toString();
-            this.yyy = true;
-
-            wx.config({
-              debug: true,
-              appId: this.t1,
-              timestamp: this.t2,
-              nonceStr: this.t3,
-              signature: this.t4,
-              jsApiList: [
-                'getLocation'
-              ]
-            });
-
-            wx.error(function (res) {
-              alert('wx.error错误信息' + res.errMsg)
-//              console.log('err1', res)
-            });
-            wx.ready(function () {
-
-              wx.getLocation({
-                type: 'gcj02',
-                success: function (res) {
-                  self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
-                  var speed = res.speed; // 速度，以米/每秒计
-                  var accuracy = res.accuracy; // 位置精度
-//                  alert('手机获取的精度'+self.longitude);
-//                  alert('手机获取的维度'+self.latitude);
-
-
-                  function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
-                    var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
-                    var x = $lng;
-                    var y = $lat;
-                    var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
-                    var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
-                    $lng = z * Math.cos(theta) + 0.0065;
-                    $lat = z * Math.sin(theta) + 0.006;
-                    console.log( $lng,$lat);
-                    $result.lat =$lat;
-                    $result.lng =$lng ;
-                    console.log($result);
-                    console.log(this);
-
-                    return  $result;
-                  };
-
-                  var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
-                  console.log('下面是转后');
-                  console.log(shuzi);
-
-//                alert('转纬度'+shuzi.lat+'转经度'+shuzi.lng);
-
-
-
-
-                  self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
-
-                    //经纬度传值start
-                    self.searchLocationArray=response.body.result.locations;
-                    //经纬度传值end
-
-
-                    let arrayLonglat = self.searchLocationArray;
-//                            let arrayLonglat = [
-//                          {LONGITUDE: 120.6548525, LATITUDE: 31.2545787441},
-//                        ];
-                    console.log('查询出的经纬度'+arrayLonglat);
-//                      alert('查出的数据里面'+self.searchLocationArray);
-
-
-
-
-                    if(arrayLonglat==false){
-                      self.outsideObtainValue = true;
-//                      alert('区域数据没有 区域外');
-                      return;
-                    }
-
-                    for (let i = 0; i < arrayLonglat.length; i++) {
-
-                      let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
-
-                      if (distance < arrayLonglat[i].SCOPE) {
-                        self.twRange='';
-//                        let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
-//                        alert('区域内' +juli );
-//                        alert('区域内')
-                        self.outsideObtainValue = false;
-                        break;
-                      }
-                    }
-
-                    if(self.outsideObtainValue) {
-                      self.outsideObtainValue = true;
-                      new BMap.Geocoder().getLocation(new BMap.Point(shuzi.lng,shuzi.lat), function(res) { //进行给传值参数位置
-                        console.log('地址逆解析', res);
-                        self.twRange=res.addressComponents.district+res.addressComponents.street;
-//                   alert('self.twRange'+self.twRange);
-                      });
-
-//                      alert('区域外');
-                    }
-                    self.daKaHide=true;
-
-                  }, response => {
-                    console.log('error callback');
-                  });
-
-                },
-                cancel: function (res) {
-                  alert('用户拒绝授权获取地理位置');
-                }
-              });
-
-            });
-
-
-          }, response => {
-            console.log('error callback');
-          });
-          console.log('wx go');
-        });
-        console.info('debug info');
-        return;
-
-
         console.log(BMap ,'我是BMap');
         console.log(map ,'我是map');
 
-//        let self = this;
-//        let curl = {
-//          location:location.href
-//        };
+        let self = this;
+        let curl = {
+          location:location.href
+        };
         this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
 
           console.log('sd', response.body.result);
@@ -1195,7 +1003,7 @@
           });
 
           wx.error(function (res) {
-//            alert('wx.error错误信息' + res);
+            alert('wx.error错误信息' + res)
             console.log(res)
             console.log(res)
           });
@@ -1262,7 +1070,7 @@
 
                       if(arrayLonglat==false){
                         self.outsideObtainValue = true;
-//                        alert('区域数据没有 区域外');
+                        alert('区域数据没有 区域内');
                         return;
                       }
 
@@ -1274,7 +1082,7 @@
                           self.twRange='';
 //                        let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
 //                        alert('区域内' +juli );
-//                          alert('区域内')
+                          alert('区域内')
                           self.outsideObtainValue = false;
                           break;
                         }
@@ -1288,7 +1096,7 @@
 //                   alert('self.twRange'+self.twRange);
                         });
 
-//                        alert('区域外');
+                        alert('区域外');
                       }
                       self.daKaHide=true;
 
@@ -1417,7 +1225,7 @@
 
   .siginRight {
     /*display: inline-block;*/
-    width: 21.1rem;
+    width: 20.1rem;
     float: right;
     height: 4.2rem;
   }

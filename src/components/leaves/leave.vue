@@ -133,9 +133,9 @@
       <!--我的申请-->
           <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord!==null">
             <div class="myApplyTitle">
-              <div class="myApplyTitleLeft" style="display: flex">
-                <div style="flex: 0.2;padding-left: 0.5rem"><span >|</span></div>
-                <div style="flex: 2.8;">{{item.name}}申请</div>
+              <div class="myApplyTitleLeft" >
+                <div style="float:left;padding-left: 0.5rem"><span >| </span></div>
+                <div style="float:left;padding-top: 0.2rem;"> &nbsp{{item.name}}申请</div>
               </div>
               <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
               <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
@@ -146,9 +146,9 @@
               <div v-if="item.startTime">
                 <div class="myApplyContentLeft">起止日期</div>
                 <div class="myApplyContentNr" >
-                  {{ ( new Date(parseInt( item.startTime)).toLocaleString().replace(/上|午||下G|M|T|/g, "").replace(/日/g, " ").substring(0,14))}}
-                 -
-               {{  new Date(parseInt(  item.endTime)).toLocaleString().replace(/上|午|下|G|M|T|/g, "").replace(/日/g, " ").substring(0,14)}}
+                    {{ datefmt(item.startTime)}}
+                    至
+                    {{ datefmt(item.endTime)}}
                 </div>
               </div>
               <div v-if="item.overworkTime">
@@ -200,6 +200,9 @@
   import datePick from "@/components/components/datePick"
   import endDatePick from "@/components/components/endDatePick"
 //  import { TabContainer, TabContainerItem } from 'mint-ui';
+  import moment from 'moment'
+
+  let df = 'YYYY-MM-DD HH:mm';
 
   export default {
         data(){
@@ -567,6 +570,10 @@
             this.popupVisible=false;
             console.log('关闭');
             //做到这里
+          },
+          datefmt(str) {
+              if(str) return moment(str).format(df);
+              else return '';
           }
 
         },
