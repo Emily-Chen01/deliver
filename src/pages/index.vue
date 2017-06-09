@@ -101,7 +101,7 @@ export default {
         return;
       }
         this.setCookie('openId',openID,365);
-        console.log('openid修改过的'+this.getCookie('openId'));
+//        console.log('openid修改过的'+this.getCookie('openId'));
 
 
     //获取openid end
@@ -385,9 +385,6 @@ export default {
 .logo{
   width: 100%;
   height: 3rem;
-}
-.insterInput{
-  flex: 2.8;
 }
 .insterInput{
   width:69%;

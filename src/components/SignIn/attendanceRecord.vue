@@ -33,7 +33,7 @@
       </div>
 
 
-      <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem"></div>
+      <div style="height: 1px;background: #cccccc;margin: 1.4rem 1rem"></div>
 
       <div style="background:rgb(239,241,247);">
         <div class="timeTitle">

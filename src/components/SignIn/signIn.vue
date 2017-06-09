@@ -1630,7 +1630,7 @@
   .toDaKaStatus {
     background-color: #2acfbc;
     color: #ffffff;
-    width: 4.7rem;
+    width: 5.7rem;
     left: -0.8rem;
     height: 1.8rem;
     position: absolute;
@@ -1642,7 +1642,7 @@
   .addTimeTotleClass {
     background-color: #6e83c5;
     color: #ffffff;
-    width: 5.2rem;
+    width: 5.7rem;
     left: -0.9rem;
     height: 1.8rem;
     position: absolute;
@@ -1667,7 +1667,7 @@
     background-color: #b2c92b;
     color: #ffffff;
     width: 4.8rem;
-    left: 4.47rem;
+    left: 5.3rem;
     /*这个地方与上1 右边的的迟到了有重叠原来是left：5*/
     height: 1.8rem;
     position: absolute;

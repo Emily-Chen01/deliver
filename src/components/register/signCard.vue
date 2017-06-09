@@ -12,7 +12,10 @@
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
              <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
-               <img style="display: block;width: 31%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
+               <div style="display: block;width: 1.5rem;height: 1.5rem;">
+                 <img style="display: block;width: 100%;height: 100%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
+               </div>
+
                <div style="font-size: 0.8rem;top: 0.48rem; position: absolute;right: 0.5rem;">设置</div>
              </div>
            </div>
@@ -87,18 +90,18 @@
       <div class="bottomTool">
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;left: 23%;">
+            <div style="height: 1.8rem;width: 1.8rem;position: absolute;top: -0.2rem;left: 23%;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.4rem">工作台</div>
+            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
-            <div style="height: 1.8rem;width: 2rem;position: absolute;top: -0.4rem;right:29%;">
+            <div style="height: 1.8rem;width: 1.8rem;position: absolute;top: -0.2rem;right:31%;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
-            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.4rem">设置</div>
+            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.9rem">设置</div>
           </div>
         </div>
       </div>
@@ -303,7 +306,7 @@ let oneselfData={};
     position:fixed;
     bottom:0;
     width: 100%;
-    height: 4rem;
+    height: 5rem;
     /*line-height: 4rem;*/
     background: rgb(250,250,250);
   }
@@ -320,7 +323,7 @@ let oneselfData={};
     height: 5rem;
     border-radius: 2.6rem;
     text-align: right;
-    background: #cccccc;
+    background: #ffffff;
     border: solid #ffffff 0.2rem;
   }
   .siginLeft{
@@ -338,7 +341,8 @@ let oneselfData={};
     font-size: 1.2rem;
   }
   .avatar{
-    width: 80%;
+    width: 100%;
+    height: 100%;
     display: block;
     text-align: center!important;
     /*padding-top: 0.3rem;*/
@@ -349,7 +353,7 @@ let oneselfData={};
     height: 94%;
     display: block;
     text-align: center!important;
-    padding: 0.22rem 0 0 0.23rem;
+    padding: 0.15rem 0 0 0.23rem;
     border-radius: 4rem;
     z-index: 0;
   }
