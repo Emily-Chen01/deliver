@@ -12,7 +12,7 @@
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
              <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
-               <img style="display: block;width: 35%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
+               <img style="display: block;width: 31%;height: 65%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
                <div style="font-size: 0.8rem;top: 0.48rem; position: absolute;right: 0.5rem;">设置</div>
              </div>
            </div>
@@ -290,14 +290,14 @@ let oneselfData={};
   }
   .postionImages{
     position:absolute;
-    width:10%;
-    height:1.9rem;
-    left:2%;
+    width:1.8rem;
+    height:1.8rem;
+    left:3%;
     top:20%;
   }
   .imgSize{
-    width:70%;
-    height:90%
+    width:100%;
+    height:100%
   }
   .bottomTool{
     position:fixed;
