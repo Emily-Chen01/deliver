@@ -287,10 +287,6 @@
 
 
 
-
-
-
-
           this.addTimeValue=this.getCookie('upAddTime');
 
 
@@ -561,7 +557,7 @@
               console.log(response);
 
               if (response.body.code == 200) {
-                alert(response.body.message);
+                MessageBox('提示', response.body.message)
                 this.$router.push({path: '/signIn'});
               } else if (response.body.code == 500) {
                 MessageBox('提示', response.body.message);
