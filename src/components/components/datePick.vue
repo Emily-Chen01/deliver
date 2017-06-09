@@ -1,6 +1,8 @@
 <template>
     <div>
-      <input class="dateTimeInput"   v-model="startTimeValue"  style="font-size: 0.9rem" type="text" readonly="" id="demo1"  name="input_date" placeholder="请输入日期" data-lcalendar="2000-01-01,2020-01-01" />
+      <input class="dateTimeInput"   v-model="startTimeValue"
+             style="font-size: 0.9rem" type="text" readonly="" id="demo1"  name="input_date" placeholder="请输入日期" data-lcalendar="2000-01-01,2020-01-01"
+      />
     </div>
 </template>
 <script>
@@ -18,7 +20,7 @@
         startTimeValue:function(data,oldVal){
           console.log(data);
 //          sessionStorage.setItem('applyStartTime', val);
-          this.$emit('ieventStart',data,'lalala');
+          this.$emit('ieventStart',data);
         }
       },
       mounted:function(){

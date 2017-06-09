@@ -1,12 +1,12 @@
 /*
  * lCalendar日期控件
- * 
+ *
  * 作者：黄磊
- * 
+ *
  * 邮箱：xfhxbb@yeah.net
- * 
+ *
  * Copyright 2016
- * 
+ *
  * 创建于：2016-01-08
  */
 window.lCalendar = (function() {

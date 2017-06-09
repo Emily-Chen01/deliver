@@ -17,7 +17,7 @@
     watch:{
       startTimeValue:function(data,oldVal){
         console.log(data);
-        this.$emit('ieventEnd',data,'lalala');
+        this.$emit('ieventEnd',data);
       }
     },
     mounted:function(){

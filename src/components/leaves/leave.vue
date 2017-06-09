@@ -203,6 +203,7 @@
   import moment from 'moment'
 
   let df = 'YYYY-MM-DD HH:mm';
+  let df2 = 'YYYY/MM/DD HH:mm';
 
   export default {
         data(){
@@ -323,20 +324,18 @@
               //此处代码为了在打开提交时在提交申请时显示 start
               this.selectedDataApply=this.getCookie('leaveType');
 
-              function dd(y, array) {
-                for (let i = 0; i < array.length; i++) {  //循环初始化的时候选中一个select属性值和参数
-                  if (y == array[i].value) {
-                    return array[i];
-                  }
-                }
+
+              for(let i=0;i<this.optionsApply.length;i++){  //循环初始化的时候选中一个select属性值和参数
+
+//                if(+value === this.optionsApply[i].value){
+//                  this.shengqingParam = this.optionsApply[i].uid;
+//                  this.shengqingParamType = this.optionsApply[i].value;
+//                }
+                this.shengqingParam = this.optionsApply[this.selectedDataApply].uid;
+                this.shengqingParamType = this.optionsApply[this.selectedDataApply].value;
               }
-
-
-              let result = dd(this.selectedDataApply, this.optionsApply);
-              this.shengqingParam = result.uid;
-              this.shengqingParamType = result.value;
               console.log(" this.shengqingParam uid" + this.shengqingParam);
-              console.log("value shengqingParamType:" + this.shengqingParamType);
+              console.log("value shengqingParamType:" +this.shengqingParamType);
 
 
 
@@ -504,16 +503,25 @@
 
           },
           ieventStart(...data){
-            var timestamp2 = new Date(data[0]).getTime();
-            this.startTimeValue = timestamp2;
-            console.log(this.startTimeValue);
+//            var timestamp2 = new Date(data[0]).getTime();
+//            this.startTimeValue = timestamp2;
+//            console.log(this.startTimeValue);
+//            var timestamp2 = new Date(data[0]).getTime();
+            console.log(data[0].toLocaleString().replace(/-/g, "/"),'data[0]');
+
+            this.startTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/")).getTime();
+            console.log(this.startTimeValue,'this.startTimeValue转出的开始');
 
           },
           ieventEnd(...data){
-            console.log('allEndData:', data);
-            var timestamp3 = new Date(data[0]).getTime();
-            console.log(timestamp3);
-            this.endTimeValue = timestamp3;
+//            console.log('allEndData:', data);
+//            var timestamp3 = new Date(data[0]).getTime();
+//            console.log(timestamp3);
+
+            console.log(data[0].toLocaleString().replace(/-/g, "/"),'data[0]');
+
+            this.endTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/")).getTime();
+            console.log(this.endTimeValue,'this.endTimeValue结束')
           },
           handerDataSubmit(){
             let params;
@@ -600,7 +608,7 @@
 
             let result = dd(this.selectedDataApply, this.optionsApply);
             this.shengqingParam = result.uid;
-            this.shengqingParamType = result.value;
+            this.shengqingParamType = result.type;
             console.log(" this.shengqingParam uid" + this.shengqingParam);
             console.log("value shengqingParamType:" + this.shengqingParamType);
 
