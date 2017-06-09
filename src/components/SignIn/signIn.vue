@@ -200,7 +200,7 @@
 
               </mt-button>
               <mt-button type="default"
-                         style="background-color: rgb(255,204,0);color:#ffffff;width: 4.7rem;left:-0.8rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 4px"
+                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.7rem;left:-0.8rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 4px"
                          v-show="leaveEarly">
                 早退
 
@@ -1680,7 +1680,7 @@
     background-color: #f6bc2a;
     color: #ffffff;
     width: 5.2rem;
-    left: 4.58rem;
+    left: -0.8rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
