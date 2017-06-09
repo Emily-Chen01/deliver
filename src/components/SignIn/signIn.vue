@@ -200,7 +200,7 @@
 
               </mt-button>
               <mt-button type="default"
-                         style="background-color: rgb(255,204,0);color:#ffffff;width: 5.2rem;left:4.5rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 4px"
+                         style="background-color: rgb(255,204,0);color:#ffffff;width: 4.7rem;left:-0.8rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 4px"
                          v-show="leaveEarly">
                 早退
 
@@ -222,7 +222,7 @@
               <mt-button type="default"
                          class="addTimeTotleClass"
                          v-show="overTime">
-                加班+{{addtime}}小时
+                加班{{addtime}}小时
 
 
               </mt-button>
@@ -239,7 +239,7 @@
               <mt-button type="default" class="toDaKaStatusQj" v-show="toDownAbsenteeismStatus"
                          @click="submitApplyRouter(0)">
                 <!--absenteeismStatus  旷工-->
-                提交请假/外出申
+                提交请假/外出申请
 
 
               </mt-button>
@@ -495,7 +495,9 @@
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
 
-          console.log(response.body.code,'responseresponse')
+          console.log(response.body.code,'responseresponse');
+          console.log(response.body.result.twStatus,'twStatus')
+
           //如果为false不能显示打卡功能start
           if(response.body.code==500){
             MessageBox('提示', response.body.message);
@@ -627,7 +629,7 @@
 
           if (this.toDaKaStatusIsOutsideInit) { //区域外打卡
             this.lateStatusAddW = true;
-            this.initDaKaRecord = false;
+            this.initDaKaRecord = response.body.result.twStatus==0?true:false;
             this.initDaKaRecordWeiZhi = true;
             this.absenteeismStatus = true;
 //              this.absenteeismStatus = true;//上班显示提交span
@@ -637,7 +639,7 @@
 
             this.$nextTick(() => {
               this.lateStatusAddW = true;
-              this.initDaKaRecord = false;
+              this.initDaKaRecord = response.body.result.twStatus==0?true:false;
               this.initDaKaRecordWeiZhi = true;
               this.absenteeismStatus = false; //隐藏包含旷工和提交span
               this.absenteeismStatus2 = true;
@@ -1119,10 +1121,10 @@
 //                      alert('区域数据没有 区域外');
                       return;
                     }
-
+                    let distance;
                     for (let i = 0; i < arrayLonglat.length; i++) {
 
-                      let distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
+                       distance = map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE),  new BMap.Point(self.longitude, self.latitude));
 
                       if (distance < arrayLonglat[i].SCOPE) {
                         self.twRange='';
@@ -1130,6 +1132,7 @@
 //                        alert('区域内' +juli );
 //                        alert('区域内')
                         self.outsideObtainValue = false;
+
                         break;
                       }
                     }
@@ -1144,7 +1147,11 @@
 
 //                      alert('区域外');
                     }
-//                    self.daKaHide=true;
+                    self.daKaHide=true;
+
+                    if( distance&&response.body.result.twTime&&response.body.result.owTime){
+                      self.daKaHide=false;
+                    }
 
                   }, response => {
                     console.log('error callback');
@@ -1292,7 +1299,7 @@
 
 //                        alert('区域外');
                       }
-                      self.daKaHide=false;
+//                      self.daKaHide=false;
 
                     }, response => {
                       console.log('error callback');
@@ -1623,7 +1630,7 @@
   .toDaKaStatus {
     background-color: #2acfbc;
     color: #ffffff;
-    width: 5.7rem;
+    width: 4.7rem;
     left: -0.8rem;
     height: 1.8rem;
     position: absolute;
@@ -1635,8 +1642,8 @@
   .addTimeTotleClass {
     background-color: #6e83c5;
     color: #ffffff;
-    width: 6.5rem;
-    left: 4.5rem;
+    width: 5.2rem;
+    left: -0.9rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
@@ -1660,7 +1667,7 @@
     background-color: #b2c92b;
     color: #ffffff;
     width: 4.8rem;
-    left: -0.8rem;
+    left: 4.47rem;
     /*这个地方与上1 右边的的迟到了有重叠原来是left：5*/
     height: 1.8rem;
     position: absolute;
@@ -1684,8 +1691,8 @@
   .toDaKaStatusSecondK {
     background-color: #f54435;
     color: #ffffff;
-    width: 5.7rem;
-    left: 4.48rem;
+    width: 4.7rem;
+    left: -0.8rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;

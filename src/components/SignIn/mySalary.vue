@@ -17,14 +17,14 @@
               <div style="width: 30%;height: 0.05rem;background: #d2dce6;text-align: right;margin-left: 35%"></div>
            </div>
            <div class="concentBottom">
-            <div style="display: flex">
-              <div style="flex: 1">
+            <div style="width: 100%;">
+              <div style="width: 20%;float: left;">
                 <div style="width: 2rem;height: 1rem;line-height: 1rem;padding-left:30%">
                   <img :src="imgSrc.qianIcon" class="avatar" style="width: 100%">
                 </div>
               </div>
-              <div style="flex: 2">扣除金额：{{dateGrid.lost}}</div>
-              <div style="flex: 1">
+              <div style="width: 58%;float: left;">扣除金额：{{dateGrid.lost}}</div>
+              <div style="width: 20%;float: right;">
                 <div style="width: 2rem;height: 1rem;line-height: 1rem;padding-left:30%">
                   <img :src="imgSrc.qianIcon" class="avatar" style="width: 100%">
                 </div>
@@ -72,22 +72,22 @@
              year:new Date().getFullYear(),
              dateGrid:{
                money:'',
-               lost:'561',
+               lost:'',
                'detail': [
-                 {
-                   remark:'差旅费',
-                   deduct: 2000,
-                   total:1235
-                 },{
-                   remark:'加油费',
-                   deduct: 2000,
-                   total:5235
-                 }
-                 ,{
-                   remark:'停车费',
-                   deduct: 2000,
-                   total:4235
-                 }
+//                 {
+//                   remark:'差旅费',
+//                   deduct: 2000,
+//                   total:1235
+//                 },{
+//                   remark:'加油费',
+//                   deduct: 2000,
+//                   total:5235
+//                 }
+//                 ,{
+//                   remark:'停车费',
+//                   deduct: 2000,
+//                   total:4235
+//                 }
                ]
              }
             }
