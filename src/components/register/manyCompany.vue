@@ -1,6 +1,6 @@
 <template>
     <div>
-      <p class="manyCompanyTitle">{{ msg }}</p>
+      <div class="manyCompanyTitle">{{ msg }}</div>
       <div>
         <div >
           <a  class="mint-cell" v-for="(item , $index) in arryName" @click="handerComeCompany(item,$index)" >
@@ -111,8 +111,8 @@
   .postionImages{
     position:absolute;
     width:10%;
-    height:1.2rem;
-    line-height: 1.2;
+    height:1.8rem;
+    line-height: 1.8rem;
     left: 0.2rem;
     top:18%;
   }
@@ -121,8 +121,10 @@
     height:90%
   }
   .manyCompanyTitle{
-    margin-top: 4rem;
-    font-weight: 600;
+    height: 5rem;
+    line-height: 5rem;
+    /*font-weight: 600;*/
+    color: #8492a6;
     font-size: 1.4rem;
   }
   .mint-cell-title{

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background: #ffffff">
     <div style="position: relative;height: 5.4rem;background: #20a1ff">
       <div class="siginLeft">
         <!--<img :src="imgSrc.comAddress" class="avatar">-->
@@ -15,6 +15,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div style="height: 85vh">
       <div style="clear:both;"></div>
       <div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>
       <div v-show="zcToUpShow">
@@ -363,6 +365,7 @@
       <!--<baidu-map :center="center" @ready="handler"></baidu-map>-->
       <!--使用地图 进行测距是否在区域为外-->
     </div>
+    <div style="clear: both"></div>
   </div>
 </template>
 <script>

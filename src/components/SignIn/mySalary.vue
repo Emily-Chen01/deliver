@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="background: #ffffff">
       <div class="titleHeard">
         <div class="titleLeft" @click="handleClickUp()">< </div>
         <div class="titleMiddle">{{year}}年{{this.upTime}}月</div>
@@ -63,6 +63,7 @@
           </tr>
         </table>
       </div>
+      <div style="height: 1rem;"></div>
     </div>
 </template>
 <script>
@@ -239,10 +240,10 @@
 }
 .concentBodyClass{
   width: 93%;
-  margin: 1rem;
   min-height: 3rem;
   font-size: 1rem;
   border: 1px solid #d2dce6;
+  margin: 1rem;
 }
   .concentBodyClassTitle{
     display: flex;

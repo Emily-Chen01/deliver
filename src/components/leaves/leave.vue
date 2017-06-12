@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div  style="background: #ffffff;height: 100vh">
       <!--请假申请-->
       <mt-navbar v-model="selected" class="dataTitle">
         <mt-tab-item id="1"  ><span>填写申请</span></mt-tab-item>

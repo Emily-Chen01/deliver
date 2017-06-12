@@ -16,7 +16,7 @@
                  <img style="display: block;width: 100%;height: 100%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
                </div>
 
-               <div style="font-size: 0.8rem;top: 0.48rem; position: absolute;right: 0.5rem;">设置</div>
+               <div style="font-size: 0.8rem;top: 0.48rem; position: absolute;right: 0.8rem;">设置</div>
              </div>
            </div>
            <div class="companyNameClass">{{infoObj.companyName}}</div>
@@ -94,14 +94,17 @@
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem">工作台</div>
+            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem" v-if="init">工作台</div>
+            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem;color:#20a0ff" v-if="initBlue">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
             <div style="height: 1.8rem;width: 1.8rem;position: absolute;top: -0.2rem;right:31%;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
-            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.9rem">设置</div>
+            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.9rem"  v-if="initSet">设置</div>
+            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.9rem;color:#20a0ff" v-if="initBlueSet">设置</div>
+
           </div>
         </div>
       </div>
@@ -308,7 +311,7 @@ let oneselfData={};
     width: 100%;
     height: 5rem;
     /*line-height: 4rem;*/
-    background: rgb(250,250,250);
+    background: #ffffff;
   }
   .bg{
     background-image: url("../../assets/bg.png");

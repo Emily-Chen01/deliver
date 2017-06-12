@@ -1,6 +1,6 @@
 <template>
-<div class="my-data">
-  
+<div class="my-data" style="background: #ffffff">
+
 
   <mt-navbar fixed v-model="selected" class="dataTitle">
     <mt-tab-item id="1"><i v-if="personFlag" class="el-icon-warning fa-error" aria-hidden="true">&nbsp;</i><span>个人资料</span></mt-tab-item>
@@ -74,7 +74,7 @@
           </el-select>
         </el-form-item>
 
-        
+
         <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace">
           <el-select :disabled="!staff.nativePlace.isedit" clearable v-model="model.nativePlace" placeholder="请选择">
             <el-option
@@ -140,7 +140,7 @@
           </div>
           <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
         </el-form-item>
-        
+
         <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum">
           <el-input :readonly="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
         </el-form-item>
@@ -375,7 +375,7 @@
         <el-form-item v-if="staff.personalEmail" label="个人邮箱" prop="personalEmail">
           <el-input :readonly="!staff.personalEmail.isedit" v-model="model.personalEmail"></el-input>
         </el-form-item>
-        
+
         <!-- DO NOT DEL -->
         <el-form-item v-if="confList" label="紧急联系人">
         </el-form-item>
@@ -581,7 +581,7 @@
     </mt-tab-container-item>
 
     <mt-tab-container-item id="2">
-      
+
       <el-form label-position="left" :model="model" :rules="rules" ref="postFm" :label-width="labelWidth">
 
         <el-form-item v-if="staffRecord.contracMes" label="合同类型">
@@ -919,7 +919,7 @@
 
   </mt-tab-container>
 
-  
+
 
 </div>
 </template>
@@ -1045,7 +1045,7 @@ export default {
       contractPeriods: [
         {name: '1 年', val: 1},
         {name: '2 年', val: 2},
-        {name: '3 年', val: 3} 
+        {name: '3 年', val: 3}
       ],
       recruitmentChannels: ['百度', '51job', '智联', '推荐', 'boss 直聘'],
       personFlag: false,
@@ -1655,7 +1655,7 @@ export default {
       return function(file) {
         let isImage = utils.isImage(file);
         let isInSize = utils.isInSize(file);
-        
+
         if(isImage && isInSize) {
           item.err = false;
         }else {
@@ -2011,7 +2011,7 @@ export default {
         if(this.model.record.workProvince !== '') record.workProvince = this.model.record.workProvince;
         if(this.model.record.workCity !== '') record.workCity = this.model.record.workCity;
         if(this.model.record.workAddress.trim()) record.workAddress = this.model.record.workAddress;
-        
+
         let contract = ((v) => {
           var o = {};
           if(v.contracType !== '') o.contracType = v.contracType;
@@ -2039,7 +2039,7 @@ export default {
             if(v.uid) o.uid = v.uid;
             if(v.recordUid) o.recordUid = v.recordUid
           }
-          
+
           return o;
         })(this.model.record.contract);
         if(Object.keys(contract).length) record.contract = contract;
@@ -2050,7 +2050,7 @@ export default {
           if(this.model.record.staffUid) record.staffUid = this.model.record.staffUid;
         }
         if(Object.keys(record).length) out.record = record;
-        
+
 
         if(this.model.shareOption.awardDate) shareOption.awardDate = new Date(this.model.shareOption.awardDate).getTime(); // 授予日期
         if(this.model.shareOption.awardAmount.trim()) shareOption.awardAmount = this.model.shareOption.awardAmount; // 授予总数量
@@ -2066,7 +2066,7 @@ export default {
           if(this.model.shareOption.recordUid) shareOption.recordUid = this.model.shareOption.recordUid;
         }
         if(Object.keys(shareOption).length) out.shareOption = shareOption;
-        
+
         return out;
       };
 
@@ -2104,7 +2104,7 @@ export default {
         return;
       }
 
-      
+
       console.log(makePost());
       let staffApi = '/api/v1.0/client/updateStaff';
 
@@ -2148,7 +2148,7 @@ export default {
 
       this.model.idcardPhoUrl = '';
       this.idcardPhoUrlErrFlag = false;
-      
+
       this.model.idcardPhoUrlRev = '';
       this.idcardPhoUrlRevErrFlag = false;
 
@@ -2218,14 +2218,14 @@ export default {
 
     },
     queryEmp() {
-      
+
       let makeEmp = emp => {
-        
+
         let numProcess = v => typeof v === 'number' ? v : '';
         let dateProcess = v => v ? new Date(v) : '';
         let toNum = v => v ? Number(v) : '';
         let toStr = v => typeof v === 'number' ? v.toString() : '';
-        
+
         this.model.uid = emp.uid;
         this.model.name = emp.name || '';
         this.model.gender = numProcess(emp.gender);
@@ -2325,11 +2325,11 @@ export default {
         this.model.hasComresRmk = emp.hasComresRmk || ''; // 竞业协议备注信息
         this.model.emplsepacertUrl = emp.emplsepacertUrl || ''; // 离职证明
 
-        
+
         this.model.record.uid = emp.record.uid;
         this.model.record.companyUid = emp.record.companyUid;
         this.model.record.staffUid = emp.record.staffUid;
-        
+
         this.model.record.dateOfEntry = dateProcess(emp.record.dateOfEntry); // 入职日期
         this.model.record.probation = toStr(emp.record.probation); // 试用期
         this.model.record.companyAge = emp.record.companyAge || ''; // 司龄
@@ -2346,8 +2346,8 @@ export default {
         this.model.record.workAddress = emp.record.workAddress || '';
         this.model.record.baseSalary = toStr(emp.record.baseSalary); // 基础薪资
         this.model.record.trialSalary = toStr(emp.record.trialSalary); // 试用薪资
-        
-        
+
+
         this.model.record.contract.uid = emp.record.contract.uid;
         this.model.record.contract.recordUid = emp.record.contract.recordUid;
 
@@ -2359,7 +2359,7 @@ export default {
         this.model.record.contract.recruitmentChannel = toNum(emp.record.contract.recruitmentChannel); // 候选人来源渠道
 
         this.model.shareOption.uid = this.model.uid;
-        
+
         this.model.shareOption.uid = emp.shareOption.uid;
         this.model.shareOption.recordUid = emp.shareOption.recordUid;
 
@@ -2371,13 +2371,13 @@ export default {
         this.model.shareOption.terminallyCount = toStr(emp.shareOption.terminallyCount); // 每期数量
         this.model.shareOption.terminallyRate = toStr(emp.shareOption.terminallyRate); // 每期比例
         this.model.shareOption.contractUrl = emp.shareOption.contractUrl || ''; // 期权合同
-        
+
         if(this.model.podoProvince) this.queryPodoCities(this.model.podoProvince);
         if(this.model.residenceProvince) this.queryResidenceCities(this.model.residenceProvince);
         if(this.model.poreProvince) this.queryPoreCities(this.model.poreProvince);
         if(this.model.record.workProvince) this.queryWorkCities(this.model.record.workProvince);
       };
-      
+
       this.$http.post(`/api/v1.0/client/findStaff`)
         .then(res => {
           res = res.body;
@@ -2424,9 +2424,9 @@ export default {
       this.queryConf();
       this.queryEmp();
     });
-    
+
     this.queryProvinces();
-    
+
   }
 }
 
@@ -2470,7 +2470,7 @@ export default {
   .add-contact {
     margin-left: 113px;
     margin-bottom: 22px;
-    margin-top: 22px;  
+    margin-top: 22px;
   }
   .add-contact {
     margin-bottom: 0;
@@ -2478,8 +2478,8 @@ export default {
   .child,
   .contact {
     border: 1px solid #ccc;
-    border-radius: 4px; 
-    margin-left: 113px; 
+    border-radius: 4px;
+    margin-left: 113px;
     padding: 10px 10px 0 10px;
     position: relative;
     .el-input {
