@@ -35,25 +35,33 @@
         </div>
       </div>
       <div class="concentBodyClass">
-        <div class="concentBodyClassTitle">
-          <div class="concentBodyClassTitleSpan">款项</div>
-          <div class="concentBodyClassTitleSpan">扣除金额</div>
-          <div class="concentBodyClassTitleSpan">增加金额</div>
-          <div class="concentBodyClassTitleSpan">小计</div>
-        </div>
-
-        <div class="concentBodyClassTitle" v-for="item in dateGrid.detail">
-          <div class="concentBodyClassTitleSpanColor" style="text-overflow:ellipsis;overflow:hidden">{{item.remark}}</div>
-          <div class="concentBodyClassTitleSpanColor">{{item.deduct}}</div>
-          <div class="concentBodyClassTitleSpanColor">{{item.add}}</div>
-          <div class="concentBodyClassTitleSpanColor">{{item.total}}元</div>
-        </div>
         <!--<div class="concentBodyClassTitle">-->
-          <!--<div class="concentBodyClassTitleSpan">个人所得税</div>-->
-          <!--<div class="concentBodyClassTitleSpanColor">-3255.00</div>-->
-          <!--<div class="concentBodyClassTitleSpanColor">无</div>-->
-          <!--<div class="concentBodyClassTitleSpanColor">1231.00元</div>-->
+          <!--<div class="concentBodyClassTitleSpan">款项</div>-->
+          <!--<div class="concentBodyClassTitleSpan">扣除金额</div>-->
+          <!--<div class="concentBodyClassTitleSpan">增加金额</div>-->
+          <!--<div class="concentBodyClassTitleSpan">小计</div>-->
         <!--</div>-->
+        <!--<div class="concentBodyClassTitle" v-for="item in dateGrid.detail">-->
+          <!--<div class="concentBodyClassTitleSpanColor" style="text-overflow:ellipsis;overflow:hidden">{{item.remark}}</div>-->
+          <!--<div class="concentBodyClassTitleSpanColor">{{item.deduct}}</div>-->
+          <!--<div class="concentBodyClassTitleSpanColor">{{item.add}}</div>-->
+          <!--<div class="concentBodyClassTitleSpanColor">{{item.total}}元</div>-->
+        <!--</div>-->
+
+        <table style="width: 100%;min-height: 3rem;" >
+          <tr >
+            <th >款项</th>
+            <th>扣除金额</th>
+            <th>增加金额</th>
+            <th>小计</th>
+          </tr>
+          <tr v-for="item in dateGrid.detail">
+            <td style=" background: #f8fbfb;text-overflow:ellipsis;overflow:hidden">{{item.remark}}</td>
+            <td>{{item.deduct}}</td>
+            <td>{{item.add}}</td>
+            <td>{{item.total}}</td>
+          </tr>
+        </table>
       </div>
     </div>
 </template>
@@ -150,6 +158,19 @@
 </script>
 
 <style scoped>
+  table
+  {
+    border-collapse:collapse;
+  }
+
+  table, td, th
+  {
+    border:1px solid #d2dce6;
+    font-size: 1.1rem;
+  }
+  th{
+    background: #f8fbfb;
+  }
 .titleHeard{
   display: flex;
   background: #26a2ff;
@@ -219,7 +240,7 @@
 .concentBodyClass{
   width: 93%;
   margin: 1rem;
-  min-height: 9rem;
+  min-height: 3rem;
   font-size: 1rem;
   border: 1px solid #d2dce6;
 }
