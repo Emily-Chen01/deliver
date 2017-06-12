@@ -70,11 +70,12 @@
                       :crop="false"
                       @imageuploaded="imageuploaded"
                       :data="data"
+                      compress="30"
                       :headers="tokenHeader"
                       :max-file-size="5242880"
                       url="/api/v1.0/client/upload" >
-                      <div class="CardImg">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg" v-if="initUpImage"  /></div>
-                      <div class="CardImg">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg" v-if="imgSrc.shenFenIcon" /></div>
+                      <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg"   /></div>
+                      <div class="CardDivImg" v-if="imgSrc.shenFenIcon">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  /></div>
 
 
 
@@ -793,6 +794,13 @@
     display: block;
     width: 80%;
     height: 80%;
+    padding-left: 0rem;
+
+  }
+  .CardDivImg{
+    display: block;
+    width: 11rem;
+    height: 6rem;
     padding-left: 0rem;
 
   }

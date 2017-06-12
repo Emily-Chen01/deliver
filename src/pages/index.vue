@@ -397,7 +397,7 @@ export default {
 .verification{
   width:29%;
   float:right;
-  height: 2.8rem;
+  height: 2.9rem;
   font-size: 1rem;
   margin-bottom: 2rem;
 }
