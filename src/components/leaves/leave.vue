@@ -67,17 +67,14 @@
                 <div class="cardClass">
                   <div>
                     <vue-core-image-upload
-                      :crop="false"
+                      crop-ratio="1:1"
                       @imageuploaded="imageuploaded"
                       :data="data"
-                      compress="30"
                       :headers="tokenHeader"
-                      :max-file-size="5242880"
+                      :max-file-size="20971520"
                       url="/api/v1.0/client/upload" >
                       <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg"   /></div>
                       <div class="CardDivImg" v-if="imgSrc.shenFenIcon">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  /></div>
-
-
 
                     </vue-core-image-upload>
                   </div>
