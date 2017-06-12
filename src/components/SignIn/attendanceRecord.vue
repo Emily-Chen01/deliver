@@ -297,12 +297,57 @@
                 console.log( this.connectTime);
 
                 console.log( this.fcEvents);
+
+              this.$nextTick(() => {
+                //  改变当月工作日的背景颜色
+                this.showDate(response.body.result.attend.wdSun, 0);
+                this.showDate(response.body.result.attend.wdMon, 1);
+                this.showDate(response.body.result.attend.wdTue, 2);
+                this.showDate(response.body.result.attend.wdWed, 3);
+                this.showDate(response.body.result.attend.wdThu, 4);
+                this.showDate(response.body.result.attend.wdFri, 5);
+                this.showDate(response.body.result.attend.wdSat, 6);
+              });
+
+
             }, response => {
               console.log( 'error callback');
             });
 
 
+
+
+
+
+
           },
+
+          showDate(name, num){ //查处战展示当月的工作日
+            if (name) {
+              let week = document.getElementsByClassName('events-week');
+              for (let i = 0; i < week.length; i++) {
+                let data = week[i].getElementsByClassName('events-day');
+                if (!data[num].classList.contains("not-cur-month")) {
+                  data[num].style.background = 'rgba(130,130,130,0.1)';
+                } else {
+                  data[num].style.background = '';
+                }
+              }
+            } else {
+              let week = document.getElementsByClassName('events-week');
+              for (let i = 0; i < week.length; i++) {
+                let data = week[i].getElementsByClassName('events-day');
+                if (!data[num].classList.contains("not-cur-month")) {
+                  data[num].style.background = '';
+                } else {
+                  data[num].style.background = '';
+                }
+              }
+            }
+          },
+
+
+
 
 
 

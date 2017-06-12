@@ -219,13 +219,17 @@
                 <!--lateStatus-->
                 迟到了
 
-
               </mt-button>
               <mt-button type="default"
                          class="addTimeTotleClass"
                          v-show="overTime">
                 加班{{addtime}}小时
 
+
+              </mt-button>
+              <mt-button type="default" class="toDaKaStatusSecondKG" v-show="toDownKuang">
+                <!--lateStatus-->
+                旷工
 
               </mt-button>
             </div>
@@ -411,6 +415,7 @@
         initDaKaRecord: false, //查询打卡记录是否有  span
         leaveEarly: false,  //早退
         overTime: false,  //加班
+        toDownKuang:false,  //下班旷工
         toDaKaStatusIsInit: '', //初始上班状态显示
         toDaKaStatusIsOutsideInit: false, //初始下班状态显示是否在区域外
         toDownKaStatusIsInit: '', //初始下班状态显示
@@ -586,7 +591,7 @@
             this.lateStatusAddW = false;
             this.absenteeismStatus = false;//旷工隐藏
 
-
+            this.initDaKaRecordWeiZhi = true; //6-12-15测试提交bug添加
           }
 
           if (this.toDaKaStatusIsInit == 1 && this.toDaKaStatusIsOutsideInit) { //迟到+区域外打卡显示
@@ -599,7 +604,11 @@
             this.$nextTick(() => {
               this.absenteeismStatus = false; //旷工和提交隐藏
               this.absenteeismStatus2 = true; //展示提交
+
             });
+
+            this.initDaKaRecordWeiZhi = true; //6-12-15测试提交bug添加
+
 
 //              alert('迟到区域外');
 
@@ -661,7 +670,7 @@
 //   **********************初始化上下班分界线********************
 
 
-          if (this.toDownKaStatusIsInit == 0 || this.toDownKaStatusIsInit == 1 || this.toDownKaStatusIsInit == 2) {     //****下班点击完成后进行页面展示内容
+          if (this.toDownKaStatusIsInit == 0 || this.toDownKaStatusIsInit == 1 || this.toDownKaStatusIsInit == 2|| this.toDownKaStatusIsInit == 3) {     //****下班点击完成后进行页面展示内容
             //            alert('进行下班打卡span'+this.toDownKaStatusIsInit);
 
             if (this.toDownKaStatusIsInit == 0) {//正常打卡显示
@@ -670,7 +679,24 @@
               this.initDownRecord = true;
 //              alert('我是正常上班');
 
-//**************上面的这个与上班打卡正常冲突
+            }
+
+            if (this.toDownKaStatusIsInit == 0 && this.toDownKaStatusIsOutsideInit) {//正常打卡显示+区域外
+              console.log('toDaKaStatusIsInit状态' + this.toDaKaStatusIsInit)
+              this.zcDownShowSpan = true; //下班总线所展示的所有文字
+              this.initDownRecord = true;
+              this.toDownLateStatusAddW = true;
+//              alert('我是正常上班');
+
+            }
+
+            if (this.toDownKaStatusIsOutsideInit) { //区域外打卡显示
+//              alert('初始化区域外');
+              this.$nextTick(() => {
+                this.toDownLateStatusAddW = true;
+//                this.initDownRecord = false
+
+              });
             }
             if (this.toDownKaStatusIsInit == 1 && this.toDownKaStatusIsOutsideInit) { //早退+区域外打卡显示
               this.$nextTick(() => {
@@ -691,14 +717,7 @@
 //              alert('我是早退');
 
             }
-            if (this.toDownKaStatusIsOutsideInit) { //区域外打卡显示
-//              alert('初始化区域外');
-              this.$nextTick(() => {
-                this.toDownLateStatusAddW = true;
-                this.initDownRecord = false
 
-              });
-            }
 
             if (this.toDownKaStatusIsInit == 2) { //加班打卡显示
 //                alert('我是加班');
@@ -715,6 +734,31 @@
 
               });
             }
+
+
+
+            if (this.toDownKaStatusIsInit == 3) { //旷工打卡显示
+//                alert('我是加班');
+              this.toDownAbsenteeismStatus = false; //下班提交请假span
+              this.toDownKuang = true;
+              this.zcDownShowSpan = true;
+              this.toDownAbsenteeismStatus = true;
+//              this.toDownAddTimeStatus = true;
+
+
+
+            }
+            if (this.toDownKaStatusIsInit == 3 && this.toDownKaStatusIsOutsideInit) { //旷工+区域外打卡显示
+//              alert('初始化加班+区域外');
+              this.$nextTick(() => {
+                this.toDownLateStatusAddW = true;
+
+              });
+            }
+
+
+
+
 
             this.daKaHide = false;  //有下班打卡后按钮隐藏
           }
@@ -926,6 +970,9 @@
 
                 this.lateStatus = false;
                 this.overTime = true;
+
+
+
 
               } else if (this.toDownKaStatusIs == 2) { //加班打卡显示
 
@@ -1691,10 +1738,21 @@
     border-radius: 4px
   }
 
+  .toDaKaStatusSecondKG {
+    background-color: #f54435;
+    color: #ffffff;
+    width: 5.7rem;
+    left: -0.8rem;
+    height: 1.8rem;
+    position: absolute;
+    top: 0.1rem;
+    font-size: 0.8rem;
+    border-radius: 4px
+  }
   .toDaKaStatusSecondK {
     background-color: #f54435;
     color: #ffffff;
-    width: 4.7rem;
+    width: 5.7rem;
     left: -0.8rem;
     height: 1.8rem;
     position: absolute;
