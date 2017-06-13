@@ -7,10 +7,10 @@
       </mt-navbar>
 
       <!-- tab-container -->
-      <mt-tab-container v-model="selected" style="margin-top: 1rem">
+      <mt-tab-container v-model="selected" >
         <mt-tab-container-item id="1">
           <!--个人资料-->
-
+          <div style="padding-top: 0.2rem"></div>
           <div class="hrClass"></div>
           <div class="contentClass">
             <div class="contentLeft" style="padding-top: 0.3rem">申请分类</div>
@@ -115,7 +115,7 @@
              </mt-button>
           </div>
         </mt-tab-container-item>
-        <mt-tab-container-item id="2">
+        <mt-tab-container-item id="2" style="background: #eff3f7;">
 
           <!--进行编辑内容开始-->
           <div    class="changeTitleClass">
@@ -602,7 +602,7 @@
 
             let result = dd(this.selectedDataApply, this.optionsApply);
             this.shengqingParam = result.uid;
-            this.shengqingParamType = result.type;
+            this.shengqingParamType = result.value;
             console.log(" this.shengqingParam uid" + this.shengqingParam);
             console.log("value shengqingParamType:" + this.shengqingParamType);
 
@@ -745,6 +745,7 @@
   }
   .myApplyBottom{
     padding-bottom: 1rem;
+    background: #ffffff;
   }
   .showARightSpan{
     width: 15rem;
@@ -804,9 +805,16 @@
   .myApply{
     width: 92%;
     min-height: 12rem;
-    margin: 1rem 1rem 0 1rem;
-    border-radius: 6px;
-    border: 1px solid #cccccc;
+    margin: 1rem;
+    /*border-radius: 6px;*/
+    /*border: 1px solid #cccccc;*/
+    background: #ffffff;
+    box-shadow: 0 0 0 1px #cccccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
   }
   .myApplyTitleLeft{
     width: 11rem;
@@ -816,6 +824,9 @@
     float: left;
     font-weight: 600;
     font-size:1.3rem ;
+  }
+  .myApplyContent{
+    background: #ffffff;
   }
   .myApplyContentLeft{
     width: 7rem;
@@ -864,26 +875,47 @@
   .changeTitleClass{
     display: flex;
     background: rgb(29,139,224);
-    color:#ffffff;
+    color: rgba(255,255,255,0.5);
     height: 2.5rem;
     line-height: 2.5rem;
   }
   .active{
     width: 24%;
     border-bottom: 0.2rem solid;
+    color: #ffffff;
   }
   .active2{
     width: 24%;
     border-bottom: 0.2rem solid;
-
+    color: #ffffff;
   }
   .active3{
     width: 24%;
     border-bottom: 0.2rem solid;
+    color: #ffffff;
   }
   .active4{
     width: 24%;
     border-bottom: 0.2rem solid;
-
+    color: #ffffff;
   }
+  /*修改tab样式*/
+  .mint-navbar {
+    background-color: #26a2ff;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    text-align: center;
+  }
+  .mint-navbar .mint-tab-item.is-selected {
+    border-bottom: 3px solid #ffffff;
+    color: #ffffff;
+    margin-bottom: -1px;
+  }
+  .mint-navbar .mint-tab-item {
+    padding: 17px 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+  }
+  /*修改tab样式结束*/
 </style>

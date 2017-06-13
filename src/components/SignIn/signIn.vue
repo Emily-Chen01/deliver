@@ -1817,5 +1817,4 @@
     border-radius: 4px;
     background-color: #f54435;
   }
-
 </style>

@@ -2577,4 +2577,23 @@ export default {
     text-decoration: none;
   }
 }
+/*修改tab样式*/
+.mint-navbar {
+  background-color: #26a2ff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  text-align: center;
+}
+.mint-navbar .mint-tab-item.is-selected {
+  border-bottom: 3px solid #ffffff;
+  color: #ffffff;
+  margin-bottom: -1px;
+}
+.mint-navbar .mint-tab-item {
+  padding: 17px 0;
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+}
+/*修改tab样式结束*/
 </style>
