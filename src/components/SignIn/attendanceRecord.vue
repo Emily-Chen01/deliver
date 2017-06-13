@@ -221,31 +221,39 @@
               this.tozhang='';
               this.downzhang='';
 
-              if(response.body.result.twStatus==0){//判断状态转换文字上班
-                  this.tozhang='正常打卡';
+
+
+                  if(response.body.result.status=='未打卡'){//判断状态转换文字上班
+                    this.tozhang='未打卡';
+                    this.downzhang='未打卡';
+                  }else {
+                    if(response.body.result.twStatus==0){
+                      this.tozhang='正常打卡';
 //                  alert('正常打卡');
-                } if (response.body.result.twStatus==1){
-                  this.tozhang='迟到打卡';
+                    } if (response.body.result.twStatus==1){
+                      this.tozhang='迟到打卡';
 //                  alert('迟到打卡');
 
-                } if (response.body.result.twStatus==2){
-                  this.tozhang='旷工打卡';
+                    } if (response.body.result.twStatus==2){
+                      this.tozhang='旷工打卡';
 //                  alert('旷工打卡');
 
-                }
-                  if(response.body.result.owStatus==0){
-                    this.downzhang='正常打卡';
+                    }
+                    if(response.body.result.owStatus==0){
+                      this.downzhang='正常打卡';
 //                    alert('正常打卡');
 
-                  } if (response.body.result.owStatus==1){
-                    this.downzhang='早退打卡';
+                    } if (response.body.result.owStatus==1){
+                      this.downzhang='早退打卡';
 //                    alert('早退打卡');
 
-                  } if (response.body.result.owStatus==2){
-                    this.downzhang='加班打卡';
+                    } if (response.body.result.owStatus==2){
+                      this.downzhang='加班打卡';
 //                    alert('加班打卡');
 
+                    }
                   }
+
             }, response => {
               console.log( 'error callback');
             });

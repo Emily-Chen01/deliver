@@ -1697,7 +1697,7 @@
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.8rem;
+    font-size: 0.5rem!important;
     border-radius: 4px
   }
 
@@ -1729,7 +1729,7 @@
   .toDaKaStatusSecondC {
     background-color: #f6bc2a;
     color: #ffffff;
-    width: 5.2rem;
+    width: 5.7rem;
     left: -0.8rem;
     height: 1.8rem;
     position: absolute;

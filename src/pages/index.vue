@@ -1,5 +1,6 @@
 <template>
   <div class="hello" style="padding: 0 8px" >
+    <div style="height: 5rem;"></div>
     <div class="logo"><img :src="imgSrc.bg" style="width: 50%;height: 99.5%"></div>
     <p class="h1Class">{{ msg }}</p>
     <p class="titlesSmall">{{ msgPhone }}</p>
@@ -8,17 +9,17 @@
         <div class="insterInput">
           <input v-model="phoneNumber" type="text" class="inputStyle" placeholder="手机号" />
         </div>
-        <div class="verification"><mt-button type="primary" @click.native="handerClick" ><span>获取验证码</span></mt-button> </div>
+        <div class="verification">
+          <mt-button type="primary"  :disabled="YZdisabled" id="aaa"   @click.native="handerClick()" >
+            <span>{{yanzheng}}</span>
+          </mt-button>
+        </div>
       </div>
       <div style="clear:both"></div>
       <div class="inputValidation"><input type="text"  v-model="phoneNumberValue" class="inputStyle"  placeholder="请输入验证码"/> </div>
     <div class="confirmBinding">
       <mt-button type="primary"  @click.native="handerSubmit">绑定手机号</mt-button>
     </div>
-    <!--<baidu-map :center="center" @ready="handler" ></baidu-map>-->
-
-    <!--<router-link to="/manyCompany"@click.native="handerCome" >点击</router-link>-->
-    <!--<router-view></router-view>-->
   </div>
 </template>
 
@@ -28,6 +29,7 @@ import ManyCompany from "@/components/register/manyCompany"
 import Vue from 'vue'
 
     let jwresult={"lat":0.0, "lng":0.0};
+let timer1 = null;
 
 export default {
 
@@ -41,42 +43,20 @@ export default {
       msgPhone: '您需要先绑定手机!',
       phoneNumber:'',
       phoneNumberValue:'',//验证码值
-      t1:'',
-      t2:'',
-      t3:'',
-      t4:'',
-      center: {
-        lng: 121.738688,
-        lat: 31.571045
-      },
-      latitude:'',
-      longitude:'',
-      radius: '',
       yyy:false,
       result:{"lat":0.0, "lng":0.0},
       sumSearch:'',
       sumSearchUid:[],
       isCompany:'',
+      yanzheng:'获取验证码' ,//验证码
+      YZdisabled:false,
 
-//      isbing:'',
 
     }
   },
   created: function () {
 
          this.handerList();        //先查询是否有绑定 有返回手机号
-
-
-
-//    (function() {
-//      let path = '/api/v1.0/wechat';
-//      let protocol = location.protocol;
-//      let hostname = location.hostname;
-//      console.log('customize', `${protocol}//${hostname}${path}`);
-//    })();
-
-
-
 
 
     //获取openidstart  6-2早注释为了本地测试 提交需解除注释
@@ -108,20 +88,38 @@ export default {
 
 
 
-
-
-
-
   },
 
 
 
   methods: {
     handerClick(){
-//      localStorage.setItem('iphoneNumber', this.phoneNumber); //缓存手机号码用于查看公司manyCompany
       this.setCookie('iphoneNumber',this.phoneNumber,365);
 
-      alert('获取验证码');
+      let self = this;
+      clearInterval(timer1); //开启前清除下已经开的定时器
+
+      var countdown=60;
+      function settime() {
+        if (countdown == 0) {
+          self.yanzheng="获取验证码";
+          countdown = 60;
+          return;
+        } else {
+            self.yanzheng="重新发送(" + countdown + ")";
+            countdown--;
+            self.YZdisabled=true;
+            var rr=document.getElementById('aaa');
+//            rr.style.color= "#ffffff"; //这个方法可以设置不可用的背景颜色
+        }
+
+      }
+      timer1= setInterval(settime,1000);
+
+
+
+
+//      alert('获取验证码');
 
       let number={
           phone :this.phoneNumber,
@@ -193,7 +191,6 @@ export default {
 
             if(response.body.code==200){
          let isbing=response.body.result.phone;
-//          localStorage.setItem('iphoneNumber', isbing); //缓存手机号码用于查看公司manyCompany
               this.setCookie('iphoneNumber',isbing,365);//缓存手机号码用于查看公司manyCompany
 
 //              alert('iphoneNumber'+this.getCookie('iphoneNumber'));
@@ -265,111 +262,6 @@ export default {
     },
 
 
-//    handler ({BMap, map}) {
-//      console.log(BMap, map);
-//      console.log(this.latitude);
-//      console.log(this.latitude);
-//      console.log(this.latitude);
-//      this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
-//        console.log(response.body.result);
-//        this.t1=response.body.result.appid;
-//        console.log(this.t1);
-//        this.t2=response.body.result.timestamp;
-//        this.t3=response.body.result.nonceStr;
-//        this.t4=response.body.result.signature;
-//        this.yyy=true;
-//
-//        wx.config({
-//          debug: false,
-//          appId: this.t1,
-//          timestamp: this.t2,
-//          nonceStr: this.t3,
-//          signature: this.t4,
-//          jsApiList: [
-//            'getLocation'
-//          ]
-//        });
-//
-//
-//      }, response => {
-//        console.log( 'error callback');
-//      });
-//
-//
-//      wx.ready(function () {
-//        wx.error(function(res){
-//          alert('wx.error错误信息'+res)
-//          console.log(res)
-//          console.log(res)
-//
-//        });
-//        wx.checkJsApi({
-//          jsApiList: [
-//            'getLocation'
-//          ],
-//          success: function (res) {
-//            wx.getLocation({
-//              type:'gcj02',
-//              success: function (res) {
-//                this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-//                this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
-//                var speed = res.speed; // 速度，以米/每秒计
-//                var accuracy = res.accuracy; // 位置精度
-//                alert(speed);
-//                alert(accuracy);
-//
-//             function  Convert_GCJ02_To_BD09($lng,$lat,$result){  //腾讯转换百度经纬度
-//                  var x_pi = 3.14159265358979324 * 3000.0 / 180.0;
-//                  var x = $lng;
-//                  var y = $lat;
-//                  var z =Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
-//                  var theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);
-//                  $lng = z * Math.cos(theta) + 0.0065;
-//                  $lat = z * Math.sin(theta) + 0.006;
-//                  console.log( $lng,$lat);
-//                  $result.lat =$lat;
-//                  $result.lng =$lng ;
-//                  console.log($result);
-//                  console.log(this);
-//
-//               return  $result;
-//                };
-//                var shuzi=Convert_GCJ02_To_BD09(this.longitude,this.latitude,jwresult);
-//                console.log('下面是转后');
-//                console.log(shuzi);
-//
-//                alert('纬度'+shuzi.lat+'经度'+shuzi.lng);
-//                let distance=map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(shuzi.lng, shuzi.lat));
-//                if(distance<1000){
-//                  alert('区域内'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(shuzi.lng, shuzi.lat)));
-//                }else{
-//                  alert('区域外'+map.getDistance(new BMap.Point(120.738232,31.271393), new BMap.Point(shuzi.lng, shuzi.lat)));
-//                }
-//
-//              },
-//              cancel: function (res) {
-//                alert('用户拒绝授权获取地理位置');
-//              }
-//            });
-////          alert('微信版本！');
-//            // alert(JSON.stringify(res));
-//            // alert(JSON.stringify(res.checkResult.getLocation));
-//            if (res.checkResult.getLocation == false) {
-//              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-//              return;
-//            }
-//          }
-//        });
-//
-//
-//      });
-
-
-
-
-//    }
-
-
   },
 
   components: {
@@ -380,14 +272,16 @@ export default {
 
 <style scoped>
 .hello{
-  margin-top: 4rem;
+  /*margin-top: 4rem;*/
+  background: #ffffff;
+  height: 100vh;
 }
 .logo{
   width: 100%;
   height: 3rem;
 }
 .insterInput{
-  width:69%;
+  width:64%;
   float:left;
 }
 .insterInput input{
@@ -395,7 +289,7 @@ export default {
   width: 95%;
 }
 .verification{
-  width:29%;
+  width:33%;
   float:right;
   height: 2.9rem;
   font-size: 1rem;
