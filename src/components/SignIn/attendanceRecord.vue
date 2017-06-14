@@ -33,7 +33,7 @@
       </div>
 
 
-      <div style="height: 1px;background: #cccccc;margin: 1.4rem 1rem"></div>
+      <div style="height: 1px;background: #cccccc;margin:1rem"></div>
 
       <div style="background:rgb(239,241,247);">
         <div class="timeTitle">
@@ -489,7 +489,7 @@
   display: inline-block;
 }
 .timeTitle{
-  padding-top: 0.5rem;
+  /*padding-top: 0.5rem;*/
 }
 .publicStyle{
   width: 0.6rem;
