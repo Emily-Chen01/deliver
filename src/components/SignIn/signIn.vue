@@ -223,7 +223,7 @@
               <mt-button type="default"
                          class="addTimeTotleClass"
                          v-show="overTime">
-                加班{{addtime}}小时
+                加班{{addtime}}(h)
 
 
               </mt-button>
@@ -349,7 +349,7 @@
                 <mt-button type="default"
                            style="width: 11rem;height: 2.5rem;position: absolute;right: 0.5rem;top: 4.6rem;"
                            v-show="overTime">
-                  加班+{{addTimeAlert}}小时
+                  加班{{addTimeAlert}}(h)
 
 
 
@@ -679,6 +679,11 @@
               this.initDownRecord = true;
 //              alert('我是正常上班');
 
+
+
+
+
+
             }
 
             if (this.toDownKaStatusIsInit == 0 && this.toDownKaStatusIsOutsideInit) {//正常打卡显示+区域外
@@ -939,6 +944,8 @@
                 this.isYellow2 = false;
                 console.log('166' + this.toDownKaStatusIs)
                 this.overTime = false; //加班隐藏
+                this.isYellowAddQ=false;
+
 
 
               }
@@ -948,6 +955,30 @@
                 this.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
                 this.overTime = false;
                 this.absenteeismStatus = false;
+                this.isYellow2 = true;
+
+
+//                alert('早退');
+
+              }
+              if (this.toDownKaStatusIs == 3 && this.toDownKaStatusIsOutside) { //旷工+区域外打卡显示
+                this.leaveEarly = false;
+//                this.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                this.overTime = false;
+                this.absenteeismStatus = true;
+                this.isYellow2 = true;
+                this.isYellowAddQ = true;
+//                this.isYellow2 = true;
+
+
+//                alert('早退');
+
+              }
+              if (this.toDownKaStatusIs == 3) { //旷工打卡显示
+                this.leaveEarly = false;
+//                this.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                this.overTime = false;
+                this.absenteeismStatus = true;
                 this.isYellow2 = true;
 
 
@@ -1371,6 +1402,7 @@
             });
 
           });
+
 
 
         }, response => {

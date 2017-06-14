@@ -81,7 +81,7 @@ export default {
         return;
       }
         this.setCookie('openId',openID,365);
-//        console.log('openid修改过的'+this.getCookie('openId'));
+        console.log('openid修改过的'+this.getCookie('openId'));
 
 
     //获取openid end
@@ -99,11 +99,13 @@ export default {
       let self = this;
       clearInterval(timer1); //开启前清除下已经开的定时器
 
-      var countdown=60;
+      var countdown=30;
       function settime() {
         if (countdown == 0) {
           self.yanzheng="获取验证码";
-          countdown = 60;
+          countdown = 30;
+          self.YZdisabled=false;
+          clearInterval(timer1);
           return;
         } else {
             self.yanzheng="重新发送(" + countdown + ")";

@@ -71,7 +71,7 @@
                       @imageuploaded="imageuploaded"
                       :data="data"
                       :headers="tokenHeader"
-                      :max-file-size="20971520"
+                      :max-file-size="41943040"
                       url="/api/v1.0/client/upload" >
                       <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg"   /></div>
                       <div class="CardDivImg" v-if="imgSrc.shenFenIcon">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  /></div>
@@ -236,7 +236,7 @@
 //                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
               ],
-              selectedDataHoliday:0,
+              selectedDataHoliday:'0',
               optionsHoliday:[
 //                { text: '端午节' },
 //                { text: '元宵' },
@@ -404,6 +404,7 @@
             }
             this.$nextTick(()=>{
               this.optionsHoliday=this.holidayTypeName
+
             });
 
 
@@ -501,9 +502,9 @@
 //            this.startTimeValue = timestamp2;
 //            console.log(this.startTimeValue);
 //            var timestamp2 = new Date(data[0]).getTime();
-            console.log(data[0].toLocaleString().replace(/-/g, "/"),'data[0]');
+            console.log(data[0].toLocaleString().replace(/-/g, "/")+':'+'00','data[0]');
 
-            this.startTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/")).getTime();
+            this.startTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/")+':'+'00').getTime();
             console.log(this.startTimeValue,'this.startTimeValue转出的开始');
 
           },
@@ -512,9 +513,9 @@
 //            var timestamp3 = new Date(data[0]).getTime();
 //            console.log(timestamp3);
 
-            console.log(data[0].toLocaleString().replace(/-/g, "/"),'data[0]');
+            console.log(data[0].toLocaleString().replace(/-/g, "/")+':'+'00','data[0]');
 
-            this.endTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/")).getTime();
+            this.endTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/")+':'+'00').getTime();
             console.log(this.endTimeValue,'this.endTimeValue结束')
           },
           handerDataSubmit(){
@@ -556,7 +557,7 @@
 
               if (response.body.code == 200) {
                 MessageBox('提示', response.body.message)
-                this.$router.push({path: '/signIn'});
+                this.$router.push({path: '/signCard'});
               } else if (response.body.code == 500) {
                 MessageBox('提示', response.body.message);
               }
