@@ -341,13 +341,12 @@
               var myDate = new Date();
               var timePass= myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();        //获取当前年份(2位)
 
-             var zhuan= moment(timePass).format(df2);
+             var zhuanDate= moment(timePass).format(df2);
               console.log(timePass,'timePass');
-              console.log(zhuan,'zhuan');
-
+              console.log(zhuanDate,'zhuanDate');
 
               let param={
-                "date":zhuan
+                "date":zhuanDate
               }
               this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
                 console.log('init', response);

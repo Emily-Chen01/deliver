@@ -478,6 +478,12 @@
 
       this.doSearch(); //初始化页面查询数据
 
+
+
+
+
+
+
     },
     methods: {
 
@@ -536,6 +542,13 @@
             this.year = response.body.result.punchYear;
             this.month = response.body.result.punchMonth;
             this.data = response.body.result.punchDate;
+          }
+          if(response.body.result.punchYear == null){
+            //初始显示右上角日期
+            var myDate = new Date();
+            this.year = myDate.getFullYear();
+            this.month = myDate.getMonth()+1;
+            this.data = myDate.getDate();
           }
 
           //时间赋值结束
