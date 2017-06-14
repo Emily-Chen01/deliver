@@ -72,6 +72,7 @@
                       @imageuploaded="imageuploaded"
                       :data="data"
                       :headers="tokenHeader"
+                      compress="40"
                       :max-file-size="41943040"
                       url="/api/v1.0/client/upload" >
                       <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg"   /></div>
