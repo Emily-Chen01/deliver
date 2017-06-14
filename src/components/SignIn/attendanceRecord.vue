@@ -278,66 +278,8 @@
               this.downzhang='';
               this.toSapnTime ='',
               this.downSapnTime='',
-//              console.log(response.body.result.records[0].year);
                 this.connectTime={};
                 this.fcEvents=[];
-                console.log(response.body.result.attend.holidays,'ppppppppppppp')
-
-             let arrayShow=[
-//                {
-//                  start : '2017-06-4',
-//                },
-//               {
-//                 start : '2017-06-5',
-//               },
-//               {
-//                 start : '2017-06-20',
-//               },
-//               {
-//                 start : '2017-06-9',
-//               },
-                ];
-                arrayShow=response.body.result.attend.holidays;
-              for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
-                this.fcEvents.push({
-                  title : '假',
-                  start :moment(arrayShow[i].date).format(df3),
-                  end : moment(arrayShow[i].date).format(df3),
-                });
-              }
-            console.log(this.fcEvents,'this.fcEvents');
-
-
-                for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态
-                 let connectDate={};
-                  connectDate.start=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
-                  connectDate.end=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
-                  connectDate.cssClass=response.body.result.records[i].desc;
-                  connectDate.totalTime=response.body.result.records[i].duration?response.body.result.records[i].duration:0;
-//                  connectDate.title =response.body.result.records[i].desc;
-                  this.fcEvents.push(connectDate);
-                }
-
-                this.connectTime.chidao=response.body.result.belateTimes;   //赋值给查询出来的月总数
-                this.connectTime.zaotui=response.body.result.leaveearlyTimes;
-                this.connectTime.kuanggong=response.body.result.absentTimes;
-                this.connectTime.waichu=response.body.result.outsideTimes;
-                console.log( this.connectTime);
-
-                console.log( this.fcEvents);
-
-              this.$nextTick(() => {
-                //  改变当月工作日的背景颜色
-                this.showDate(response.body.result.attend.wdSun, 0);
-                this.showDate(response.body.result.attend.wdMon, 1);
-                this.showDate(response.body.result.attend.wdTue, 2);
-                this.showDate(response.body.result.attend.wdWed, 3);
-                this.showDate(response.body.result.attend.wdThu, 4);
-                this.showDate(response.body.result.attend.wdFri, 5);
-                this.showDate(response.body.result.attend.wdSat, 6);
-              });
-
-
 
 
 
@@ -345,14 +287,15 @@
               var myDate = new Date();
               var timePass= myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();        //获取当前年份(2位)
 
-             var zhuanDate= moment(timePass).format(df2);
+              var zhuanDate= moment(timePass).format(df2);
               console.log(timePass,'timePass');
               console.log(zhuanDate,'zhuanDate');
 
               let param={
                 "date":zhuanDate
-              }
+              };
               this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
+
                 console.log('init', response);
 //              console.log(response.body.result.duration);
                 if(response.body.result==null){  //如果没有打卡记录清空时间和文字状态
@@ -417,6 +360,62 @@
                 console.log( 'error callback');
               });
               //测试显示默认当天信息结束
+
+
+
+
+
+
+              let arrayShow=[
+//                {
+//                  start : '2017-06-4',
+//                },
+                ];
+                arrayShow=response.body.result.attend.holidays;
+              for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
+                this.fcEvents.push({
+                  title : '假',
+                  start :moment(arrayShow[i].date).format(df3),
+                  end : moment(arrayShow[i].date).format(df3),
+                });
+              }
+            console.log(this.fcEvents,'this.fcEvents');
+
+
+                for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态
+                 let connectDate={};
+                  connectDate.start=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
+                  connectDate.end=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
+                  connectDate.cssClass=response.body.result.records[i].desc;
+                  connectDate.totalTime=response.body.result.records[i].duration?response.body.result.records[i].duration:0;
+//                  connectDate.title =response.body.result.records[i].desc;
+                  this.fcEvents.push(connectDate);
+                }
+
+                this.connectTime.chidao=response.body.result.belateTimes;   //赋值给查询出来的月总数
+                this.connectTime.zaotui=response.body.result.leaveearlyTimes;
+                this.connectTime.kuanggong=response.body.result.absentTimes;
+                this.connectTime.waichu=response.body.result.outsideTimes;
+                console.log( this.connectTime);
+
+                console.log( this.fcEvents);
+
+              this.$nextTick(() => {
+                //  改变当月工作日的背景颜色
+                this.showDate(response.body.result.attend.wdSun, 0);
+                this.showDate(response.body.result.attend.wdMon, 1);
+                this.showDate(response.body.result.attend.wdTue, 2);
+                this.showDate(response.body.result.attend.wdWed, 3);
+                this.showDate(response.body.result.attend.wdThu, 4);
+                this.showDate(response.body.result.attend.wdFri, 5);
+                this.showDate(response.body.result.attend.wdSat, 6);
+              });
+
+
+
+
+
+
 
 
 
