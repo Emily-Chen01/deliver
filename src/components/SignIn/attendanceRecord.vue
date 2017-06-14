@@ -74,6 +74,8 @@
 
   let df = 'HH:mm:ss';
   let df2 = 'YYYY/MM/DD';
+  let df3 = 'YYYY-MM-DD';
+
 
 
 
@@ -279,29 +281,31 @@
 //              console.log(response.body.result.records[0].year);
                 this.connectTime={};
                 this.fcEvents=[];
+                console.log(response.body.result.attend.holidays,'ppppppppppppp')
 
              let arrayShow=[
-                {
-                  start : '2017-06-4',
-                },
-               {
-                 start : '2017-06-5',
-               },
-               {
-                 start : '2017-06-20',
-               },
-               {
-                 start : '2017-06-9',
-               },
+//                {
+//                  start : '2017-06-4',
+//                },
+//               {
+//                 start : '2017-06-5',
+//               },
+//               {
+//                 start : '2017-06-20',
+//               },
+//               {
+//                 start : '2017-06-9',
+//               },
                 ];
+                arrayShow=response.body.result.attend.holidays;
               for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
                 this.fcEvents.push({
                   title : '假',
-                  start : arrayShow[i].start,
-                  end : arrayShow[i].start,
+                  start :moment(arrayShow[i].date).format(df3),
+                  end : moment(arrayShow[i].date).format(df3),
                 });
               }
-
+            console.log(this.fcEvents,'this.fcEvents');
 
 
                 for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态

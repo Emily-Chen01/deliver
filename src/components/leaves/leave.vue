@@ -34,6 +34,7 @@
                 <img width="150" :src="imgSrc.selectShow"  class="selectShowImg"  />
               </div>
               <select v-model="selectedDataHoliday" class="changeSelect" @change="qingjiaclick(selectedDataHoliday)" >
+                <option selectedChange>选择假期类型</option>
                 <option v-for="option in optionsHoliday" v-bind:value="option">
                   {{ option.text }}
               </option>
@@ -236,7 +237,7 @@
 //                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
               ],
-              selectedDataHoliday:'0',
+              selectedDataHoliday:'选择假期类型',
               optionsHoliday:[
 //                { text: '端午节' },
 //                { text: '元宵' },
@@ -403,7 +404,7 @@
                   })
             }
             this.$nextTick(()=>{
-              this.optionsHoliday=this.holidayTypeName
+              this.optionsHoliday=this.holidayTypeName;
 
             });
 

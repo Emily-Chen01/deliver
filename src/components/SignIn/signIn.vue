@@ -384,9 +384,9 @@
   export default {
     data(){
       return {
-        year: 2017,
-        month: 1,
-        data: 15,
+        year: '',
+        month: '',
+        data: '',
         initToTime: '',
         goToTime: '',
         downTimeMiddleShow: false, //模态框下班时间
