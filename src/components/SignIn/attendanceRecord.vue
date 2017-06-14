@@ -372,18 +372,20 @@
 //                },
                 ];
                 arrayShow=response.body.result.attend.holidays;
-              for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
-                this.fcEvents.push({
-                  title : '假',
-                  start :moment(arrayShow[i].date).format(df3),
-                  end : moment(arrayShow[i].date).format(df3),
-                });
-              }
-            console.log(this.fcEvents,'this.fcEvents');
+                if(arrayShow){
+                  for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
+                    this.fcEvents.push({
+                      title : '假',
+                      start :moment(arrayShow[i].date).format(df3),
+                      end : moment(arrayShow[i].date).format(df3),
+                    });
+                  }
+                }
 
 
+              if(response.body.result.records){
                 for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态
-                 let connectDate={};
+                  let connectDate={};
                   connectDate.start=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
                   connectDate.end=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
                   connectDate.cssClass=response.body.result.records[i].desc;
@@ -391,6 +393,8 @@
 //                  connectDate.title =response.body.result.records[i].desc;
                   this.fcEvents.push(connectDate);
                 }
+              }
+
 
                 this.connectTime.chidao=response.body.result.belateTimes;   //赋值给查询出来的月总数
                 this.connectTime.zaotui=response.body.result.leaveearlyTimes;
