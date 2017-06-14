@@ -73,6 +73,9 @@
   import moment from 'moment'
 
   let df = 'HH:mm:ss';
+  let df2 = 'YYYY/MM/DD';
+
+
 
   export default {
 
@@ -335,9 +338,16 @@
 
 
               //测试显示默认当天信息start
+              var myDate = new Date();
+              var timePass= myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();        //获取当前年份(2位)
+
+             var zhuan= moment(timePass).format(df2);
+              console.log(timePass,'timePass');
+              console.log(zhuan,'zhuan');
+
 
               let param={
-                "date":'2017/6/14'
+                "date":zhuan
               }
               this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
                 console.log('init', response);
