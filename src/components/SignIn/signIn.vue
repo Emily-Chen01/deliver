@@ -6,11 +6,12 @@
         <div class="avatarBorder">
           <img :src="imgSrc.header" class="avatarTop">
         </div>
+        <div class="nameClass"><span>{{objNr.fetchPostion}}</span> <span>{{objNr.fetchName}}</span></div>
       </div>
       <div class="siginRight">
         <div>
           <div class="detailClassBao">
-            <div class="detailClass"><span>{{objNr.fetchPostion}}</span> <span>{{objNr.fetchName}}</span></div>
+            <!--<div class="detailClass"><span>{{objNr.fetchPostion}}</span> <span>{{objNr.fetchName}}</span></div>-->
             <div class="timeClass"><span>{{year}}</span>年<span>{{month}}</span>月<span>{{data}}</span>日</div>
           </div>
         </div>
@@ -1503,10 +1504,11 @@
 <style scoped>
   .siginLeft {
     /*display: inline-block;*/
-    width: 3.2rem;
+    width: 21rem;
     float: left;
     height: 4.2rem;
     margin: 1.5% 0 0 1.5%;
+    position: relative;
   }
 
   .avatarTop{
@@ -1521,7 +1523,7 @@
 
   .siginRight {
     /*display: inline-block;*/
-    width: 21.1rem;
+    width: 3rem;
     float: right;
     height: 4.2rem;
   }
@@ -1530,6 +1532,17 @@
     height: 4rem;
     border-radius: 2rem;
     text-align: right;
+  }
+  .nameClass{
+    width: 15rem;
+    height: 2rem;
+    /*background: pink;*/
+    position: absolute;
+    font-size: 1.2rem;
+    color: #ffffff;
+    top: 1rem;
+    left: 4.5rem;
+    text-align: left;
   }
 
   .detailClass {

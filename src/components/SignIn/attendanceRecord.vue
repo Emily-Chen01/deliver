@@ -313,8 +313,6 @@
                   if (response.body.result.owTime ) {
                     this.downSapnTime = moment(response.body.result.owTime).format(df);
                   }
-                  console.log('init 2 data', this.toSapnTime, this.downSapnTime);
-
                   console.log('twStatus'+response.body.result.twStatus);
                   console.log('owStatus'+response.body.result.owStatus);
                   this.tozhang='';
@@ -394,7 +392,6 @@
                   this.fcEvents.push(connectDate);
                 }
               }
-
 
                 this.connectTime.chidao=response.body.result.belateTimes;   //赋值给查询出来的月总数
                 this.connectTime.zaotui=response.body.result.leaveearlyTimes;
