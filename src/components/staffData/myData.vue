@@ -164,7 +164,7 @@
           <el-input :readonly="!staff.bankName.isedit" v-model="model.openingBank"></el-input>
         </el-form-item>
 
-        <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber">
+        <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber" >
           <el-input :readonly="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
         </el-form-item>
 
@@ -1224,7 +1224,7 @@ export default {
         ],
         cardNumber: [
           {
-            message: '请填写正确的银行卡号', trigger: 'change', transform, pattern: /^\d{12}$/
+            message: '请填写正确的银行卡号', trigger: 'change', transform, pattern: /^\d{19}$/
           }
         ],
         englishName: [
