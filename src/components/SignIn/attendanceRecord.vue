@@ -363,7 +363,6 @@
 
 
 
-
               let arrayShow=[
 //                {
 //                  start : '2017-06-4',
@@ -374,12 +373,12 @@
                   for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
                     this.fcEvents.push({
                       title : '假',
+                      title2 : '期',
                       start :moment(arrayShow[i].date).format(df3),
                       end : moment(arrayShow[i].date).format(df3),
                     });
                   }
                 }
-
 
               if(response.body.result.records){
                 for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态

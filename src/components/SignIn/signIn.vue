@@ -365,6 +365,97 @@
             </div>
 
           </mt-popup>
+          <!--<mt-popup-->
+            <!--v-model="popupVisible"-->
+            <!--closeOnClickModal="true"-->
+            <!--:class="{  popupClass:isNormal,active: isYellow,active2: isYellow2 ,absenteeismClass:absenteeismStatus }"-->
+          <!--&gt;-->
+            <!--<div class="daKaAlert">-->
+              <!--&lt;!&ndash;<img :src="imgSrc.daKaIcon"/><span class="daKaSpan">打卡成功</span>&ndash;&gt;-->
+              <!--<div style="float: left;background:pink;width:33%">-->
+                <!--<div style="width: 100%;height: 2px;background: red"></div>-->
+              <!--</div>-->
+              <!--<div style="float: left;background:#19b5ee;width: 33%;">打卡成功</div>-->
+              <!--<div style="float: left;background:pink;width: 33%">-->
+                <!--<div style="width: 100%;height: 2px;background: red"></div>-->
+              <!--</div>-->
+
+            <!--</div>-->
+            <!--<div style="clear: both"></div>-->
+
+            <!--<div class="middleSpan">-->
+              <!--<div class="middleSpanLeft" v-show="alertToSpan">上班</div>-->
+              <!--<div class="middleSpanLeft" v-show="alertDownSpan">下班</div>-->
+
+              <!--<div class="middleSpanRight">-->
+                <!--<div v-show="toTimeMiddleShow">{{initToTime}}</div>-->
+                <!--<div v-show="downTimeMiddleShow">{{goToTime}}</div>-->
+
+              <!--</div>-->
+              <!--<div class="dakahr"></div>-->
+              <!--<div>-->
+                <!--<mt-button type="default"-->
+                           <!--style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;color:#ffffff;"-->
+                           <!--v-show="initDaKaRecord">-->
+                  <!--打卡正常-->
+
+
+                <!--</mt-button>-->
+                <!--<mt-button type="default"-->
+                           <!--style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;color:#ffffff;"-->
+                           <!--v-show="initDownRecord">-->
+                  <!--打卡正常-->
+
+
+                <!--</mt-button>-->
+
+                <!--<mt-button type="default"-->
+                           <!--style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"-->
+                           <!--v-show="lateStatus">-->
+                  <!--您迟到了-->
+
+
+                <!--</mt-button>-->
+                <!--<mt-button type="default"-->
+                           <!--style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"-->
+                           <!--v-show="absenteeismStatus">-->
+                  <!--旷工打卡-->
+
+
+                <!--</mt-button>-->
+                <!--<mt-button type="default"-->
+                           <!--style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 7.4rem;"-->
+                           <!--v-show="isYellowAddQ">-->
+                  <!--&lt;!&ndash;迟到+区域外&ndash;&gt;-->
+                  <!--区域外-->
+
+
+                <!--</mt-button>-->
+                <!--<mt-button type="default"-->
+                           <!--style=" width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"-->
+                           <!--v-show="leaveEarly">-->
+                  <!--早退-->
+
+
+                <!--</mt-button>-->
+                <!--<mt-button type="default"-->
+                           <!--style="width: 11rem;height: 2.5rem;position: absolute;right: 0.5rem;top: 4.6rem;"-->
+                           <!--v-show="overTime">-->
+                  <!--加班{{addTimeAlert}}(h)-->
+
+
+
+                <!--</mt-button>-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div style="clear: both"></div>-->
+
+            <!--<div style="position: relative">-->
+              <!--<div class="dakahrWhite"></div>-->
+              <!--<div class="spanKnow" @click="knowFunction"> 我知道了</div>-->
+            <!--</div>-->
+
+          <!--</mt-popup>-->
         </div>
       </div>
       <!--<baidu-map :center="center" @ready="handler"></baidu-map>-->
@@ -1642,7 +1733,7 @@
     line-height: 5rem;
     font-size: 1.5rem;
     color: #ffffff;
-    padding-top: 2.2rem;
+    /*padding-top: 2.2rem;*/
     position: relative;
   }
 

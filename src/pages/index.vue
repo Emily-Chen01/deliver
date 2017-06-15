@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { Navbar, TabItem,Toast,MessageBox } from 'mint-ui';
+import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+
 import ManyCompany from "@/components/register/manyCompany"
 import Vue from 'vue'
 
@@ -81,7 +82,7 @@ export default {
         return;
       }
         this.setCookie('openId',openID,365);
-        console.log('openid修改过的'+this.getCookie('openId'));
+//        console.log('openid修改过的'+this.getCookie('openId'));
 
 
     //获取openid end
@@ -94,43 +95,69 @@ export default {
 
   methods: {
     handerClick(){
-      this.setCookie('iphoneNumber',this.phoneNumber,365);
 
-      let self = this;
-      clearInterval(timer1); //开启前清除下已经开的定时器
 
-      var countdown=30;
-      function settime() {
-        if (countdown == 0) {
-          self.yanzheng="获取验证码";
-          countdown = 30;
-          self.YZdisabled=false;
-          clearInterval(timer1);
-          return;
-        } else {
+        //测试字符串length
+        function GetLength (str) {
+        ///<summary>获得字符串实际长度，中文2，英文1</summary>
+        ///<param name="str">要获得长度的字符串</param>
+        var realLength = 0, len = str.length, charCode = -1;
+        for (var i = 0; i < len; i++) {
+          charCode = str.charCodeAt(i);
+          if (charCode >= 0 && charCode <= 128) realLength += 1;
+          else realLength += 2;
+        }
+        return realLength;
+      };
+//      alert(GetLength(this.phoneNumber));
+
+
+      if(GetLength(this.phoneNumber)==11){
+        this.setCookie('iphoneNumber',this.phoneNumber,365);
+
+        let self = this;
+        clearInterval(timer1); //开启前清除下已经开的定时器
+
+        var countdown=30;
+        function settime() {
+          if (countdown == 0) {
+            self.yanzheng="获取验证码";
+            countdown = 30;
+            self.YZdisabled=false;
+            clearInterval(timer1);
+            return;
+          } else {
             self.yanzheng="重新发送(" + countdown + ")";
             countdown--;
             self.YZdisabled=true;
             var rr=document.getElementById('aaa');
 //            rr.style.color= "#ffffff"; //这个方法可以设置不可用的背景颜色
-        }
+          }
 
-      }
-      timer1= setInterval(settime,1000);
+        }
+        timer1= setInterval(settime,1000);
 
 
 
 
 //      alert('获取验证码');
 
-      let number={
+        let number={
           phone :this.phoneNumber,
-      };
-      this.$http.get('/api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
+        };
+        this.$http.get('/api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
 
-      }, response => {
-        console.log( 'error callback');
-      });
+        }, response => {
+          console.log( 'error callback');
+        });
+      }else {
+        MessageBox('提示', '手机号码不正确');
+      }
+
+
+
+
+
     },
     handerSubmit(){
 
