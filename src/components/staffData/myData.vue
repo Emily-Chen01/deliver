@@ -2421,7 +2421,6 @@ export default {
       this.$http.get('/api/v1.0/common/config/13')
     ]).then((res) => {
       this.publicParams = utils.getConfs(res);
-      console.log( this.publicParams,' this.publicParams');
       console.log('publicParams', this.publicParams);
       this.typeOfDemiciles = this.publicParams.typeOfDemicile;
       this.nativePlaces = this.publicParams.nativePlace;
@@ -2433,7 +2432,6 @@ export default {
       this.diplomaTypes = this.publicParams.diplomaType;
       this.probations = this.publicParams.probation;
       this.contractTypes = this.publicParams.contractType;
-      console.log( this.contractTypes,' this.contractTypes');
 
       this.queryConf();
       this.queryEmp();
