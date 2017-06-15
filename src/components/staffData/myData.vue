@@ -93,7 +93,8 @@
         <el-form-item v-if="model.nativePlace === '2' && staff.passportUrl" label="护照照片">
           <el-upload
             v-if="staff.passportUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="passportUrlOk"
@@ -110,7 +111,8 @@
         <el-form-item v-if="staff.idcardPhoUrl" label="身份证正面">
           <el-upload
             v-if="staff.idcardPhoUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="idcardPhoUrlOk"
@@ -127,7 +129,8 @@
         <el-form-item v-if="staff.idcardPhoUrl" label="身份证背面">
           <el-upload
             v-if="staff.idcardPhoUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="idcardPhoUrlRevOk"
@@ -171,7 +174,8 @@
         <el-form-item v-if="staff.staffPhoUrl" label="员工照片">
           <el-upload
             v-if="staff.staffPhoUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="staffPhoUrlOk"
@@ -247,7 +251,8 @@
         <el-form-item v-if="staff.houregPhoUrl" label="户口本首页">
           <el-upload
             v-if="staff.houregPhoUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="houregPhoUrlOk"
@@ -264,7 +269,8 @@
         <el-form-item v-if="staff.houregPhoUrl" label="本人户口页">
           <el-upload
             v-if="staff.houregPhoUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="houregPerphoUrlOk"
@@ -281,7 +287,8 @@
         <el-form-item v-if="staff.houregPhoUrl" label="本人户口页背面">
           <el-upload
             v-if="staff.houregPhoUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="houregPerrevphoUrlOk"
@@ -424,7 +431,8 @@
             <el-form-item label="子女出生证明">
               <el-upload
                 v-if="staff.childMessage.isedit"
-                action="/api/v1.0/common/upload"
+                action="/api/v1.0/client/upload"
+                name="files"
                 :show-file-list="false"
                 :headers="tokenHeader"
                 :on-success="makeChildOk(item)"
@@ -496,7 +504,8 @@
         <el-form-item v-if="staff.eduInfor" label="学位证书">
           <el-upload
             v-if="staff.eduInfor.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="diplomaUrlOk"
@@ -513,7 +522,8 @@
         <el-form-item v-if="staff.eduInfor" label="毕业证书">
           <el-upload
             v-if="staff.eduInfor.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="greducaCertUrlOk"
@@ -534,7 +544,8 @@
         <el-form-item v-if="staff.resumeUrl" label="简历">
           <el-upload
             v-if="staff.resumeUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="resumeUrlOk"
@@ -562,7 +573,8 @@
         <el-form-item v-if="staff.emplsepacertUrl" label="离职证明">
           <el-upload
             v-if="staff.emplsepacertUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
+            name="files"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="emplsepacertUrlOk"
@@ -613,7 +625,7 @@
           <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="recordContractUrlOk"
@@ -673,7 +685,7 @@
           <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="recordContractUrlOk"
@@ -689,7 +701,7 @@
           <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="recordContractUrlOk"
@@ -727,7 +739,7 @@
           <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="recordContractUrlOk"
@@ -889,7 +901,7 @@
           <a v-if="model.shareOption.contractUrl" :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
           <!--<el-upload
             v-if="staffShareOption.contractUrl.isedit"
-            action="/api/v1.0/common/upload"
+            action="/api/v1.0/client/upload"
             :show-file-list="false"
             :headers="tokenHeader"
             :on-success="contractUrlOk"
@@ -1539,7 +1551,7 @@ export default {
       this.provinces.forEach(v => {
         if(pid.toString() === v.uid) {
           p = v.name;
-          this.$http.get(`/api/v1.0/common/query/city/${pid}`)
+          this.$http.get(`/api/v1.0/client/query/city/${pid}`)
             .then(res => {
               res = res.body;
               if(res.code === 200) {
@@ -2113,7 +2125,7 @@ export default {
         .then(res => {
           res = res.body;
           if(res.code === 200) {
-            this.$message.success({message: '保存并更新成功！', showClose: true});
+//            this.$message.success({message: '保存并更新成功！', showClose: true});
             this.$router.push({path:'/signCard'});
 
             // this.reset();
@@ -2409,6 +2421,7 @@ export default {
       this.$http.get('/api/v1.0/common/config/13')
     ]).then((res) => {
       this.publicParams = utils.getConfs(res);
+      console.log( this.publicParams,' this.publicParams');
       console.log('publicParams', this.publicParams);
       this.typeOfDemiciles = this.publicParams.typeOfDemicile;
       this.nativePlaces = this.publicParams.nativePlace;
@@ -2420,6 +2433,7 @@ export default {
       this.diplomaTypes = this.publicParams.diplomaType;
       this.probations = this.publicParams.probation;
       this.contractTypes = this.publicParams.contractType;
+      console.log( this.contractTypes,' this.contractTypes');
 
       this.queryConf();
       this.queryEmp();
@@ -2433,12 +2447,12 @@ export default {
 </script>
 
 <style lang="scss">
-.my-data {
-  .mint-tab-container-item {
+  .my-data .mint-tab-container-item {
     padding: 64px 0 73px;
     text-align: left;
   }
-  .save-wrapper {
+
+  .my-data .save-wrapper {
     display: block;
     width: 100%;
     padding: 16px;
@@ -2447,15 +2461,15 @@ export default {
     left: 0;
     bottom: 0;
     box-sizing: border-box;
-    background-color: rgba(255, 255, 255, 1);
-    // box-shadow: 0px 3px 9px 0px black;
-    .save {
-      display: block;
-      width: 100%;
-    }
+    background-color: white;
   }
 
-  .uploadErrorTip {
+  .my-data .save-wrapper .save {
+    display: block;
+    width: 100%;
+  }
+
+  .my-data .uploadErrorTip {
     color: #ff4949;
     font-size: 12px;
     line-height: 1;
@@ -2463,120 +2477,131 @@ export default {
     margin-bottom: 0;
     line-height: 1.3;
   }
-  .pos-rel {
+
+  .my-data .pos-rel {
     position: relative;
   }
-  .add-child,
-  .add-contact {
+
+  .my-data .add-child,
+  .my-data .add-contact {
     margin-left: 113px;
     margin-bottom: 22px;
     margin-top: 22px;
   }
-  .add-contact {
+
+  .my-data .add-contact {
     margin-bottom: 0;
   }
-  .child,
-  .contact {
+
+  .my-data .child,
+  .my-data .contact {
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-left: 113px;
     padding: 10px 10px 0 10px;
     position: relative;
-    .el-input {
-      width: 86%
-    }
-    &:nth-of-type(n + 2) {
-      margin-top: 22px;
-    }
   }
-  .contacts-wrapper {
+
+  .my-data .child .el-input,
+  .my-data .contact .el-input {
+    width: 86%;
+  }
+
+  .my-data .child:nth-of-type(n + 2),
+  .my-data .contact:nth-of-type(n + 2) {
+    margin-top: 22px;
+  }
+
+  .my-data .contacts-wrapper {
     margin-top: -58px;
     margin-bottom: 22px;
   }
-  .remove-child,
-  .remove-contact {
+
+  .my-data .remove-child,
+  .my-data .remove-contact {
     position: absolute;
     top: 10px;
     right: 10px;
   }
-  .fa-error {
+
+  .my-data .fa-error {
     color: red;
   }
-  .upload-img-wrapper {
+
+  .my-data .upload-img-wrapper {
     display: inline-block;
     position: relative;
-    img {
-      display: block;
-      max-width: 100%;
-    }
-    .fa-times {
-      display: none;
-      position: absolute;
-      top: 0;
-      right: 0;
-      font-size: 1.2em;
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 0 0 0 4px;
-      cursor: pointer;
-    }
   }
-  .child-img {
+
+  .my-data .upload-img-wrapper img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .my-data .upload-img-wrapper .fa-times {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1.2em;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 0 0 0 4px;
+    cursor: pointer;
+  }
+
+  .my-data .child-img {
     display: block;
     max-height: 180px;
   }
-  .el-form-item .fa-times {
+
+  .my-data .el-form-item .fa-times {
     display: none;
   }
-  .el-form {
+
+  .my-data .el-form {
     margin: 0 16px;
   }
-  .el-date-editor.el-input {
+
+  .my-data .el-date-editor.el-input {
     width: 100%;
   }
-  .child .el-form-item__content {
+
+  .my-data .child .el-form-item__content {
     margin-left: 0 !important;
   }
-  .child div.el-form-item {
+
+  .my-data .child div.el-form-item {
     padding-top: 0;
   }
-  .el-upload {
+
+  .my-data .el-upload {
     text-align: left;
   }
-  .el-form-item {
+
+  .my-data .el-form-item {
     margin-bottom: 11px;
   }
-  .el-form-item:nth-of-type(n + 2) {
-    // border-top: 1px solid silver;
+
+  .my-data .el-form-item:nth-of-type(n + 2) {
     padding-top: 11px;
   }
-  .el-form-item__error {
+
+  .my-data .el-form-item__error {
     position: static;
     margin-top: 4px;
     padding-top: 0;
-    line-height: 1.3
+    line-height: 1.3;
   }
-  // .cmpt {
-  //   margin: 0;
-  //   line-height: 20px;
-  //   margin-top: 8px;
-  // }
-  .el-select {
+
+  .my-data .el-select {
     display: block;
   }
-  // .el-form-item__label,
-  // .el-radio__label,
-  // .el-input__inner,
-  // .el-select-dropdown__item span {
-  //   font-size: 12px;
-  // }
-  // .invisible {
-  //   visibility: hidden;
-  // }
-  a {
+
+  .my-data a {
     color: #26a2ff;
     text-decoration: none;
   }
-}
+
 /*修改tab样式*/
 .mint-navbar {
   background-color: #26a2ff;
