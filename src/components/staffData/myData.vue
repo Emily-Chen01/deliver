@@ -823,8 +823,12 @@
           <!--<el-input :readonly="!staffRecord.workEmail.isedit" v-model="model.record.workEmail"></el-input>-->
         </el-form-item>
 
+        <!--<el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级">-->
+          <!--{{model.record.reporterJobNumber}}-->
+          <!--&lt;!&ndash;<el-input :readonly="!staffRecord.reporterJobNumber.isedit" v-model="model.record.reporterJobNumber"></el-input>&ndash;&gt;-->
+        <!--</el-form-item>   这个是jd原有的-->
         <el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级">
-          {{model.record.reporterJobNumber}}
+          {{upji}}
           <!--<el-input :readonly="!staffRecord.reporterJobNumber.isedit" v-model="model.record.reporterJobNumber"></el-input>-->
         </el-form-item>
 
@@ -1010,7 +1014,8 @@ export default {
         jobNumber: '',
         reporterJobNumber: '',
         workLocation: '',
-        becomeFullTime: ''
+        becomeFullTime: '',
+        upji:'',
       },
       staffShareOption: {
         awardDate: '',
@@ -2404,6 +2409,7 @@ export default {
 
   },
   mounted: function () {
+
     V.Promise.all([
       this.$http.get('/api/v1.0/common/config/0'),
       this.$http.get('/api/v1.0/common/config/1'),
@@ -2438,6 +2444,17 @@ export default {
     });
 
     this.queryProvinces();
+
+
+    this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人表赋值给汇报上级
+      console.log(response.body.result.NAME ,'审批人列表=汇报上级');
+      this.upji=response.body.result.NAME;
+
+    }, response => {
+      console.log( 'error callback');
+    });
+
+
 
   }
 }
