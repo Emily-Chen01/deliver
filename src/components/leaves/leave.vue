@@ -134,7 +134,7 @@
           <div class="myApplyTitle">
             <div class="myApplyTitleLeft" >
               <div style="float:left;padding-left: 0.5rem;padding-top: 0.1rem;"><span >| </span></div>
-              <div style="float:left;padding-top: 0.2rem;"> &nbsp{{item.name}}申请</div>
+              <div style="float:left;padding-top: 0.2rem;"> &nbsp{{item.name}}申请<span v-if="item.sname">({{item.sname}})</span></div>
             </div>
             <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
             <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
@@ -819,7 +819,7 @@
     border-top-right-radius: 6px;
   }
   .myApplyTitleLeft{
-    width: 11rem;
+    width: 16rem;
     text-align: left;
     height: 3rem;
     line-height: 3rem;
