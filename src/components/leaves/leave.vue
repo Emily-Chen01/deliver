@@ -116,7 +116,7 @@
              </mt-button>
         </div>
       </mt-tab-container-item>
-      <mt-tab-container-item id="2" style="background: #eff3f7;">
+      <mt-tab-container-item id="2" style="background: #eff3f7;height: 100vh">
 
         <!--进行编辑内容开始-->
         <div    class="changeTitleClass">
@@ -130,7 +130,7 @@
         <!--//进行编辑内容结束-->
 
         <!--我的申请-->
-        <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord!==null">
+        <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord!==null" style="">
           <div class="myApplyTitle">
             <div class="myApplyTitleLeft" >
               <div style="float:left;padding-left: 0.5rem;padding-top: 0.1rem;"><span >| </span></div>
@@ -159,6 +159,10 @@
 
             <div class="myApplyContentLeft">事由</div>
             <div class="myApplyContentNr">{{item.remarks}}</div>
+
+            <div class="myApplyContentLeft" v-if="item.why">原因</div>
+            <div class="myApplyContentNr" style="padding-bottom: 0.5rem;" v-if="item.why">{{item.why}}</div>
+
             <div v-if="item.image" style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
           </div>
           <div class="myApplyBottom" v-if="item.image">
@@ -171,6 +175,7 @@
               </div>
             </div>
           </div>
+          <div style="clear:both;"></div>
         </div>
         <div  class="myApply"  v-else-if="searchApplyRecord==null">
           没有数据

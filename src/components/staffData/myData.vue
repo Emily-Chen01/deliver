@@ -823,6 +823,12 @@
           <!--<el-input :readonly="!staffRecord.jobNumber.isedit" v-model="model.record.jobNumber"></el-input>-->
         </el-form-item>
 
+        <el-form-item v-if="staffRecord.StaffStatus" label="员工状态">
+          {{model.record.sstaffStatus}}
+          <!--6-16-17新增员工状态-->
+          <!--<el-input :readonly="!staffRecord.jobNumber.isedit" v-model="model.record.jobNumber"></el-input>-->
+        </el-form-item>
+
         <el-form-item v-if="staffRecord.workEmail" label="工作邮箱">
           {{model.record.workEmail}}
           <!--<el-input :readonly="!staffRecord.workEmail.isedit" v-model="model.record.workEmail"></el-input>-->
@@ -833,7 +839,7 @@
           <!--&lt;!&ndash;<el-input :readonly="!staffRecord.reporterJobNumber.isedit" v-model="model.record.reporterJobNumber"></el-input>&ndash;&gt;-->
         <!--</el-form-item>   这个是jd原有的-->
         <el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级">
-          {{upji}}
+          {{staffRecord.upji}}
           <!--<el-input :readonly="!staffRecord.reporterJobNumber.isedit" v-model="model.record.reporterJobNumber"></el-input>-->
         </el-form-item>
 
@@ -887,7 +893,7 @@
           <!--<el-input :readonly="!staffShareOption.awardAmount.isedit" type="number" v-model="model.shareOption.awardAmount"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.awardRound" label="授予轮次">
+        <el-form-item v-if=" staffShareOption.awardRound" label="授予轮次">
           {{model.shareOption.awardRound}}轮
           <!--<el-input :readonly="!staffShareOption.awardRound.isedit" type="number" v-model="model.shareOption.awardRound">
             <template slot="append">轮</template>
@@ -906,7 +912,7 @@
           <!--<el-input :readonly="!staffShareOption.terminallyCount.isedit" type="number" v-model="model.shareOption.terminallyCount"></el-input>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.contractUrl" label="期权合同">
+        <el-form-item v-if="staffShareOption.terminallyCount" label="期权合同">
           <a v-if="model.shareOption.contractUrl" :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
           <!--<el-upload
             v-if="staffShareOption.contractUrl.isedit"
@@ -2214,7 +2220,9 @@ export default {
         res = res.body;
         if(res.code === 200) {
           this.confList = res.result;
+          let d = {};
           res.result.forEach(item => {
+              d[item.remark] = item.jname;
             switch(item.tname) {
               case 'STAFF':
                 if(item.isconfig && item.isvisible) {
@@ -2233,8 +2241,34 @@ export default {
               break;
             }
           });
+
+          console.log('rr', d, this.staff, this.staffRecord, this.staffShareOption);
         }
-        console.log('rr', this.staff, this.staffRecord, this.staffShareOption);
+        //测试居住证
+        this.confList.forEach(item => {
+//            console.log(item.remark);
+          if(item.remark==='工作居住证信息'){
+            console.log('工作居住证信息',item);
+          }
+          switch(item.tname) {
+            case 'STAFF':
+              if(item.isconfig) {
+                this.staff[item.jname] = 1;
+              }
+              break;
+            case 'STAFF_RECORD':
+              if(item.isconfig) {
+                this.staffRecord[item.jname] = 1;
+              }
+              break;
+          }
+
+
+        });
+
+        //测试居住证
+
+
       })
       .catch(err => console.log(err.status, err.statusText));
 
@@ -2347,7 +2381,7 @@ export default {
         this.model.hasComresRmk = emp.hasComresRmk || ''; // 竞业协议备注信息
         this.model.emplsepacertUrl = emp.emplsepacertUrl || ''; // 离职证明
 
-
+        console.log(emp.record,'emp.record');
         this.model.record.uid = emp.record.uid;
         this.model.record.companyUid = emp.record.companyUid;
         this.model.record.staffUid = emp.record.staffUid;
@@ -2368,6 +2402,9 @@ export default {
         this.model.record.workAddress = emp.record.workAddress || '';
         this.model.record.baseSalary = toStr(emp.record.baseSalary); // 基础薪资
         this.model.record.trialSalary = toStr(emp.record.trialSalary); // 试用薪资
+
+        this.model.record.sstaffStatus = emp.record.staffStatus; // 员工状态  6-16-16新增
+
 
 
         this.model.record.contract.uid = emp.record.contract.uid;
@@ -2452,8 +2489,9 @@ export default {
 
 
     this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人表赋值给汇报上级
-      console.log(response.body.result.NAME ,'审批人列表=汇报上级');
-      this.upji=response.body.result.NAME;
+//      console.log(response.body.result.NAME ,'审批人列表=汇报上级');
+
+      this.staffRecord.upji=response.body.result.NAME; //查询审批接口报错先注释6-16-15
 
     }, response => {
       console.log( 'error callback');
