@@ -201,6 +201,8 @@
           <el-input :readonly="!staff.wechart.isedit" v-model="model.wechart"></el-input>
         </el-form-item>
 
+
+
         <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus">
           <el-select :disabled="!staff.maritalStatus.isedit" clearable v-model="model.maritalStatus" placeholder="请选择">
             <el-option
@@ -234,7 +236,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="model.politicsStatus === '3' && staff.politicsStatus" label="入党时间" prop="thePartyTime">
+        <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间" prop="thePartyTime">
           <el-date-picker
             :readonly="!staff.politicsStatus.isedit"
             v-model="model.thePartyTime"
@@ -596,6 +598,9 @@
 
       <el-form label-position="left" :model="model" :rules="rules" ref="postFm" :label-width="labelWidth">
 
+        <!--<el-form-item v-if="staffRecord.contracMes" label="合同类型">-->
+          <!--{{contractTypes && contractTypes[model.record.contract.contracType.toString()]}}-->
+        <!--</el-form-item>-->
         <el-form-item v-if="staffRecord.contracMes" label="合同类型">
           {{contractTypes && contractTypes[model.record.contract.contracType.toString()]}}
         </el-form-item>
@@ -1255,9 +1260,9 @@ export default {
           }
         ],
         wechart: [
-          {
-            message: '请填写正确的微信号(最多 24 个字符)', trigger: 'change', transform, pattern: /^\d{1,24}$/
-          }
+//          {
+//            message: '请填写正确的微信号(最多 24 个字符)', trigger: 'change', transform, pattern: /^\d{1,24}$/
+//          }
         ],
         maritalStatus: [
           {
@@ -2367,7 +2372,7 @@ export default {
 
         this.model.record.contract.uid = emp.record.contract.uid;
         this.model.record.contract.recordUid = emp.record.contract.recordUid;
-
+        console.log(emp.record,'emp.record.contract.contracType这里面的是空值light');
         this.model.record.contract.contracType = toStr(emp.record.contract.contracType); // 合同类型
         this.model.record.contract.startTime = dateProcess(emp.record.contract.startTime); // 合同生效日期
         this.model.record.contract.contractPeriod = emp.record.contract.contractPeriod || ''; // 合同期限

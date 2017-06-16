@@ -77,7 +77,7 @@
       handerUnbundling(){
         this.$http.post('/api/v1.0/client/unbind').then(response => {
           console.log('解除绑定');
-
+          this.$router.push({path:'/index'});
         }, response => {
           console.log( 'error callback');
         });
