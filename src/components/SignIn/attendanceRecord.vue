@@ -10,7 +10,7 @@
         <div class="egClass"><span class="publicStyle abnormalStyle"></span>&nbsp考勤异常</div>
         <div class="egClass"><span class="publicStyle leaveStyle"></span>&nbsp请假</div>
       </div>
-      <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem"></div>
+      <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem 0.5rem 1rem"></div>
 
       <div>
         <div class="spanStatus">
@@ -32,7 +32,7 @@
 
       </div>
 
-      <div style="height: 1px;background: #cccccc;margin:1rem;clear: both;"></div>
+      <div style="height: 1px;background: #cccccc;margin:0.7rem 1rem 0.4rem 1rem;clear: both;"></div>
 
       <div style="background:rgb(239,241,247);">
         <div class="timeTitle">
@@ -42,7 +42,7 @@
           <div class="timeSpanClass">
             今日工时共计：{{connectTime.totalTime}}小时
           </div>
-          <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem"></div>
+          <div style="height: 1px;background: #cccccc;margin: 0.5rem 1rem 0.6rem 1rem"></div>
           <div class="spanListClass">
             <div class="toWorkLeft"><div>上</div></div>
             <div class="toWorkRight">
@@ -497,7 +497,7 @@
 .egClass{
   width:7.5rem;
   height: 2rem;
-  line-height: 3rem;
+  line-height: 2.6rem;
   display: inline-block;
 }
 .timeTitle{

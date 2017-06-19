@@ -199,7 +199,7 @@ let oneselfData={};
 //            let zu={};
 //            zu.position=this.infoObj.position;
 //            zu.name=this.oneselfData.name;
-            this.setCookie('infoObjPassPostion',this.infoObj.position,365);
+            this.setCookie('infoObjPassPostion',this.infoObj.deptName,365);
             this.setCookie('infoObjPassName',this.oneselfData.name,365);
 
 
