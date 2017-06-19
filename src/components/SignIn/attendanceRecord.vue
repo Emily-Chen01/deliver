@@ -32,8 +32,7 @@
 
       </div>
 
-
-      <div style="height: 1px;background: #cccccc;margin:1rem"></div>
+      <div style="height: 1px;background: #cccccc;margin:1rem;clear: both;"></div>
 
       <div style="background:rgb(239,241,247);">
         <div class="timeTitle">
@@ -86,34 +85,34 @@
         data(){
             return {
               fcEvents: [
-                {
-                  title : '',
-                  start : '2017/06/4',
-                  end : '2017/06/4',
-                  cssClass:'normal',
-                  YOUR_DATA  : {}
-                },
-                {
-                  title : '',
-                  start : '2017/06/5',
-                  end : '2017/06/5',
-                  cssClass:'normal',
-                  YOUR_DATA  : {}
-                },
-                {
-                  title : '',
-                  start : '2017/06/6',
-                  end : '2017/06/6',
-                  cssClass:'leave',
-
-                },
-                {
-                  title : '',
-                  start : '2017/06/7',
-                  end : '2017/06/7',
-                  cssClass:'abnormal',
-
-                }
+//                {
+//                  title : '',
+//                  start : '2017/06/4',
+//                  end : '2017/06/4',
+//                  cssClass:'normal',
+//                  YOUR_DATA  : {}
+//                },
+//                {
+//                  title : '',
+//                  start : '2017/06/5',
+//                  end : '2017/06/5',
+//                  cssClass:'normal',
+//                  YOUR_DATA  : {}
+//                },
+//                {
+//                  title : '',
+//                  start : '2017/06/6',
+//                  end : '2017/06/6',
+//                  cssClass:'leave',
+//
+//                },
+//                {
+//                  title : '',
+//                  start : '2017/06/7',
+//                  end : '2017/06/7',
+//                  cssClass:'abnormal',
+//
+//                }
 
               ],
               objToSpan: {
@@ -270,42 +269,8 @@
 
 
 
-             let arrayShow=[
-               {
-                  date : '2017-06-5',
-                },
-                 {
-                  date : '2017-06-6',
-                },
-                 {
-                  date : '2017-06-7',
-                },
-                 {
-                  date : '2017-06-9',
-                },
-                ];
-                //arrayShow=response.body.result.attend.holidays;
-                if(arrayShow){
-                  for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
-                    this.fcEvents.push({
-                      title : '假',
-                      start :arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
-                    // start :arrayShow[i].start,
-                      end : arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
-                    });
-                  }
-                }
 
-                    this.$nextTick(() => {
-                //  改变当月工作日的背景颜色
-                this.showDate('', 0);
-                this.showDate(1, 1);
-                this.showDate(1, 2);
-                this.showDate(1, 3);
-                this.showDate(1, 4);
-                this.showDate(1, 5);
-                this.showDate('', 6);
-              });
+
 
 
 
@@ -402,10 +367,40 @@
               //测试显示默认当天信息结束
 
 
+              let arrayShow=[
+//               {
+//                  date : '2017-06-5',
+//                },
+              ];
+              arrayShow=response.body.result.attend.holidays;
+              if(arrayShow){
+                for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
+                  this.fcEvents.push({
+                    title : '假',
+                    start :arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
+                    // start :arrayShow[i].start,
+                    end : arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
+                  });
+                }
+              }
 
 
 
-             
+
+              this.$nextTick(() => {
+                //  改变当月工作日的背景颜色
+                this.showDate('', 0);
+                this.showDate(1, 1);
+                this.showDate(1, 2);
+                this.showDate(1, 3);
+                this.showDate(1, 4);
+                this.showDate(1, 5);
+                this.showDate('', 6);
+              });
+
+
+
+
 
               if(response.body.result.records){
                 for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态
@@ -427,7 +422,7 @@
 
                 console.log( this.fcEvents);
 
-          
+
 
 
 
@@ -495,7 +490,7 @@
 .spanStatus{
   width: 5rem;
   height: 2rem;
-  line-height: 2rem;
+  /*line-height: 2rem;*/
   display: inline-block;
   padding: 0.2rem;
 }
