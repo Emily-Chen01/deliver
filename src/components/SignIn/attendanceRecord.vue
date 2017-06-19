@@ -292,7 +292,7 @@
 
               //测试显示默认当天信息start
               var myDate = new Date();
-              var timePass= myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();        //获取当前年份(2位)
+              var timePass= myDate.getFullYear()+'/'+(myDate.getMonth()+1)+'/'+myDate.getDate();        //获取当前年份(2位)
 
               var zhuanDate= moment(timePass).format(df2);
               console.log(timePass,'timePass');

@@ -262,16 +262,23 @@
       </div>
       <div style="clear:both;"></div>
       <div class="clickClass">
-        <div v-show="daKaHide" style="position: absolute; top:-2.2rem;left:-2.6rem;width: 14rem;height: 14rem">
-          <img v-show="toUp" :src="imgSrc.bg" style="width: 13rem;height: 13rem;line-height: 13rem">
+        <div v-show="daKaHide" style="position: absolute; top:-2rem;left:-4.6rem;width: 16rem;height: 16rem">
+          <img v-show="toUp" :src="imgSrc.bg" style="width: 18rem;height: 18rem;line-height: 18rem">
+              <!--此处是gif圆-->
         </div>
-        <div style="position: relative" v-show="daKaHide">
-          <mt-button type="primary" v-show="toUp" @click="handerClickEvent" style="background: rgba(255,255,255,0);">
-            <div>
+        <!--<div v-show="daKaHide" style="position: absolute; top:3.5rem;left:2.5rem;width: 4rem;height: 4rem">-->
+          <!--<img v-show="toUp" :src="imgSrc.header" style="width: 4rem;height: 4rem;line-height: 4rem;background:pink;display: block;z-index: -1">-->
+          <!--&lt;!&ndash;此处是gif手 &ndash;&gt;-->
+        <!--</div>-->
+        <div style="position: relative;top:2rem;left: -1rem;" v-show="daKaHide">
+
+
+          <mt-button class="clickClassButton" type="primary" v-show="toUp" @click="handerClickEvent" style="background: rgba(255,255,255,0);">
+            <div style="position: absolute;top:3rem;left: 1.4rem;width:8rem;height: 8rem;">
               <p class="clickClassUp" v-show="toClickSpan">上班打卡 </p>
               <p class="clickClassUp" v-show="downClickSpan">下班打卡 </p>
-              <p class="clickClassDown">
-                <span id="hour"></span>:<span id="minute"></span>:<span id="second"></span>
+              <p class="clickClassDown" >
+                <span id="hour"></span><span  :class="{  maohaoClass:maohao}">:</span><span id="minute"></span><span :class="{  maohaoClass:maohao}">:</span><span id="second"></span>
               </p>
             </div>
 
@@ -553,7 +560,8 @@
 //        center: {lng: 0, lat: 0},
         fanwei:'',
         fanweixia:'',
-
+//        timeShowd:'',//时间全展示
+        maohao:true,//时间全展示
 
       }
     },
@@ -884,7 +892,7 @@
         var hour = document.getElementById('hour');
         var minute = document.getElementById('minute');
         var second = document.getElementById('second');
-
+          self=this;
         function showTime() {
           var oDate = new Date();
           var iHours = oDate.getHours();
@@ -893,8 +901,9 @@
           hour.innerHTML = AddZero(iHours);
           minute.innerHTML = AddZero(iMinute);
           second.innerHTML = AddZero(iSecond);
-        }
+          self.maohao=false;
 
+        }
         showTime();
         setInterval(showTime, 1000);
         function AddZero(n) {
@@ -1022,7 +1031,7 @@
                 console.log('同事区域外');
               }
               this.toClickSpan = false;
-
+//              this.zcDownShowSpan=true; //为了显示 下班打卡的下班时间文字
 
             } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) { //下班打卡
               //在下班打卡前要确定是否在范围内 然后返回结果  进行打卡状态展示
@@ -1688,14 +1697,15 @@
     line-height: 9rem;
     text-align: center;
     position: absolute;
-    top: 25rem;
+    top: 23.5rem;
     left: 33%;
   }
 
-  .clickClass button {
-    width: 8rem;
-    height: 8rem;
+  .clickClassButton {
+    width: 11rem;
+    height: 11rem;
     border-radius: 4rem;
+    padding-bottom: 5rem;
   }
 
   .clickClassUp {
@@ -1706,13 +1716,13 @@
     font-size: 1.5rem;
     color: #ffffff;
     left: 1rem;
-    font-weight: 600;
+    /*font-weight: 600;*/
   }
 
   .clickClassDown {
     height: 1rem;
     left: 1rem;
-    font-weight: 600;
+    /*font-weight: 600;*/
     line-height: 1rem;
     position: absolute;
     top: 3.2rem;
@@ -1805,7 +1815,7 @@
 
   .spanKnow {
     color: #ffffff;
-    font-weight: 600;
+    /*font-weight: 600;*/
     font-size: 1.3rem;
     position: absolute;
     top: 1.8rem;
@@ -1965,5 +1975,9 @@
     height: 24rem;
     border-radius: 4px;
     background-color: #f54435;
+  }
+  .maohaoClass{
+    color: #26a2ff;
+    opacity: 0;
   }
 </style>
