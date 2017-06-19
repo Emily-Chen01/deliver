@@ -74,7 +74,7 @@
 
   let df = 'HH:mm:ss';
   let df2 = 'YYYY/MM/DD';
-  let df3 = 'YYYY/MM/DD';
+  let df3 = 'YYYY-MM-DD';
 
 
 
@@ -86,34 +86,34 @@
         data(){
             return {
               fcEvents: [
-                {
-                  title : '',
-                  start : '2017/06/4',
-                  end : '2017/06/4',
-                  cssClass:'normal',
-                  YOUR_DATA  : {}
-                },
-                {
-                  title : '',
-                  start : '2017/06/5',
-                  end : '2017/06/5',
-                  cssClass:'normal',
-                  YOUR_DATA  : {}
-                },
-                {
-                  title : '',
-                  start : '2017/06/6',
-                  end : '2017/06/6',
-                  cssClass:'leave',
-
-                },
-                {
-                  title : '',
-                  start : '2017/06/7',
-                  end : '2017/06/7',
-                  cssClass:'abnormal',
-
-                }
+//                {
+//                  title : '',
+//                  start : '2017-06-4',
+//                  end : '2017-06-4',
+//                  cssClass:'normal',
+//                  YOUR_DATA  : {}
+//                },
+//                {
+//                  title : '',
+//                  start : '2017-06-5',
+//                  end : '2017-06-5',
+//                  cssClass:'normal',
+//                  YOUR_DATA  : {}
+//                },
+//                {
+//                  title : '',
+//                  start : '2017-06-6',
+//                  end : '2017-06-6',
+//                  cssClass:'leave',
+//
+//                },
+//                {
+//                  title : '',
+//                  start : '2017-05-7',
+//                  end : '2017-05-7',
+//                  cssClass:'abnormal',
+//
+//                }
 
               ],
               objToSpan: {
@@ -267,48 +267,6 @@
             console.log('end'+end)
             console.log('current'+current)
 //            console.log('???');
-
-
-
-             let arrayShow=[
-               {
-                  date : '2017-06-5',
-                },
-                 {
-                  date : '2017-06-6',
-                },
-                 {
-                  date : '2017-06-7',
-                },
-                 {
-                  date : '2017-06-9',
-                },
-                ];
-                //arrayShow=response.body.result.attend.holidays;
-                if(arrayShow){
-                  for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
-                    this.fcEvents.push({
-                      title : '假',
-                      start :arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
-                    // start :arrayShow[i].start,
-                      end : arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
-                    });
-                  }
-                }
-
-                    this.$nextTick(() => {
-                //  改变当月工作日的背景颜色
-                this.showDate('', 0);
-                this.showDate(1, 1);
-                this.showDate(1, 2);
-                this.showDate(1, 3);
-                this.showDate(1, 4);
-                this.showDate(1, 5);
-                this.showDate('', 6);
-              });
-
-
-
             var zhuan = current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
            var tt = zhuan.substring(0,7);
             console.log(tt);
@@ -405,13 +363,28 @@
 
 
 
-             
+              let arrayShow=[
+//                {
+//                  start : '2017-06-4',
+//                },
+                ];
+                arrayShow=response.body.result.attend.holidays;
+                if(arrayShow){
+                  for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
+                    this.fcEvents.push({
+                      title : '假',
+                      title2 : '期',
+                      start :moment(arrayShow[i].date).format(df3),
+                      end : moment(arrayShow[i].date).format(df3),
+                    });
+                  }
+                }
 
               if(response.body.result.records){
                 for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态
                   let connectDate={};
-                  connectDate.start=response.body.result.records[i].punchYear+'/'+response.body.result.records[i].punchMonth+'/'+response.body.result.records[i].punchDate
-                  connectDate.end=response.body.result.records[i].punchYear+'/'+response.body.result.records[i].punchMonth+'/'+response.body.result.records[i].punchDate
+                  connectDate.start=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
+                  connectDate.end=response.body.result.records[i].punchYear+'-'+response.body.result.records[i].punchMonth+'-'+response.body.result.records[i].punchDate
                   connectDate.cssClass=response.body.result.records[i].desc;
                   connectDate.totalTime=response.body.result.records[i].duration?response.body.result.records[i].duration:0;
 //                  connectDate.title =response.body.result.records[i].desc;
@@ -427,7 +400,16 @@
 
                 console.log( this.fcEvents);
 
-          
+              this.$nextTick(() => {
+                //  改变当月工作日的背景颜色
+                this.showDate(response.body.result.attend.wdSun, 0);
+                this.showDate(response.body.result.attend.wdMon, 1);
+                this.showDate(response.body.result.attend.wdTue, 2);
+                this.showDate(response.body.result.attend.wdWed, 3);
+                this.showDate(response.body.result.attend.wdThu, 4);
+                this.showDate(response.body.result.attend.wdFri, 5);
+                this.showDate(response.body.result.attend.wdSat, 6);
+              });
 
 
 
