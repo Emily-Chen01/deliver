@@ -170,14 +170,12 @@
             }
             this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
 //              console.log(response.body.result.duration);
-              if(response.body.result==null){  //如果没有打卡记录清空时间和文字状态
                 this.tozhang='';
                 this.downzhang='';
                 this.toSapnTime='';
                 this.downSapnTime='';
                 this.connectTime.totalTime='';
 
-              }
               this.connectTime.totalTime=response.body.result.duration?response.body.result.duration:0;
 
 
@@ -214,31 +212,54 @@
                     this.downzhang='未打卡';
                   }else {
                     if(response.body.result.twStatus==0){
+
                       this.tozhang='正常打卡';
+                      if(response.body.result.twOutside){
+                        this.tozhang='正常打卡(区域外)';
+                      }
+
 //                  alert('正常打卡');
                     } if (response.body.result.twStatus==1){
                       this.tozhang='迟到打卡';
+                      if(response.body.result.twOutside){
+                        this.tozhang='迟到打卡(区域外)';
+                      }
 //                  alert('迟到打卡');
 
                     } if (response.body.result.twStatus==2){
                       this.tozhang='旷工打卡';
+                      if(response.body.result.twOutside){
+                        this.tozhang='旷工打卡(区域外)';
+                      }
 //                  alert('旷工打卡');
 
                     }
                     if(response.body.result.owStatus==0){
                       this.downzhang='正常打卡';
+                      if(response.body.result.owOutside){
+                        this.tozhang='正常打卡(区域外)';
+                      }
 //                    alert('正常打卡');
 
                     } if (response.body.result.owStatus==1){
                       this.downzhang='早退打卡';
+//                      if(response.body.result.owOutside||response.body.result.twOutside){
+//                        this.tozhang='早退打卡(区域外)';
+//                      }
 //                    alert('早退打卡');
 
                     } if (response.body.result.owStatus==2){
                       this.downzhang='加班打卡';
+                      if(response.body.result.owOutside){
+                        this.tozhang='加班打卡(区域外)';
+                      }
 //                    alert('加班打卡');
 
                     }if (response.body.result.owStatus==3){
                       this.downzhang='旷工打卡';
+                      if(response.body.result.owOutside){
+                        this.tozhang='旷工打卡(区域外)';
+                      }
 //                    alert('加班打卡');  //添加6-14-9 新增的下班旷工（修改提交的bug）
 
                     }
@@ -330,31 +351,54 @@
                     this.downzhang='未打卡';
                   }else {
                     if(response.body.result.twStatus==0){
+
                       this.tozhang='正常打卡';
+                      if(response.body.result.twOutside){
+                        this.tozhang='正常打卡(区域外)';
+                      }
+
 //                  alert('正常打卡');
                     } if (response.body.result.twStatus==1){
                       this.tozhang='迟到打卡';
+                      if(response.body.result.twOutside){
+                        this.tozhang='迟到打卡(区域外)';
+                      }
 //                  alert('迟到打卡');
 
                     } if (response.body.result.twStatus==2){
                       this.tozhang='旷工打卡';
+                      if(response.body.result.twOutside){
+                        this.tozhang='旷工打卡(区域外)';
+                      }
 //                  alert('旷工打卡');
 
                     }
                     if(response.body.result.owStatus==0){
                       this.downzhang='正常打卡';
+                      if(response.body.result.owOutside){
+                        this.tozhang='正常打卡(区域外)';
+                      }
 //                    alert('正常打卡');
 
                     } if (response.body.result.owStatus==1){
                       this.downzhang='早退打卡';
+//                      if(response.body.result.owOutside||response.body.result.twOutside){
+//                        this.tozhang='早退打卡(区域外)';
+//                      }
 //                    alert('早退打卡');
 
                     } if (response.body.result.owStatus==2){
                       this.downzhang='加班打卡';
+                      if(response.body.result.owOutside){
+                        this.tozhang='加班打卡(区域外)';
+                      }
 //                    alert('加班打卡');
 
                     }if (response.body.result.owStatus==3){
                       this.downzhang='旷工打卡';
+                      if(response.body.result.owOutside){
+                        this.tozhang='旷工打卡(区域外)';
+                      }
 //                    alert('加班打卡');  //添加6-14-9 新增的下班旷工（修改提交的bug）
 
                     }

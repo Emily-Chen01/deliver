@@ -180,14 +180,16 @@
         <!--</div>-->
       <!--</div>-->
       <div style="clear:both;"></div>
+
+
       <div v-show="zcDownShowSpan">
         <div style="margin-top: 1.3rem">
           <!--上面的top原有是5rem 5-16晚改-->
-          <div class="toWorkLeft">
+          <div class="toWorkLeft" v-show="showOwStstus">
             <div>下</div>
           </div>
           <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan">下班时间</div>
+            <div class="toWorkRightTimeSpan" v-show="showOwStstus">下班时间</div>
             <div class="toWorkRightTimeSpan">
               {{goToTime}}
 
@@ -263,25 +265,21 @@
       <div style="clear:both;"></div>
       <div class="clickClass">
         <div v-show="daKaHide" style="position: absolute; top:-2rem;left:-4.6rem;width: 16rem;height: 16rem">
-          <img v-show="toUp" :src="imgSrc.bg" style="width: 18rem;height: 18rem;line-height: 18rem">
+          <img v-show="toUp" :src="imgSrc.bg" style="width: 16rem;height: 16rem;">
               <!--此处是gif圆-->
         </div>
-        <!--<div v-show="daKaHide" style="position: absolute; top:3.5rem;left:2.5rem;width: 4rem;height: 4rem">-->
-          <!--<img v-show="toUp" :src="imgSrc.header" style="width: 4rem;height: 4rem;line-height: 4rem;background:pink;display: block;z-index: -1">-->
-          <!--&lt;!&ndash;此处是gif手 &ndash;&gt;-->
-        <!--</div>-->
-        <div style="position: relative;top:2rem;left: -1rem;" v-show="daKaHide">
-
-
+        <div style="position: absolute;top:2rem;left: -1rem;" v-show="daKaHide">
           <mt-button class="clickClassButton" type="primary" v-show="toUp" @click="handerClickEvent" style="background: rgba(255,255,255,0);">
-            <div style="position: absolute;top:3rem;left: 1.4rem;width:8rem;height: 8rem;">
+            <div style="position: absolute;top:2rem;left: 0.4rem;width:8rem;height: 8rem;">
               <p class="clickClassUp" v-show="toClickSpan">上班打卡 </p>
               <p class="clickClassUp" v-show="downClickSpan">下班打卡 </p>
               <p class="clickClassDown" >
-                <span id="hour"></span><span  :class="{  maohaoClass:maohao}">:</span><span id="minute"></span><span :class="{  maohaoClass:maohao}">:</span><span id="second"></span>
+                <span id="hour">
+                </span><span  :class="{  maohaoClass:maohao}">:</span><span id="minute">
+               </span><span :class="{  maohaoClass:maohao}">:</span><span id="second">
+              </span>
               </p>
             </div>
-
           </mt-button>
 
           <div v-show="Obtain">
@@ -559,9 +557,10 @@
         owRange:'', //下班span文字
 //        center: {lng: 0, lat: 0},
         fanwei:'',
-        fanweixia:'',
+        fanweixia:true,
 //        timeShowd:'',//时间全展示
         maohao:true,//时间全展示
+        showOwStstus:'',//显示下班的文字
 
       }
     },
@@ -609,8 +608,10 @@
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
 
-          console.log(response.body.code,'responseresponse');
-          console.log(response.body.result.twStatus,'twStatus')
+          console.log(response.body,'responseresponse');
+          console.log(response.body.result.twStatus,'twStatus');
+          this.showOwStstus=response.body.result.twStatus;
+          console.log(this.showOwStstus);
 
           //如果为false不能显示打卡功能start
           if(response.body.code==500){
@@ -1692,20 +1693,19 @@
   }
 
   .clickClass {
-    width: 9rem;
-    height: 9rem;
-    line-height: 9rem;
-    text-align: center;
+    width: 16rem;
+    height: 16rem;
+    /*line-height: 9rem;*/
+    /*text-align: center;*/
     position: absolute;
     top: 23.5rem;
-    left: 33%;
+    left: 36%;
   }
 
   .clickClassButton {
     width: 11rem;
     height: 11rem;
-    border-radius: 4rem;
-    padding-bottom: 5rem;
+    /*padding-bottom: 5rem;*/
   }
 
   .clickClassUp {
@@ -1809,7 +1809,7 @@
     height: 1px;
     background-color: #ffffff;
     position: absolute;
-    top: 4rem;
+    top: 5rem;
 
   }
 
@@ -1818,7 +1818,7 @@
     /*font-weight: 600;*/
     font-size: 1.3rem;
     position: absolute;
-    top: 1.8rem;
+    top: 6.8rem;
     left: 5.3rem;
   }
 

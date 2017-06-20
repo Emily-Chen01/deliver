@@ -74,7 +74,7 @@
                 :headers="tokenHeader"
                 :max-file-size="41943040"
                 url="/api/v1.0/client/upload" >
-                <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShow"  class="CardImg"   /></div>
+                <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShowCamera"  class="CardImg"   /></div>
                 <div class="CardDivImg" v-if="imgSrc.shenFenIcon">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  /></div>
 
               </vue-core-image-upload>
@@ -160,7 +160,7 @@
             <div class="myApplyContentLeft">事由</div>
             <div class="myApplyContentNr">{{item.remarks}}</div>
 
-            <div class="myApplyContentLeft" v-if="item.why">原因</div>
+            <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
             <div class="myApplyContentNr" style="padding-bottom: 0.5rem;" v-if="item.why">{{item.why}}</div>
 
             <div v-if="item.image" style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
@@ -252,6 +252,8 @@
         imgSrc: {
           shenFenIcon: '',
           shenFenIconShow: require('../../assets/shenfenzheng.png'),
+          shenFenIconShowCamera: require('../../assets/camera.png'),
+
           selectShow: require('../../assets/arrow_2.png'),
 
 
@@ -786,8 +788,8 @@
     line-height: 6rem;
     padding-bottom: 1rem;
     position: absolute;
-    left: 33%;
-    top: 1.6rem;
+    left: 26%;
+    top: 0.6rem;
   }
   /*.cardClass div{*/
   /*width: 9rem;*/
@@ -797,15 +799,15 @@
   /*}*/
   .CardImg{
     display: block;
-    width: 80%;
-    height: 80%;
-    padding-left: 0rem;
+    width: 100%;
+    height: 97%;
+    border-bottom: 1px solid rgba(211,219,230,0.3);
 
   }
   .CardDivImg{
     display: block;
     width: 11rem;
-    height: 6rem;
+    height: 7rem;
     padding-left: 0rem;
 
   }
