@@ -1715,6 +1715,7 @@
   .toWorkLeft div {
     border-radius: 15px;
     border: 1px solid #cccccc;
+    background: rgb(239,243,247);
   }
 
   .toWorkRight {
