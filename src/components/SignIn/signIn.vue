@@ -181,15 +181,31 @@
       <!--</div>-->
       <div style="clear:both;"></div>
 
+      <!--测试竖线-->
+
+      <!--<div v-show="showOwStstus" style="position: absolute;background: rgb(152,171,151);height: 4.8rem;width: 0.1rem;top:9.3rem;left:1rem"></div>-->
+      <!--测试竖线-->
+
+
+
+      <div style="margin-top: 1.3rem" v-if="!daAfter" :class={xiaShowOpacity:daAfter} >
+        <!--此处是为了页面上班打卡后显示的初始化下班时间显示-->
+        <div class="toWorkLeft" v-show="showOwStstus">
+          <div>下</div>
+        </div>
+        <div class="toWorkRight">
+          <div class="toWorkRightTimeSpan" v-show="showOwStstus">下班时间</div>
+          </div>
+        </div>
 
       <div v-show="zcDownShowSpan">
         <div style="margin-top: 1.3rem">
           <!--上面的top原有是5rem 5-16晚改-->
-          <div class="toWorkLeft" v-show="showOwStstus">
+          <div class="toWorkLeft"  >
             <div>下</div>
           </div>
           <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan" v-show="showOwStstus">下班时间</div>
+            <div class="toWorkRightTimeSpan" >下班时间</div>
             <div class="toWorkRightTimeSpan">
               {{goToTime}}
 
@@ -612,6 +628,7 @@
           console.log(response.body.result.twStatus,'twStatus');
           this.showOwStstus=response.body.result.twStatus;
           console.log(this.showOwStstus);
+          this.daAfter=response.body.result.owStatus;
 
           //如果为false不能显示打卡功能start
           if(response.body.code==500){
@@ -1138,6 +1155,8 @@
               this.toUp = false;
 
             }
+            this.daAfter=response.body.result.owStatus; //新增为了打卡时给下班时间的状态
+
 
           }, response => {
             console.log('error callback');
@@ -1603,6 +1622,9 @@
 </script>
 
 <style scoped>
+  .xiaShowOpacity{
+    opacity: 0;
+  }
   .siginLeft {
     /*display: inline-block;*/
     width: 21rem;
