@@ -1716,6 +1716,7 @@
     border-radius: 15px;
     border: 1px solid #cccccc;
     background: rgb(239,243,247);
+    color: rgb(152,171,209);
   }
 
   .toWorkRight {
