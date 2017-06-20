@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div style="height: 85vh; padding-left: 1rem;">
+    <div style="height: 85vh; padding-left: 1rem;position: relative">
       <div style="clear:both;"></div>
       <div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>
       <div v-show="zcToUpShow">
@@ -183,7 +183,7 @@
 
       <!--测试竖线-->
 
-      <div v-show="showOwStstusX" style="position: absolute;background: rgb(152,171,151);height: 5.3rem;width: 0.1rem;top:9.3rem;left:2rem"></div>
+      <div v-show="showOwStstusX" style="position: absolute;background: rgb(152,171,191);height: 5.3rem;width: 0.1rem;top:2.9rem;left:2rem"></div>
       <!--测试竖线-->
 
 
