@@ -433,13 +433,13 @@
 
               this.$nextTick(() => {
                 //  改变当月工作日的背景颜色
-                this.showDate('', 0);
-                this.showDate(1, 1);
-                this.showDate(1, 2);
-                this.showDate(1, 3);
-                this.showDate(1, 4);
-                this.showDate(1, 5);
-                this.showDate('', 6);
+                this.showDate(response.body.result.attend.wdSun, 0);
+                this.showDate(response.body.result.attend.wdMon, 1);
+                this.showDate(response.body.result.attend.wdTue, 2);
+                this.showDate(response.body.result.attend.wdWed, 3);
+                this.showDate(response.body.result.attend.wdThu, 4);
+                this.showDate(response.body.result.attend.wdFri, 5);
+                this.showDate(response.body.result.attend.wdSat, 6);
               });
 
 

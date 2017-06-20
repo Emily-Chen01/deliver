@@ -17,10 +17,10 @@
         </div>
       </div>
     </div>
-    <div style="height: 85vh; padding-left: 1rem;position: relative">
+    <div style="height: 85vh; padding-left: 1rem;">
       <div style="clear:both;"></div>
       <div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>
-      <div v-show="zcToUpShow">
+      <div v-show="zcToUpShow" style="min-height: 6rem;">
         <div>
           <div class="toWorkLeft">
             <div>上</div>
@@ -183,7 +183,7 @@
 
       <!--测试竖线-->
 
-      <div v-show="showOwStstusX" style="position: absolute;background: rgb(152,171,191);height: 5.3rem;width: 0.1rem;top:2.9rem;left:2rem"></div>
+      <div v-show="showOwStstusX" style="position: absolute;background: rgb(152,171,191);height: 5.82rem;width: 0.1rem;top:9.2rem;left:2rem"></div>
       <!--测试竖线-->
 
 
@@ -265,7 +265,6 @@
                          @click="submitApplyRouter(0)">
                 <!--absenteeismStatus  旷工-->
                 提交请假/外出申请
-
 
               </mt-button>
               <mt-button type="default" class="toDaKaStatusAdd" v-show="toDownAddTimeStatus" @click="submitApplyRouter(3)">
@@ -1893,8 +1892,8 @@
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;
-    font-size: 0.5rem!important;
-    border-radius: 4px
+    font-size: 0.8rem!important;
+    border-radius: 4px;
   }
 
   .toDaKaStatusSecond {

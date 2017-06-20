@@ -788,7 +788,7 @@
     line-height: 6rem;
     padding-bottom: 1rem;
     position: absolute;
-    left: 26%;
+    left: 28%;
     top: 0.6rem;
   }
   /*.cardClass div{*/
