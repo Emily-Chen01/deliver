@@ -16,7 +16,7 @@
                  <img style="display: block;width: 100%;height: 100%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
                </div>
 
-               <div style="font-size: 0.8rem;top: 0.48rem; position: absolute;right: 0.8rem;">设置</div>
+               <div style="font-size: 0.8rem;top: 0.43rem; position: absolute;right: 0.8rem;">设置</div>
              </div>
            </div>
            <div class="companyNameClass">{{infoObj.companyName}}</div>
@@ -186,7 +186,6 @@ let oneselfData={};
 
           this.infoObj=response.body.result.record;
 
-
           for(let i=0; i<this.arryOneself.length;i++){
             this.oneselfData={
 //              companyNmae:this.arryOneself[i].finallyEmpCom,
@@ -203,7 +202,7 @@ let oneselfData={};
             this.setCookie('infoObjPassName',this.oneselfData.name,365);
 
 
-            this.setCookie('avatarImages',this.imgSrc.comAddress,365);
+//            this.setCookie('avatarImages',this.imgSrc.comAddress,365);
 
             if(this.arryOneself[i].staffPhoUrl){
               this.imgSrc.comAddress=this.arryOneself[i].staffPhoUrl;

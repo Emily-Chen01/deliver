@@ -242,7 +242,7 @@
   width: 93%;
   min-height: 3rem;
   font-size: 1rem;
-  border: 1px solid #d2dce6;
+  /*border: 1px solid #d2dce6;*/
   margin: 1rem;
 }
   .concentBodyClassTitle{

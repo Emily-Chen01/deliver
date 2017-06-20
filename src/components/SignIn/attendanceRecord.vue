@@ -10,7 +10,7 @@
         <div class="egClass"><span class="publicStyle abnormalStyle"></span>&nbsp考勤异常</div>
         <div class="egClass"><span class="publicStyle leaveStyle"></span>&nbsp请假</div>
       </div>
-      <div style="height: 1px;background: #cccccc;margin: 0.8rem 1rem 0.5rem 1rem"></div>
+      <div style="height: 1px;background: #cccccc;margin:0.5rem 1rem 0.3rem 1rem"></div>
 
       <div>
         <div class="spanStatus">
@@ -32,7 +32,7 @@
 
       </div>
 
-      <div style="height: 1px;background: #cccccc;margin:0.7rem 1rem 0.4rem 1rem;clear: both;"></div>
+      <div style="height: 1px;background: #cccccc;margin: 0.4rem 1rem;clear: both;"></div>
 
       <div style="background:rgb(239,241,247);">
         <div class="timeTitle">

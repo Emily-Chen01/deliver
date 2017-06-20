@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div style="height: 85vh">
+    <div style="height: 85vh; padding-left: 1rem;">
       <div style="clear:both;"></div>
       <div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>
       <div v-show="zcToUpShow">
@@ -183,12 +183,12 @@
 
       <!--测试竖线-->
 
-      <!--<div v-show="showOwStstus" style="position: absolute;background: rgb(152,171,151);height: 4.8rem;width: 0.1rem;top:9.3rem;left:1rem"></div>-->
+      <div v-show="showOwStstusX" style="position: absolute;background: rgb(152,171,151);height: 5.3rem;width: 0.1rem;top:9.3rem;left:2rem"></div>
       <!--测试竖线-->
 
 
 
-      <div style="margin-top: 1.3rem" v-if="!daAfter" :class={xiaShowOpacity:daAfter} >
+      <div style="margin-top: 1.3rem" v-show="showOwStstus" :class={xiaShowOpacity:daAfter} >
         <!--此处是为了页面上班打卡后显示的初始化下班时间显示-->
         <div class="toWorkLeft" v-show="showOwStstus">
           <div>下</div>
@@ -270,7 +270,7 @@
               </mt-button>
               <mt-button type="default" class="toDaKaStatusAdd" v-show="toDownAddTimeStatus" @click="submitApplyRouter(3)">
                 <!--absenteeismStatus  旷工-->
-                加班申请
+                提交加班申请
 
 
               </mt-button>
@@ -577,6 +577,8 @@
 //        timeShowd:'',//时间全展示
         maohao:true,//时间全展示
         showOwStstus:'',//显示下班的文字
+        showOwStstusX:'', //竖线
+        daAfter:'',
 
       }
     },
@@ -626,9 +628,15 @@
 
           console.log(response.body,'responseresponse');
           console.log(response.body.result.twStatus,'twStatus');
-          this.showOwStstus=response.body.result.twStatus;
+          this.showOwStstus=response.body.result.twTime;
+          this.showOwStstusX=response.body.result.twTime; //竖线的
+
           console.log(this.showOwStstus);
-          this.daAfter=response.body.result.owStatus;
+          this.daAfter=response.body.result.owTime;
+
+          if(response.body.result.owTime){
+            this.showOwStstus=false;
+          }
 
           //如果为false不能显示打卡功能start
           if(response.body.code==500){
@@ -788,6 +796,10 @@
               this.absenteeismStatus2 = true;
 
 
+
+
+
+
               this.tokuangWdk = false;
               this.lateStatus = false;
 
@@ -830,6 +842,7 @@
 //              alert('初始化区域外');
               this.$nextTick(() => {
                 this.toDownLateStatusAddW = true;
+                this.toDownAbsenteeismStatus=true;
 //                this.initDownRecord = false
 
               });
@@ -1155,7 +1168,7 @@
               this.toUp = false;
 
             }
-            this.daAfter=response.body.result.owStatus; //新增为了打卡时给下班时间的状态
+            this.showOwStstus=false; //新增为了打卡时给下班时间的状态
 
 
           }, response => {
@@ -1965,7 +1978,7 @@
   .toDaKaStatusAdd {
     background-color: rgb(32, 161, 255);
     color: #ffffff;
-    width: 5.8rem;
+    width: 7.8rem;
     height: 1.8rem;
     top: 0.5rem;
     font-size: 0.8rem;
