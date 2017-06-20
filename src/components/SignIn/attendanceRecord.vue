@@ -549,7 +549,7 @@
 }
 .publicStyle{
   width: 0.6rem;
-  height: 0.55rem;
+  height: 0.6rem;
   line-height: 0.6rem;
   border-radius: 0.3rem;
   display: inline-block;
