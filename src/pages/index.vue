@@ -20,6 +20,37 @@
     <div class="confirmBinding">
       <mt-button type="primary"  @click.native="handerSubmit">绑定手机号</mt-button>
     </div>
+
+    <mt-popup
+      v-model="errorModel"
+      class="imageClassSuccess"
+      closeOnClickModal="true"
+    >
+      <div @click.native="closeClick" style="width: 2rem;height: 2rem;text-align: center;margin:1.5rem auto 0.3rem auto;">
+        <!--<img width="150" :src="imgSrc.ico_success"  class="alertImages" v-if="alertSuccessImage" />-->
+        <img width="150" :src="imgSrc.bg2"  class="alertImages" />
+      </div>
+      <div style="clear:both;"></div>
+    <div v-if="noneModel">
+      <div style="font-size:1.2rem; width: 5rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
+        抱歉 ！
+      </div>
+      <div style="font-size:1.2rem;width: 12rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
+        没有找到您的员工记录
+     </div>
+      <div style="font-size:1.2rem;width: 6rem;height: 1.5rem;text-align: center;margin:0.2rem auto 0.3rem auto;">
+        请联系HR
+     </div>
+    </div>
+      <div style="margin-top: 1.5rem">{{alertMessage}}</div>
+
+
+      <!--<div @click="closeAlert" class="colseClassAlert">-->
+        <!--我知道啦-->
+      <!--</div>-->
+    </mt-popup>
+
+
   </div>
 </template>
 
@@ -39,6 +70,10 @@ export default {
     return {
       imgSrc: {
         bg: require('../assets/indexLogo.png'),
+        bg2: require('../assets/ico_error.png'),
+
+//          ico_error: require('../../assets/ico_error.png'),
+
       },
       msg: '欢迎使用 EHR SAAS 员工自助服务',
       msgPhone: '您需要先绑定手机!',
@@ -51,6 +86,9 @@ export default {
       isCompany:'',
       yanzheng:'获取验证码' ,//验证码
       YZdisabled:false,
+      errorModel:false, //错误弹框
+      noneModel:false, //没有员工
+      alertMessage:'',
 
 
     }
@@ -151,7 +189,9 @@ export default {
           console.log( 'error callback');
         });
       }else {
-        MessageBox('提示', '手机号码不正确');
+//        MessageBox('提示', '手机号码不正确');
+        this.errorModel=true;
+        this.alertMessage='手机号码不正确';
       }
 
 
@@ -174,7 +214,9 @@ export default {
           this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
             this.sumSearchUid=response.body.result;
             if(response.body.code==500){
-              MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
+//              MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
+              this.errorModel=true;
+              this.noneModel=true;
               return;
             }
 
@@ -213,7 +255,9 @@ export default {
 
         if(number==1){//此处判断是当提交的时候判断下是否已经绑定过
           if(response.body.code==500){
-            MessageBox('提示', response.body.message);
+//            MessageBox('提示', response.body.message);
+            this.errorModel=true;
+            this.alertMessage=response.body.message;
 
           }
         }
@@ -263,7 +307,9 @@ export default {
               //初始化查询看是否有是一个公司进行跳转signCard  开始
 
         }else  if(response.body.code==1001){
-              MessageBox('提示', response.body.message);
+//              MessageBox('提示', response.body.message);
+              this.errorModel=true;
+              this.alertMessage=response.body.message;
         }
       }, response => {
         console.log( 'error callback');
@@ -289,6 +335,9 @@ export default {
         console.log( 'error callback');
       });
     },
+    closeClick(){
+        this.errorModel=false;
+    }
 
 
   },
@@ -300,6 +349,21 @@ export default {
 </script>
 
 <style scoped>
+  .imageClassSuccess{
+    width: 16rem;
+    /*top: 10rem;*/
+    height: 12rem;
+    /*line-height: 11rem;*/
+    border-radius: 4px;
+    /*background: pink;*/
+
+  }
+  .alertImages{
+    width: 100%;
+    height: 100%;
+    display: block;
+    text-align: center;
+  }
 .hello{
   /*margin-top: 4rem;*/
   background: #ffffff;

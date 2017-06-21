@@ -7,8 +7,8 @@
       ></full-calendar>
       <div>
         <div class="egClass"><span class="publicStyle normalStyle"></span>&nbsp正常出勤</div>
-        <div class="egClass"><span class="publicStyle abnormalStyle"></span>&nbsp考勤异常</div>
-        <div class="egClass"><span class="publicStyle leaveStyle"></span>&nbsp请假</div>
+        <div class="egClass1"><span class="publicStyle abnormalStyle"></span>&nbsp考勤异常</div>
+        <div class="egClass2"><span class="publicStyle leaveStyle"></span>&nbsp请假</div>
       </div>
       <div style="height: 1px;background: #cccccc;margin:0.5rem 1rem 0.3rem 1rem"></div>
 
@@ -543,6 +543,21 @@
   height: 2rem;
   line-height: 2.6rem;
   display: inline-block;
+  text-align: left;
+}
+.egClass1{
+  width:7.5rem;
+  height: 2rem;
+  line-height: 2.6rem;
+  display: inline-block;
+  text-align: center;
+}
+.egClass2{
+  width:7.5rem;
+  height: 2rem;
+  line-height: 2.6rem;
+  display: inline-block;
+  text-align: right;
 }
 .timeTitle{
   /*padding-top: 0.5rem;*/
@@ -571,11 +586,12 @@
     padding-top: 0.2rem;
   }
   .timeDivClass{
-    width: 2rem;
+    width: 3.9rem;
     height: 2rem;
     line-height: 2rem;
     display: inline-block;
     vertical-align: top;
+    margin-left: -2.62rem;
   }
   .timeSpanClass{
     width: 19rem;
@@ -589,7 +605,8 @@
 .spanListClass{
   height: 2rem;
   line-height: 2rem;
-  padding-left: 2rem;
+  padding-left: 0.72rem;
+
 }
 .toWorkLeft{
   width: 1.4rem;
@@ -611,6 +628,7 @@
   text-align: left;
   padding-left: 1.3rem;
   vertical-align: bottom;
+  padding-top: 0.1rem;
 
 }
 </style>
