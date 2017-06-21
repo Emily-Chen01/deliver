@@ -231,21 +231,23 @@
               <mt-button type="default" class="toDaKaStatusSecondQ" v-show="toDownLateStatusAddW">
                 <!--区域外+迟到显示-->
                 区域外
-
-
+              </mt-button>
+              <mt-button type="default" class="toDaKaStatusSeconLeft" v-show="toDownLateStatusLeft">
+                <!--区域外+迟到显示-->
+                区域外
               </mt-button>
               <mt-button type="default" class="toDaKaStatusSecondC" v-show="toDownLateStatus">
                 <!--lateStatus-->
                 迟到了
 
               </mt-button>
-              <mt-button type="default"
-                         class="addTimeTotleClass"
-                         v-show="overTime">
-                加班{{addtime}}(h)
+              <!--<mt-button type="default"-->
+                         <!--class="addTimeTotleClass"-->
+                         <!--v-show="overTime">-->
+                <!--加班{{addtime}}(h)-->
 
 
-              </mt-button>
+              <!--</mt-button>-->
               <mt-button type="default" class="toDaKaStatusSecondKG" v-show="toDownKuang">
                 <!--lateStatus-->
                 旷工
@@ -578,6 +580,7 @@
         showOwStstus:'',//显示下班的文字
         showOwStstusX:'', //竖线
         daAfter:'',
+        toDownLateStatusLef:false ,  //在左边的区域外
 
       }
     },
@@ -869,16 +872,23 @@
 
             if (this.toDownKaStatusIsInit == 2) { //加班打卡显示
 //                alert('我是加班');
-              this.toDownAbsenteeismStatus = false; //下班提交请假span
-              this.overTime = true;
+//              this.toDownAbsenteeismStatus = true; //下班提交请假span
+//              this.overTime = true;
               this.zcDownShowSpan = true;
+
               this.toDownAddTimeStatus = true;
               console.log('8' + this.toDaKaStatusIsInit)
             }
             if (this.toDownKaStatusIsInit == 2 && this.toDownKaStatusIsOutsideInit) { //加班+区域外打卡显示
 //              alert('初始化加班+区域外');
               this.$nextTick(() => {
-                this.toDownLateStatusAddW = true;
+                this.toDownLateStatusAddW = false;
+                this.toDownAbsenteeismStatus = false; //下班提交请假span
+
+                this.toDownAddTimeStatus = true;
+                this.toDownLateStatusLeft= true;  //在左边的区域外显示
+
+
 
               });
             }
@@ -1142,9 +1152,11 @@
               }
               if (this.toDownKaStatusIs == 2 && this.toDownKaStatusIsOutside) { //加班+区域外打卡显示
 //                alert('加班+区域外');
-
+                debugger
                 this.lateStatus = false;
-                this.overTime = true;
+                this.overTime = false;
+                this.absenteeismStatus=false
+
 
 
 
@@ -1152,7 +1164,8 @@
               } else if (this.toDownKaStatusIs == 2) { //加班打卡显示
 
                 this.lateStatus = false;
-                this.overTime = true;
+//                this.overTime = true;
+                this.overTime = false;
                 console.log('169' + this.toDownKaStatusIs);
                 this.zcDownShowSpan = true;
                 this.zcToUpShow = true;
@@ -1911,9 +1924,19 @@
   .toDaKaStatusSecondQ {
     background-color: #b2c92b;
     color: #ffffff;
-    width: 4.8rem;
+    width: 5.7rem;
     left: 5.3rem;
-    /*这个地方与上1 右边的的迟到了有重叠原来是left：5*/
+    height: 1.8rem;
+    position: absolute;
+    top: 0.1rem;
+    font-size: 0.8rem;
+    border-radius: 4px
+  }
+  .toDaKaStatusSeconLeft{
+    background-color: #b2c92b;
+    color: #ffffff;
+    width: 5.7rem;
+    left: -0.8rem;
     height: 1.8rem;
     position: absolute;
     top: 0.1rem;

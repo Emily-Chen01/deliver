@@ -13,6 +13,7 @@ import 'mint-ui/lib/style.css'
 
 
 Vue.use(Mint);
+
 Vue.use(VueResource);
 
 

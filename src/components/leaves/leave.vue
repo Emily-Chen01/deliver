@@ -113,8 +113,14 @@
           <mt-button type="primary"
                      style="background-color: rgb(32, 161, 255);width: 20rem;height:3rem;line-height: 3rem"
                      @click.native="handerDataSubmit()">提交
-             </mt-button>
+           </mt-button>
         </div>
+        <!--<div style="padding-top: 2rem">-->
+          <!--<mt-button type="primary"-->
+                     <!--style="background-color: rgb(32, 161, 255);width: 20rem;height:3rem;line-height: 3rem"-->
+                     <!--@click.native="shishi()">提交2222-->
+           <!--</mt-button>-->
+        <!--</div>-->
       </mt-tab-container-item>
       <mt-tab-container-item id="2" style="background: #eff3f7;padding-bottom: 2rem">
 
@@ -194,6 +200,21 @@
         关闭
       </div>
     </mt-popup>
+
+    <mt-popup
+      v-model="leaveSuccess"
+      class="imageClassSuccess"
+      closeOnClickModal="true"
+    >
+      <div style="width: 2rem;height: 2rem;background: pink;text-align: center;margin: 2rem auto 0 auto;">
+        <img width="150" :src="imgSrc.ico_success"  class="alertImages"  />
+      </div>
+      <div style="width: 14rem;height: 2rem;text-align: center; margin:0 auto;color:#000000">胜多</div>
+
+      <div @click="closeAlert" class="colseClassAlert">
+        我知道啦
+      </div>
+    </mt-popup>
   </div>
 </template>
 <script>
@@ -205,6 +226,7 @@
   import endDatePick from "@/components/components/endDatePick"
   //  import { TabContainer, TabContainerItem } from 'mint-ui';
   import moment from 'moment'
+
 
   let df = 'YYYY-MM-DD HH:mm';
   let df2 = 'YYYY/MM/DD HH:mm';
@@ -255,6 +277,9 @@
           shenFenIconShowCamera: require('../../assets/camera.png'),
 
           selectShow: require('../../assets/arrow_2.png'),
+          ico_success: require('../../assets/ico_success.png'),
+          ico_error: require('../../assets/ico_error.png'),
+
 
 
         },
@@ -282,14 +307,13 @@
         imagestring:'',
         searchApplyRecord:[], //搜索申请记录
         initUpImage:true, //初始化加载的上传图片
-
-      }
+        leaveSuccess:false, //成功显示的弹框
+      };
     },
     mounted:function(){
 
     },
     created: function () {
-
 
 
 
@@ -517,6 +541,7 @@
 
       },
       ieventEnd(...data){
+
 //            console.log('allEndData:', data);
 //            var timestamp3 = new Date(data[0]).getTime();
 //            console.log(timestamp3);
@@ -673,6 +698,12 @@
       datefmt(str) {
         if(str) return moment(str).format(df);
         else return '';
+      },
+      closeAlert(){
+       this.leaveSuccess=false;
+      },
+      shishi(){
+        this.leaveSuccess=true;
       }
 
     },
@@ -698,6 +729,9 @@
   /*!*color:#ffffff;*!*/
   /*width: 10%;*/
   /*}*/
+  .icon{
+    background: url(../../assets/ico_leave.png)!important;
+  }
   .selectBao{
     position: absolute;
     width: 2rem;
@@ -737,16 +771,37 @@
     width: 20rem;
     color: #ffffff;
   }
+  .colseClassAlert{
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    background: #26a2ff;
+    width: 16rem;
+    color: #ffffff;
+    width: 14rem;
+    color: #ffffff;
+    margin: auto;
+    border-radius: 4px;
+  }
   .alertImages{
     width: 100%;
     height: 100%;
     display: block;
+    text-align: center;
   }
   .imageClass{
     width: 20rem;
     /*top: 10rem;*/
     height: 24rem;
     line-height: 24rem;
+
+  }
+  .imageClassSuccess{
+    width: 16rem;
+    /*top: 10rem;*/
+    height: 11rem;
+    line-height: 11rem;
+    /*background: pink;*/
 
   }
   .myApplyTitle{
