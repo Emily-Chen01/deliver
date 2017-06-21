@@ -589,6 +589,7 @@
 .spanListClass{
   height: 2rem;
   line-height: 2rem;
+  padding-left: 2rem;
 }
 .toWorkLeft{
   width: 1.4rem;
@@ -603,7 +604,7 @@
   border: 1px solid #cccccc;
 }
 .toWorkRight{
-  width: 20.67rem;
+  width: 18.67rem;
   height: 1.4rem;
   line-height: 1.4rem;
   float: left;

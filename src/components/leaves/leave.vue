@@ -115,12 +115,6 @@
                      @click.native="handerDataSubmit()">提交
            </mt-button>
         </div>
-        <!--<div style="padding-top: 2rem">-->
-          <!--<mt-button type="primary"-->
-                     <!--style="background-color: rgb(32, 161, 255);width: 20rem;height:3rem;line-height: 3rem"-->
-                     <!--@click.native="shishi()">提交2222-->
-           <!--</mt-button>-->
-        <!--</div>-->
       </mt-tab-container-item>
       <mt-tab-container-item id="2" style="background: #eff3f7;padding-bottom: 2rem">
 
@@ -206,10 +200,14 @@
       class="imageClassSuccess"
       closeOnClickModal="true"
     >
-      <div style="width: 2rem;height: 2rem;background: pink;text-align: center;margin: 2rem auto 0 auto;">
-        <img width="150" :src="imgSrc.ico_success"  class="alertImages"  />
+      <div style="width: 3rem;height: 3rem;text-align: center;margin:2rem auto 0.3rem auto;">
+        <img width="150" :src="imgSrc.ico_success"  class="alertImages" v-if="alertSuccessImage" />
+        <img width="150" :src="imgSrc.ico_error"  class="alertImages" v-if="!alertSuccessImage" />
       </div>
-      <div style="width: 14rem;height: 2rem;text-align: center; margin:0 auto;color:#000000">胜多</div>
+      <div style="clear:both;"></div>
+      <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin:0 auto;font-size: 1.1rem;">
+       {{alertMessage}}
+      </div>
 
       <div @click="closeAlert" class="colseClassAlert">
         我知道啦
@@ -308,6 +306,11 @@
         searchApplyRecord:[], //搜索申请记录
         initUpImage:true, //初始化加载的上传图片
         leaveSuccess:false, //成功显示的弹框
+        alertMessage:' 申请已提交成功',//提交弹框文字
+        alertSuccessImage:'',//成功文字
+        codeSuccess:''//点击我知道了进行状态判断跳转
+
+
       };
     },
     mounted:function(){
@@ -587,12 +590,21 @@
         }
         this.$http.post('/api/v1.0/client/apply', params).then(response => { //提交请假申请
           console.log(response);
+          this.codeSuccess= response.body.code;
 
           if (response.body.code == 200) {
-            MessageBox('提示', response.body.message)
-            this.$router.push({path: '/signCard'});
+//            MessageBox('提示', response.body.message);
+            this.leaveSuccess=true;
+            this.alertSuccessImage=true;
+            this.alertMessage=response.body.message;
+
+//            this.$router.push({path: '/signCard'});
           } else if (response.body.code == 500) {
-            MessageBox('提示', response.body.message);
+
+//            MessageBox('提示', response.body.message);
+            this.leaveSuccess=true;
+            this.alertSuccessImage=false;
+            this.alertMessage=response.body.message
           }
 //              this.holidayTypeArray=response.body.result;
 //              console.log(this.holidayTypeArray);
@@ -699,12 +711,12 @@
         if(str) return moment(str).format(df);
         else return '';
       },
-      closeAlert(){
+      closeAlert(){ //提交成功的提交alert
        this.leaveSuccess=false;
+       if(this.codeSuccess==200){
+         this.$router.push({path: '/signCard'});
+       }
       },
-      shishi(){
-        this.leaveSuccess=true;
-      }
 
     },
 
@@ -776,11 +788,9 @@
     line-height: 3rem;
     text-align: center;
     background: #26a2ff;
-    width: 16rem;
     color: #ffffff;
     width: 14rem;
-    color: #ffffff;
-    margin: auto;
+    margin: 2rem auto;
     border-radius: 4px;
   }
   .alertImages{
@@ -799,8 +809,9 @@
   .imageClassSuccess{
     width: 16rem;
     /*top: 10rem;*/
-    height: 11rem;
+    height: 13rem;
     line-height: 11rem;
+    border-radius: 4px;
     /*background: pink;*/
 
   }

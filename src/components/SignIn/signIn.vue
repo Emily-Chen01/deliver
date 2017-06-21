@@ -306,103 +306,12 @@
             </p>
           </div>
 
-          <mt-popup
-            v-model="popupVisible"
-            closeOnClickModal="true"
-            :class="{  popupClass:isNormal,active: isYellow,active2: isYellow2 ,absenteeismClass:absenteeismStatus }"
-          >
-            <div class="daKaAlert"><img :src="imgSrc.daKaIcon"/><span class="daKaSpan">打卡成功</span></div>
-            <div style="clear: both"></div>
-
-            <div class="middleSpan">
-              <div class="middleSpanLeft" v-show="alertToSpan">上班</div>
-              <div class="middleSpanLeft" v-show="alertDownSpan">下班</div>
-
-              <div class="middleSpanRight">
-                <div v-show="toTimeMiddleShow">{{initToTime}}</div>
-                <div v-show="downTimeMiddleShow">{{goToTime}}</div>
-
-              </div>
-              <div class="dakahr"></div>
-              <div>
-                <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;color:#ffffff;"
-                           v-show="initDaKaRecord">
-                  打卡正常
-
-
-                </mt-button>
-                <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem; background-color: #2acfbc;color:#ffffff;"
-                           v-show="initDownRecord">
-                  打卡正常
-
-
-                </mt-button>
-
-                <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
-                           v-show="lateStatus">
-                  您迟到了
-
-
-                </mt-button>
-                <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
-                           v-show="absenteeismStatus">
-                  旷工打卡
-
-
-                </mt-button>
-                <mt-button type="default"
-                           style="width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 7.4rem;"
-                           v-show="isYellowAddQ">
-                  <!--迟到+区域外-->
-                  区域外
-
-
-                </mt-button>
-                <mt-button type="default"
-                           style=" width: 10rem;height: 2.5rem;position: absolute;right: 1rem;top: 4.6rem;"
-                           v-show="leaveEarly">
-                  早退
-
-
-                </mt-button>
-                <mt-button type="default"
-                           style="width: 11rem;height: 2.5rem;position: absolute;right: 0.5rem;top: 4.6rem;"
-                           v-show="overTime">
-                  加班{{addTimeAlert}}(h)
-
-
-
-                </mt-button>
-              </div>
-            </div>
-            <div style="clear: both"></div>
-
-            <div style="position: relative">
-              <div class="dakahrWhite"></div>
-              <div class="spanKnow" @click="knowFunction"> 我知道了</div>
-            </div>
-
-          </mt-popup>
           <!--<mt-popup-->
             <!--v-model="popupVisible"-->
             <!--closeOnClickModal="true"-->
             <!--:class="{  popupClass:isNormal,active: isYellow,active2: isYellow2 ,absenteeismClass:absenteeismStatus }"-->
           <!--&gt;-->
-            <!--<div class="daKaAlert">-->
-              <!--&lt;!&ndash;<img :src="imgSrc.daKaIcon"/><span class="daKaSpan">打卡成功</span>&ndash;&gt;-->
-              <!--<div style="float: left;background:pink;width:33%">-->
-                <!--<div style="width: 100%;height: 2px;background: red"></div>-->
-              <!--</div>-->
-              <!--<div style="float: left;background:#19b5ee;width: 33%;">打卡成功</div>-->
-              <!--<div style="float: left;background:pink;width: 33%">-->
-                <!--<div style="width: 100%;height: 2px;background: red"></div>-->
-              <!--</div>-->
-
-            <!--</div>-->
+            <!--<div class="daKaAlert"><img :src="imgSrc.daKaIcon"/><span class="daKaSpan">打卡成功</span></div>-->
             <!--<div style="clear: both"></div>-->
 
             <!--<div class="middleSpan">-->
@@ -478,6 +387,110 @@
             <!--</div>-->
 
           <!--</mt-popup>-->
+
+          <mt-popup
+            v-model="popupVisible"
+            closeOnClickModal="true"
+            :class="{  popupClass:isNormal,active: isYellow,active2: isYellow2 ,absenteeismClass:absenteeismStatus }"
+          >
+            <div class="daKaAlert">
+              <!--<img :src="imgSrc.daKaIcon"/><span class="daKaSpan">打卡成功</span>-->
+              <div style="float: left;width:33%">
+                <div style="width: 88%;height: 1px;background: rgb(204,212,213);margin: 2rem 0 0 1rem"></div>
+              </div>
+              <div style="float: left;width: 33%;font-size: 1.3rem;height: 2px; color:rgb(204,212,213);" >打卡成功</div>
+              <div style="float: left;width: 33%">
+                <div style="width: 88%;height: 1px;background: rgb(204,212,213);margin: 2rem 1rem 0px 0"></div>
+              </div>
+            </div>
+            <div style="clear: both"></div>
+            <div style="width: 20rem;height: 9rem;">
+              <div style="width: 9rem;height: 9rem;line-height: 7rem;text-align: center;margin: auto;">
+                <img :src="imgSrc.alertHeader" style="text-align: center;width: 100%;height: 100%;display: block"/>
+              </div>
+
+            </div>
+
+            <div class="middleSpan">
+              <div class="middleSpanLeft" v-show="alertToSpan">上班</div>
+              <div class="middleSpanLeft" v-show="alertDownSpan">下班</div>
+
+              <div class="middleSpanRight">
+                <div v-show="toTimeMiddleShow">{{initToTime}}</div>
+                <div v-show="downTimeMiddleShow">{{goToTime}}</div>
+
+              </div>
+              <!--<div class="dakahr"></div>-->
+              <div style="clear: both"></div>
+              <div style="width: 20rem;">
+                <mt-button type="default"
+                           class="alertStatusBottonClass"
+                           style="background-color: #2acfbc;"
+                           v-if="initDaKaRecord">
+                  打卡正常
+
+
+                </mt-button>
+                <mt-button type="default"
+                           class="alertStatusBottonClass"
+                           style="background-color: #2acfbc;"
+                           v-if="initDownRecord">
+                  打卡正常
+
+
+                </mt-button>
+
+                <mt-button type="default"
+                           class="alertStatusBottonClass"
+                           style="background-color: #f6bc2a;"
+                           v-if="lateStatus">
+                  您迟到了
+
+
+                </mt-button>
+                <mt-button type="default"
+                           class="alertStatusBottonClass"
+                           style="background-color: #f54435;"
+                           v-if="absenteeismStatus">
+                  旷工打卡
+
+
+                </mt-button>
+                <mt-button type="default"
+                           class="alertStatusBottonClass"
+                           style="background-color: #b2c92b;"
+                           v-if="isYellowAddQ">
+                  <!--迟到+区域外-->
+                  区域外
+
+
+                </mt-button>
+                <mt-button type="default"
+                           class="alertStatusBottonClass"
+                           style="background-color: #f6bc2a;"
+                           v-if="leaveEarly">
+                  早退
+
+
+                </mt-button>
+                <!--<mt-button type="default"-->
+                           <!--style="width: 11rem;height: 2.5rem;position: absolute;right: 0.5rem;top: 4.6rem;"-->
+                           <!--v-if="overTime">-->
+                  <!--加班{{addTimeAlert}}(h)-->
+
+
+
+                <!--</mt-button>-->
+              </div>
+            </div>
+            <div style="clear: both"></div>
+
+            <div >
+              <!--<div class="dakahrWhite"></div>-->
+              <div class="spanKnow" @click="knowFunction"> 我知道啦</div>
+            </div>
+
+          </mt-popup>
         </div>
       </div>
       <!--<baidu-map :center="center" @ready="handler"></baidu-map>-->
@@ -554,6 +567,8 @@
 
           daKaIcon: require('../../assets/dakachenggong.png'),
           bg: require('../../assets/0_gif.gif'),
+          alertHeader: require('../../assets/pic_check in.png'),
+
         },
         clickStaus: '打卡正常',
         //下面是新增每种少的状态变量
@@ -580,7 +595,7 @@
         showOwStstus:'',//显示下班的文字
         showOwStstusX:'', //竖线
         daAfter:'',
-        toDownLateStatusLef:false ,  //在左边的区域外
+        toDownLateStatusLeft:false ,  //在左边的区域外
 
       }
     },
@@ -1152,13 +1167,9 @@
               }
               if (this.toDownKaStatusIs == 2 && this.toDownKaStatusIsOutside) { //加班+区域外打卡显示
 //                alert('加班+区域外');
-                debugger
                 this.lateStatus = false;
                 this.overTime = false;
                 this.absenteeismStatus=false
-
-
-
 
 
               } else if (this.toDownKaStatusIs == 2) { //加班打卡显示
@@ -1181,6 +1192,8 @@
 
             }
             this.showOwStstus=false; //新增为了打卡时给下班时间的状态
+
+
 
 
           }, response => {
@@ -1647,6 +1660,12 @@
 </script>
 
 <style scoped>
+  .alertStatusBottonClass{
+    width: 7.5rem;
+    height: 2rem;
+    display: inline-block;
+    color:#ffffff;
+  }
   .xiaShowOpacity{
     opacity: 0;
   }
@@ -1783,14 +1802,14 @@
     width: 16rem;
     height: 24rem;
     border-radius: 4px;
-    background-color: #6e83c5;
+    background-color: #ffffff;
   }
 
   .daKaAlert {
-    width: 14rem;
-    height: 5rem;
-    line-height: 5rem;
-    font-size: 1.5rem;
+    width: 20rem;
+    height: 3rem;
+    line-height: 4rem;
+    font-size: 1.2rem;
     color: #ffffff;
     /*padding-top: 2.2rem;*/
     position: relative;
@@ -1814,44 +1833,40 @@
   }
 
   .middleSpan {
-    position: relative;
-    width: 14rem;
-    height: 8rem;
-    line-height: 8rem;
-    top: 1.6rem;
+    width: 20rem;
+    height: 6rem;
+    line-height: 4rem
   }
 
   .middleSpan .middleSpanLeft {
-    width: 1.5rem;
+    width: 3.9rem;
     height: 2rem;
     line-height: 2rem;
-    position: absolute;
-    left: 3.1rem;
-    font-size: 1.5rem;
+    padding-left: 5rem;
+    padding-top: 0.5rem;
+    font-size: 1.2rem;
+    float: left;
 
   }
 
   .middleSpan .middleSpanRight {
     width: 3rem;
-    font-size: 1.5rem;
     height: 2rem;
     line-height: 2rem;
-    position: absolute;
-    left: 5rem;
-    top: 1.1rem;
-    font-weight: 600;
-    font-size: 2rem;
+    float: left;
+    padding-top: 0.5rem;
+    font-size: 1.3rem;
 
   }
 
-  .dakahr {
-    width: 69.6%;
-    height: 1px;
-    background: #000000;
-    position: absolute;
-    left: 3.2rem;
-    top: 4rem
-  }
+  /*.dakahr {*/
+    /*width: 69.6%;*/
+    /*height: 1px;*/
+    /*background: #000000;*/
+    /*position: absolute;*/
+    /*left: 3.2rem;*/
+    /*top: 4rem*/
+  /*}*/
 
   .dakahrWhite {
     width: 100%;
@@ -1863,12 +1878,20 @@
   }
 
   .spanKnow {
+    /*color: #ffffff;*/
+    /*!*font-weight: 600;*!*/
+    /*font-size: 1.3rem;*/
+    /*position: absolute;*/
+    /*top: 6.8rem;*/
+    /*left: 5.3rem;*/
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    background: #26a2ff;
     color: #ffffff;
-    /*font-weight: 600;*/
-    font-size: 1.3rem;
-    position: absolute;
-    top: 6.8rem;
-    left: 5.3rem;
+    width: 18rem;
+    margin: 2rem auto;
+    border-radius: 4px;
   }
 
   .toWorkRightTime {
@@ -2016,24 +2039,24 @@
   }
 
   .active {
-    width: 16rem;
+    width: 20rem;
     height: 24rem;
     border-radius: 4px;
-    background-color: #2acfbc;
+    background-color: #ffffff;
   }
 
   .active2 {
-    width: 16rem;
+    width: 20rem;
     height: 24rem;
     border-radius: 4px;
-    background-color: rgb(255, 204, 0);
+    background-color: #ffffff;
   }
 
   .absenteeismClass {
-    width: 16rem;
+    width: 20rem;
     height: 24rem;
     border-radius: 4px;
-    background-color: #f54435;
+    background-color: #ffffff;
   }
   .maohaoClass{
     color: #26a2ff;
