@@ -1185,6 +1185,8 @@
               this.overTime = false;
               this.absenteeismStatus = true;
               this.isYellow2 = true;
+              this.initDownRecord=false;//隐藏正常打卡
+
 
 
 //                alert('早退');
