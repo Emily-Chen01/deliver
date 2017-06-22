@@ -73,6 +73,8 @@
                 :data="data"
                 :headers="tokenHeader"
                 :max-file-size="41943040"
+                compress="40"
+                resize="local"
                 url="/api/v1.0/client/upload" >
                 <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShowCamera"  class="CardImg"   /></div>
                 <div class="CardDivImg" v-if="imgSrc.shenFenIcon">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  /></div>
@@ -98,7 +100,7 @@
                  <textarea placeholder="#请输入文字"
                            v-model="holidayModel"
                            style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px">
-            </textarea>
+                 </textarea>
           </div>
 
         </div>
@@ -848,6 +850,7 @@
     font-size: 1.1rem;
     background: #ffffff;
     -webkit-appearance: none;
+    padding-left: 1rem;
   }
   .cardClass{
     width: 11rem;
