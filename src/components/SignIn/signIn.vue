@@ -1166,6 +1166,13 @@
                               }
                               self.daKaHide=true;
 
+                              if(self.outsideObtainValue==true||self.outsideObtainValue==false){
+
+
+
+                              }
+
+
                               if( distance&&response.body.result.twTime&&response.body.result.owTime){
                                 self.daKaHide=false;
                               }
@@ -1203,6 +1210,7 @@
 
 
         //获取位置测试结束
+
 
 
 
@@ -1447,6 +1455,12 @@
         }, response => {
           console.log('error callback');
         });
+
+
+        
+
+
+
       },
 
 
