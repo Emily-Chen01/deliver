@@ -42,7 +42,7 @@
         请联系HR
      </div>
     </div>
-      <div style="margin-top: 1.5rem">{{alertMessage}}</div>
+      <div v-if="alertMessageShow" style="margin-top: 1.5rem">{{alertMessage}}</div>
 
 
       <!--<div @click="closeAlert" class="colseClassAlert">-->
@@ -88,14 +88,15 @@ export default {
       YZdisabled:false,
       errorModel:false, //错误弹框
       noneModel:false, //没有员工
-      alertMessage:'',
+      alertMessage:'', //进行赋值的错误信息
+      alertMessageShow:true,
 
 
     }
   },
   created: function () {
 
-         this.handerList();        //先查询是否有绑定 有返回手机号
+//         this.handerList();        //先查询是否有绑定 有返回手机号
 
 
     //获取openidstart  6-2早注释为了本地测试 提交需解除注释
@@ -134,66 +135,61 @@ export default {
   methods: {
     handerClick(){
 
+      let number={
+        phone :this.phoneNumber,
+      };
+      this.$http.get('/api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
+        if(response.body.code==500){
+//              MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
+          this.errorModel=true;
+          this.noneModel=true;
+          this.alertMessageShow=false; //动态赋值信息false
+          return;
+        }
+
 
         //测试字符串length
         function GetLength (str) {
-        ///<summary>获得字符串实际长度，中文2，英文1</summary>
-        ///<param name="str">要获得长度的字符串</param>
-        var realLength = 0, len = str.length, charCode = -1;
-        for (var i = 0; i < len; i++) {
-          charCode = str.charCodeAt(i);
-          if (charCode >= 0 && charCode <= 128) realLength += 1;
-          else realLength += 2;
-        }
-        return realLength;
-      };
+          ///<summary>获得字符串实际长度，中文2，英文1</summary>
+          ///<param name="str">要获得长度的字符串</param>
+          var realLength = 0, len = str.length, charCode = -1;
+          for (var i = 0; i < len; i++) {
+            charCode = str.charCodeAt(i);
+            if (charCode >= 0 && charCode <= 128) realLength += 1;
+            else realLength += 2;
+          }
+          return realLength;
+        };
 //      alert(GetLength(this.phoneNumber));
 
 
-      if(GetLength(this.phoneNumber)==11){
-        this.setCookie('iphoneNumber',this.phoneNumber,365);
+          this.setCookie('iphoneNumber',this.phoneNumber,365);
 
-        let self = this;
-        clearInterval(timer1); //开启前清除下已经开的定时器
+          let self = this;
+          clearInterval(timer1); //开启前清除下已经开的定时器
 
-        var countdown=30;
-        function settime() {
-          if (countdown == 0) {
-            self.yanzheng="获取验证码";
-            countdown = 30;
-            self.YZdisabled=false;
-            clearInterval(timer1);
-            return;
-          } else {
-            self.yanzheng="重新发送(" + countdown + ")";
-            countdown--;
-            self.YZdisabled=true;
-            var rr=document.getElementById('aaa');
+          var countdown=30;
+          function settime() {
+            if (countdown == 0) {
+              self.yanzheng="获取验证码";
+              countdown = 30;
+              self.YZdisabled=false;
+              clearInterval(timer1);
+              return;
+            } else {
+              self.yanzheng="重新发送(" + countdown + ")";
+              countdown--;
+              self.YZdisabled=true;
+              var rr=document.getElementById('aaa');
 //            rr.style.color= "#ffffff"; //这个方法可以设置不可用的背景颜色
+            }
+
           }
+          timer1= setInterval(settime,1000);
 
-        }
-        timer1= setInterval(settime,1000);
-
-
-
-
-//      alert('获取验证码');
-
-        let number={
-          phone :this.phoneNumber,
-        };
-        this.$http.get('/api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
-
-        }, response => {
-          console.log( 'error callback');
-        });
-      }else {
-//        MessageBox('提示', '手机号码不正确');
-        this.errorModel=true;
-        this.alertMessage='手机号码不正确';
-      }
-
+      }, response => {
+        console.log( 'error callback');
+      });
 
 
 
@@ -211,12 +207,23 @@ export default {
         console.log(response);
 //            this.$router.push({path:'/signCard'});//进行跳转 条件还需增加5-31 19:20
 //            this.handerList();
+        if(response.body.code!==200){
+            this.alertMessageShow=true;
+          this.errorModel=true;
+          this.noneModel=false; //隐藏没有记录
+          this.alertMessage= response.body.message;
+          return;
+        };
+        console.log(response.body.message,'我是bind接口返回的response.body.message')
+
           this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
             this.sumSearchUid=response.body.result;
             if(response.body.code==500){
 //              MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
+              this.alertMessageShow=true;
               this.errorModel=true;
-              this.noneModel=true;
+              this.noneModel=false; //隐藏没有记录
+              this.alertMessage= response.body.message;
               return;
             }
 
@@ -256,8 +263,11 @@ export default {
         if(number==1){//此处判断是当提交的时候判断下是否已经绑定过
           if(response.body.code==500){
 //            MessageBox('提示', response.body.message);
+            this.alertMessageShow=true;
             this.errorModel=true;
+            this.noneModel=false; //隐藏没有记录
             this.alertMessage=response.body.message;
+            return;
 
           }
         }
@@ -308,8 +318,11 @@ export default {
 
         }else  if(response.body.code==1001){
 //              MessageBox('提示', response.body.message);
+              this.alertMessageShow=true;
               this.errorModel=true;
+              this.noneModel=false; //隐藏没有记录
               this.alertMessage=response.body.message;
+              return;
         }
       }, response => {
         console.log( 'error callback');
