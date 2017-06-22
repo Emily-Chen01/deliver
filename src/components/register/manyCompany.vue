@@ -58,6 +58,12 @@
 //          this.arr= response.body.result
           console.log(this.uId);
             this.arryName=response.body.result
+          if(response.body.code==500){
+            this.$router.push({path:'/index'});
+              return;
+          }
+
+
         }, response => {
           console.log( 'error callback');
         });

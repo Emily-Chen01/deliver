@@ -956,6 +956,9 @@
               this.$nextTick(() => {
                 this.toDownLateStatusAddW = true;
 
+
+
+
               });
             }
 
@@ -1109,13 +1112,12 @@
             }
             if (this.toDaKaStatusIsOutside) { //区域外   条件？？？？？
               this.isYellowAddQ = true; //alert区域外
-
             }
             if (this.toDaKaStatusIsOutside && this.toDaKaStatusIs == 0) { //区域外   条件？？？？？
               this.isYellowAddQ = true; //alert区域外
               this.lateStatusAddW = true; //区域外span
 
-              this.initDaKaRecord = false;
+              this.initDaKaRecord = true;
               this.isYellow2 = true;
 //                alert('也是区域外+正常');
               console.log('同事区域外');
@@ -1173,6 +1175,7 @@
               this.isYellow2 = true;
               this.isYellowAddQ = true;
               this.initDownRecord=false;//隐藏正常打卡
+              this.initDaKaRecord=false;//上班打卡正常隐藏
 //                this.isYellow2 = true;
 
 
@@ -1186,6 +1189,8 @@
               this.absenteeismStatus = true;
               this.isYellow2 = true;
               this.initDownRecord=false;//隐藏正常打卡
+              this.initDaKaRecord=false;//上班打卡正常隐藏
+
 
 
 
@@ -1388,6 +1393,7 @@
                   var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
                   console.log('下面是转后');
                   console.log(shuzi,'进行对比');
+                  alert(shuzi);
 
 //                alert('转纬度'+shuzi.lat+'转经度'+shuzi.lng);
 
@@ -1872,7 +1878,7 @@
   }
 
   .popupClass {
-    width: 16rem;
+    width: 20rem;
     height: 24rem;
     border-radius: 4px;
     background-color: #ffffff;

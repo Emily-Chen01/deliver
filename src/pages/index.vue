@@ -96,7 +96,7 @@ export default {
   },
   created: function () {
 
-//         this.handerList();        //先查询是否有绑定 有返回手机号
+         this.handerList();        //先查询是否有绑定 有返回手机号
 
 
     //获取openidstart  6-2早注释为了本地测试 提交需解除注释
