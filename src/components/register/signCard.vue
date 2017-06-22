@@ -203,7 +203,6 @@ let oneselfData={};
 
 
 //            this.setCookie('avatarImages',this.imgSrc.comAddress,365);
-
             if(this.arryOneself[i].staffPhoUrl){
               this.imgSrc.comAddress=this.arryOneself[i].staffPhoUrl;
               this.setCookie('avatarImages',this.imgSrc.comAddress,365);
@@ -211,6 +210,8 @@ let oneselfData={};
             }else {
               console.log('record.staffPhoUrl的images值为空')
             }
+            this.imgSrc.comAddress=this.getCookie('avatarImages');
+
           }
           console.log(this.oneselfData);
 
