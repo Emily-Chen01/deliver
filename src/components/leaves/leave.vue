@@ -697,7 +697,8 @@
 
       },
       lookImages(imgSrc){ //查看图片
-        console.log('图片')
+        console.log('图片');
+        console.log(imgSrc);
         if(imgSrc) this.popImgSrc = imgSrc;
         else this.popImgSrc = '';
         this.popupVisible=true;

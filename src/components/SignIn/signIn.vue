@@ -1392,11 +1392,10 @@
 
                   var shuzi=Convert_GCJ02_To_BD09(self.longitude, self.latitude,jwresult);
                   console.log('下面是转后');
-                  console.log(shuzi,'进行对比');
-                  alert(shuzi);
+                  console.log(shuzi,'进行对比的');
+//                  alert(shuzi);
 
 //                alert('转纬度'+shuzi.lat+'转经度'+shuzi.lng);
-
 
 
 
