@@ -188,24 +188,12 @@
                 this.downSapnTime = moment(response.body.result.owTime).format(df);
               }
 
-
-//                if(day.getTime()<=new Date().getTime()){
-//                  this.objToSpan={
-//                    toTime:this.toSapnTime,
-//                    downTime:this.downSapnTime,
-//                    toType:this.tozhang,
-//                    downType:this.downzhang,
-//                  };
-//                }else {
-//                  alert('超出打卡时间了');
-//                }
-
               console.log('twStatus'+response.body.result.twStatus);
               console.log('owStatus'+response.body.result.owStatus);
               this.tozhang='';
               this.downzhang='';
 
-            debugger
+
                   if(response.body.result.status=='未打卡'){//判断状态转换文字上班
                     this.tozhang='未打卡';
                     this.downzhang='未打卡';
@@ -278,8 +266,6 @@
 
           },
 
-
-
           'changeMonth' (start, end, current) {
             console.log('start'+start)
             console.log('end'+end)
@@ -287,14 +273,8 @@
 //            console.log('???');
 
 
-
-
-
-
-
-
-            var zhuan = current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
-           var tt = zhuan.substring(0,7);
+          var zhuan = current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
+          var tt = zhuan.substring(0,7);
             console.log(tt);
             let param={
                 date:tt
@@ -472,27 +452,9 @@
                 console.log( this.fcEvents);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
             }, response => {
               console.log( 'error callback');
             });
-
-
-
-
-
-
 
           },
 
@@ -519,11 +481,6 @@
               }
             }
           },
-
-
-
-
-
 
         },
 

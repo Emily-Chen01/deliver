@@ -51,11 +51,6 @@
         this.$http.get('/api/v1.0/client/findCompanies/'+phoneObj.phone).then(response => { //初始化查询有没有公司
             console.log(response,'这是查处的公司接口数据');
 
-          //若是没有公司在此处执行下一个页面  ?/？
-//          for(let i=0;i<response.body.result.length;i++){
-//            this.uId=response.body.result[i].UID;
-//          }
-//          this.arr= response.body.result
           console.log(this.uId);
             this.arryName=response.body.result
           if(response.body.code==500){

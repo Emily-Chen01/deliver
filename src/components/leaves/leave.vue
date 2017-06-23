@@ -73,8 +73,7 @@
                 :data="data"
                 :headers="tokenHeader"
                 :max-file-size="41943040"
-                compress="40"
-                resize="local"
+                compress="30"
                 url="/api/v1.0/client/upload" >
                 <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShowCamera"  class="CardImg"   /></div>
                 <div class="CardDivImg" v-if="imgSrc.shenFenIcon">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  /></div>
@@ -249,27 +248,14 @@
         selectedDataApply:0,
         selectedDataApproval:0,
         pickerValue:'',
-//              options: [
-//                { text: '端午节', value: 'A' },
-//                { text: '元宵', value: 'B' },
-//                { text: '元旦', value: 'C' },
-//                { text: '申请', value: 'D' },
-//
-//              ],
         optionsApproval: {},
         optionsApply: [
 //                { text: '请假申请', value: 0 ,uid:12,type:'q'},
-//                { text: '忘记打卡申请', value: 1 ,uid:2122 ,type:'w'},
-//                { text: '外出申请', value: 2 ,uid:321152 ,type:'wc'},
-//                { text: '加班申请', value:3 ,uid:42 ,type:'j'},
 
         ],
         selectedDataHoliday:'选择假期类型',
         optionsHoliday:[
 //                { text: '端午节' },
-//                { text: '元宵' },
-//                { text: '元旦' },
-//                { text: '申请' },
         ],
         imgSrc: {
           shenFenIcon: '',
@@ -358,10 +344,6 @@
 
           for(let i=0;i<this.optionsApply.length;i++){  //循环初始化的时候选中一个select属性值和参数
 
-//                if(+value === this.optionsApply[i].value){
-//                  this.shengqingParam = this.optionsApply[i].uid;
-//                  this.shengqingParamType = this.optionsApply[i].value;
-//                }
             this.shengqingParam = this.optionsApply[this.selectedDataApply].uid;
             this.shengqingParamType = this.optionsApply[this.selectedDataApply].value;
           }
@@ -407,10 +389,6 @@
 
           }
           //此处代码为了在打开提交时在提交申请时显示 start
-
-
-
-
 
         });
 
