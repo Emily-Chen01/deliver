@@ -525,12 +525,24 @@
       <!--使用地图 进行测距是否在区域为外-->
     </div>
     <div style="clear: both"></div>
+
+
+
+    <!--<div class="mint-indicator">-->
+      <!--<div class="mint-indicator-wrapper" style="padding: 20px;">-->
+      <!--<span class="mint-indicator-spin">-->
+        <!--<div class="mint-spinner-snake"-->
+             <!--style="border-top-color: rgb(204, 204, 204); border-left-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); height: 32px; width: 32px;"></div>-->
+      <!--</span> <span class="mint-indicator-text">正在获取位置...</span></div>-->
+      <!--<div class="mint-indicator-mask"></div>-->
+    <!--</div>-->
+
   </div>
 </template>
 <script>
 
 //  import {Toast, MessageBox, Popup} from 'mint-ui';
-    import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+    import { Navbar, TabItem,Toast,MessageBox,Popup ,Indicator} from 'mint-ui';
     import moment from 'moment'
 
   let df = 'HH:mm:ss';
@@ -632,22 +644,10 @@
     },
     created: function () {
 
-  console.log(new Date());
-
-
-
-      this.handler();
-
-
+//      this.handler(); //注释掉了初始化加载
       timer1 = setInterval(this.handerSign, 1000);
 
       this.doSearch(); //初始化页面查询数据
-
-
-
-
-
-
 
     },
     methods: {
@@ -657,14 +657,13 @@
 
       doSearch(){
 
-
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
 
         this.objNr={
           fetchPostion:this.getCookie('infoObjPassPostion'),
           fetchName:this.getCookie('infoObjPassName'),
         }
-        console.log( this.objNr,'this.objNr');
+//        console.log( this.objNr,'this.objNr');
 
 
           if(imageString){
@@ -674,12 +673,12 @@
         this.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询是否有打卡
 
 
-          console.log(response.body,'responseresponse');
-          console.log(response.body.result.twStatus,'twStatus');
+//          console.log(response.body,'responseresponse');
+//          console.log(response.body.result.twStatus,'twStatus');
           this.showOwStstus=response.body.result.twTime;
           this.showOwStstusX=response.body.result.twTime; //竖线的
 
-          console.log(this.showOwStstus);
+//          console.log(this.showOwStstus);
           this.daAfter=response.body.result.owTime;
 
           if(response.body.result.owTime){
@@ -730,8 +729,10 @@
          this.fanwei= response.body.result.twOutside;
           this.fanweixia=response.body.result.owOutside;
           console.log(response.body.result.twLocation,'888888')
-          console.log('初始化上班已经打卡');
-          console.log(response.body);
+          console.log(response.body.result.owLocation,'888888')
+//
+//          console.log('初始化上班已经打卡');
+//          console.log(response.body);
           this.toDaKaStatusIsInit = response.body.result.twStatus; //上班状态赋值
           this.toDaKaStatusIsOutsideInit = response.body.result.twOutside //上班是否在区域外
           this.toDownKaStatusIsInit = response.body.result.owStatus;//下班状态赋值
@@ -746,15 +747,15 @@
 
             });
           }
-          console.log(this.addtime);
+//          console.log(this.addtime);
 
           if (response.body.result.twTime) {
             this.toClickSpan = false;
             this.downClickSpan = true;
           }
-          console.log('查询后的结果' + this.toDaKaStatusIsInit);
-          console.log('查询后的结果111' + this.toDownKaStatusIsInit);
-          console.log('查询后的结果' + this.toDownKaStatusIsOutsideInit);
+//          console.log('查询后的结果' + this.toDaKaStatusIsInit);
+//          console.log('查询后的结果111' + this.toDownKaStatusIsInit);
+//          console.log('查询后的结果' + this.toDownKaStatusIsOutsideInit);
 
 
           if (response.body.result.twTime ) {
@@ -1002,7 +1003,7 @@
           return '' + n;
         }
       },
-      handerClickEvent(){  //打卡按钮   上班或下班
+      handerClickEvent(){  //打卡按钮   上班Indicator.close();或下班
         this.qulocation=true;
       },
       closeAlert(){ //打卡获取地理位置alert
@@ -1010,507 +1011,10 @@
 
       },
       okClickEvent(){
-          alert(11);
+        this.qulocation=false;
+        Indicator.open('正在获取位置...');
+          // d点击获取定位开始
 
-          //获取位置测试开始
-//        this.BMap = BMap;
-//        this.map = map;
-//        console.log(this);
-//        console.log(V.component('baidu-map'));
-          let BMap = null;
-          let map = null;
-          let self = this;
-          let curl;
-
-          //判断是不是安卓苹果
-          var u = navigator.userAgent;
-          var isAndroid='0';
-          isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-          if(isAndroid){
-            curl = {
-              location: location.href //安卓的参数
-            };
-//          alert('是否是Android：'+isAndroid);
-          }
-          if(!isAndroid){
-            curl = {
-              location: location.href.toString().split('#')[0] //苹果的参数
-            };
-          }
-
-          console.log(curl,'curl');
-          //判断结束
-
-
-          new Promise((resolve, reject) => {
-//            resolve('ok');
-//          resolve();
-            window._initBaiduMap = function () {
-//            resolve(window.BMap);
-              window.document.body.removeChild($script)
-//            global.BMap._preloader = null
-              window._initBaiduMap = null;
-              resolve();
-              BMap = window.BMap;
-              map = new BMap.Map();
-              console.log('bmap', BMap, map);
-            }
-            const $script = document.createElement('script')
-            window.document.body.appendChild($script)
-            $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`
-          }).then(() => {
-
-            this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
-
-              console.log('sd', response.body.result);
-              this.t1 = response.body.result.appid.toString();
-              console.log(this.t1);
-              this.t2 = response.body.result.timestamp.toString();
-              this.t3 = response.body.result.nonceStr.toString();
-              this.t4 = response.body.result.signature.toString();
-              this.yyy = true;
-
-              let cvt = new BMap.Convertor();
-
-
-              wx.config({
-                debug: false,
-                appId: this.t1,
-                timestamp: this.t2,
-                nonceStr: this.t3,
-                signature: this.t4,
-                jsApiList: [
-                  'getLocation'
-                ]
-              });
-
-              wx.error(function (res) {
-//              alert('wx.error错误信息' + res.errMsg)
-//              console.log('err1', res)
-              });
-              wx.ready(function () {
-
-                wx.getLocation({
-                  type: 'wgs84',
-                  success: function (res) {
-
-                    self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                    self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
-                    var speed = res.speed; // 速度，以米/每秒计
-                    var accuracy = res.accuracy; // 位置精度
-//                  alert('手机获取的精度'+self.longitude);
-//                  alert('手机获取的维度'+self.latitude);
-                    cvt.translate([new BMap.Point(res.longitude,res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {
-                      if(data.status === 0) {
-                        let myPosition = data.points[0]; // 转换后的微信坐标
-
-                        self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
-                          //经纬度传值start
-                          let scopes = [];
-                          self.searchLocationArray=(rt => {
-                            if(!rt) return false;
-                            let out = [];
-
-                            rt.forEach(item => {
-                              out.push(new BMap.Point(item.LONGITUDE, item.LATITUDE));
-                              scopes.push(item.SCOPE);
-                            });
-                            return out;
-                          })(response.body.result.locations);
-
-                          let arrayLonglat = self.searchLocationArray;
-//                            let arrayLonglat = [
-//                          {LONGITUDE: 120.6548525, LATITUDE: 31.2545787441, SCOPE},
-//                        ];
-                          console.log('查询出的经纬度'+arrayLonglat);
-
-                          //经纬度传值end
-                          if(arrayLonglat==false){
-                            self.outsideObtainValue = true;
-//                      alert('区域数据没有 区域外');
-                            return;
-                          }
-
-                          //
-                          cvt.translate(arrayLonglat/* 可打卡坐标 */, 3, 5, (data) => {
-                            if(data.status === 0) {
-                              // data.points; // 转换后的可打卡坐标
-
-                              let distance;
-                              for (let i = 0; i < data.points.length; i++) {
-
-                                distance = map.getDistance(data.points[i], myPosition);
-
-                                if (distance < scopes[i]) {
-                                  self.twRange='';
-//                        let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
-//                        alert('区域内' +juli );
-//                        alert('区域内')
-                                  self.outsideObtainValue = false;
-
-                                  break;
-                                }
-                              }
-
-                              console.log(data.points,'data.points查处的区域');
-
-                              if(self.outsideObtainValue) {
-                                self.outsideObtainValue = true;
-                                new BMap.Geocoder().getLocation(myPosition, function(res) { //进行给传值参数位置
-                                  console.log('地址逆解析', res);
-                                  self.twRange=res.addressComponents.district+res.addressComponents.street;
-//                   alert('self.twRange'+self.twRange);
-                                });
-
-//                      alert('区域外');
-                              }
-                              self.daKaHide=true;
-
-                              if(self.outsideObtainValue==true||self.outsideObtainValue==false){
-
-
-
-                              }
-
-
-                              if( distance&&response.body.result.twTime&&response.body.result.owTime){
-                                self.daKaHide=false;
-                              }
-                            }
-                          });
-
-                        }, response => {
-                          console.log('error callback');
-                        });
-
-                      }
-                    });
-
-                  },
-                  cancel: function (res) {
-                    alert('用户拒绝授权获取地理位置');
-                  }
-                });
-
-              });
-
-
-            }, response => {
-              console.log('error callback');
-            });
-            console.log('wx go');
-          });
-          console.info('debug info');
-//          return;
-
-
-          console.log(BMap ,'我是BMap');
-          console.log(map ,'我是map');
-
-
-
-        //获取位置测试结束
-
-
-
-
-
-        let updakaObj;
-        this.currentTime();
-        this.clickfunction = false;
-
-//          alert('this.outsideObtainValue' + this.outsideObtainValue);
-
-        if (this.toDaKaStatusIsInit == null) {
-          updakaObj = {
-            "record": {
-              "twOutside":  this.outsideObtainValue ? true : 0,
-              "twLocation":this.twRange,
-            }   //this.outsideObtainValue toDaKaStatusIsOutsideInit
-
-          }
-        } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
-          updakaObj = {
-            "record": {
-              "owOutside": this.outsideObtainValue ? true :0,
-              "owLocation":this.twRange,
-            }//0  'true'  //this.outsideObtainValue  toDownKaStatusIsOutsideInit
-          }
-        }
-//          else {
-//            alert("不能重复打卡");
-//          }
-
-
-
-
-
-
-        this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
-//            console.log('shiann' + response.body.result.overTime);
-
-          if(response.body.code==500){
-            MessageBox('提示', response.body.message);
-            this.daKaHide=false;
-            return;
-          }
-
-
-          this.toDaKaStatusIs = response.body.result.twStatus; //上班状态赋值
-          this.toDaKaStatusIsOutside = response.body.result.twOutside; //上班班是否在区域外
-          this.toDownKaStatusIs = response.body.result.owStatus;//下班状态赋值
-          this.toDownKaStatusIsOutside = response.body.result.owOutside; //下班是否在区域外
-
-          this.addTimeAlert = response.body.result.overTime; //alert 加班时间
-
-          console.log('上1111下', this.toDaKaStatusIsOutside + '和' + this.toDownKaStatusIsInit);
-
-          if (this.toDaKaStatusIsInit == null) {//上班打卡
-
-            this.toUp = false;
-            this.Obtain = true;
-            this.popupVisible = true;
-            this.downTimeMiddleShow = false;
-
-
-            this.toTimeMiddleShow = true;
-//              var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-
-
-            if (response.body.result.twTime ) {
-              this.initToTime = moment(response.body.result.twTime).format(df);
-            }
-
-
-
-
-//                        this.toDaKaStatusIs=0;
-
-            console.log('上班状态' + this.toDaKaStatusIs)
-            if (this.toDaKaStatusIs == 0) {//正常打卡显示
-              this.initDownRecord = true;
-              this.toUp = true;
-              this.downClickSpan = true;
-              this.toUpYuanShow = false
-              this.lateStatusAddW = false;
-            }
-            if (this.toDaKaStatusIs == 1) { //迟到打卡显示
-              this.lateStatus = true;
-              this.isYellow2 = true;
-              this.initDownRecord = false;
-              this.daKaHide = true;
-              this.downClickSpan = true;
-              this.toUp = true;
-              this.toUpYuanShow = false;
-
-
-            }
-            if (this.toDaKaStatusIs == 2) { //旷工打卡显示
-              this.absenteeismStatusAlert = true;
-              this.daKaHide = true;
-              this.toUp = true;
-              this.Obtain = false;
-              this.downClickSpan = true;
-              this.toClickSpan = false;
-              this.tokuangWdk = true;
-              //测试过
-
-            }
-            if (this.toDaKaStatusIsOutside) { //区域外   条件？？？？？
-              this.isYellowAddQ = true; //alert区域外
-            }
-            if (this.toDaKaStatusIsOutside && this.toDaKaStatusIs == 0) { //区域外   条件？？？？？
-              this.isYellowAddQ = true; //alert区域外
-              this.lateStatusAddW = true; //区域外span
-
-              this.initDownRecord = true;
-              this.isYellow2 = true;
-//                alert('也是区域外+正常');
-              console.log('同事区域外');
-            }
-            this.toClickSpan = false;
-//              this.zcDownShowSpan=true; //为了显示 下班打卡的下班时间文字
-
-          } else if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) { //下班打卡
-            //在下班打卡前要确定是否在范围内 然后返回结果  进行打卡状态展示
-//                alert('进入下班');
-            console.log(this.toDownKaStatusIs);
-            this.zcDownShowSpan = true;
-            this.alertToSpan = false;//sapn 上班
-            this.alertDownSpan = true; //sapn 下班
-            this.popupVisible = true; //弹出的模态框打卡
-            this.overTime = false; //xinjia5-16 17:34加
-            console.log(response.body);
-
-
-            if (response.body.result.owTime ) {
-              this.goToTime = moment(response.body.result.owTime).format(df);
-            }
-            this.downTimeMiddleShow = true;
-            this.toTimeMiddleShow = false;
-
-            if (this.toDownKaStatusIs == 0) {//正常打卡显示
-              this.initDownRecord = true;
-              this.absenteeismStatusAlert = false;
-              this.lateStatus = false;
-              this.isYellow2 = false;
-              console.log('166' + this.toDownKaStatusIs)
-              this.overTime = false; //加班隐藏
-              this.isYellowAddQ=false;
-
-
-
-            }
-            if (this.toDownKaStatusIs == 1) { //早退打卡显示
-              this.leaveEarly = true;
-              console.log('167' + this.toDownKaStatusIs);
-              this.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
-              this.overTime = false;
-              this.absenteeismStatusAlert = false;
-              this.isYellow2 = true;
-              this.isYellowAddQ=false; //区域外隐藏
-
-
-
-//                alert('早退');
-
-            }
-            if (this.toDownKaStatusIs == 3 && this.toDownKaStatusIsOutside) { //旷工+区域外打卡显示
-              this.leaveEarly = false;
-//                this.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
-              this.overTime = false;
-              this.absenteeismStatusAlert = true;
-              this.isYellow2 = true;
-              this.isYellowAddQ = true;
-              this.initDownRecord=false;//隐藏正常打卡
-              this.lateStatus=false;
-//              this.initDaKaRecord=false;//上班打卡正常隐藏
-//                this.isYellow2 = true;
-
-
-
-
-//                alert('早退');
-
-            }
-            if (this.toDownKaStatusIs == 3) { //旷工打卡显示
-              this.leaveEarly = false;
-//                this.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
-              this.overTime = false;
-              this.absenteeismStatusAlert = true;
-              this.isYellow2 = true;
-              this.initDownRecord=false;//隐藏正常打卡
-              this.lateStatus=false;
-
-//              this.initDaKaRecord=false;//上班打卡正常隐藏
-
-
-
-
-//                alert('早退');
-
-            }
-            if (this.toDownKaStatusIsOutside) { //区域外打卡显示
-
-              this.isYellow2 = true;
-              this.isYellowAddQ = true;
-
-              this.overTime = false;
-              console.log('1688' + this.toDownKaStatusIs)
-
-//                console.log('区域外');
-
-            }
-            if (this.toDownKaStatusIs == 2 && this.toDownKaStatusIsOutside) { //加班+区域外打卡显示
-//                alert('加班+区域外');
-              this.lateStatus = false;
-              this.overTime = false;
-              this.absenteeismStatusAlert=false
-
-
-            } else if (this.toDownKaStatusIs == 2) { //加班打卡显示
-
-              this.lateStatus = false;
-//                this.overTime = true;
-              this.overTime = false;
-              console.log('169' + this.toDownKaStatusIs);
-              this.zcDownShowSpan = true;
-              this.zcToUpShow = true;
-              this.isYellowAddQ = false;
-              this.isNormal = true;
-              this.absenteeismStatusAlert = false;
-              this.isYellow2 = false;
-
-//                alert('加班');
-
-            }
-            this.toUp = false;
-
-          }
-          this.showOwStstus=false; //新增为了打卡时给下班时间的状态
-
-
-
-
-        }, response => {
-          console.log('error callback');
-        });
-
-
-        
-
-
-
-      },
-
-
-
-
-      currentTime(){ //模态框显示当前打卡成功
-      },
-      currentTimeSpan(){ //显示在list上的日志
-
-      },
-      knowFunction(){
-        this.popupVisible = false;
-        this.qulocation =false;
-
-        if (this.toDaKaStatusIsInit == null) {//上班打卡
-          this.popupVisible = false;
-
-//          this.winReload();
-        }
-        if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
-          this.popupVisible = false;
-//          alert('下班知道');
-
-        }
-
-        this.doSearch();
-
-      },
-      winReload: function (cond) {
-        window.location.reload();
-      },
-
-      //提交申请跳转路由开始
-
-      submitApplyRouter(type){
-          this.setCookie('leaveType',type,365);
-          console.log(this.getCookie('leaveType'),'这是singIn的this.getCookie(leaveType)');
-        this.$router.push({path: '/leave'});
-      },
-      //提交申请跳转路由结束
-
-
-      //地图微信获取经纬度 转换经纬度 地图测距开始
-
-//
-      handler () {
-//        this.BMap = BMap;
-//        this.map = map;
-//        console.log(this);
-//        console.log(V.component('baidu-map'));
         let BMap = null;
         let map = null;
         let self = this;
@@ -1519,7 +1023,7 @@
         //判断是不是安卓苹果
         var u = navigator.userAgent;
         var isAndroid='0';
-          isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         if(isAndroid){
           curl = {
             location: location.href //安卓的参数
@@ -1554,16 +1058,16 @@
           $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`
         }).then(() => {
 
+
           this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
 
-            console.log('sd', response.body.result);
+//            console.log('sd', response.body.result);
             this.t1 = response.body.result.appid.toString();
-            console.log(this.t1);
             this.t2 = response.body.result.timestamp.toString();
             this.t3 = response.body.result.nonceStr.toString();
             this.t4 = response.body.result.signature.toString();
             this.yyy = true;
-
+//
             let cvt = new BMap.Convertor();
 
 
@@ -1580,7 +1084,7 @@
 
             wx.error(function (res) {
 //              alert('wx.error错误信息' + res.errMsg)
-//              console.log('err1', res)
+              console.log('err1 微信获取经纬度失败', res)
             });
             wx.ready(function () {
 
@@ -1589,12 +1093,17 @@
                 success: function (res) {
 
                   self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;  //这个是原有
+
+                  console.log( self.longitude, self.latitude,'原始w')
+
+
                   var speed = res.speed; // 速度，以米/每秒计
                   var accuracy = res.accuracy; // 位置精度
 //                  alert('手机获取的精度'+self.longitude);
 //                  alert('手机获取的维度'+self.latitude);
-                  cvt.translate([new BMap.Point(res.longitude,res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {
+                  cvt.translate([new BMap.Point(res.longitude,res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {   //原有
+//                  cvt.translate([new BMap.Point(120.6548525,31.2645787441)]/* 微信坐标 wx */, 1, 5, (data) => {
                     if(data.status === 0) {
                       let myPosition = data.points[0]; // 转换后的微信坐标
 
@@ -1610,13 +1119,13 @@
                             scopes.push(item.SCOPE);
                           });
                           return out;
-                        })(response.body.result.locations);
+                        })( response.body.result.locations);
 
                         let arrayLonglat = self.searchLocationArray;
 //                            let arrayLonglat = [
 //                          {LONGITUDE: 120.6548525, LATITUDE: 31.2545787441, SCOPE},
 //                        ];
-                        console.log('查询出的经纬度'+arrayLonglat);
+//                        console.log(arrayLonglat,'查询出的经纬度');
 
                         //经纬度传值end
                         if(arrayLonglat==false){
@@ -1641,23 +1150,492 @@
 //                        alert('区域内' +juli );
 //                        alert('区域内')
                                 self.outsideObtainValue = false;
+                                if(!self.twRange){
+                                  Indicator.close();
+
+                                  let updakaObj;
+                                  self.currentTime();
+                                  self.clickfunction = false;
+                                  console.log(self.twRange,'位置1传')
+//          alert('self.outsideObtainValue' + self.outsideObtainValue);
+
+                                  if (self.toDaKaStatusIsInit == null) {
+                                    updakaObj = {
+                                      "record": {
+                                        "twOutside":  self.outsideObtainValue ? true : 0,
+                                        "twLocation":self.twRange,
+                                      }   //self.outsideObtainValue toDaKaStatusIsOutsideInit
+
+                                    }
+                                  } else if (self.toDaKaStatusIsInit !== null && self.toDownKaStatusIsInit == null) {
+                                    updakaObj = {
+                                      "record": {
+                                        "owOutside": self.outsideObtainValue ? true :0,
+                                        "owLocation":self.twRange,
+                                      }//0  'true'  //this.outsideObtainValue  toDownKaStatusIsOutsideInit
+                                    }
+                                  }
+
+                                  self.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
+//            console.log('shiann' + response.body.result.overTime);
+
+                                    if(response.body.code==500){
+                                      MessageBox('提示', response.body.message);
+                                      self.daKaHide=false;
+                                      return;
+                                    }
+
+
+                                    self.toDaKaStatusIs = response.body.result.twStatus; //上班状态赋值
+                                    self.toDaKaStatusIsOutside = response.body.result.twOutside; //上班班是否在区域外
+                                    self.toDownKaStatusIs = response.body.result.owStatus;//下班状态赋值
+                                    self.toDownKaStatusIsOutside = response.body.result.owOutside; //下班是否在区域外
+
+                                    self.addTimeAlert = response.body.result.overTime; //alert 加班时间
+
+//                                    console.log('上1111下', self.toDaKaStatusIsOutside + '和' + self.toDownKaStatusIsInit);
+
+                                    if (self.toDaKaStatusIsInit == null) {//上班打卡
+
+                                      self.toUp = false;
+                                      self.Obtain = true;
+                                      self.popupVisible = true;
+                                      self.downTimeMiddleShow = false;
+
+
+                                      self.toTimeMiddleShow = true;
+
+                                      if (response.body.result.twTime ) {
+                                        self.initToTime = moment(response.body.result.twTime).format(df);
+                                      }
+
+//                                      console.log('上班状态' + self.toDaKaStatusIs);
+                                      if (self.toDaKaStatusIs == 0) {//正常打卡显示
+                                        self.initDownRecord = true;
+                                        self.toUp = true;
+                                        self.downClickSpan = true;
+                                        self.toUpYuanShow = false
+                                        self.lateStatusAddW = false;
+                                      }
+                                      if (self.toDaKaStatusIs == 1) { //迟到打卡显示
+                                        self.lateStatus = true;
+                                        self.isYellow2 = true;
+                                        self.initDownRecord = false;
+                                        self.daKaHide = true;
+                                        self.downClickSpan = true;
+                                        self.toUp = true;
+                                        self.toUpYuanShow = false;
+
+
+                                      }
+                                      if (self.toDaKaStatusIs == 2) { //旷工打卡显示
+                                        self.absenteeismStatusAlert = true;
+                                        self.daKaHide = true;
+
+                                        self.toUp = true;
+                                        self.Obtain = false;
+                                        self.downClickSpan = true;
+                                        self.toClickSpan = false;
+                                        self.tokuangWdk = true;
+
+                                      }
+                                      if (self.toDaKaStatusIsOutside) { //区域外   条件？？？？？
+                                        self.isYellowAddQ = true; //alert区域外
+                                      }
+                                      if (self.toDaKaStatusIsOutside && self.toDaKaStatusIs == 0) { //区域外   条件？？？？？
+                                        self.isYellowAddQ = true; //alert区域外
+                                        self.lateStatusAddW = true; //区域外span
+
+                                        self.initDownRecord = true;
+                                        self.isYellow2 = true;
+//                alert('也是区域外+正常');
+//                                        console.log('同事区域外');
+                                      }
+                                      self.toClickSpan = false;
+//              self.zcDownShowSpan=true; //为了显示 下班打卡的下班时间文字
+
+                                    } else if (self.toDaKaStatusIsInit !== null && self.toDownKaStatusIsInit == null) { //下班打卡
+                                      //在下班打卡前要确定是否在范围内 然后返回结果  进行打卡状态展示
+//                alert('进入下班');
+//                                      console.log(self.toDownKaStatusIs);
+                                      self.zcDownShowSpan = true;
+                                      self.alertToSpan = false;//sapn 上班
+                                      self.alertDownSpan = true; //sapn 下班
+                                      self.popupVisible = true; //弹出的模态框打卡
+                                      self.overTime = false; //xinjia5-16 17:34加
+//                                      console.log(response.body);
+
+
+                                      if (response.body.result.owTime ) {
+                                        self.goToTime = moment(response.body.result.owTime).format(df);
+                                      }
+                                      self.downTimeMiddleShow = true;
+                                      self.toTimeMiddleShow = false;
+
+                                      if (self.toDownKaStatusIs == 0) {//正常打卡显示
+                                        self.initDownRecord = true;
+                                        self.absenteeismStatusAlert = false;
+                                        self.lateStatus = false;
+                                        self.isYellow2 = false;
+//                                        console.log('166' + self.toDownKaStatusIs)
+                                        self.overTime = false; //加班隐藏
+                                        self.isYellowAddQ=false;
+
+
+
+                                      }
+                                      if (self.toDownKaStatusIs == 1) { //早退打卡显示
+                                        self.leaveEarly = true;
+//                                        console.log('167' + self.toDownKaStatusIs);
+                                        self.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert = false;
+                                        self.isYellow2 = true;
+                                        self.isYellowAddQ=false; //区域外隐藏
+
+
+
+//                alert('早退');
+
+                                      }
+                                      if (self.toDownKaStatusIs == 3 && self.toDownKaStatusIsOutside) { //旷工+区域外打卡显示
+                                        self.leaveEarly = false;
+//                self.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert = true;
+                                        self.isYellow2 = true;
+                                        self.isYellowAddQ = true;
+                                        self.initDownRecord=false;//隐藏正常打卡
+                                        self.lateStatus=false;
+//              self.initDaKaRecord=false;//上班打卡正常隐藏
+//                self.isYellow2 = true;
+
+
+
+
+//                alert('早退');
+
+                                      }
+                                      if (self.toDownKaStatusIs == 3) { //旷工打卡显示
+                                        self.leaveEarly = false;
+//                self.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert = true;
+                                        self.isYellow2 = true;
+                                        self.initDownRecord=false;//隐藏正常打卡
+                                        self.lateStatus=false;
+
+//              self.initDaKaRecord=false;//上班打卡正常隐藏
+
+
+
+
+//                alert('早退');
+
+                                      }
+                                      if (self.toDownKaStatusIsOutside) { //区域外打卡显示
+
+                                        self.isYellow2 = true;
+                                        self.isYellowAddQ = true;
+
+                                        self.overTime = false;
+//                                        console.log('1688' + self.toDownKaStatusIs)
+
+//                console.log('区域外');
+
+                                      }
+                                      if (self.toDownKaStatusIs == 2 && self.toDownKaStatusIsOutside) { //加班+区域外打卡显示
+//                alert('加班+区域外');
+                                        self.lateStatus = false;
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert=false
+
+
+                                      } else if (self.toDownKaStatusIs == 2) { //加班打卡显示
+
+                                        self.lateStatus = false;
+//                self.overTime = true;
+                                        self.overTime = false;
+//                                        console.log('169' + self.toDownKaStatusIs);
+                                        self.zcDownShowSpan = true;
+                                        self.zcToUpShow = true;
+                                        self.isYellowAddQ = false;
+                                        self.isNormal = true;
+                                        self.absenteeismStatusAlert = false;
+                                        self.isYellow2 = false;
+
+//                alert('加班');
+
+                                      }
+                                      self.toUp = false;
+
+                                    }
+                                    self.showOwStstus=false; //新增为了打卡时给下班时间的状态
+
+                                  }, response => {
+                                    console.log('error callback');
+                                  });
+
+
+                                }
 
                                 break;
                               }
                             }
 
-                            console.log(data.points,'data.points查处的区域');
+                            console.log(data.points,'data.points查处z的区域');
+                            console.log(myPosition,'微信获取的myPosition')
 
                             if(self.outsideObtainValue) {
                               self.outsideObtainValue = true;
                               new BMap.Geocoder().getLocation(myPosition, function(res) { //进行给传值参数位置
+
                                 console.log('地址逆解析', res);
                                 self.twRange=res.addressComponents.district+res.addressComponents.street;
 //                   alert('self.twRange'+self.twRange);
+
+
+                                if(self.twRange){
+                                  Indicator.close();
+                                  let updakaObj;
+                                  self.currentTime();
+                                  self.clickfunction = false;
+                                  console.log(self.twRange,'位置2传')
+
+
+                                  if (self.toDaKaStatusIsInit == null) {
+                                    updakaObj = {
+                                      "record": {
+                                        "twOutside":  self.outsideObtainValue ? true : 0,
+                                        "twLocation":self.twRange,
+                                      }   //self.outsideObtainValue toDaKaStatusIsOutsideInit
+
+                                    }
+                                  } else if (self.toDaKaStatusIsInit !== null && self.toDownKaStatusIsInit == null) {
+                                    updakaObj = {
+                                      "record": {
+                                        "owOutside": self.outsideObtainValue ? true :0,
+                                        "owLocation":self.twRange,
+                                      }//0  'true'  //this.outsideObtainValue  toDownKaStatusIsOutsideInit
+                                    }
+                                  }
+
+                                  self.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
+
+                                    if(response.body.code==500){
+                                      MessageBox('提示', response.body.message);
+                                      self.daKaHide=false;
+                                      return;
+                                    }
+
+
+                                    self.toDaKaStatusIs = response.body.result.twStatus; //上班状态赋值
+                                    self.toDaKaStatusIsOutside = response.body.result.twOutside; //上班班是否在区域外
+                                    self.toDownKaStatusIs = response.body.result.owStatus;//下班状态赋值
+                                    self.toDownKaStatusIsOutside = response.body.result.owOutside; //下班是否在区域外
+
+                                    self.addTimeAlert = response.body.result.overTime; //alert 加班时间
+
+//                                    console.log('上1111下', self.toDaKaStatusIsOutside + '和' + self.toDownKaStatusIsInit);
+
+                                    if (self.toDaKaStatusIsInit == null) {//上班打卡
+
+                                      self.toUp = false;
+                                      self.Obtain = true;
+                                      self.popupVisible = true;
+                                      self.downTimeMiddleShow = false;
+
+
+                                      self.toTimeMiddleShow = true;
+//              var zhuan = new Date(parseInt(response.body.result.twTime)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+
+
+                                      if (response.body.result.twTime ) {
+                                        self.initToTime = moment(response.body.result.twTime).format(df);
+                                      }
+
+
+
+//                                      console.log('上班状态' + self.toDaKaStatusIs)
+                                      if (self.toDaKaStatusIs == 0) {//正常打卡显示
+                                        self.initDownRecord = true;
+                                        self.toUp = true;
+                                        self.downClickSpan = true;
+                                        self.toUpYuanShow = false
+                                        self.lateStatusAddW = false;
+                                      }
+                                      if (self.toDaKaStatusIs == 1) { //迟到打卡显示
+                                        self.lateStatus = true;
+                                        self.isYellow2 = true;
+                                        self.initDownRecord = false;
+                                        self.daKaHide = true;
+                                        self.downClickSpan = true;
+                                        self.toUp = true;
+                                        self.toUpYuanShow = false;
+
+
+                                      }
+                                      if (self.toDaKaStatusIs == 2) { //旷工打卡显示
+                                        self.absenteeismStatusAlert = true;
+                                        self.daKaHide = true;
+                                        self.toUp = true;
+                                        self.Obtain = false;
+                                        self.downClickSpan = true;
+                                        self.toClickSpan = false;
+                                        self.tokuangWdk = true;
+                                        //测试过
+
+                                      }
+                                      if (self.toDaKaStatusIsOutside) { //区域外   条件？？？？？
+                                        self.isYellowAddQ = true; //alert区域外
+                                      }
+                                      if (self.toDaKaStatusIsOutside && self.toDaKaStatusIs == 0) { //区域外   条件？？？？？
+                                        self.isYellowAddQ = true; //alert区域外
+                                        self.lateStatusAddW = true; //区域外span
+
+                                        self.initDownRecord = true;
+                                        self.isYellow2 = true;
+//                alert('也是区域外+正常');
+//                                        console.log('同事区域外');
+                                      }
+                                      self.toClickSpan = false;
+//              self.zcDownShowSpan=true; //为了显示 下班打卡的下班时间文字
+
+                                    } else if (self.toDaKaStatusIsInit !== null && self.toDownKaStatusIsInit == null) { //下班打卡
+                                      //在下班打卡前要确定是否在范围内 然后返回结果  进行打卡状态展示
+//                alert('进入下班');
+//                                      console.log(self.toDownKaStatusIs);
+                                      self.zcDownShowSpan = true;
+                                      self.alertToSpan = false;//sapn 上班
+                                      self.alertDownSpan = true; //sapn 下班
+                                      self.popupVisible = true; //弹出的模态框打卡
+                                      self.overTime = false; //xinjia5-16 17:34加
+//                                      console.log(response.body);
+
+
+                                      if (response.body.result.owTime ) {
+                                        self.goToTime = moment(response.body.result.owTime).format(df);
+                                      }
+                                      self.downTimeMiddleShow = true;
+                                      self.toTimeMiddleShow = false;
+
+                                      if (self.toDownKaStatusIs == 0) {//正常打卡显示
+                                        self.initDownRecord = true;
+                                        self.absenteeismStatusAlert = false;
+                                        self.lateStatus = false;
+                                        self.isYellow2 = false;
+//                                        console.log('166' + self.toDownKaStatusIs)
+                                        self.overTime = false; //加班隐藏
+                                        self.isYellowAddQ=false;
+
+
+
+                                      }
+                                      if (self.toDownKaStatusIs == 1) { //早退打卡显示
+                                        self.leaveEarly = true;
+//                                        console.log('167' + self.toDownKaStatusIs);
+                                        self.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert = false;
+                                        self.isYellow2 = true;
+                                        self.isYellowAddQ=false; //区域外隐藏
+
+
+
+//                alert('早退');
+
+                                      }
+                                      if (self.toDownKaStatusIs == 3 && self.toDownKaStatusIsOutside) { //旷工+区域外打卡显示
+                                        self.leaveEarly = false;
+//                self.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert = true;
+                                        self.isYellow2 = true;
+                                        self.isYellowAddQ = true;
+                                        self.initDownRecord=false;//隐藏正常打卡
+                                        self.lateStatus=false;
+//              self.initDaKaRecord=false;//上班打卡正常隐藏
+//                self.isYellow2 = true;
+
+
+
+
+//                alert('早退');
+
+                                      }
+                                      if (self.toDownKaStatusIs == 3) { //旷工打卡显示
+                                        self.leaveEarly = false;
+//                self.toDownAbsenteeismStatus = true; //早退内容显示提交请假5-16 17:39
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert = true;
+                                        self.isYellow2 = true;
+                                        self.initDownRecord=false;//隐藏正常打卡
+                                        self.lateStatus=false;
+
+//              self.initDaKaRecord=false;//上班打卡正常隐藏
+
+
+
+
+//                alert('早退');
+
+                                      }
+                                      if (self.toDownKaStatusIsOutside) { //区域外打卡显示
+
+                                        self.isYellow2 = true;
+                                        self.isYellowAddQ = true;
+
+                                        self.overTime = false;
+//                                        console.log('1688' + self.toDownKaStatusIs)
+
+//                console.log('区域外');
+
+                                      }
+                                      if (self.toDownKaStatusIs == 2 && self.toDownKaStatusIsOutside) { //加班+区域外打卡显示
+//                alert('加班+区域外');
+                                        self.lateStatus = false;
+                                        self.overTime = false;
+                                        self.absenteeismStatusAlert=false
+
+
+                                      } else if (self.toDownKaStatusIs == 2) { //加班打卡显示
+
+                                        self.lateStatus = false;
+//                self.overTime = true;
+                                        self.overTime = false;
+//                                        console.log('169' + self.toDownKaStatusIs);
+                                        self.zcDownShowSpan = true;
+                                        self.zcToUpShow = true;
+                                        self.isYellowAddQ = false;
+                                        self.isNormal = true;
+                                        self.absenteeismStatusAlert = false;
+                                        self.isYellow2 = false;
+
+//                alert('加班');
+
+                                      }
+                                      self.toUp = false;
+
+                                    }
+                                    self.showOwStstus=false; //新增为了打卡时给下班时间的状态
+
+
+                                  }, response => {
+                                    console.log('error callback');
+                                  });
+
+
+                                }else{
+                                    console.log('没有获取到定位')
+                                }
+
                               });
 
 //                      alert('区域外');
                             }
+
+
+
                             self.daKaHide=true;
 
                             if( distance&&response.body.result.twTime&&response.body.result.owTime){
@@ -1686,21 +1664,264 @@
             console.log('error callback');
           });
           console.log('wx go');
+
         });
         console.info('debug info');
-        return;
 
 
-        console.log(BMap ,'我是BMap');
-        console.log(map ,'我是map');
+
+        //点击获取定位结束
+
+
+
+
+
+
+
+
+
 
 
 
 
       },
 
-      //地图微信获取经纬度 转换经纬度 地图测距结束
 
+
+
+      currentTime(){ //模态框显示当前打卡成功
+      },
+      currentTimeSpan(){ //显示在list上的日志
+
+      },
+      knowFunction(){
+        this.popupVisible = false;
+        this.qulocation =false;
+
+        if (this.toDaKaStatusIsInit == null) {//上班打卡
+          this.popupVisible = false;
+
+//          this.winReload();
+        }
+        if (this.toDaKaStatusIsInit !== null && this.toDownKaStatusIsInit == null) {
+          this.popupVisible = false;
+
+        }
+
+        this.doSearch();
+
+      },
+      winReload: function (cond) {
+        window.location.reload();
+      },
+
+      //提交申请跳转路由开始
+
+      submitApplyRouter(type){
+          this.setCookie('leaveType',type,365);
+          console.log(this.getCookie('leaveType'),'这是singIn的this.getCookie(leaveType)');
+        this.$router.push({path: '/leave'});
+      },
+      //提交申请跳转路由结束
+
+      //地图微信获取经纬度 转换经纬度 地图测距开始
+
+//
+//      handler () {
+//          //原有初始化加载的地理位置
+////        this.BMap = BMap;
+////        this.map = map;
+////        console.log(this);
+////        console.log(V.component('baidu-map'));
+//        let BMap = null;
+//        let map = null;
+//        let self = this;
+//        let curl;
+//
+//        //判断是不是安卓苹果
+//        var u = navigator.userAgent;
+//        var isAndroid='0';
+//          isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+//        if(isAndroid){
+//          curl = {
+//            location: location.href //安卓的参数
+//          };
+////          alert('是否是Android：'+isAndroid);
+//        }
+//        if(!isAndroid){
+//          curl = {
+//            location: location.href.toString().split('#')[0] //苹果的参数
+//          };
+//        }
+//
+//        console.log(curl,'curl');
+//        //判断结束
+//
+//
+//        new Promise((resolve, reject) => {
+////            resolve('ok');
+////          resolve();
+//          window._initBaiduMap = function () {
+////            resolve(window.BMap);
+//            window.document.body.removeChild($script)
+////            global.BMap._preloader = null
+//            window._initBaiduMap = null;
+//            resolve();
+//            BMap = window.BMap;
+//            map = new BMap.Map();
+//            console.log('bmap', BMap, map);
+//          }
+//          const $script = document.createElement('script')
+//          window.document.body.appendChild($script)
+//          $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`
+//        }).then(() => {
+//
+//          this.$http.post('/api/v1.0/wechat/sign',curl).then(response => { //获取签名接口开始
+//
+////            console.log('sd', response.body.result);
+//            this.t1 = response.body.result.appid.toString();
+//            console.log(this.t1);
+//            this.t2 = response.body.result.timestamp.toString();
+//            this.t3 = response.body.result.nonceStr.toString();
+//            this.t4 = response.body.result.signature.toString();
+//            this.yyy = true;
+//
+//            let cvt = new BMap.Convertor();
+//
+//
+//            wx.config({
+//              debug: false,
+//              appId: this.t1,
+//              timestamp: this.t2,
+//              nonceStr: this.t3,
+//              signature: this.t4,
+//              jsApiList: [
+//                'getLocation'
+//              ]
+//            });
+//
+//            wx.error(function (res) {
+////              alert('wx.error错误信息' + res.errMsg)
+////              console.log('err1', res)
+//            });
+//            wx.ready(function () {
+//
+//              wx.getLocation({
+//                type: 'wgs84',
+//                success: function (res) {
+//
+//                  self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+//                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;
+//                  var speed = res.speed; // 速度，以米/每秒计
+//                  var accuracy = res.accuracy; // 位置精度
+////                  alert('手机获取的精度'+self.longitude);
+////                  alert('手机获取的维度'+self.latitude);
+//                  cvt.translate([new BMap.Point(res.longitude,res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {
+//                    if(data.status === 0) {
+//                      let myPosition = data.points[0]; // 转换后的微信坐标
+//
+//                      self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
+//                        //经纬度传值start
+//                        let scopes = [];
+//                        self.searchLocationArray=(rt => {
+//                          if(!rt) return false;
+//                          let out = [];
+//
+//                          rt.forEach(item => {
+//                            out.push(new BMap.Point(item.LONGITUDE, item.LATITUDE));
+//                            scopes.push(item.SCOPE);
+//                          });
+//                          return out;
+//                        })(response.body.result.locations);
+//
+//                        let arrayLonglat = self.searchLocationArray;
+////                            let arrayLonglat = [
+////                          {LONGITUDE: 120.6548525, LATITUDE: 31.2545787441, SCOPE},
+////                        ];
+//                        console.log('查询出的经纬度'+arrayLonglat);
+//
+//                        //经纬度传值end
+//                        if(arrayLonglat==false){
+//                          self.outsideObtainValue = true;
+////                      alert('区域数据没有 区域外');
+//                          return;
+//                        }
+//
+//                        //
+//                        cvt.translate(arrayLonglat/* 可打卡坐标 */, 3, 5, (data) => {
+//                          if(data.status === 0) {
+//                            // data.points; // 转换后的可打卡坐标
+//
+//                            let distance;
+//                            for (let i = 0; i < data.points.length; i++) {
+//
+//                              distance = map.getDistance(data.points[i], myPosition);
+//
+//                              if (distance < scopes[i]) {
+//                                self.twRange='';
+////                        let juli=map.getDistance(new BMap.Point(arrayLonglat[i].LONGITUDE, arrayLonglat[i].LATITUDE), new BMap.Point(self.longitude, self.latitude));
+////                        alert('区域内' +juli );
+////                        alert('区域内')
+//                                self.outsideObtainValue = false;
+//
+//                                break;
+//                              }
+//                            }
+//
+//                            console.log(data.points,'data.points查处的区域');
+//
+//                            if(self.outsideObtainValue) {
+//                              self.outsideObtainValue = true;
+//                              new BMap.Geocoder().getLocation(myPosition, function(res) { //进行给传值参数位置
+//                                console.log('地址逆解析', res);
+//                                self.twRange=res.addressComponents.district+res.addressComponents.street;
+////                   alert('self.twRange'+self.twRange);
+//                              });
+//
+////                      alert('区域外');
+//                            }
+//                            self.daKaHide=true;
+//
+//                            if( distance&&response.body.result.twTime&&response.body.result.owTime){
+//                              self.daKaHide=false;
+//                            }
+//                          }
+//                        });
+//
+//                      }, response => {
+//                        console.log('error callback');
+//                      });
+//
+//                    }
+//                  });
+//
+//                },
+//                cancel: function (res) {
+//                  alert('用户拒绝授权获取地理位置');
+//                }
+//              });
+//
+//            });
+//
+//
+//          }, response => {
+//            console.log('error callback');
+//          });
+//          console.log('wx go');
+//        });
+//        console.info('debug info');
+//        return;
+//
+//
+//        console.log(BMap ,'我是BMap');
+//        console.log(map ,'我是map');
+//
+//
+//
+//
+//      },
+
+      //地图微信获取经纬度 转换经纬度 地图测距结束
 
 
     },
@@ -1715,6 +1936,47 @@
 </script>
 
 <style scoped>
+
+  /*.mint-indicator-wrapper {*/
+    /*top: 50%!important;*/
+    /*left: 50%!important;*/
+    /*position: fixed!important;*/
+    /*-webkit-transform: translate(-50%, -50%)!important;*/
+    /*transform: translate(-50%, -50%)!important;*/
+    /*border-radius: 5px!important;*/
+    /*background: rgba(0, 0, 0, 0.7)!important;*/
+    /*color: white!important;*/
+    /*box-sizing: border-box!important;*/
+    /*text-align: center!important;*/
+    /*z-index: 2002!important;*/
+  /*}*/
+  /*.mint-indicator {*/
+    /*-webkit-transition: opacity .2s linear;*/
+    /*transition: opacity .2s linear;*/
+  /*}*/
+
+  /*.mint-indicator-wrapper[data-v-abbf5bb8] {*/
+    /*top: 50%!important;*/
+    /*left: 50%!important;*/
+    /*position: fixed!important;*/
+    /*-webkit-transform: translate(-50%, -50%)!important;*/
+    /*transform: translate(-50%, -50%)!important;*/
+    /*border-radius: 5px!important;*/
+    /*background: rgba(0, 0, 0, 0.7)!important;*/
+    /*color: white!important;*/
+    /*box-sizing: border-box!important;*/
+    /*text-align: center!important;*/
+    /*z-index: 2002!important;*/
+  /*}*/
+  /*.mint-indicator-mask {*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*position: fixed;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*opacity: 0;*/
+    /*background: transparent;*/
+  /*}*/
   .colseClassAlert{
     display: inline-block;
     height: 3rem;

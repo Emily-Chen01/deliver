@@ -3,9 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Field,Header ,TabContainer, TabContainerItem,Radio } from 'mint-ui';
+import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Field,Header ,TabContainer, TabContainerItem,Radio,Indicator } from 'mint-ui';
 import Mint from 'mint-ui';
 import VueResource from 'vue-resource'
+// import { Indicator } from 'mint-ui';
 // import fullCalendar from 'vue-fullcalendar'
 import 'mint-ui/lib/style.css'
 
@@ -15,6 +16,8 @@ import 'mint-ui/lib/style.css'
 Vue.use(Mint);
 
 Vue.use(VueResource);
+Vue.use(Indicator);
+
 
 
 Vue.component(Tabbar.name, Tabbar);
@@ -32,6 +35,7 @@ Vue.component(Header.name, Header);
 Vue.component(TabContainer.name, TabContainer);
 Vue.component(TabContainerItem.name, TabContainerItem);
 Vue.component(Radio .name, Radio );
+// Vue.component(Indicator .name, Indicator );
 
 
 // Vue.use(BaiduMap, {
