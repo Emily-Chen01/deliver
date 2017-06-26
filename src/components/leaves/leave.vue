@@ -162,7 +162,7 @@
             <div class="myApplyContentNr">{{item.remarks}}</div>
 
             <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
-            <div class="myApplyContentNr" style="padding-bottom: 0.5rem;" v-if="item.why">{{item.why}}</div>
+            <div class="myApplyContentNr" style="padding-bottom: 0.5rem;word-wrap: break-word;" v-if="item.why">{{item.why}}</div>
 
             <div v-if="item.image" style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
           </div>
