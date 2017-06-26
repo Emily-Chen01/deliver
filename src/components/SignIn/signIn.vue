@@ -1093,7 +1093,7 @@
 
 
         this.qulocation=false;
-        Indicator.open('正在获取位置...');  本地调节注释
+        Indicator.open('正在获取位置...');  //本地调节注释
           // d点击获取定位开始
 
         let BMap = null;
