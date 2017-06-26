@@ -210,7 +210,7 @@ let oneselfData={};
             }else {
               console.log('record.staffPhoUrl的images值为空')
             }
-            this.imgSrc.comAddress=this.getCookie('avatarImages');
+//            this.imgSrc.comAddress=this.getCookie('avatarImages'); //6-26-16  注释
 
           }
           console.log(this.oneselfData);

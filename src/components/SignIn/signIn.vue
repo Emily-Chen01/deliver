@@ -1210,7 +1210,7 @@
 
                         //经纬度传值end
                         if(arrayLonglat==false){
-                          self.outsideObtainValue = true;
+                          self.outsideObtainValue = false;
 //                      alert('区域数据没有 区域外');
                           return;
                         }
