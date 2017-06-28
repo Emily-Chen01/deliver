@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+import { Navbar, TabItem,Toast,MessageBox,Popup ,Indicator} from 'mint-ui';
 
 import ManyCompany from "@/components/register/manyCompany"
 import Vue from 'vue'
@@ -97,7 +97,7 @@ export default {
   created: function () {
 
          this.handerList();        //先查询是否有绑定 有返回手机号
-
+    Indicator.open('加载中...');
 
     //获取openidstart  6-2早注释为了本地测试 提交需解除注释
       var _href=window.location.href;
@@ -217,6 +217,8 @@ export default {
         console.log(response.body.message,'我是bind接口返回的response.body.message')
 
           this.$http.get('/api/v1.0/client/findCompanies/'+this.phoneNumber).then(response => {
+
+
             this.sumSearchUid=response.body.result;
             if(response.body.code==500){
 //              MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
@@ -260,6 +262,11 @@ export default {
         console.log('dddd',response);
 //        alert('查询绑定');
 
+        if(!response.body.result){
+          Indicator.close();
+        }
+
+
         if(number==1){//此处判断是当提交的时候判断下是否已经绑定过
           if(response.body.code==500){
 //            MessageBox('提示', response.body.message);
@@ -286,6 +293,11 @@ export default {
               this.$http.get('/api/v1.0/client/findCompanies/'+number.phone).then(response => { //初始化查询有没有公司
                 console.log('这个data是查询公司的'+response.body.result);
                 //若是没有公司在此处执行下一个页面  ?/？
+
+                if(!response.body.result){
+                  Indicator.close();
+                }
+
                 console.log(response.body.result.length);
                 this.sumSearchUid=response.body.result;
 
@@ -296,9 +308,11 @@ export default {
                     }
                     this.$http.post('/api/v1.0/client/chooseCompany',param).then(response => { //选择公司
                       console.log('选择公司接口');
+                      Indicator.close();//关闭加载
 //                      if(response.body.code==200){
                         this.$router.push({path:'/signCard'});
 //                      }
+                      Indicator.close();//关闭加载
                     }, response => {
                       console.log( 'error callback');
                     });
@@ -329,6 +343,7 @@ export default {
       });
     },
     handerCome:function (){
+      Indicator.close();//关闭加载
       this.$router.push({path:'/ManyCompany'});
 //      this.$router.beforeEach((ManyCompany, Index, haha) => {
 //        console.log('测试')

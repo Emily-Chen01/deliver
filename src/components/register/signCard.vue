@@ -12,7 +12,7 @@
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
              <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
-               <div style="display: block;width: 1.5rem;height: 1.5rem;">
+               <div style="display: block;width: 1.4rem;height: 1.4rem;">
                  <img style="display: block;width: 100%;height: 100%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
                </div>
 
@@ -244,7 +244,6 @@ let oneselfData={};
           this.$router.push({path:'/set'});
         }
       },
-
     },
 
     components: {
@@ -339,11 +338,11 @@ let oneselfData={};
     padding: 1rem 0 0 0.7rem;
   }
   .avatarTop{
-    width: 92%;
-    height: 94%;
+    width: 100%;
+    height: 100%;
     display: block;
     text-align: center!important;
-    padding: 0.15rem 0 0 0.23rem;
+    padding: 0;
     border-radius: 4rem;
     z-index: 0;
   }

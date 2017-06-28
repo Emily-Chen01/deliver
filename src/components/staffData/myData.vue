@@ -16,6 +16,7 @@
         <el-form-item v-if="staff.name" label="姓名" prop="name">
           <el-input :readonly="!staff.name.isedit" v-model="model.name"></el-input>
         </el-form-item>
+        <!--<pre>{{staff.name}}</pre>-->
 
         <el-form-item v-if="staff.mobile" label="手机号" prop="mobile">
           <el-input :readonly="!staff.mobile.isedit" v-model="model.mobile"></el-input>
@@ -235,6 +236,7 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <!--<pre>{{staff}}</pre>-->
 
         <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间" prop="thePartyTime">
           <el-date-picker
@@ -386,44 +388,44 @@
         </el-form-item>
 
         <!-- DO NOT DEL -->
-        <el-form-item v-if="confList" label="紧急联系人">
+        <el-form-item v-if="staff.emergencyContact" label="紧急联系人">
         </el-form-item>
-        <div v-if="confList" class="contacts-wrapper">
+        <div v-if="staff.emergencyContact" class="contacts-wrapper">
           <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
             <el-form-item label="姓名" label-width="3.1em" :prop="'contacts[' + idx + '].emergContact'" :rules="{min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : ''}">
-              <el-input v-model="item.emergContact"></el-input>
+              <el-input :readonly="!staff.emergencyContact.isedit"   v-model="item.emergContact"></el-input>
             </el-form-item>
             <el-form-item label="电话" label-width="3.1em" :prop="'contacts[' + idx + '].emergContactPhone'" :rules="{message: '请输入紧急联系人电话', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : '', pattern: /^1\d{10}$/}">
-              <el-input v-model="item.emergContactPhone"></el-input>
+              <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContactPhone"></el-input>
             </el-form-item>
             <el-button v-if="idx > 0" class="remove-contact" type="danger" @click="rmvContact(item)"><i class="el-icon-delete"></i></el-button>
           </div>
-          <el-button v-if="model.contacts.length < 3" class="add-contact" type="primary" @click="addContact">添加紧急联系人</el-button>
+          <el-button   :disabled="!staff.emergencyContact.isedit" v-if="model.contacts.length < 3" class="add-contact" type="primary" @click="addContact">添加紧急联系人</el-button>
         </div>
 
-        <el-form-item v-if="staff.childMessage" label="是否有子女">
+        <el-form-item v-if="staff.hasChilds" label="是否有子女">
           <el-switch
-            :disabled="!staff.childMessage.isedit"
+            :disabled="!staff.hasChilds.isedit"
             v-model="model.hasChild"
             on-text="有"
             off-text="无">
           </el-switch>
         </el-form-item>
 
-        <div v-if="staff.childMessage && model.hasChild">
+        <div v-if="staff.hasChilds && model.hasChild">
           <div class="child" v-for="(item, idx) in model.childs">
             <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'" :rules="{min: 2, max: 32, message: '请输入子女姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : ''}">
-              <el-input :readonly="!staff.childMessage.isedit" v-model="item.name"></el-input>
+              <el-input :readonly="!staff.hasChilds.isedit" v-model="item.name"></el-input>
             </el-form-item>
             <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'" :rules="{type: 'number', message: '请选择子女性别', trigger: 'change', validator: (rule, value, callback) => {callback()}}">
-              <el-radio-group :disabled="!staff.childMessage.isedit" v-model="item.gender">
+              <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
                 <el-radio :label="1">男</el-radio>
                 <el-radio :label="0">女</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" :rules="{type: 'date', message: '请选择子女出生日期', trigger: 'change', validator: (rule, value, callback) => {callback()}}">
               <el-date-picker
-                :readonly="!staff.childMessage.isedit"
+                :readonly="!staff.hasChilds.isedit"
                 v-model="item.dateOfBirth"
                 type="date"
                 placeholder="选择出生日期"
@@ -432,7 +434,7 @@
             </el-form-item>
             <el-form-item label="子女出生证明">
               <el-upload
-                v-if="staff.childMessage.isedit"
+                v-if="staff.hasChilds.isedit"
                 action="/api/v1.0/client/upload"
                 name="files"
                 :show-file-list="false"
@@ -554,7 +556,9 @@
             :before-upload="beforeResumeUrl">
             <i class="el-icon-plus"> 上传简历</i>
           </el-upload>
-          <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.resumeUrl = ''"></i><a :href="model.resumeUrl + `&openId=${tokenHeader.openId}`">下载</a></p>
+          <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.resumeUrl = ''"></i>
+            <!--<a :href="model.resumeUrl + `&openId=${tokenHeader.openId}`">下载</a>-->
+          </p>
           <p class="uploadErrorTip" v-show="resumeUrlErrFlag">请上传正确的简历(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
         </el-form-item>
 
@@ -583,7 +587,9 @@
             :before-upload="beforeEmplsepacertUrl">
             <i class="el-icon-plus"> 上传离职证明</i>
           </el-upload>
-          <p v-if="model.emplsepacertUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''"></i><a :href="model.emplsepacertUrl + `&openId=${tokenHeader.openId}`">下载</a></p>
+          <p v-if="model.emplsepacertUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''"></i>
+            <!--<a :href="model.emplsepacertUrl + `&openId=${tokenHeader.openId}`">下载</a>-->
+          </p>
           <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">请上传正确的离职证明(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
         </el-form-item>
       </el-form>
@@ -627,7 +633,9 @@
         </el-form-item>
 
         <el-form-item v-if="model.record.contract.contracType === '0'" label="合同附件">
-          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a> //原有的下载的功能-->
+          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>
+
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
             action="/api/v1.0/client/upload"
@@ -687,7 +695,9 @@
         </el-form-item>
 
         <el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1'">
-          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>  //原有的下载-->
+          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>
+
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
             action="/api/v1.0/client/upload"
@@ -703,7 +713,9 @@
 
         <!-- 返聘 -->
         <el-form-item label="返聘协议" v-if="model.record.contract.contracType === '2'">
-          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a> //原有的下载功能-->
+          <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>
+
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
             action="/api/v1.0/client/upload"
@@ -741,6 +753,7 @@
         </el-form-item>
 
         <el-form-item label="兼职协议附件" v-if="model.record.contract.contracType === '3'">
+          <!--<a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a> //原有的下载功能-->
           <a v-if="model.record.contract.contractUrl" :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
           <!--<el-upload
             v-if="staffRecord.contracMes.isedit"
@@ -778,7 +791,7 @@
           </el-select>-->
         </el-form-item>
 
-        <el-form-item label="司龄">
+        <el-form-item  v-if="staffRecord.companyAge" label="司龄">
           {{typeof model.record.companyAge === 'number' ? model.record.companyAge.toFixed(1) : '0.0'}} 年(司龄计算是根据入职日期开始计算)
         </el-form-item>
 
@@ -814,7 +827,7 @@
           </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item label="工龄">
+        <el-form-item  v-if="staffRecord.workAge" label="工龄">
           {{typeof model.record.workAge === 'number' ? model.record.workAge.toFixed(1) : '0.0'}} 年(工龄计算是根据首次参加工作时间开始计算)
         </el-form-item>
 
@@ -824,10 +837,11 @@
         </el-form-item>
 
         <el-form-item v-if="staffRecord.StaffStatus" label="员工状态">
-          {{model.record.sstaffStatus}}
+          {{(model.record.sstaffStatus)==1?'在职':'离职'}}
           <!--6-16-17新增员工状态-->
           <!--<el-input :readonly="!staffRecord.jobNumber.isedit" v-model="model.record.jobNumber"></el-input>-->
         </el-form-item>
+        <!--<div> {{model.record}}</div>-->
 
         <el-form-item v-if="staffRecord.workEmail" label="工作邮箱">
           {{model.record.workEmail}}
@@ -888,7 +902,7 @@
           </el-date-picker>-->
         </el-form-item>
 
-        <el-form-item v-if="staffShareOption.awardAmount" label="授予总数量">
+        <el-form-item v-if="staffShareOption.awardAmount" label="授予数量">
           {{model.shareOption.awardAmount}}
           <!--<el-input :readonly="!staffShareOption.awardAmount.isedit" type="number" v-model="model.shareOption.awardAmount"></el-input>-->
         </el-form-item>
@@ -913,7 +927,9 @@
         </el-form-item>
 
         <el-form-item v-if="staffShareOption.terminallyCount" label="期权合同">
-          <a v-if="model.shareOption.contractUrl" :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
+          <!--<a v-if="model.shareOption.contractUrl" :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`">下载</a> //原有的下载-->
+          <a v-if="model.shareOption.contractUrl" :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`"></a>
+
           <!--<el-upload
             v-if="staffShareOption.contractUrl.isedit"
             action="/api/v1.0/client/upload"
@@ -1002,7 +1018,7 @@ export default {
         poreLocation: '',
         mobile: '',
         personalEmail: '',
-        childMessage: '',
+        hasChilds: '',
         finallyEmpCom: '',
         eduInfor: '',
         nativePlace: '',
@@ -1232,12 +1248,12 @@ export default {
         socsecNum: [
           {
             message: '请填写正确的社保编号', trigger: 'change',
-            transform, pattern: /^\d{7,9}$/
+            transform, pattern: /^\w{7,9}$/
           }
         ],
         accfuNum: [
           {
-            message: '请填写正确的公积金编号', trigger: 'change', transform, pattern: /^\d{12}$/
+            message: '请填写正确的公积金编号', trigger: 'change', transform, pattern: /^\d{9,12}$/
           }
         ],
         bankName: [
@@ -1252,7 +1268,14 @@ export default {
         ],
         cardNumber: [
           {
-            message: '请填写正确的银行卡号', trigger: 'change', transform, pattern: /^\d{19}$/
+            message: '请填写正确的银行卡号', trigger: 'change', validator: (rule, value, callback) => {
+            let val = value.trim().replace(/\s/g, '');
+            if (!val.length || /^\d{16,64}$/.test(val)) {
+              callback();
+            } else {
+              callback(new Error(rule.message));
+            }
+          }
           }
         ],
         englishName: [
@@ -1266,9 +1289,9 @@ export default {
           }
         ],
         wechart: [
-//          {
-//            message: '请填写正确的微信号(最多 24 个字符)', trigger: 'change', transform, pattern: /^\d{1,24}$/
-//          }
+          {
+            message: '请填写正确的微信号(最少 6 个字符，最多 20 个字符)', trigger: 'blur', transform, pattern: /^[a-zA-Z0-9-_]{6,20}$/
+          }
         ],
         maritalStatus: [
           {
@@ -1357,7 +1380,7 @@ export default {
         ],
         personalEmail: [
           {
-            type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', transform
+            type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', transform, max: 30
           }
         ],
         finallyEmpCom: [
@@ -1567,7 +1590,7 @@ export default {
       this.provinces.forEach(v => {
         if(pid.toString() === v.uid) {
           p = v.name;
-          this.$http.get(`/api/v1.0/client/query/city/${pid}`)
+          this.$http.get(`/api/v1.0/common/query/city/${pid}`)
             .then(res => {
               res = res.body;
               if(res.code === 200) {
@@ -2222,11 +2245,12 @@ export default {
           this.confList = res.result;
           let d = {};
           res.result.forEach(item => {
-              d[item.remark] = item.jname;
+              d[item.remark] = item;
             switch(item.tname) {
               case 'STAFF':
                 if(item.isconfig && item.isvisible) {
                   this.staff[item.jname] = item;
+                  console.log(this.staff[item.jname],'this.staff[item.jname]');
                 }
               break;
               case 'STAFF_RECORD':
@@ -2244,30 +2268,6 @@ export default {
 
           console.log('rr', d, this.staff, this.staffRecord, this.staffShareOption);
         }
-        //测试居住证
-        this.confList.forEach(item => {
-//            console.log(item.remark);
-          if(item.remark==='工作居住证信息'){
-            console.log('工作居住证信息',item);
-          }
-          switch(item.tname) {
-            case 'STAFF':
-              if(item.isconfig) {
-                this.staff[item.jname] = 1;
-              }
-              break;
-            case 'STAFF_RECORD':
-              if(item.isconfig) {
-                this.staffRecord[item.jname] = 1;
-              }
-              break;
-          }
-
-
-        });
-
-        //测试居住证
-
 
       })
       .catch(err => console.log(err.status, err.statusText));

@@ -73,7 +73,7 @@
                 :data="data"
                 :headers="tokenHeader"
                 :max-file-size="41943040"
-                compress="30"
+                compress="60"
                 url="/api/v1.0/client/upload" >
                 <div class="CardDivImg" v-if="initUpImage">  <img width="150" :src="imgSrc.shenFenIconShowCamera"  class="CardImg"   /></div>
                 <div class="CardDivImg" v-if="imgSrc.shenFenIcon">  <img width="150" :src="imgSrc.shenFenIcon"  class="CardImg"  /></div>
