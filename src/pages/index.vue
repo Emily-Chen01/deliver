@@ -10,7 +10,7 @@
           <input v-model="phoneNumber" type="text" class="inputStyle" placeholder="手机号" />
         </div>
         <div class="verification">
-          <mt-button type="primary"  :disabled="YZdisabled" id="aaa"   @click.native="handerClick()" >
+          <mt-button type="primary" :class={bg:kk}  :disabled="YZdisabled" id="aaa"   @click.native="handerClick()" >
             <span>{{yanzheng}}</span>
           </mt-button>
         </div>
@@ -90,7 +90,7 @@ export default {
       noneModel:false, //没有员工
       alertMessage:'', //进行赋值的错误信息
       alertMessageShow:true,
-
+      kk:'',
 
     }
   },
@@ -135,10 +135,41 @@ export default {
   methods: {
     handerClick(){
 
+        //获取验证码倒计时
+      var rr
+      let self = this;
+      if(timer1) clearInterval(timer1); //开启前清除下已经开的定时器
+      var countdown=29;
+      this.yanzheng='重新发送30';
+      this.kk=true;
+      function settime() {
+        if (countdown == 0) {
+          self.yanzheng="获取验证码";
+          countdown = 29;
+          self.YZdisabled=false;
+          clearInterval(timer1);
+
+          return;
+        } else {
+          self.yanzheng="重新发送(" + countdown + ")";
+          countdown--;
+          self.YZdisabled=true;
+           rr=document.getElementById('aaa');
+//            rr.style.color= "#ffffff"; //这个方法可以设置不可用的背景颜色
+        }
+        self.kk=false;
+
+      }
+      timer1= setInterval(settime,1000);
+      //获取验证码倒计时
+
+
+
       let number={
         phone :this.phoneNumber,
       };
-      this.$http.get('/api/v1.0/client/code/'+number.phone).then(response => { //获取验证码
+      this.$http.get('/api/v1.0/client/code/'+number.phone).then(response => {
+          //获取验证码
         if(response.body.code==500){
 //              MessageBox('提示', '抱歉没有找到您的员工记录，请您的联系HR');
           this.errorModel=true;
@@ -165,27 +196,7 @@ export default {
 
           this.setCookie('iphoneNumber',this.phoneNumber,365);
 
-          let self = this;
-          clearInterval(timer1); //开启前清除下已经开的定时器
 
-          var countdown=30;
-          function settime() {
-            if (countdown == 0) {
-              self.yanzheng="获取验证码";
-              countdown = 30;
-              self.YZdisabled=false;
-              clearInterval(timer1);
-              return;
-            } else {
-              self.yanzheng="重新发送(" + countdown + ")";
-              countdown--;
-              self.YZdisabled=true;
-              var rr=document.getElementById('aaa');
-//            rr.style.color= "#ffffff"; //这个方法可以设置不可用的背景颜色
-            }
-
-          }
-          timer1= setInterval(settime,1000);
 
       }, response => {
         console.log( 'error callback');
@@ -377,6 +388,9 @@ export default {
 </script>
 
 <style scoped>
+  .bg{
+    opacity: 0.6;
+  }
   .imageClassSuccess{
     width: 16rem;
     /*top: 10rem;*/
