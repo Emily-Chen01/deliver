@@ -493,6 +493,7 @@
 
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
 
+
         this.objNr={
           fetchPostion:this.getCookie('infoObjPassPostion'),
           fetchName:this.getCookie('infoObjPassName'),
@@ -1561,6 +1562,7 @@
                                         self.downClickSpan = true;
                                         self.toUpYuanShow = false
                                         self.lateStatusAddW = false;
+
                                       }
                                       if (self.toDaKaStatusIs == 1) { //迟到打卡显示
                                         self.lateStatus = true;
@@ -2011,7 +2013,17 @@
 
                 },
                 cancel: function (res) {
-                  alert('用户拒绝授权获取地理位置');
+                  Indicator.close();
+                  alert('用户拒绝获取地理位置666,需要允许才能进行打卡');
+                  console.log(res,'res');
+                  console.log('用户拒绝授权获取地理位置666');
+                },
+                fail:function(res){
+                  Indicator.close();
+                  alert('获取位置失败接口异常');
+                  console.log('获取位置失败接口异常');
+                  console.log(res,'res获取位置失败接口异常')
+
                 }
               });
 

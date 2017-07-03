@@ -973,6 +973,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import V from 'vue'
 import utils from '@/components/utils'
+import { Indicator} from 'mint-ui';
+
 
 let transform = value => typeof value === 'string' ? value.trim() : '';
 let noopValidator = (rule, value, callback, source, options) => {
@@ -1565,6 +1567,10 @@ export default {
         ]
       }
     }
+  },
+  created: function () {
+    Indicator.open('正在加载...');
+
   },
   computed: {
     formalEndTime() {
@@ -2267,6 +2273,9 @@ export default {
           });
 
           console.log('rr', d, this.staff, this.staffRecord, this.staffShareOption);
+          if(this.staff||this.staffRecord||this.staffShareOption){
+            Indicator.close();//关闭加载中
+          }
         }
 
       })
@@ -2505,6 +2514,27 @@ export default {
 </script>
 
 <style lang="scss">
+  .mint-indicator-mask {
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    background: #000000;
+  }
+  .mint-indicator-wrapper {
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    box-sizing: border-box;
+    text-align: center;
+  }
   .my-data .mint-tab-container-item {
     padding: 64px 0 73px;
     text-align: left;

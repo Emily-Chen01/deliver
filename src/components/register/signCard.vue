@@ -208,6 +208,7 @@ let oneselfData={};
               this.setCookie('avatarImages',this.imgSrc.comAddress,365);
 
             }else {
+              this.setCookie('avatarImages','',365);//6-30-15 更新
               console.log('record.staffPhoUrl的images值为空')
             }
 //            this.imgSrc.comAddress=this.getCookie('avatarImages'); //6-26-16  注释
@@ -224,7 +225,13 @@ let oneselfData={};
       changeList(indexX){
 
           if(indexX==0){
-            this.$router.push({path:'/leave'});
+                this.$router.push({path:'/leave'});
+//            if(false){ //此处设置的是在pc端关闭了考勤给出提示关闭了
+//              this.$router.push({path:'/leave'});
+//            }else {
+//              alert('审批功能关闭了')
+//            }
+
           }else if(indexX==1){
             this.$router.push({path:'/attendanceRecord'});
 
@@ -254,6 +261,7 @@ let oneselfData={};
 </script>
 
 <style scoped>
+
   .showSpan{
     position: absolute;
     width: 45%;

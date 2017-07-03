@@ -87,19 +87,19 @@
 
         <div style="clear:both;"></div>
 
-        <div v-if="changeApplyOvertime">
-          <mt-field label="加班时长" v-model="addTimeValue" >
-          </mt-field>
-        </div>
-        <div   style="width: 96%;margin:0 0.8rem;height: 1px;background: #cccccc;line-height: 1px"></div>
+        <!--<div v-if="changeApplyOvertime">-->
+          <!--<mt-field label="加班时长" v-model="addTimeValue" >-->
+          <!--</mt-field>-->
+        <!--</div>-->
+        <div  :class={hideHeight:isHideHeight}  class="hrbei"></div>
 
         <div  style="width: 100%;height: 7rem;">
           <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
           <div style="width: 95%;margin:  1rem ;">
-                 <textarea placeholder="#请输入文字"
-                           v-model="holidayModel"
-                           style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px">
-                 </textarea>
+               <textarea placeholder="#请输入文字"
+                         v-model="holidayModel"
+                         style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px">
+               </textarea>
           </div>
 
         </div>
@@ -159,7 +159,7 @@
             </div>
 
             <div class="myApplyContentLeft">事由</div>
-            <div class="myApplyContentNr">{{item.remarks}}</div>
+            <div class="myApplyContentNr"><span>{{item.remarks}}</span></div>
 
             <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
             <div class="myApplyContentNr" style="padding-bottom: 0.5rem;word-wrap: break-word;" v-if="item.why">{{item.why}}</div>
@@ -296,8 +296,8 @@
         leaveSuccess:false, //成功显示的弹框
         alertMessage:' 申请已提交成功',//提交弹框文字
         alertSuccessImage:'',//成功文字
-        codeSuccess:''//点击我知道了进行状态判断跳转
-
+        codeSuccess:'',//点击我知道了进行状态判断跳转
+        isHideHeight:'',
 
       };
     },
@@ -359,6 +359,8 @@
             this.updateImage=true; //上传图片隐藏
             this.changeApplyOvertime=false; //加班时间显示
             this.shengqingParamType = '0';
+            this.isHideHeight=false;
+
           }
           if(this.selectedDataApply=='1'){
             console.log('忘记打卡路线')
@@ -367,6 +369,7 @@
             this.updateImage=true; //上传图片隐藏
             this.changeApplyOvertime=false; //加班时间显示
             this.shengqingParamType = '1';
+            this.isHideHeight=false;
 
           }
           if(this.selectedDataApply=='2'){
@@ -376,15 +379,17 @@
             this.updateImage=true; //上传图片隐藏
             this.changeApplyOvertime=false; //加班时间显示
             this.shengqingParamType = '2';
+            this.isHideHeight=false;
 
           }
           if(this.selectedDataApply=='3'){
             console.log('加班路线')
             this.changeApply=false; //假期隐藏
-            this.changeApplyTime=false; //时间隐藏
+            this.changeApplyTime=true; //时间隐藏
             this.updateImage=false; //上传图片隐藏
-            this.changeApplyOvertime=true; //加班时间显示
+            this.changeApplyOvertime=false; //加班时间显示
             this.shengqingParamType = '3';
+            this.isHideHeight=true;
 
 
           }
@@ -563,8 +568,10 @@
           params = {
             approvalConfigUid: this.shengqingParam,  //申请分类
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
-            overworkTime: this.addTimeValue,
             remarks: this.textareaString,
+//            overworkTime: this.addTimeValue,
+            startTime: this.startTimeValue,
+            endTime: this.endTimeValue,
 
           }
         }
@@ -640,6 +647,8 @@
           this.updateImage = true; //上传图片隐藏
           this.changeApplyOvertime = false; //加班时间显示
           this.shengqingParamType = '0';
+          this.isHideHeight=false;
+
         }
         if (this.selectedDataApply == '1') {
           console.log('忘记打卡路线')
@@ -648,6 +657,8 @@
           this.updateImage = true; //上传图片隐藏
           this.changeApplyOvertime = false; //加班时间显示
           this.shengqingParamType = '1';
+          this.isHideHeight=false;
+
 
         }
         if (this.selectedDataApply == '2') {
@@ -657,15 +668,21 @@
           this.updateImage = true; //上传图片隐藏
           this.changeApplyOvertime = false; //加班时间显示
           this.shengqingParamType = '2';
+          this.isHideHeight=false;
+
 
         }
         if (this.selectedDataApply == '3') {
           console.log('加班路线')
           this.changeApply = false; //假期隐藏
-          this.changeApplyTime = false; //时间隐藏
+          this.changeApplyTime = true; //时间隐藏
           this.updateImage = false; //上传图片隐藏
-          this.changeApplyOvertime = true; //加班时间显示
+          this.changeApplyOvertime = false; //加班时间显示
           this.shengqingParamType = '3';
+          this.isHideHeight=true;
+
+
+
 
 
         }
@@ -711,6 +728,16 @@
 </script>
 
 <style scoped>
+  .hrbei{
+    width: 96%;
+    margin:0 0.8rem;
+    height: 1px;
+    background: #cccccc;
+    line-height: 1px
+  }
+  .hideHeight{
+    height: 0;
+  }
   /*.changeSelect::after*/
   /*{*/
   /*content:" ------- ";*/
@@ -895,12 +922,22 @@
     font-size:1.2rem ;
   }
   .myApplyContentNr{
-    width: 22rem;
-    height: 1rem;
+    width: 98%;
+    min-height: 1rem;
     line-height: 1rem;
     text-align: left;
     padding-left: 0.8rem;
     font-size:1.2rem ;
+  }
+  .myApplyContentNr span{
+    word-break:normal;
+    width:auto;
+    display:block;
+    white-space:pre-wrap;
+    word-wrap : break-word ;
+    overflow: hidden ;
+    padding-bottom: 0.5rem;
+
   }
   .myApplyBottomNrLeft{
     width: 6.5rem;
