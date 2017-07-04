@@ -15,7 +15,7 @@
       <div class="bottomTool">
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
-            <div style="height: 1.8rem;width: 1.8rem;position: absolute;top: -0.2rem;left: 23%;">
+            <div style="height: 20px;width: 20px;position: absolute;top: 1rem;left: 26%;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
@@ -23,7 +23,7 @@
             <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem;color:#20a0ff" v-if="initBlue">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
-            <div style="height: 1.8rem;width: 1.8rem;position: absolute;top: -0.2rem;right:31%;">
+            <div style="height: 20px;width: 20px;position: absolute;top: 1rem;right:29%;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
@@ -122,7 +122,7 @@
     display: block;
     text-align: center!important;
     /*padding-top: 0.3rem;*/
-    padding: 1rem 0 0 0.7rem;
+    /*padding: 1rem 0 0 0.7rem;*/
   }
   .avatarTop{
     width: 92%;

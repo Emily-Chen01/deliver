@@ -1386,9 +1386,8 @@
                                   self.isYellow2 = true;
                                   self.isYellowAddQ=false; //区域外隐藏
                                   self.lateStatus=false; //您迟到了
+                                  self.initDownRecord=false; //7-1提交的bug 7-4改暂时还没重新发布
 
-
-//                alert('早退');
 
                                 }
                                 if (self.toDownKaStatusIs == 1 && self.toDownKaStatusIsOutside) { //早退+区域外打卡显示
@@ -1640,9 +1639,7 @@
                                         self.isYellow2 = true;
                                         self.isYellowAddQ=false; //区域外隐藏
                                         self.lateStatus=false; //您迟到了
-
-
-//                alert('早退');
+                                        self.initDownRecord=false; //7-1提交的bug 7-4改暂时还没重新发布
 
                                       }
                                       if (self.toDownKaStatusIs == 1 && self.toDownKaStatusIsOutside) { //早退+区域外打卡显示
@@ -1893,9 +1890,8 @@
                                         self.isYellow2 = true;
                                         self.isYellowAddQ=false; //区域外隐藏
                                         self.lateStatus=false; //您迟到了
+                                        self.initDownRecord=false; //7-1提交的bug 7-4改暂时还没重新发布
 
-
-//                alert('早退');
 
                                       }
                                       if (self.toDownKaStatusIs == 1 && self.toDownKaStatusIsOutside) { //早退+区域外打卡显示

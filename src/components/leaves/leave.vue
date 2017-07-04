@@ -754,15 +754,15 @@
   }
   .selectBao{
     position: absolute;
-    width: 2rem;
-    height: 1.5rem;
+    width: 12px;
+    height: 7px;
     /*background: pink;*/
     top:0.3rem;
     right:0
   }
   .selectShowImg{
-    width: 50%;
-    height: 50%;
+    width: 100%;
+    height: 100%;
   }
   .hrClass{
     width: 96%;

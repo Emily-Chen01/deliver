@@ -568,7 +568,7 @@
     top: 3.3rem;
   }
   .spanStatus{
-    width: 5rem;
+    width: 5.6rem;
     height: 2rem;
     /*line-height: 2rem;*/
     display: inline-block;
@@ -597,6 +597,7 @@
   }
   .timeTitle{
     padding-top: 0.5rem;
+    position: relative;
   }
   .publicStyle{
     width: 0.6rem;
@@ -616,10 +617,10 @@
   }
   .timeImageClass{
     display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 20px;
+    height:20px;
     line-height: 1.5rem;
-    padding-top: 0.2rem;
+    /*padding-top: 0.2rem;*/
   }
   .timeDivClass{
     width: 3.9rem;
@@ -627,14 +628,17 @@
     line-height: 2rem;
     display: inline-block;
     vertical-align: top;
-    margin-left: -2.62rem;
+    position: absolute;
+    left: -0.4rem;
+    top: 0.8rem;
   }
   .timeSpanClass{
-    width: 19rem;
+    width: 17.5rem;
     height: 2rem;
     line-height: 2rem;
-    display: inline-block;
-    text-align: left;
+    /*display: inline-block;*/
+    /*text-align: left;*/
+    text-indent: -1rem;
     vertical-align: top;
 
   }

@@ -12,8 +12,8 @@
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
              <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
-               <div style="display: block;width: 1.4rem;height: 1.4rem;">
-                 <img style="display: block;width: 100%;height: 100%;padding-top: 0.3rem;padding-left: 0.4rem;" :src="imgSrc.shezhiBackground" />
+               <div style="display: block;width: 13px;height: 13px;">
+                 <img style="display: block;width: 100%;height: 100%;padding-top: 0.5rem;padding-left: 0.5rem;" :src="imgSrc.shezhiBackground" />
                </div>
 
                <div style="font-size: 0.8rem;top: 0.43rem; position: absolute;right: 0.8rem;">设置</div>
@@ -25,7 +25,7 @@
 
        </div>
        <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative">
-         <div style="position: absolute;width: 2.5rem;height: 1.5rem;z-index: 2;left:31%;top:16.5%">
+         <div style="position: absolute;width:12px;height: 12px;z-index: 2;left:32.5%;top:19.5%">
            <img :src="imgSrc.ico_pencil" class="imgSizePencil" >
 
          </div>
@@ -90,7 +90,7 @@
       <div class="bottomTool">
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
-            <div style="height: 1.8rem;width: 1.8rem;position: absolute;top: -0.2rem;left: 23%;">
+            <div style="height: 20px;width: 20px;position: absolute;top: 1rem;left: 26%;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
@@ -98,7 +98,7 @@
             <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem;color:#20a0ff" v-if="initBlue">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
-            <div style="height: 1.8rem;width: 1.8rem;position: absolute;top: -0.2rem;right:31%;">
+            <div style="height: 20px;width: 20px;position: absolute;top: 1rem;right:29%;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
@@ -290,9 +290,9 @@ let oneselfData={};
   }
   .postionImages{
     position:absolute;
-    width:1.8rem;
-    height:1.8rem;
-    left:3%;
+    width:19px;
+    height:19px;
+    left:4%;
     top:20%;
   }
   .imgSize{
@@ -312,8 +312,8 @@ let oneselfData={};
     background-repeat: repeat-x;
   }
   .imgSizePencil{
-    width: 50%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
   }
   .avatarBorder{
     width: 5rem;
@@ -321,7 +321,7 @@ let oneselfData={};
     border-radius: 2.6rem;
     text-align: right;
     background: #ffffff;
-    border: solid #ffffff 0.2rem;
+    border: solid #ffffff 0.15rem;
   }
   .siginLeft{
     width:21%;
@@ -343,7 +343,7 @@ let oneselfData={};
     display: block;
     text-align: center!important;
     /*padding-top: 0.3rem;*/
-    padding: 1rem 0 0 0.7rem;
+    /*padding: 1rem 0 0 0.7rem;*/
   }
   .avatarTop{
     width: 100%;
