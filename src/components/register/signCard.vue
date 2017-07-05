@@ -225,13 +225,16 @@ let oneselfData={};
       changeList(indexX){
 
           if(indexX==0){
+            this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
+                console.log(response.body.result.length,'res');
+              if(response.body.result.length==0){ //此处设置的是在pc端关闭了考勤给出提示关闭了
+                alert('对不起您的审批功能已经被关闭了');
+              }else {
                 this.$router.push({path:'/leave'});
-//            if(false){ //此处设置的是在pc端关闭了考勤给出提示关闭了
-//              this.$router.push({path:'/leave'});
-//            }else {
-//              alert('审批功能关闭了')
-//            }
-
+              }
+            }, response => {
+              console.log( 'error callback');
+            });
           }else if(indexX==1){
             this.$router.push({path:'/attendanceRecord'});
 
@@ -357,8 +360,9 @@ let oneselfData={};
   .signName{
     text-align: left;
     /*width: 45%;*/
-    height: 1.8rem;
-    line-height: 1.8rem;
+    /*height: 1.8rem;*/
+    /*line-height: 1.8rem;*/
+    padding-top: 0.2rem;
   }
   .signImg {
     display: inline-block;
@@ -376,13 +380,14 @@ let oneselfData={};
 }
   .signTitle {
     text-align: left;
-    height: 1.8rem;
-    line-height: 1.8rem;
+    /*height: 1.8rem;*/
+    /*line-height: 1.8rem;*/
   }
   .companyNameClass{
     text-align: left;
-    height: 1.8rem;
-    line-height: 1.8rem;
+    /*height: 1.8rem;*/
+    /*line-height: 1.8rem;*/
+    padding-top: 0.2rem;
   }
 .mint-cell-title{
   background-image: -webkit-linear-gradient(top,#d9d9d9,#d9d9d9 50%,transparent 0);

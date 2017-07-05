@@ -111,15 +111,15 @@
   }
   .postionImages{
     position:absolute;
-    width:10%;
-    height:1.8rem;
+    width:16px;
+    height:16px;
     line-height: 1.8rem;
-    left: 0.2rem;
+    left: 0.9rem;
     top:18%;
   }
   .imgSize{
-    width:54%;
-    height:90%
+    width:100%;
+    height:100%
   }
   .manyCompanyTitle{
     height: 5rem;
