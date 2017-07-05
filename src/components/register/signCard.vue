@@ -90,20 +90,20 @@
       <div class="bottomTool">
         <div style="display: flex;position: relative">
           <div style="flex: 2"  @click="routerTool(1)">
-            <div style="height: 20px;width: 20px;position: absolute;top: 1rem;left: 26%;">
+            <div style="height: 20px;width: 20px; text-align: center; margin: auto;padding-top: 1rem;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
             </div>
-            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem" v-if="init">工作台</div>
-            <div style="height: 1.5rem;position: absolute;left: 23%;top:2.9rem;color:#20a0ff" v-if="initBlue">工作台</div>
+            <div style="height: 1.5rem;padding-top: 0.5rem;" v-if="init">工作台</div>
+            <div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlue">工作台</div>
           </div>
           <div style="flex: 2"  @click="routerTool(2)">
-            <div style="height: 20px;width: 20px;position: absolute;top: 1rem;right:29%;">
+            <div style="height: 20px;width: 20px;text-align: center; margin: auto;padding-top: 1rem;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
             </div>
-            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.9rem"  v-if="initSet">设置</div>
-            <div style="height: 1.5rem;position: absolute;right:27.5%;top:2.9rem;color:#20a0ff" v-if="initBlueSet">设置</div>
+            <div style="height: 1.5rem;padding-top: 0.5rem;"  v-if="initSet">设置</div>
+            <div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlueSet">设置</div>
 
           </div>
         </div>
