@@ -365,6 +365,38 @@
 
 
 
+          <mt-popup
+            v-model="failModel"
+            class="imageClassSuccess"
+            closeOnClickModal="true"
+          >
+            <div style="clear:both;"></div>
+            <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">
+              请打开微信定位
+             </div>
+
+            <div @click="closeAlertFail" class="colseClassAlertFail">
+              确定
+            </div>
+          </mt-popup>
+   <!--下面是添加不打卡员工-->
+          <mt-popup
+            v-model="isVisibleDaka"
+            class="imageClassSuccess"
+            ncloseOnClickModal="true"
+          >
+            <div style="clear:both;"></div>
+            <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">
+              {{alertNoDaka}}
+             </div>
+
+            <div @click="closeAlertDaka" class="colseClassAlertFail">
+              确定
+            </div>
+          </mt-popup>
+
+
+
 
         </div>
       </div>
@@ -383,6 +415,10 @@
   export default {
     data(){
       return {
+        isVisibleDaka:false,
+        ncloseOnClickModal:true,
+        failModel:false,
+        alertNoDaka:'',
         year: '',
         month: '',
         data: '',
@@ -1225,6 +1261,21 @@
                       let myPosition = data.points[0]; // 转换后的微信坐标
 
                       self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
+
+                        //添加不可以打卡的员工
+                        if(response.body.code==500){
+//                          MessageBox('提示', response.body.message);
+                          self.daKaHide=false;
+                          self.isVisibleDaka=true;
+                          self.alertNoDaka=response.body.message;
+                          Indicator.close();
+                          return;
+                        }
+                        //添加可以不打卡的员工
+
+
+
+
                         //经纬度传值start
                         let scopes = [];
                         self.searchLocationArray=(rt => {
@@ -1789,7 +1840,7 @@
                    alert('您拒绝了获取定位请求，只有允许才能进行打卡');
                   }
                   if(!isAndroid){
-                    alert('请在系统设置开启定位服务');
+                    alert('请开启微信定位服务');
 
                   }
 
@@ -1801,9 +1852,10 @@
                 },
                 fail:function(res){
                   Indicator.close();
-                  alert('获取位置失败接口异常');
-                  console.log('获取位置失败接口异常');
-                  console.log(res,'res获取位置失败接口异常')
+//                  alert('请开启微信定位服务');
+                  self.failModel=true;
+                  console.log('请开启微信定位服务');
+                  console.log(res,'请开启微信定位服务')
 
                 }
               });
@@ -1825,6 +1877,13 @@
 
 
       },
+      closeAlertFail(){
+          this.failModel=false;
+      },
+      closeAlertDaka(){
+        this.isVisibleDaka=false;
+
+      }
     },
     beforeDestroy: function () {
       clearInterval(timer1);
@@ -1837,6 +1896,15 @@
 </script>
 
 <style scoped>
+  .imageClassSuccess{
+    width: 16rem;
+    /*top: 10rem;*/
+    height: 12rem;
+    /*line-height: 11rem;*/
+    border-radius: 4px;
+    /*background: pink;*/
+
+  }
 
   .colseClassAlert{
     display: inline-block;
@@ -1847,6 +1915,18 @@
     color: #ffffff;
     width: 6rem;
     margin: 2rem auto;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+  }
+  .colseClassAlertFail{
+    display: inline-block;
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    background: #26a2ff;
+    color: #ffffff;
+    width: 6rem;
+    margin: 3rem auto;
     border-radius: 4px;
     margin-left: 0.5rem;
   }

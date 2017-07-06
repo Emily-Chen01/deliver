@@ -88,8 +88,8 @@
       </div>
       <!--底部工具-->
       <div class="bottomTool">
-        <div style="display: flex;position: relative">
-          <div style="flex: 2"  @click="routerTool(1)">
+        <div style="position: relative">
+          <div style="width: 50%;float: left"  @click="routerTool(1)">
             <div style="height: 20px;width: 20px; text-align: center; margin: auto;padding-top: 1rem;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
@@ -97,7 +97,7 @@
             <div style="height: 1.5rem;padding-top: 0.5rem;" v-if="init">工作台</div>
             <div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlue">工作台</div>
           </div>
-          <div style="flex: 2"  @click="routerTool(2)">
+          <div style="width: 50%;float: right"  @click="routerTool(2)">
             <div style="height: 20px;width: 20px;text-align: center; margin: auto;padding-top: 1rem;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
@@ -108,16 +108,34 @@
           </div>
         </div>
       </div>
+      <mt-popup
+        v-model="isVisible"
+        class="imageClassSuccess"
+        closeOnClickModal="true"
+      >
+        <div style="clear:both;"></div>
+        <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">
+          审批功能已经被关闭了
+         </div>
+
+        <div @click="closeAlertFail" class="colseClassAlertFail">
+          确定
+        </div>
+      </mt-popup>
 
     </div>
 </template>
 <script >
 //  import ManyCompany from "./manyCompany"
+import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+
 let oneselfData={};
 
   export default {
       data(){
         return {
+          isVisible:false,
+          closeOnClickModal:true,
           oneselfData:{
             companyNmae:'北京科锐国际人力资源股份有限公司',
             department:'产品部',
@@ -228,7 +246,7 @@ let oneselfData={};
             this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
                 console.log(response.body.result.length,'res');
               if(response.body.result.length==0){ //此处设置的是在pc端关闭了考勤给出提示关闭了
-                alert('对不起您的审批功能已经被关闭了');
+                this.isVisible=true;
               }else {
                 this.$router.push({path:'/leave'});
               }
@@ -254,6 +272,9 @@ let oneselfData={};
           this.$router.push({path:'/set'});
         }
       },
+      closeAlertFail(){
+          this.isVisible=false;
+      }
     },
 
     components: {
@@ -264,6 +285,27 @@ let oneselfData={};
 </script>
 
 <style scoped>
+  .imageClassSuccess{
+    width: 16rem;
+    /*top: 10rem;*/
+    height: 12rem;
+    /*line-height: 11rem;*/
+    border-radius: 4px;
+    /*background: pink;*/
+
+  }
+  .colseClassAlertFail{
+    display: inline-block;
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    background: #26a2ff;
+    color: #ffffff;
+    width: 6rem;
+    margin: 3rem auto;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+  }
 
   .showSpan{
     position: absolute;
