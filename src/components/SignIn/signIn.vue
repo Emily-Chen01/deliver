@@ -380,21 +380,21 @@
             </div>
           </mt-popup>
    <!--下面是添加不打卡员工-->
-          <mt-popup
-            v-model="isVisibleDaka"
-            class="imageClassSuccess"
-            ncloseOnClickModal="true"
-          >
-            <div style="clear:both;"></div>
-            <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">
-              {{alertNoDaka}}
-             </div>
+          <!--<mt-popup-->
+            <!--v-model="isVisibleDaka"-->
+            <!--class="imageClassSuccess"-->
+            <!--ncloseOnClickModal="true"-->
+          <!--&gt;-->
+            <!--<div style="clear:both;"></div>-->
+            <!--<div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">-->
+              <!--{{alertNoDaka}}-->
+             <!--</div>-->
 
-            <div @click="closeAlertDaka" class="colseClassAlertFail">
-              确定
-            </div>
-          </mt-popup>
-
+            <!--<div @click="closeAlertDaka" class="colseClassAlertFail">-->
+              <!--确定-->
+            <!--</div>-->
+          <!--</mt-popup>-->
+        <!--上面暂时隐藏在设置为true的时候 没有alert-->
 
 
 
@@ -1264,10 +1264,10 @@
 
                         //添加不可以打卡的员工
                         if(response.body.code==500){
-//                          MessageBox('提示', response.body.message);
+                          MessageBox('提示', response.body.message);
                           self.daKaHide=false;
-                          self.isVisibleDaka=true;
-                          self.alertNoDaka=response.body.message;
+//                          self.isVisibleDaka=true;
+//                          self.alertNoDaka=response.body.message;
                           Indicator.close();
                           return;
                         }

@@ -11,7 +11,7 @@
            <div>
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
-             <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
+             <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.4rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
                <div style="display: block;width: 13px;height: 13px;">
                  <img style="display: block;width: 100%;height: 100%;padding-top: 0.5rem;padding-left: 0.5rem;" :src="imgSrc.shezhiBackground" />
                </div>
