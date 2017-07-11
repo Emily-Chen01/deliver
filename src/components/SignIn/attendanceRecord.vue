@@ -1,64 +1,69 @@
 <template>
-  <div >
-    <div class="pos-fixed">
-      <div class="spanStatus">
-        <div class="">{{connectTime.chidao}}</div>
-        <div class="">迟到</div>
-      </div>
-      <div class="spanStatus">
-        <div class="">{{connectTime.zaotui}}</div>
-        <div class="">早退</div>
-      </div>
-      <div class="spanStatus">
-        <div class="">{{connectTime.kuanggong}}</div>
-        <div class="">旷工</div>
-      </div>
-      <div class="spanStatus">
-        <div class="">{{connectTime.waichu}}</div>
-        <div class="">外出</div>
-      </div>
-
-    </div>
+  <div>
+    <!--<div class="pos-fixed">-->
+    <!--<div class="spanStatus">-->
+    <!--<div class="">{{connectTime.chidao}}</div>-->
+    <!--<div class="">迟到</div>-->
+    <!--</div>-->
+    <!--<div class="spanStatus">-->
+    <!--<div class="">{{connectTime.zaotui}}</div>-->
+    <!--<div class="">早退</div>-->
+    <!--</div>-->
+    <!--<div class="spanStatus">-->
+    <!--<div class="">{{connectTime.kuanggong}}</div>-->
+    <!--<div class="">旷工</div>-->
+    <!--</div>-->
+    <!--<div class="spanStatus">-->
+    <!--<div class="">{{connectTime.waichu}}</div>-->
+    <!--<div class="">外出</div>-->
+    <!--</div>-->
+    <!--</div>-->
     <full-calendar
-      :events="fcEvents" locale="zh"
+      :connectTime="connectTime"
+      :events="fcEvents" lang="zh"
       @dayClick="dayClick"
       @changeMonth="changeMonth"
     ></full-calendar>
-    <div style="background:#ffffff;padding-bottom: 0.5rem;">
-      <div class="egClass"><span class="publicStyle normalStyle"></span>&nbsp正常出勤</div>
-      <div class="egClass1"><span class="publicStyle abnormalStyle"></span>&nbsp考勤异常</div>
-      <div class="egClass2"><span class="publicStyle leaveStyle"></span>&nbsp请假</div>
+    <div class="egStates">
+      <div class="egClass"><span class="publicStyle normalStyle"></span>正常出勤</div>
+      <div class="egClass"><span class="publicStyle abnormalStyle"></span>考勤异常</div>
+      <div class="egClass"><span class="publicStyle leaveStyle"></span>请假</div>
     </div>
     <!--<div style="height: 1px;background: #cccccc;margin:0.5rem 1rem 0.3rem 1rem"></div>-->
-
 
 
     <!--<div style="height: 1px;background: #cccccc;margin: 0.4rem 1rem;clear: both;"></div>-->
 
     <div style="background:rgb(239,241,247);">
       <div class="timeTitle">
-        <div class="timeDivClass">
-          <img :src="imgSrc.timeIcon" class="timeImageClass">
-        </div>
-        <div class="timeSpanClass">
-          今日工时共计：{{connectTime.totalTime}}小时
+        <div class="todayTime">
+          <div class="timeDivClass">
+            <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
-        <div style="height: 1px;background: #cccccc;margin: 0.5rem 1rem 0.6rem 1rem"></div>
+          <div class="timeSpanClass">
+            <span>今日工时共计：{{connectTime.totalTime}}小时</span>
+          </div>
+        </div>
+        <div class="lineStyle"></div>
         <div class="spanListClass">
-          <div class="toWorkLeft"><div>上</div></div>
+          <div class="toWorkLeft">
+            <div>上</div>
+          </div>
           <div class="toWorkRight">
             <div class="toWorkRightTimeSpan">
-              <span>{{toSapnTime}}</span>
+              <span v-if="toSapnTime">{{toSapnTime}}</span>
               <span>{{tozhang}}</span>
             </div>
           </div>
         </div>
         <div class="ver-line"></div>
-        <div class="spanListClass" >
-          <div class="toWorkLeft"><div>下</div></div>
+        <div class="spanListClass">
+          <div class="toWorkLeft">
+            <div>下</div>
+          </div>
           <div class="toWorkRight">
             <div class="toWorkRightTimeSpan">
-              <span>{{downSapnTime}}</span>
+              <span v-if="downSapnTime">{{downSapnTime}}</span>
               <span>{{downzhang}}</span>
             </div>
           </div>
@@ -70,15 +75,13 @@
 </template>
 <script>
 
-  import fullCalendar from '@/components/vue-fullcalendar/dist/vue-fullcalendar'
-  //  import fullCalendar from '@/components/vue-fullcalendar/src/fullCalendar'
+  //  import fullCalendar from '@/components/vue-fullcalendar/dist/vue-fullcalendar'
+  import fullCalendar from '@/components/vue-fullcalendar/src/fullCalendar'
   import moment from 'moment'
 
   let df = 'HH:mm:ss';
   let df2 = 'YYYY/MM/DD';
   let df3 = 'YYYY/MM/DD';
-
-
 
 
   export default {
@@ -119,22 +122,22 @@
 
         ],
         objToSpan: {
-          toTime:'',
-          downTime:'',
-          downType:'',
-          toType:'',
+          toTime: '',
+          downTime: '',
+          downType: '',
+          toType: '',
         }
         ,
         objDownSpan: {
-          downTime:'19:11:22',
-          downType:10,
+          downTime: '19:11:22',
+          downType: 10,
         },
-        tozhang:'', //
-        downzhang:'' ,  //
+        tozhang: '', //
+        downzhang: '',  //
 
-        connectTime:{},
-        toSapnTime:'',
-        downSapnTime:'',
+        connectTime: {},
+        toSapnTime: '',
+        downSapnTime: '',
         imgSrc: {
           timeIcon: require('../../assets/time.png'),
         },
@@ -148,6 +151,7 @@
 
     methods: {
       dayClick (day, jsEvent) {
+        console.log('dar123', this);
         //  点击日历，获取日期
         //  转换日期格式
         //  检测假日里是否已经含有点击的这一天
@@ -155,334 +159,353 @@
         //点击当天进行查询打卡状态开始
         //格式化时间开始
 
-        function AddZero(n){
-          if(n<10){
-            return '0'+n;
+        function AddZero(n) {
+          if (n < 10) {
+            return '0' + n;
           }
-          return ''+n;
+          return '' + n;
         };
-        var d=day;
-        let data=AddZero(d.getDate());
-        let Month=AddZero((d.getMonth() + 1));
-        var kk=  d.getFullYear() + '/' + Month + '/' + data;
+        var d = day;
+        let data = AddZero(d.getDate());
+        let Month = AddZero((d.getMonth() + 1));
+        var kk = d.getFullYear() + '/' + Month + '/' + data;
         console.log(kk);
         //格式化时间结束
 
-        let param={
-          "date":kk
-        }
-        this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
+        let param = {
+          "date": kk
+        };
+        this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
 //              console.log(response.body.result.duration);
-          this.tozhang='';
-          this.downzhang='';
-          this.toSapnTime='';
-          this.downSapnTime='';
-          this.connectTime.totalTime='';
-
-          this.connectTime.totalTime=response.body.result.duration?response.body.result.duration:0;
-
-
-
-          if (response.body.result.twTime ) {
-            this.toSapnTime = moment(response.body.result.twTime).format(df);
+          this.tozhang = '';
+          this.downzhang = '';
+          this.toSapnTime = '';
+          this.downSapnTime = '';
+          this.connectTime.totalTime = '';
+          console.log('response.body.result', response.body.result)
+          if (response.body.result) {
+            this.connectTime.totalTime = response.body.result.duration;
+            if (response.body.result.twTime) {
+              this.toSapnTime = moment(response.body.result.twTime).format(df);
+            }
+            if (response.body.result.owTime) {
+              this.downSapnTime = moment(response.body.result.owTime).format(df);
+            }
+          } else {
+            this.connectTime.totalTime = 0;
           }
-
-          if (response.body.result.owTime ) {
-            this.downSapnTime = moment(response.body.result.owTime).format(df);
-          }
-
-          console.log('twStatus'+response.body.result.twStatus);
-          console.log('owStatus'+response.body.result.owStatus);
-          this.tozhang='';
-          this.downzhang='';
+//          this.connectTime.totalTime = response.body.result.duration ? response.body.result.duration : 0;
 
 
-          if(response.body.result.status=='未打卡'){//判断状态转换文字上班
-            this.tozhang='未打卡';
-            this.downzhang='未打卡';
-          }else {
-            if(response.body.result.twStatus==0){
+//          if (response.body.result.twTime) {
+//            this.toSapnTime = moment(response.body.result.twTime).format(df);
+//          }
+//
+//          if (response.body.result.owTime) {
+//            this.downSapnTime = moment(response.body.result.owTime).format(df);
+//          }
 
-              this.tozhang='正常打卡';
-              if(response.body.result.twOutside){
-                this.tozhang='正常打卡(区域外)';
-              }
-              if(response.body.result.twTime==null){
-                this.tozhang='未打卡';
-              }
+//          console.log('twStatus' + response.body.result.twStatus);
+//          console.log('owStatus' + response.body.result.owStatus);
+          this.tozhang = '';
+          this.downzhang = '';
+
+          if (response.body.result) {
+            if (response.body.result.status == '未打卡') {//判断状态转换文字上班
+              this.tozhang = '未打卡';
+              this.downzhang = '未打卡';
+            } else {
+              if (response.body.result.twStatus == 0) {
+
+                this.tozhang = '正常打卡';
+                if (response.body.result.twOutside) {
+                  this.tozhang = '正常打卡(区域外)';
+                }
+                if (response.body.result.twTime == null) {
+                  this.tozhang = '未打卡';
+                }
 
 //                  alert('正常打卡');
-            } if (response.body.result.twStatus==1){
-              this.tozhang='迟到打卡';
-              if(response.body.result.twOutside){
-                this.tozhang='迟到打卡(区域外)';
               }
-              if(response.body.result.twTime==null){
-                this.tozhang='未打卡';
-              }
+              if (response.body.result.twStatus == 1) {
+                this.tozhang = '迟到打卡';
+                if (response.body.result.twOutside) {
+                  this.tozhang = '迟到打卡(区域外)';
+                }
+                if (response.body.result.twTime == null) {
+                  this.tozhang = '未打卡';
+                }
 
-            } if (response.body.result.twStatus==2){
-              this.tozhang='旷工打卡';
-              if(response.body.result.twOutside){
-                this.tozhang='旷工打卡(区域外)';
               }
-              if(response.body.result.twTime==null){
-                this.tozhang='未打卡';
-              }
+              if (response.body.result.twStatus == 2) {
+                this.tozhang = '旷工打卡';
+                if (response.body.result.twOutside) {
+                  this.tozhang = '旷工打卡(区域外)';
+                }
+                if (response.body.result.twTime == null) {
+                  this.tozhang = '未打卡';
+                }
 //                  alert('旷工打卡');
 
-            }
-            if(response.body.result.owStatus==0){
-              this.downzhang='正常打卡';
-              if(response.body.result.owOutside){
-                this.downzhang='正常打卡(区域外)';
               }
-              if(response.body.result.owTime==null){
-                this.downzhang='未打卡';
-              }
-              if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                this.downzhang='';
-              }
+              if (response.body.result.owStatus == 0) {
+                this.downzhang = '正常打卡';
+                if (response.body.result.owOutside) {
+                  this.downzhang = '正常打卡(区域外)';
+                }
+                if (response.body.result.owTime == null) {
+                  this.downzhang = '未打卡';
+                }
+                if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                  this.downzhang = '';
+                }
 //                    alert('正常打卡');
 
-            } if (response.body.result.owStatus==1){
-              this.downzhang='早退打卡';
-              if(response.body.result.owOutside){
-                this.downzhang='早退打卡(区域外)';
               }
-              if(response.body.result.owTime==null){
-                this.downzhang='未打卡';
-              }
-              if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                this.downzhang='';
-              }
+              if (response.body.result.owStatus == 1) {
+                this.downzhang = '早退打卡';
+                if (response.body.result.owOutside) {
+                  this.downzhang = '早退打卡(区域外)';
+                }
+                if (response.body.result.owTime == null) {
+                  this.downzhang = '未打卡';
+                }
+                if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                  this.downzhang = '';
+                }
 //                    alert('早退打卡');
 
-            } if (response.body.result.owStatus==2){
-              this.downzhang='加班打卡';
-              if(response.body.result.owOutside){
-                this.downzhang='加班打卡(区域外)';
               }
-              if(response.body.result.owTime==null){
-                this.downzhang='未打卡';
-              }
-              if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                this.downzhang='';
-              }
+              if (response.body.result.owStatus == 2) {
+                this.downzhang = '加班打卡';
+                if (response.body.result.owOutside) {
+                  this.downzhang = '加班打卡(区域外)';
+                }
+                if (response.body.result.owTime == null) {
+                  this.downzhang = '未打卡';
+                }
+                if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                  this.downzhang = '';
+                }
 //                    alert('加班打卡');
 
-            }if (response.body.result.owStatus==3){
-              this.downzhang='旷工打卡';
-              if(response.body.result.owOutside){
-                this.downzhang='旷工打卡(区域外)';
               }
-              if(response.body.result.owTime==null){
-                this.downzhang='未打卡';
-              }
-              if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                this.downzhang='';
-              }
+              if (response.body.result.owStatus == 3) {
+                this.downzhang = '旷工打卡';
+                if (response.body.result.owOutside) {
+                  this.downzhang = '旷工打卡(区域外)';
+                }
+                if (response.body.result.owTime == null) {
+                  this.downzhang = '未打卡';
+                }
+                if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                  this.downzhang = '';
+                }
 //                    alert('加班打卡');  //添加6-14-9 新增的下班旷工（修改提交的bug）
 
+              }
             }
           }
-
         }, response => {
-          console.log( 'error callback');
+          console.log('error callback');
         });
         //点击当天进行查询打卡状态结束
 
 
-
-
-        console.log('当前'+new Date().getTime());
-        console.log('点击时间'+day.getTime());
+        console.log('当前' + new Date().getTime());
+        console.log('点击时间' + day.getTime());
         console.log(new Date().getTime());
 
 
       },
 
       'changeMonth' (start, end, current) {
-        console.log('start'+start)
-        console.log('end'+end)
-        console.log('current'+current)
+        console.log('start' + start)
+        console.log('end' + end)
+        console.log('current' + current)
 //            console.log('???');
 
 
         var zhuan = current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
-        var tt = zhuan.substring(0,7);
+        var tt = zhuan.substring(0, 7);
         console.log(tt);
-        let param={
-          date:tt
+        let param = {
+          date: tt
         }
-        this.$http.post('/api/v1.0/client/findMonthAttends',param).then(response => { //查询当月考勤接口
-          this.tozhang='';
-          this.downzhang='';
-          this.toSapnTime ='',
-            this.downSapnTime='',
-            this.connectTime={};
-          this.fcEvents=[];
-
+        this.$http.post('/api/v1.0/client/findMonthAttends', param).then(response => { //查询当月考勤接口
+          this.tozhang = '';
+          this.downzhang = '';
+          this.toSapnTime = '',
+            this.downSapnTime = '',
+            this.connectTime = {};
+          this.fcEvents = [];
 
 
           //测试显示默认当天信息start
           var myDate = new Date();
-          var timePass= myDate.getFullYear()+'/'+(myDate.getMonth()+1)+'/'+myDate.getDate();        //获取当前年份(2位)
+          var timePass = myDate.getFullYear() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getDate();        //获取当前年份(2位)
 
-          var zhuanDate= moment(timePass).format(df2);
-          console.log(timePass,'timePass');
-          console.log(zhuanDate,'zhuanDate');
+          var zhuanDate = moment(timePass).format(df2);
+          console.log(timePass, 'timePass');
+          console.log(zhuanDate, 'zhuanDate');
 
-          let param={
-            "date":zhuanDate
+          let param = {
+            "date": zhuanDate
           };
-          this.$http.post('/api/v1.0/client/findDatePunchCardLog',param).then(response => { //点击查看当天考勤
+          this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
 
             console.log('init', response);
 //              console.log(response.body.result.duration);
-            if(response.body.result==null){  //如果没有打卡记录清空时间和文字状态
-              this.tozhang='';
-              this.downzhang='';
-              this.toSapnTime='';
-              this.downSapnTime='';
-              this.connectTime.totalTime='';
+            if (response.body.result == null) {  //如果没有打卡记录清空时间和文字状态
+              this.tozhang = '';
+              this.downzhang = '';
+              this.toSapnTime = '';
+              this.downSapnTime = '';
+              this.connectTime.totalTime = '';
             }
-            this.connectTime.totalTime=response.body.result.duration?response.body.result.duration:0;
+            if (response.body.result) {
+              this.connectTime.totalTime = response.body.result.duration;
+            } else {
+              this.connectTime.totalTime = 0;
+            }
+//            this.connectTime.totalTime = response.body.result.duration ? response.body.result.duration : 0;
             this.$nextTick(() => {
-              if (response.body.result.twTime ) {
-                this.toSapnTime = moment(response.body.result.twTime).format(df);
-              }
-              if (response.body.result.owTime ) {
-                this.downSapnTime = moment(response.body.result.owTime).format(df);
-              }
-              console.log('twStatus'+response.body.result.twStatus);
-              console.log('owStatus'+response.body.result.owStatus);
-              console.log(response.body.result.twOutside,'twOutside')
-              console.log(response.body.result.twOutside,'owOutside')
+              this.tozhang = '';
+              this.downzhang = '';
+              if (response.body.result) {
+                if (response.body.result.twTime) {
+                  this.toSapnTime = moment(response.body.result.twTime).format(df);
+                }
+                if (response.body.result.owTime) {
+                  this.downSapnTime = moment(response.body.result.owTime).format(df);
+                }
+//                console.log('twStatus' + response.body.result.twStatus);
+//                console.log('owStatus' + response.body.result.owStatus);
+//                console.log(response.body.result.twOutside, 'twOutside')
+//                console.log(response.body.result.twOutside, 'owOutside')
+                this.$nextTick(() => {
+                  if (response.body.result) {
+                    if (response.body.result.status == '未打卡') {//判断状态转换文字上班
+                      this.tozhang = '未打卡';
+                      this.downzhang = '未打卡';
+                    } else {
+                      if (response.body.result.twStatus == 0) {
 
-              this.tozhang='';
-              this.downzhang='';
-
-
-              this.$nextTick(() => {
-                if(response.body.result.status=='未打卡'){//判断状态转换文字上班
-                  this.tozhang='未打卡';
-                  this.downzhang='未打卡';
-                }else {
-                  if(response.body.result.twStatus==0){
-
-                    this.tozhang='正常打卡';
-                    if(response.body.result.twOutside){
-                      this.tozhang='正常打卡(区域外)';
-                    }
-                    if(response.body.result.twTime==null){
-                      this.tozhang='未打卡';
-                    }
+                        this.tozhang = '正常打卡';
+                        if (response.body.result.twOutside) {
+                          this.tozhang = '正常打卡(区域外)';
+                        }
+                        if (response.body.result.twTime == null) {
+                          this.tozhang = '未打卡';
+                        }
 
 //                  alert('正常打卡');
-                  } if (response.body.result.twStatus==1){
-                    this.tozhang='迟到打卡';
-                    if(response.body.result.twOutside){
-                      this.tozhang='迟到打卡(区域外)';
-                    }
-                    if(response.body.result.twTime==null){
-                      this.tozhang='未打卡';
-                    }
+                      }
+                      if (response.body.result.twStatus == 1) {
+                        this.tozhang = '迟到打卡';
+                        if (response.body.result.twOutside) {
+                          this.tozhang = '迟到打卡(区域外)';
+                        }
+                        if (response.body.result.twTime == null) {
+                          this.tozhang = '未打卡';
+                        }
 
-                  } if (response.body.result.twStatus==2){
-                    this.tozhang='旷工打卡';
-                    if(response.body.result.twOutside){
-                      this.tozhang='旷工打卡(区域外)';
-                    }
-                    if(response.body.result.twTime==null){
-                      this.tozhang='未打卡';
-                    }
+                      }
+                      if (response.body.result.twStatus == 2) {
+                        this.tozhang = '旷工打卡';
+                        if (response.body.result.twOutside) {
+                          this.tozhang = '旷工打卡(区域外)';
+                        }
+                        if (response.body.result.twTime == null) {
+                          this.tozhang = '未打卡';
+                        }
 //                  alert('旷工打卡');
 
-                  }
-                  if(response.body.result.owStatus==0){
-                    this.downzhang='正常打卡';
-                    if(response.body.result.owOutside){
-                      this.downzhang='正常打卡(区域外)';
-                    }
-                    if(response.body.result.owTime==null){
-                      this.downzhang='未打卡';
-                    }
-                    if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                      this.downzhang='';
-                    }
+                      }
+                      if (response.body.result.owStatus == 0) {
+                        this.downzhang = '正常打卡';
+                        if (response.body.result.owOutside) {
+                          this.downzhang = '正常打卡(区域外)';
+                        }
+                        if (response.body.result.owTime == null) {
+                          this.downzhang = '未打卡';
+                        }
+                        if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                          this.downzhang = '';
+                        }
 //                    alert('正常打卡');
 
-                  } if (response.body.result.owStatus==1){
-                    this.downzhang='早退打卡';
-                    if(response.body.result.owOutside){
-                      this.downzhang='早退打卡(区域外)';
-                    }
-                    if(response.body.result.owTime==null){
-                      this.downzhang='未打卡';
-                    }
-                    if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                      this.downzhang='';
-                    }
+                      }
+                      if (response.body.result.owStatus == 1) {
+                        this.downzhang = '早退打卡';
+                        if (response.body.result.owOutside) {
+                          this.downzhang = '早退打卡(区域外)';
+                        }
+                        if (response.body.result.owTime == null) {
+                          this.downzhang = '未打卡';
+                        }
+                        if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                          this.downzhang = '';
+                        }
 //                    alert('早退打卡');
 
-                  } if (response.body.result.owStatus==2){
-                    this.downzhang='加班打卡';
-                    if(response.body.result.owOutside){
-                      this.downzhang='加班打卡(区域外)';
-                    }
-                    if(response.body.result.owTime==null){
-                      this.downzhang='未打卡';
-                    }
-                    if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                      this.downzhang='';
-                    }
+                      }
+                      if (response.body.result.owStatus == 2) {
+                        this.downzhang = '加班打卡';
+                        if (response.body.result.owOutside) {
+                          this.downzhang = '加班打卡(区域外)';
+                        }
+                        if (response.body.result.owTime == null) {
+                          this.downzhang = '未打卡';
+                        }
+                        if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                          this.downzhang = '';
+                        }
 //                    alert('加班打卡');
 
-                  }if (response.body.result.owStatus==3){
-                    this.downzhang='旷工打卡';
-                    if(response.body.result.owOutside){
-                      this.downzhang='旷工打卡(区域外)';
-                    }
-                    if(response.body.result.owTime==null){
-                      this.downzhang='未打卡';
-                    }
-                    if(response.body.result.owTime==null && response.body.result.IS_TODAY ){
-                      this.downzhang='';
-                    }
+                      }
+                      if (response.body.result.owStatus == 3) {
+                        this.downzhang = '旷工打卡';
+                        if (response.body.result.owOutside) {
+                          this.downzhang = '旷工打卡(区域外)';
+                        }
+                        if (response.body.result.owTime == null) {
+                          this.downzhang = '未打卡';
+                        }
+                        if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
+                          this.downzhang = '';
+                        }
 //                    alert('加班打卡');  //添加6-14-9 新增的下班旷工（修改提交的bug）
 
+                      }
+                    }
                   }
-                }
-
-              });
-
+                });
+              }
             });
 
           }, response => {
-            console.log( 'error callback');
+            console.log('error callback');
           });
           //测试显示默认当天信息结束
 
 
-          let arrayShow=[
+          let arrayShow = [
 //               {
 //                  date : '2017-06-5',
 //                },
           ];
-          arrayShow=response.body.result.attend.holidays;
-          if(arrayShow){
-            for(let i=0;i<arrayShow.length;i++){    //此处循环一个数组进行填充假期显示
+          arrayShow = response.body.result.attend.holidays;
+          if (arrayShow) {
+            for (let i = 0; i < arrayShow.length; i++) {    //此处循环一个数组进行填充假期显示
               this.fcEvents.push({
-                title : '假',
-                start :arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
+                title: '假',
+                start: arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
                 // start :arrayShow[i].start,
-                end : arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
+                end: arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
               });
             }
           }
-
-
 
 
           this.$nextTick(() => {
@@ -497,55 +520,52 @@
           });
 
 
-
-
-
-          if(response.body.result.records){
-            for(let i=0;i<response.body.result.records.length;i++){ //循环添加给日历表添加日期状态
-              let connectDate={};
-              connectDate.start=response.body.result.records[i].punchYear+'/'+response.body.result.records[i].punchMonth+'/'+response.body.result.records[i].punchDate
-              connectDate.end=response.body.result.records[i].punchYear+'/'+response.body.result.records[i].punchMonth+'/'+response.body.result.records[i].punchDate
-              connectDate.cssClass=response.body.result.records[i].desc;
-              connectDate.totalTime=response.body.result.records[i].duration?response.body.result.records[i].duration:0;
+          if (response.body.result.records) {
+            for (let i = 0; i < response.body.result.records.length; i++) { //循环添加给日历表添加日期状态
+              let connectDate = {};
+              connectDate.start = response.body.result.records[i].punchYear + '/' + response.body.result.records[i].punchMonth + '/' + response.body.result.records[i].punchDate
+              connectDate.end = response.body.result.records[i].punchYear + '/' + response.body.result.records[i].punchMonth + '/' + response.body.result.records[i].punchDate
+              connectDate.cssClass = response.body.result.records[i].desc;
+              connectDate.totalTime = response.body.result.records[i].duration ? response.body.result.records[i].duration : 0;
 //                  connectDate.title =response.body.result.records[i].desc;
               this.fcEvents.push(connectDate);
             }
           }
 
-          this.connectTime.chidao=response.body.result.belateTimes;   //赋值给查询出来的月总数
-          this.connectTime.zaotui=response.body.result.leaveearlyTimes;
-          this.connectTime.kuanggong=response.body.result.absentTimes;
-          this.connectTime.waichu=response.body.result.outsideTimes;
-          console.log( this.connectTime);
+          this.connectTime.chidao = response.body.result.belateTimes;   //赋值给查询出来的月总数
+          this.connectTime.zaotui = response.body.result.leaveearlyTimes;
+          this.connectTime.kuanggong = response.body.result.absentTimes;
+          this.connectTime.waichu = response.body.result.outsideTimes;
+          console.log('this.connectTime', this.connectTime);
 
-          console.log( this.fcEvents);
+          console.log(this.fcEvents);
 
 
         }, response => {
-          console.log( 'error callback');
+          console.log('error callback');
         });
 
       },
 
       showDate(name, num){ //查处战展示当月的工作日
-        if (name) {
-          let week = document.getElementsByClassName('events-week');
+        if (!name) {
+          let week = document.getElementsByClassName('week-row');
           for (let i = 0; i < week.length; i++) {
-            let data = week[i].getElementsByClassName('events-day');
+            let data = week[i].getElementsByClassName('day-cell');
             if (!data[num].classList.contains("not-cur-month")) {
-              data[num].style.background = 'rgba(130,130,130,0.1)';
+              data[num].style.color = 'rgb(180,184,187)';
             } else {
-              data[num].style.background = '';
+              data[num].style.color = '';
             }
           }
         } else {
-          let week = document.getElementsByClassName('events-week');
+          let week = document.getElementsByClassName('week-row');
           for (let i = 0; i < week.length; i++) {
-            let data = week[i].getElementsByClassName('events-day');
+            let data = week[i].getElementsByClassName('day-cell');
             if (!data[num].classList.contains("not-cur-month")) {
-              data[num].style.background = '';
+              data[num].style.color = '';
             } else {
-              data[num].style.background = '';
+              data[num].style.color = '';
             }
           }
         }
@@ -560,124 +580,127 @@
 
 </script>
 
-<style scoped>
-  /*.ffff{  background: red!important;}*/
-  .pos-fixed {
+<style scoped lang="scss">
+  .egStates {
+    height: 43px;
+    background: #ffffff;
+    font-size: 0;
+    .egClass {
+      box-sizing: border-box;
+      width: 33.33%;
+      height: 43px;
+      line-height: 43px;
+      display: inline-block;
+      font-size: 12px;
+      .normalStyle {
+        background: rgb(32, 161, 255);
+      }
+      .abnormalStyle {
+        background: rgb(255, 204, 0);
+      }
+
+      .leaveStyle {
+        background: rgb(102, 204, 0);
+      }
+    }
+    .egClass:nth-child(1) {
+      padding-left: 15px;
+      text-align: left;
+    }
+    .egClass:nth-child(2) {
+      text-align: center;
+    }
+    .egClass:nth-child(3) {
+      padding-right: 15px;
+      text-align: right;
+    }
+
+  }
+
+  .timeTitle {
     position: relative;
-    z-index: 1;
-    top: 3.3rem;
-  }
-  .spanStatus{
-    width: 5.6rem;
-    height: 2rem;
-    /*line-height: 2rem;*/
-    display: inline-block;
-    padding: 0.2rem;
-  }
-  .egClass{
-    width:7.5rem;
-    height: 2rem;
-    line-height: 2.6rem;
-    display: inline-block;
+    font-size: 14px;
+    color: #1f2d3d;
     text-align: left;
+    .lineStyle {
+      height: 1px;
+      background: #cccccc;
+      margin-bottom: 15px;
+    }
   }
-  .egClass1{
-    width:7.5rem;
-    height: 2rem;
-    line-height: 2.6rem;
-    display: inline-block;
-    text-align: center;
-  }
-  .egClass2{
-    width:7.5rem;
-    height: 2rem;
-    line-height: 2.6rem;
-    display: inline-block;
-    text-align: right;
-  }
-  .timeTitle{
-    padding-top: 0.5rem;
-    position: relative;
-  }
-  .publicStyle{
+
+  .publicStyle {
     width: 0.6rem;
     height: 0.6rem;
+    margin-right: 6px;
     line-height: 0.6rem;
-    border-radius: 0.3rem;
-    display: inline-block;
-  }
-  .normalStyle{
-    background: rgb(32,161,255);
-  }
-  .abnormalStyle{
-    background: rgb(255,204,0);
-  }
-  .leaveStyle{
-    background: rgb(102,204,0);
-  }
-  .timeImageClass{
-    display: inline-block;
-    width: 20px;
-    height:20px;
-    line-height: 1.5rem;
-    /*padding-top: 0.2rem;*/
-  }
-  .timeDivClass{
-    width: 3.9rem;
-    height: 2rem;
-    line-height: 2rem;
-    display: inline-block;
-    vertical-align: top;
-    position: absolute;
-    left: -0.4rem;
-    top: 0.8rem;
-  }
-  .timeSpanClass{
-    width: 17.5rem;
-    height: 2rem;
-    line-height: 2rem;
-    /*display: inline-block;*/
-    /*text-align: left;*/
-    text-indent: -1rem;
-    vertical-align: top;
-
-  }
-  .spanListClass{
-    height: 2rem;
-    line-height: 2rem;
-    padding-left: 0.72rem;
-
-  }
-  .ver-line{
-    width: 0px;
-    height: 1rem;
-    margin-left: 1.78rem;
-    border-left: 1px solid #cccccc;
-    margin-top: -0.5rem;
-  }
-  .toWorkLeft{
-    width: 1.4rem;
-    height: 1.4rem;
-    line-height: 1.4rem;
-    float: left;
-    padding-left: 0.38rem;
-    vertical-align: bottom;
-  }
-  .toWorkLeft div{
-    width: 1.4rem;
-    height: 1.4rem;
     border-radius: 50%;
+    display: inline-block;
+  }
+
+  .timeImageClass {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+
+  .todayTime {
+    height: 44px;
+    line-height: 44px;
+    .timeDivClass {
+      margin-top: 14px;
+      margin-left: 15px;
+      line-height: 16px;
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .timeSpanClass {
+      margin-left: 2px;
+      margin-top: 14px;
+      text-align: left;
+      line-height: 16px;
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
+
+  .spanListClass {
+    height: 22px;
+    padding-left: 15px;
+  }
+
+  .ver-line {
+    width: 0px;
+    height: 15px;
+    margin-left: 25px;
+    border-left: 1px solid #cccccc;
+  }
+
+  .toWorkLeft {
+    text-align: center;
+    width: 22px;
+    height: 22px;
+    float: left;
+    vertical-align: bottom;
+    color: #cccccc;
+  }
+
+  .toWorkLeft div {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    font-size: 11px;
     border: 1px solid #cccccc;
   }
-  .toWorkRight{
-    width: 18.67rem;
-    height: 1.4rem;
-    line-height: 1.4rem;
+
+  .toWorkRight {
+    height: 22px;
+    line-height: 22px;
     float: left;
     text-align: left;
-    padding-left: 1.3rem;
+    padding-left: 6px;
     vertical-align: bottom;
-    padding-top: 0.1rem;
-
   }
 </style>
