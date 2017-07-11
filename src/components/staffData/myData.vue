@@ -87,13 +87,13 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="model.nativePlace === '2' && staff.passportNum" label="护照号" prop="passportNum">
-          <el-input :readonly="!staff.passportNum.isedit" v-model="model.passportNum"></el-input>
+        <el-form-item v-if="model.nativePlace === '2'" label="护照编号" prop="passportNum">
+          <el-input :readonly="!staff.nativePlace.isedit" v-model="model.passportNum"></el-input>
         </el-form-item>
 
-        <el-form-item v-if="model.nativePlace === '2' && staff.passportUrl" label="护照照片">
+        <el-form-item v-if="model.nativePlace === '2'" label="护照照片">
           <el-upload
-            v-if="staff.passportUrl.isedit"
+            v-if="staff.nativePlace.isedit"
             action="/api/v1.0/client/upload"
             name="files"
             :show-file-list="false"
@@ -103,7 +103,7 @@
             <i class="el-icon-plus"> 上传护照照片</i>
           </el-upload>
           <div v-if="model.passportUrl" class="upload-img-wrapper">
-            <i class="fa fa-times" @click.stop="model.passportUrl = ''" aria-hidden="true"></i>
+            <!--<i class="fa fa-times" @click.stop="model.passportUrl = ''" aria-hidden="true"></i>-->
             <img :src="model.passportUrl" />
           </div>
           <p class="uploadErrorTip" v-show="passportUrlErrFlag">请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>

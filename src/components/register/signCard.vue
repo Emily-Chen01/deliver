@@ -11,7 +11,7 @@
            <div>
              <div class="signTitle">{{oneselfData.name}}</div>
              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
-             <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.8rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
+             <div style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.4rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;" @click="routerMyData">
                <div style="display: block;width: 13px;height: 13px;">
                  <img style="display: block;width: 100%;height: 100%;padding-top: 0.5rem;padding-left: 0.5rem;" :src="imgSrc.shezhiBackground" />
                </div>
@@ -88,8 +88,8 @@
       </div>
       <!--底部工具-->
       <div class="bottomTool">
-        <div style="display: flex;position: relative">
-          <div style="flex: 2"  @click="routerTool(1)">
+        <div style="position: relative">
+          <div style="width: 50%;float: left"  @click="routerTool(1)">
             <div style="height: 20px;width: 20px; text-align: center; margin: auto;padding-top: 1rem;">
               <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
               <img :src="imgSrc.doIcon" class="avatar" v-if="init">
@@ -97,7 +97,7 @@
             <div style="height: 1.5rem;padding-top: 0.5rem;" v-if="init">工作台</div>
             <div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlue">工作台</div>
           </div>
-          <div style="flex: 2"  @click="routerTool(2)">
+          <div style="width: 50%;float: right"  @click="routerTool(2)">
             <div style="height: 20px;width: 20px;text-align: center; margin: auto;padding-top: 1rem;">
               <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
               <img :src="imgSrc.setIcon" class="avatar"  v-if="initSet">
@@ -108,16 +108,34 @@
           </div>
         </div>
       </div>
+      <mt-popup
+        v-model="isVisible"
+        class="imageClassSuccess"
+        closeOnClickModal="true"
+      >
+        <div style="clear:both;"></div>
+        <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">
+          审批功能已经被关闭了
+         </div>
+
+        <div @click="closeAlertFail" class="colseClassAlertFail">
+          确定
+        </div>
+      </mt-popup>
 
     </div>
 </template>
 <script >
 //  import ManyCompany from "./manyCompany"
+import { Navbar, TabItem,Toast,MessageBox,Popup } from 'mint-ui';
+
 let oneselfData={};
 
   export default {
       data(){
         return {
+          isVisible:false,
+          closeOnClickModal:true,
           oneselfData:{
             companyNmae:'北京科锐国际人力资源股份有限公司',
             department:'产品部',
@@ -225,13 +243,16 @@ let oneselfData={};
       changeList(indexX){
 
           if(indexX==0){
+            this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
+                console.log(response.body.result.length,'res');
+              if(response.body.result.length==0){ //此处设置的是在pc端关闭了考勤给出提示关闭了
+                this.isVisible=true;
+              }else {
                 this.$router.push({path:'/leave'});
-//            if(false){ //此处设置的是在pc端关闭了考勤给出提示关闭了
-//              this.$router.push({path:'/leave'});
-//            }else {
-//              alert('审批功能关闭了')
-//            }
-
+              }
+            }, response => {
+              console.log( 'error callback');
+            });
           }else if(indexX==1){
             this.$router.push({path:'/attendanceRecord'});
 
@@ -251,6 +272,9 @@ let oneselfData={};
           this.$router.push({path:'/set'});
         }
       },
+      closeAlertFail(){
+          this.isVisible=false;
+      }
     },
 
     components: {
@@ -261,6 +285,27 @@ let oneselfData={};
 </script>
 
 <style scoped>
+  .imageClassSuccess{
+    width: 16rem;
+    /*top: 10rem;*/
+    height: 12rem;
+    /*line-height: 11rem;*/
+    border-radius: 4px;
+    /*background: pink;*/
+
+  }
+  .colseClassAlertFail{
+    display: inline-block;
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    background: #26a2ff;
+    color: #ffffff;
+    width: 6rem;
+    margin: 3rem auto;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+  }
 
   .showSpan{
     position: absolute;
@@ -357,8 +402,9 @@ let oneselfData={};
   .signName{
     text-align: left;
     /*width: 45%;*/
-    height: 1.8rem;
-    line-height: 1.8rem;
+    /*height: 1.8rem;*/
+    /*line-height: 1.8rem;*/
+    padding-top: 0.2rem;
   }
   .signImg {
     display: inline-block;
@@ -376,13 +422,14 @@ let oneselfData={};
 }
   .signTitle {
     text-align: left;
-    height: 1.8rem;
-    line-height: 1.8rem;
+    /*height: 1.8rem;*/
+    /*line-height: 1.8rem;*/
   }
   .companyNameClass{
     text-align: left;
-    height: 1.8rem;
-    line-height: 1.8rem;
+    /*height: 1.8rem;*/
+    /*line-height: 1.8rem;*/
+    padding-top: 0.2rem;
   }
 .mint-cell-title{
   background-image: -webkit-linear-gradient(top,#d9d9d9,#d9d9d9 50%,transparent 0);
