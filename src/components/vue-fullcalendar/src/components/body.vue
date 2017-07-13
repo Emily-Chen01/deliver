@@ -311,13 +311,11 @@
       height: 43px;
       z-index: 1;
       border-bottom: 1px solid rgb(233, 235, 240);
-      /*top: 3.3rem;*/
       .spanStatus {
         float: left;
         box-sizing: border-box;
         width: 25%;
         height: 44px;
-        /*line-height: 2rem;*/
         display: inline-block;
         padding: 5px;
         color: rgb(132, 146, 166);
@@ -329,42 +327,27 @@
       }
     }
     .weeks {
-      /*display: flex;*/
-
       width: 100%;
       height: 44px;
-      /*border-top: 1px solid #e0e0e0;*/
-      /*border-bottom: 1px solid #e0e0e0;*/
-      /*border-left: 1px solid #e0e0e0;*/
       .week {
         display: inline-block;
-        /*flex: 1;*/
         width: 14.28%;
         text-align: center;
         height: 44px;
         line-height: 44px;
         font-size: 12px;
         color: #8492a6;
-        /*border-right: 1px solid #e0e0e0;*/
       }
     }
     .dates {
       position: relative;
       .week-row {
-        // width: 100%;
-        // position:absolute;
-        /*border-left: 1px solid #e0e0e0;*/
-        /*display: flex;*/
         .day-cell {
           display: inline-block;
-          /*flex: 1;*/
           width: 14.28%;
           height: 44px;
           font-size: 14px;
           color: #1f2d3d;
-          /*padding: 4px;*/
-          /*border-right: 1px solid #e0e0e0;*/
-          /*border-bottom: 1px solid #e0e0e0;*/
           .day-number {
             margin: 0 auto;
             margin-top: 10px;
@@ -383,10 +366,8 @@
           }
           &.todayBg {
             .day-number {
-              /*color: rgb(250, 77, 79);*/
               color: rgb(255, 255, 255);
               background-color: rgb(33, 160, 253);
-              /*border: 2px solid rgb(33, 160, 253);*/
             }
           }
           &.clickDay {
@@ -413,23 +394,16 @@
         width: 100%;
         .events-week {
           height: 44px;
-          /*display: flex;*/
           .events-day {
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            /*cursor: pointer;*/
             float: left;
             display: inline-block;
-            /*flex: 1;*/
             width: 14.28%;
-            /*min-height: 109px;*/
-            /*<!--margin-top: -24px;-->*/
             height: 44px;
             overflow: hidden;
             text-overflow: ellipsis;
-            /*background-color: inherit !important;*/
             .day-number {
               text-align: right;
-              /*padding: 4px 5px 4px 4px;*/
               height: 44px;
               opacity: 0;
             }
@@ -446,8 +420,6 @@
               z-index: -1;
               .event-box-div {
                 box-sizing: border-box;
-                /*position: absolute;*/
-                /*<!--margin-top: -24px;-->*/
                 padding-top: 24px;
               }
               .holidayStyle {
@@ -458,45 +430,26 @@
                 font-weight: bold;
 
               }
-              /*.holidayStyles {*/
-              /*margin-left: 5px;*/
-              /*}*/
-              /*.holidayStyleTop {*/
-              /*margin-top: 4px;*/
-              /*}*/
               .event-item {
                 display: inline-block;
                 margin: 0 auto;
                 margin-top: 14px;
-                /*cursor: pointer;*/
                 font-size: 12px;
-                /*background-color: #C7E6FD;*/
-                /*background: rgb(32, 161, 255);*/
-                /*margin-bottom: 2px;*/
                 color: rgba(0, 0, 0, .87);
-                /*padding: 0 0 0 4px;*/
                 height: 4px;
                 line-height: 4px;
                 border-radius: 2px;
                 width: 4px;
                 white-space: nowrap;
-                /*overflow: hidden;*/
                 text-overflow: ellipsis;
                 &.is-start {
                   margin-left: -10px;
-                  // border-top-left-radius:4px;
-                  // border-bottom-left-radius:4px;
                 }
                 &.is-end {
                   margin-right: 0;
-                  // border-top-right-radius:4px;
-                  // border-bottom-right-radius:4px;
                 }
                 &.event-item-Lefts {
-                  /*vertical-align: middle;*/
                   position: absolute;
-                  /*top: 24px;*/
-                  /*right: 20%;*/
                   margin-left: -3px;
 
                 }
@@ -520,8 +473,6 @@
                 }
               }
               .more-link {
-                /*cursor: pointer;*/
-                // text-align: right;
                 padding-left: 8px;
                 padding-right: 2px;
                 color: rgba(0, 0, 0, .38);
@@ -544,11 +495,9 @@
           align-items: center;
           font-size: 14px;
           .title {
-            /*flex: 1;*/
           }
           .close {
             margin-right: 2px;
-            /*cursor: pointer;*/
             font-size: 16px;
           }
         }
@@ -561,7 +510,6 @@
             overflow: auto;
             background-color: #fff;
             .body-item {
-              /*cursor: pointer;*/
               font-size: 12px;
               background-color: #C7E6FD;
               margin-bottom: 2px;
