@@ -11,7 +11,7 @@
               </div>
               <div>
                 <i class="indexicon icon-toast"></i>
-                <span>{{item.COMP_NAME}}</span></div>
+                <span>{{item.compName}}</span></div>
             </div>
             <div class="mint-cell-right"></div>
             <i class="mint-cell-allow-right"></i>
