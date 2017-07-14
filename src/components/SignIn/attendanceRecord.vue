@@ -169,7 +169,7 @@
         let data = AddZero(d.getDate());
         let Month = AddZero((d.getMonth() + 1));
         var kk = d.getFullYear() + '/' + Month + '/' + data;
-        console.log(kk);
+        console.log(12, kk);
         //格式化时间结束
 
         let param = {
@@ -319,25 +319,24 @@
 
       },
 
-      'changeMonth' (start, end, current) {
+      'changeMonth' (start, end, currentStart, current) {
         console.log('start' + start)
         console.log('end' + end)
-        console.log('current' + current)
-//            console.log('???');
-
-
-        var zhuan = current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
-        var tt = zhuan.substring(0, 7);
-        console.log(tt);
+        console.log('currentStart' + currentStart)
+        let zhuan = currentStart.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
+        let currentDate=current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
+        let td = currentDate.substring(0, 10);
+        let tt = zhuan.substring(0, 7);
+        console.log(12, tt,td);
         let param = {
           date: tt
-        }
+        };
         this.$http.post('/api/v1.0/client/findMonthAttends', param).then(response => { //查询当月考勤接口
           this.tozhang = '';
           this.downzhang = '';
-          this.toSapnTime = '',
-            this.downSapnTime = '',
-            this.connectTime = {};
+          this.toSapnTime = '';
+          this.downSapnTime = '';
+          this.connectTime = {};
           this.fcEvents = [];
 
 
