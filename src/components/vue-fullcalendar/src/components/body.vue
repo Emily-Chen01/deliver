@@ -138,6 +138,10 @@
     watch: {
       weekNames (val) {
         console.log('watch weekNames', val)
+      },
+      currentDate(val){
+//        this.currentDay = val;
+        console.log('watch currentDate12', val)
       }
     },
     computed: {

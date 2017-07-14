@@ -78,10 +78,23 @@
     },
     methods: {
       emitChangeMonth (start, end, currentStart, current) {
-        console.log('currentDate 2', this.currentDate)
-        this.currentDate = current
+        console.log('currentDate 2', this.convertTime(this.currentDate));
+        console.log('currentDate 2current', current);
+        this.currentDate = current;
         console.log('currentDate 3', this.currentDate)
-        this.$emit('changeMonth', start, end, currentStart)
+        this.$emit('changeMonth', start, end, currentStart, current)
+      },
+      convertTime(data){
+        let year = (new Date(data)).getFullYear();
+        let month = (new Date(data)).getMonth() + 1;
+        let day = (new Date(data)).getDate();
+        if (month < 10) {
+          month = '0' + month;
+        }
+        if (day < 10) {
+          day = '0' + day;
+        }
+        return year + '/' + month + '/' + day;
       },
       emitEventClick (event, jsEvent, pos) {
         this.$emit('eventClick', event, jsEvent, pos)
