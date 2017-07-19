@@ -140,7 +140,8 @@
               </div>
             </div>
             <div class="myApplyContentLeft">事由</div>
-            <div class="myApplyContentNr"><span>{{item.remarks}}</span></div>
+            <div class="myApplyContentNr"><span>{{item.remarks}}</span>
+            </div>
             <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
             <div class="myApplyContentNr" style="padding-bottom: 0.5rem;word-wrap: break-word;" v-if="item.why">
               <span>{{item.why}}</span>
@@ -931,7 +932,8 @@
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow: hidden;
-    padding-bottom: 0.5rem;
+    /*padding-bottom: 0.5rem;*/
+    line-height: 20px;
 
   }
 

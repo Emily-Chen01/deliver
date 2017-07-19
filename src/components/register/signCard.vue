@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="bg">
-      <div style="padding-top: 1rem;height: 8rem;color:#ffffff;display: flex;padding-left: 1rem">
+      <div style="padding-top: 1rem;color:#ffffff;display: flex;padding-left: 1rem;">
         <div class="siginLeft">
           <div class="avatarBorder">
             <img :src="imgSrc.comAddress" class="avatarTop">
@@ -27,7 +27,7 @@
         </div>
 
       </div>
-      <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative">
+      <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative" v-if="punchCard">
         <div style="position: absolute;width:12px;height: 12px;z-index: 2;left:32.5%;top:19.5%">
           <img :src="imgSrc.ico_pencil" class="imgSizePencil">
 
@@ -36,8 +36,8 @@
           type="primary"
           style="background-color: #57b9ff;width: 97%;"
           @click="handerSign"
-        >签到打卡
-
+        >
+          <span>签到打卡</span>
         </mt-button>
       </div>
 
@@ -121,13 +121,11 @@
       <div style="clear:both;"></div>
       <div
         style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">
-        审批功能已经被关闭了
-
+        <span>审批功能已经被关闭了</span>
       </div>
 
       <div @click="closeAlertFail" class="colseClassAlertFail">
-        确定
-
+        <span>确定</span>
       </div>
     </mt-popup>
 
@@ -144,6 +142,7 @@
       return {
         isVisible: false,
         closeOnClickModal: true,
+        punchCard: false, // 判断是否需要打卡
         oneselfData: {
           companyNmae: '北京科锐国际人力资源股份有限公司',
           department: '产品部',
@@ -206,6 +205,7 @@
       searchStaff(){
 
         this.$http.post('/api/v1.0/client/findStaff').then(response => {
+          this.punchCard = response.body.result.punchCard;
           console.log("111", response.body.result.record);
           this.arryOneself.push(response.body.result);
           console.log("rryOne", this.arryOneself);
@@ -375,7 +375,7 @@
     padding-left: 0.8rem;
     width: 74%;
     float: left;
-    height: 5.2rem;
+    /*height: 5.2rem;*/
     /*line-height: 5.2rem;*/
     font-size: 1.2rem;
   }
@@ -434,6 +434,7 @@
     /*height: 1.8rem;*/
     /*line-height: 1.8rem;*/
     padding-top: 0.2rem;
+    padding-bottom: 0.5rem;
   }
 
   .mint-cell-title {

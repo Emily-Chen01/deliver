@@ -5,7 +5,7 @@
     <p class="h1Class">{{ msg }}</p>
     <p class="titlesSmall">{{ msgPhone }}</p>
     <div style="clear:both"></div>
-    <div style="margin: 5rem 0 1.5rem 0;width: 97.5%">
+    <div style="margin: 5rem 0 1.5rem 0;width: 100%">
       <div class="insterInput">
         <input v-model="phoneNumber" type="number" class="inputStyle" placeholder="手机号"/>
       </div>
@@ -37,13 +37,46 @@
         <div style="font-size:1.2rem; width: 5rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
           抱歉 ！
 
+
+
+
+
+
+
+
+
+
+
+
         </div>
         <div style="font-size:1.2rem;width: 12rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
           没有找到您的员工记录
 
+
+
+
+
+
+
+
+
+
+
+
         </div>
         <div style="font-size:1.2rem;width: 6rem;height: 1.5rem;text-align: center;margin:0.2rem auto 0.3rem auto;">
           请联系HR
+
+
+
+
+
+
+
+
+
+
+
 
         </div>
       </div>
@@ -105,30 +138,30 @@
       Indicator.open('加载中...');
 
       //获取openidstart  6-2早注释为了本地测试 提交需解除注释
-      var _href = window.location.href;
-      console.log(window.location.href);
-
-      function getUrlParam(url, name) { //获取地址栏的参数
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-        var r = url.substring(url.indexOf('?') + 1).match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
-      }
-
-//    getUrlParam(_href, "openid");
-      var openID = getUrlParam(_href, "openid");
-
-      if (openID == null) {
-        let path = '/api/v1.0/wechat';
-        let protocol = location.protocol;
-        let hostname = location.hostname;
-//        console.log(`${protocol}//${hostname}${path}`);
-        window.location.href = `${protocol}//${hostname}${path}`;
-        return;
-      }
-      this.setCookie('openId', openID, 365);
-      console.log('openid修改过的' + this.getCookie('openId'));
-
+//      var _href = window.location.href;
+//      console.log(window.location.href);
+//
+//      function getUrlParam(url, name) { //获取地址栏的参数
+//        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+//        var r = url.substring(url.indexOf('?') + 1).match(reg);
+//        if (r != null) return unescape(r[2]);
+//        return null;
+//      }
+//
+////    getUrlParam(_href, "openid");
+//      var openID = getUrlParam(_href, "openid");
+//
+//      if (openID == null) {
+//        let path = '/api/v1.0/wechat';
+//        let protocol = location.protocol;
+//        let hostname = location.hostname;
+////        console.log(`${protocol}//${hostname}${path}`);
+//        window.location.href = `${protocol}//${hostname}${path}`;
+//        return;
+//      }
+//      this.setCookie('openId', openID, 365);
+//      console.log('openid修改过的' + this.getCookie('openId'));
+//
 
       //获取openid end
 
@@ -316,37 +349,36 @@
               if (!response.body.result) {
                 Indicator.close();
               }
+              if (response.body.result) {
+//              console.log(response.body.result.length);
+                this.sumSearchUid = response.body.result;
 
-              console.log(response.body.result.length);
-              this.sumSearchUid = response.body.result;
-
-              if (response.body.result.length == 1) {
-                //如果等于1就进入 signCard 点击打卡
-                let param = {
-                  "companyUid": this.sumSearchUid[0].uid,
-                }
-                this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
-                  console.log('选择公司接口');
-                  Indicator.close();//关闭加载
+                if (response.body.result.length == 1) {
+                  //如果等于1就进入 signCard 点击打卡
+                  let param = {
+                    "companyUid": this.sumSearchUid[0].uid,
+                  }
+                  this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
+                    console.log('选择公司接口');
+                    Indicator.close();//关闭加载
 //                      if(response.body.code==200){
-                  this.$router.push({path: '/signCard'});
+                    this.$router.push({path: '/signCard'});
 //                      }
-                  Indicator.close();//关闭加载
-                }, response => {
-                  console.log('error callback');
-                });
-              } else {
-                this.handerCome(); //如果不是只有一个公司进行选择公司
+                    Indicator.close();//关闭加载
+                  }, response => {
+                    console.log('error callback');
+                  });
+                } else {
+                  this.handerCome(); //如果不是只有一个公司进行选择公司
 
+                }
               }
-              ;
               //添加查询是否有员工
               if (response.body.code == 500) {
                 this.isCompany = true;
-
               }
             }, response => {
-              console.log('findCompanies error callback');
+//              console.log('findCompanies error callback');
             });
             //初始化查询看是否有是一个公司进行跳转signCard  开始
 
@@ -429,17 +461,19 @@
   }
 
   .insterInput {
-    width: 64%;
+    padding-left: 2.5%;
+    width: 60%;
     float: left;
   }
 
   .insterInput input {
     height: 2.6rem;
-    width: 95%;
+    width: 100%;
   }
 
   .verification {
-    width: 33%;
+    padding-right: 2.5%;
+    width: 30%;
     float: right;
     height: 2.9rem;
     font-size: 1rem;
