@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="bg">
-      <div style="padding-top: 1rem;color:#ffffff;display: flex;padding-left: 1rem;">
+      <div style="padding-top: 1rem;color:#ffffff;padding-left: 1rem;">
         <div class="siginLeft">
           <div class="avatarBorder">
             <img :src="imgSrc.comAddress" class="avatarTop">
@@ -19,7 +19,7 @@
                      :src="imgSrc.shezhiBackground"/>
               </div>
 
-              <div style="font-size: 0.8rem;top: 0.43rem; position: absolute;right: 0.8rem;">设置</div>
+              <div style="font-size: 0.8rem;top: 0.43rem; position: absolute;right: 0.8rem;z-index: 10">设置</div>
             </div>
           </div>
           <div class="companyNameClass">{{infoObj.companyName}}</div>
@@ -28,15 +28,16 @@
 
       </div>
       <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative" v-if="punchCard">
-        <div style="position: absolute;width:12px;height: 12px;z-index: 2;left:32.5%;top:19.5%">
-          <img :src="imgSrc.ico_pencil" class="imgSizePencil">
+        <!--<div style="position: absolute;width:12px;height: 12px;z-index: 2;left:32.5%;top:19.5%">-->
+          <!--<img :src="imgSrc.ico_pencil" class="imgSizePencil">-->
 
-        </div>
+        <!--</div>-->
         <mt-button
           type="primary"
           style="background-color: #57b9ff;width: 97%;"
           @click="handerSign"
         >
+          <img :src="imgSrc.ico_pencil" style="width:12px;height: 12px;" class="imgSizePencil">
           <span>签到打卡</span>
         </mt-button>
       </div>
