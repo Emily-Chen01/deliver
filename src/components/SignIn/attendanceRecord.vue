@@ -1,23 +1,5 @@
 <template>
   <div>
-    <!--<div class="pos-fixed">-->
-    <!--<div class="spanStatus">-->
-    <!--<div class="">{{connectTime.chidao}}</div>-->
-    <!--<div class="">迟到</div>-->
-    <!--</div>-->
-    <!--<div class="spanStatus">-->
-    <!--<div class="">{{connectTime.zaotui}}</div>-->
-    <!--<div class="">早退</div>-->
-    <!--</div>-->
-    <!--<div class="spanStatus">-->
-    <!--<div class="">{{connectTime.kuanggong}}</div>-->
-    <!--<div class="">旷工</div>-->
-    <!--</div>-->
-    <!--<div class="spanStatus">-->
-    <!--<div class="">{{connectTime.waichu}}</div>-->
-    <!--<div class="">外出</div>-->
-    <!--</div>-->
-    <!--</div>-->
     <full-calendar
       :connectTime="connectTime"
       :events="fcEvents" lang="zh"
@@ -29,10 +11,7 @@
       <div class="egClass"><span class="publicStyle abnormalStyle"></span>考勤异常</div>
       <div class="egClass"><span class="publicStyle leaveStyle"></span>请假</div>
     </div>
-    <!--<div style="height: 1px;background: #cccccc;margin:0.5rem 1rem 0.3rem 1rem"></div>-->
 
-
-    <!--<div style="height: 1px;background: #cccccc;margin: 0.4rem 1rem;clear: both;"></div>-->
 
     <div style="background:rgb(239,241,247);">
       <div class="timeTitle">
@@ -74,14 +53,11 @@
   </div>
 </template>
 <script>
-
-  //  import fullCalendar from '@/components/vue-fullcalendar/dist/vue-fullcalendar'
   import fullCalendar from '@/components/vue-fullcalendar/src/fullCalendar'
   import moment from 'moment'
 
   let df = 'HH:mm:ss';
   let df2 = 'YYYY/MM/DD';
-  let df3 = 'YYYY/MM/DD';
 
 
   export default {
@@ -97,29 +73,7 @@
 //                  end : '2017/06/4',
 //                  cssClass:'normal',
 //                  YOUR_DATA  : {}
-//                },
-//                {
-//                  title : '',
-//                  start : '2017/06/5',
-//                  end : '2017/06/5',
-//                  cssClass:'normal',
-//                  YOUR_DATA  : {}
-//                },
-//                {
-//                  title : '',
-//                  start : '2017/06/6',
-//                  end : '2017/06/6',
-//                  cssClass:'leave',
-//
-//                },
-//                {
-//                  title : '',
-//                  start : '2017/06/7',
-//                  end : '2017/06/7',
-//                  cssClass:'abnormal',
-//
 //                }
-
         ],
         objToSpan: {
           toTime: '',
@@ -194,19 +148,6 @@
           } else {
             this.connectTime.totalTime = 0;
           }
-//          this.connectTime.totalTime = response.body.result.duration ? response.body.result.duration : 0;
-
-
-//          if (response.body.result.twTime) {
-//            this.toSapnTime = moment(response.body.result.twTime).format(df);
-//          }
-//
-//          if (response.body.result.owTime) {
-//            this.downSapnTime = moment(response.body.result.owTime).format(df);
-//          }
-
-//          console.log('twStatus' + response.body.result.twStatus);
-//          console.log('owStatus' + response.body.result.owStatus);
           this.tozhang = '';
           this.downzhang = '';
 
@@ -324,10 +265,10 @@
         console.log('end' + end)
         console.log('currentStart' + currentStart)
         let zhuan = currentStart.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
-        let currentDate=current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
+        let currentDate = current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
         let td = currentDate.substring(0, 10);
         let tt = zhuan.substring(0, 7);
-        console.log(12, tt,td);
+        console.log(12, tt, td);
         let param = {
           date: tt
         };
@@ -353,8 +294,6 @@
           };
           this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
 
-            console.log('init', response);
-//              console.log(response.body.result.duration);
             if (response.body.result == null) {  //如果没有打卡记录清空时间和文字状态
               this.tozhang = '';
               this.downzhang = '';
@@ -367,7 +306,6 @@
             } else {
               this.connectTime.totalTime = 0;
             }
-//            this.connectTime.totalTime = response.body.result.duration ? response.body.result.duration : 0;
             this.$nextTick(() => {
               this.tozhang = '';
               this.downzhang = '';
@@ -378,10 +316,6 @@
                 if (response.body.result.owTime) {
                   this.downSapnTime = moment(response.body.result.owTime).format(df);
                 }
-//                console.log('twStatus' + response.body.result.twStatus);
-//                console.log('owStatus' + response.body.result.owStatus);
-//                console.log(response.body.result.twOutside, 'twOutside')
-//                console.log(response.body.result.twOutside, 'owOutside')
                 this.$nextTick(() => {
                   if (response.body.result) {
                     if (response.body.result.status == '未打卡') {//判断状态转换文字上班
