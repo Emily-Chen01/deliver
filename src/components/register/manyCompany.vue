@@ -75,10 +75,7 @@
           console.log('选择公司接口');
           if (response.body.code === 200) {
             this.$router.push({path: '/signCard'});
-          } else {
-            alert('接口返回异常');
           }
-
         }, response => {
           console.log('error callback');
         });
