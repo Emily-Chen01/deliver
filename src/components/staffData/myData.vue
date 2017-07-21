@@ -518,7 +518,8 @@
               v-model="model.entSchet"
               type="month"
               placeholder="选择日期"
-              :editable="false">
+              :editable="false"
+              :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
 
@@ -673,10 +674,10 @@
           <el-form-item label="兼职协议结束日期" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
             <span>{{datefmt(model.record.contract.endTime)}}</span>
           </el-form-item>
-          <el-form-item label="兼职协议附件" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
-            <a v-if="model.record.contract.contractUrl"
-               :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>
-          </el-form-item>
+          <!--<el-form-item label="兼职协议附件" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">-->
+          <!--<a v-if="model.record.contract.contractUrl"-->
+          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>-->
+          <!--</el-form-item>-->
           <el-form-item v-if="staffRecord.dateOfEntry" label="入职时间">
             <span>{{datefmt(model.record.dateOfEntry)}}</span>
           </el-form-item>
@@ -779,6 +780,11 @@
   export default {
     data() {
       return {
+        pickerOptions: {
+          disabledDate(time){
+            return time.getTime() < new Date().getTime();
+          }
+        },
         selected: '1',
         status: false,
         staffStatusList: [],//  员工状态列表
@@ -849,7 +855,7 @@
           contractUrl: ''
         },
         publicParams: null,
-        labelWidth: '113px',
+        labelWidth: '125px',
         passportUrlErrFlag: '',
         idcardPhoUrlErrFlag: '',
         idcardPhoUrlRevErrFlag: '',
@@ -1041,13 +1047,13 @@
           ],
           socsecNum: [
             {
-              message: '请填写正确的社保编号', trigger: 'change',
-              transform, pattern: /^\w{7,9}$/
+              message: '请填写正确的社保编号（最多10个数字）', trigger: 'change',
+              transform, pattern: /^\w{1,10}$/
             }
           ],
           accfuNum: [
             {
-              message: '请填写正确的公积金编号', trigger: 'change', transform, pattern: /^\d{9,12}$/
+              message: '请填写正确的公积金编号（最多12个数字）', trigger: 'change', transform, pattern: /^\d{1,12}$/
             }
           ],
           bankName: [
@@ -2509,7 +2515,6 @@
           })
           .catch(err => console.log(err.status, err.statusText));
       },
-
     },
     mounted: function () {
 

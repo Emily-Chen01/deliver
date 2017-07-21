@@ -83,7 +83,7 @@
         <div style="width: 100%;height: 7rem;">
           <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
           <div style="width: 95%;margin:  1rem ;">
-               <textarea placeholder="#请输入文字"
+               <textarea placeholder="#请输入文字(不超过50字)"
                          v-model="holidayModel"
                          style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px">
                </textarea>
