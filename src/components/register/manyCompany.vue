@@ -4,7 +4,6 @@
     <div>
       <div>
         <a class="mint-cell" v-for="(item , $index) in arryName" @click="handerComeCompany(item,$index)">
-
           <div class="mint-cell-title qing">
             <div class="postionImages">
               <img :src="imgSrc.ico_company" class="imgSize">
@@ -37,14 +36,10 @@
         ],
         imgSrc: {
           ico_company: require('../../assets/ico_company.png'),
-
         },
-
-
       }
     },
     created: function () {
-
       let phoneObj = {
         phone: this.getCookie('iphoneNumber'),
       }
@@ -53,14 +48,16 @@
 
         console.log(this.uId);
         this.arryName = response.body.result
-        if (response.body.code == 500) {
-          this.$router.push({path: '/index'});
-          return;
+        if (response.body.code === 500) {
+          this.$http.post('/api/v1.0/client/unbind').then(response => {
+            console.log('解除绑定');
+            this.$router.push({path: '/index'});
+          }, response => {
+            this.$router.push({path: '/index'});
+          });
         }
-
-
       }, response => {
-        console.log('error callback');
+//        console.log('error callback');
       });
     },
     methods: {

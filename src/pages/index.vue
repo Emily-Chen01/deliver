@@ -35,66 +35,17 @@
       <div style="clear:both;"></div>
       <div v-if="noneModel">
         <div style="font-size:1.2rem; width: 5rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
-          抱歉 ！
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <span>抱歉 ！</span>
         </div>
         <div style="font-size:1.2rem;width: 12rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
-          没有找到您的员工记录
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <span>没有找到您的员工记录</span>
         </div>
         <div style="font-size:1.2rem;width: 6rem;height: 1.5rem;text-align: center;margin:0.2rem auto 0.3rem auto;">
-          请联系HR
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <span>请联系HR</span>
         </div>
       </div>
       <div v-if="alertMessageShow" style="margin-top: 1.5rem">{{alertMessage}}</div>
-
-
-      <!--<div @click="closeAlert" class="colseClassAlert">-->
-      <!--我知道啦-->
-      <!--</div>-->
     </mt-popup>
-
-
   </div>
 </template>
 
@@ -115,9 +66,6 @@
         imgSrc: {
           bg: require('../assets/indexLogo.png'),
           bg2: require('../assets/ico_error.png'),
-
-//          ico_error: require('../../assets/ico_error.png'),
-
         },
         msg: '欢迎使用 EHR SAAS 员工自助服务',
         msgPhone: '您需要先绑定手机!',
