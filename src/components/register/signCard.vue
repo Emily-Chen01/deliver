@@ -18,20 +18,13 @@
                 <img style="display: block;width: 100%;height: 100%;padding-top: 0.5rem;padding-left: 0.5rem;"
                      :src="imgSrc.shezhiBackground"/>
               </div>
-
               <div style="font-size: 0.8rem;top: 0.43rem; position: absolute;right: 0.8rem;z-index: 10">设置</div>
             </div>
           </div>
           <div class="companyNameClass">{{infoObj.companyName}}</div>
-
         </div>
-
       </div>
       <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative" v-if="punchCard">
-        <!--<div style="position: absolute;width:12px;height: 12px;z-index: 2;left:32.5%;top:19.5%">-->
-          <!--<img :src="imgSrc.ico_pencil" class="imgSizePencil">-->
-
-        <!--</div>-->
         <mt-button
           type="primary"
           style="background-color: #57b9ff;width: 97%;"
@@ -133,10 +126,9 @@
   </div>
 </template>
 <script>
-  //  import ManyCompany from "./manyCompany"
   import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
 
-  let oneselfData = {};
+  //  let oneselfData = {};
 
   export default {
     data(){
@@ -149,29 +141,21 @@
           department: '产品部',
           position: '产品员工',
           name: '',
-
         },
         infoObj: {},
         arryOneself: [],
         imgSrc: {
-//            comAddress:  require('../../assets/tou.png'),
           comAddress: require('../../assets/tx.png'),
           shezhiBackground: require('../../assets/ico_setting.png'),
-//            doIcon: require('../../assets/ico_workbench_2.png'),
-//            setIcon: require('../../assets/ico_setting_1.png'),
           ico_leave: require('../../assets/ico_leave.png'),
           ico_attendance: require('../../assets/ico_attendance.png'),
           ico_wage: require('../../assets/ico_wage.png'),
           doIcon: require('../../assets/ico_workbench_2.png'),
           doIconBlue: require('../../assets/ico_workbench_1.png'),
-
           setIconBlue: require('../../assets/ico_setting_1.png'),
           setIcon: require('../../assets/ico_setting_2.png'),
-
           ico_pencil: require('../../assets/ico_pencil.png'),
           bg1: require('../../assets/bg.png'),
-
-
         },
         recordShow: {},
         init: '',
