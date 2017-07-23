@@ -402,16 +402,20 @@
           </el-form-item>
           <div v-if="staff.emergencyContact" class="contacts-wrapper">
             <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
-              <el-form-item label="姓名" label-width="3.1em" :prop="'contacts[' + idx + '].emergContact'"
+              <el-form-item label="姓名" label-width="3.1em"
+                            :prop="'contacts[' + idx + '].emergContact'"
                             :rules="{min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : ''}">
-                <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContact"></el-input>
+                <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContact">
+                  <el-button v-if="idx > 0" :disabled="!staff.emergencyContact.isedit"
+                             slot="append"
+                             @click="rmvContact(item)"><i
+                    class="el-icon-delete"></i></el-button>
+                </el-input>
               </el-form-item>
               <el-form-item label="电话" label-width="3.1em" :prop="'contacts[' + idx + '].emergContactPhone'"
                             :rules="{message: '请输入紧急联系人电话', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : '', pattern: /^1\d{10}$/}">
                 <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContactPhone"></el-input>
               </el-form-item>
-              <el-button v-if="idx > 0" class="remove-contact" type="danger" @click="rmvContact(item)"><i
-                class="el-icon-delete"></i></el-button>
             </div>
             <el-button :disabled="!staff.emergencyContact.isedit" v-if="model.contacts.length < 3" class="add-contact"
                        type="primary" @click="addContact">
@@ -432,7 +436,11 @@
             <div class="child" v-for="(item, idx) in model.childs">
               <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'"
                             :rules="{min: 2, max: 32, message: '请输入子女姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : ''}">
-                <el-input :readonly="!staff.hasChilds.isedit" v-model="item.name"></el-input>
+                <el-input :readonly="!staff.hasChilds.isedit" style="width: 100%" v-model="item.name">
+                  <el-button slot="append" v-if="idx > 0" :disabled="!staff.hasChilds.isedit" @click="rmvChild(item)">
+                    <i class="el-icon-delete"></i>
+                  </el-button>
+                </el-input>
               </el-form-item>
               <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'"
                             :rules="{type: 'number', message: '请选择子女性别', trigger: 'change', validator: (rule, value, callback) => {callback()}}">
@@ -466,10 +474,10 @@
                 <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"/>
                 <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
               </el-form-item>
-              <el-button v-if="idx > 0" class="remove-child" type="danger" @click="rmvChild(item)"><i
-                class="el-icon-delete"></i></el-button>
             </div>
-            <el-button class="add-child" type="primary" @click="addChild">添加子女</el-button>
+            <el-button class="add-child" type="primary" :disabled="!staff.hasChilds.isedit" @click="addChild">
+              <span>添加子女</span>
+            </el-button>
           </div>
 
           <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom">
@@ -492,7 +500,7 @@
               <el-option
                 v-for="(v, k) in diplomaTypes"
                 :key="k"
-                :label="v"
+                :label="v.name"
                 :value="k">
               </el-option>
             </el-select>
@@ -2543,7 +2551,7 @@
         this.nations = this.publicParams.nation;
         this.politicsStatuses = this.publicParams.politicsStatus;
         this.maxinumDeucaLevels = this.publicParams.maxinumDeucaLevel;
-        this.diplomaTypes = this.publicParams.diplomaType;
+        this.diplomaTypes = this.publicParams.diplomaTypeOrg;
         this.probations = this.publicParams.probation;
         this.contractTypes = this.publicParams.contractType;
 
@@ -2663,13 +2671,6 @@
     margin-bottom: 22px;
   }
 
-  .my-data .remove-child,
-  .my-data .remove-contact {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-
   .my-data .fa-error {
     color: red;
   }
@@ -2697,6 +2698,7 @@
 
   .my-data .child-img {
     display: block;
+    width: 100%;
     max-height: 180px;
   }
 
