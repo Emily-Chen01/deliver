@@ -427,7 +427,7 @@
       },
       holidayModel: function (val, oldVal) { //备注value 用于上传参数
         console.log(val);
-        this.textareaString = val;
+        this.textareaString = val.trim();
       },
 
 
