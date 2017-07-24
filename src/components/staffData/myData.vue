@@ -646,10 +646,10 @@
           <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同结束日期">
             <span>{{ formalEndTime }}</span>
           </el-form-item>
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同附件">
-            <a v-if="model.record.contract.contractUrl"
-               :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>
-          </el-form-item>
+          <!--<el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同附件">-->
+            <!--<a v-if="model.record.contract.contractUrl"-->
+               <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+          <!--</el-form-item>-->
           <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="候选人来源渠道">
             <span>{{recruitmentChannels[+model.record.contract.recruitmentChannel]}}</span>
           </el-form-item>
@@ -666,15 +666,21 @@
           <el-form-item label="实习合同结束日期" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">
             <span>{{datefmt(model.record.contract.endTime)}}</span>
           </el-form-item>
-          <el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">
-            <a v-if="model.record.contract.contractUrl"
-               :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>
-          </el-form-item>
+          <!--<el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">-->
+            <!--<a v-if="model.record.contract.contractUrl"-->
+               <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+          <!--</el-form-item>-->
           <!-- 返聘 -->
-          <el-form-item label="返聘协议" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
-            <a v-if="model.record.contract.contractUrl"
-               :href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>
+          <el-form-item label="返聘合同生效日期" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
+            <span>{{datefmt(model.record.contract.startTime)}}</span>
           </el-form-item>
+          <el-form-item label="返聘合同结束日期" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
+            <span>{{datefmt(model.record.contract.endTime)}}</span>
+          </el-form-item>
+          <!--<el-form-item label="返聘协议" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">-->
+          <!--<a v-if="model.record.contract.contractUrl"-->
+          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+          <!--</el-form-item>-->
           <!-- 兼职 -->
           <el-form-item label="兼职协议生效日期" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
             <span>{{datefmt(model.record.contract.startTime)}}</span>
