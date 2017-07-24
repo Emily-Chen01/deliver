@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="bg">
-      <div style="padding-top: 1rem;color:#ffffff;padding-left: 1rem;">
+      <div style="padding-top: 1rem;color:#ffffff;padding-left: 1rem; overflow: hidden">
         <div class="siginLeft">
           <div class="avatarBorder">
             <img :src="imgSrc.comAddress" class="avatarTop">
           </div>
         </div>
-        <div class="siginRight" style="position: relative">
+        <div class="siginRight" style="position: relative;">
           <div>
-            <div class="signTitle">{{oneselfData.name}}</div>
+            <div class="signTitle" style="padding-right: 66px;box-sizing: border-box">{{oneselfData.name}}</div>
             <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
             <div
               style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.4rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;"
