@@ -1,12 +1,13 @@
 <template>
   <div style="background: #ffffff">
-    <div style="position: relative;height: 5.4rem;background: #20a1ff">
-      <div class="siginLeft">
+    <div style="position: relative;background: #20a1ff;overflow: hidden">
+      <div class="siginLeft" style="overflow: hidden">
         <!--<img :src="imgSrc.comAddress" class="avatar">-->
         <div class="avatarBorder">
           <img :src="imgSrc.header" class="avatarTop">
         </div>
         <div class="nameClass"><span>{{objNr.fetchPostion}}</span> <span>{{objNr.fetchName}}</span></div>
+        <div style="clear: both"></div>
       </div>
       <div class="siginRight">
         <div>
@@ -17,9 +18,9 @@
         </div>
       </div>
     </div>
-    <div style="height: 85vh; padding-left: 1rem;">
+    <div style="height: 84.5vh; padding-left: 1rem;padding-top: 2rem; position: relative">
       <div style="clear:both;"></div>
-      <div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>
+      <!--<div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>-->
       <div v-show="zcToUpShow" style="min-height: 6rem;">
         <div>
           <div class="toWorkLeft">
@@ -92,7 +93,7 @@
       <!--测试竖线-->
 
       <div v-show="showOwStstusX"
-           style="position: absolute;background: rgb(152,171,191);height: 5.82rem;width: 0.1rem;top:9.2rem;left:2rem"></div>
+           style="position: absolute;background: rgb(152,171,191);height: 5.84rem;width: 0.1rem;top:3.63rem;left:2rem"></div>
       <!--测试竖线-->
 
 
@@ -1268,7 +1269,7 @@
     /*display: inline-block;*/
     width: 21rem;
     float: left;
-    height: 4.2rem;
+    /*height: 4.2rem;*/
     margin: 1.5% 0 0 1.5%;
     position: relative;
   }
@@ -1295,17 +1296,23 @@
     height: 4rem;
     border-radius: 2rem;
     text-align: right;
+    margin-bottom: 0.5rem;
+    float: left;
   }
 
   .nameClass {
-    width: 15rem;
-    height: 2rem;
+    width: 16.5rem;
+    /*height: 2rem;*/
     /*background: pink;*/
-    position: absolute;
-    font-size: 1.2rem;
+    /*position: absolute;*/
+    margin-top: 1.5rem;
+    font-size: 16px;
     color: #ffffff;
-    top: 1rem;
-    left: 4.5rem;
+    float: right;
+    box-sizing: border-box;
+    padding-right: 5rem;
+    /*top: 1rem;*/
+    /*left: 4.5rem;*/
     text-align: left;
   }
 
@@ -1341,6 +1348,9 @@
   }
 
   .toWorkLeft div {
+    width: 1.4rem;
+    height: 1.4rem;
+    box-sizing: border-box;
     border-radius: 50%;
     border: 1px solid #cccccc;
     background: rgb(239, 243, 247);
@@ -1363,7 +1373,7 @@
     /*line-height: 9rem;*/
     /*text-align: center;*/
     position: absolute;
-    top: 23.5rem;
+    top: 20.5rem;
     left: 50%;
     margin-left: -8rem;
   }
