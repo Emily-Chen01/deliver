@@ -14,21 +14,25 @@
 
         <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth" ref="personFm">
 
-          <el-form-item v-if="staff.name" label="姓名" prop="name">
+          <el-form-item v-if="staff.name" label="姓名" prop="name"
+                        :rules="{required: staff.name.isrequired, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
             <el-input :readonly="!staff.name.isedit" v-model="model.name"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.mobile" label="手机号" prop="mobile">
+          <el-form-item v-if="staff.mobile" label="手机号" prop="mobile"
+                        :rules="{required: staff.mobile.isrequired, message: '请输入正确的手机号', trigger: 'change', pattern: /^1\d{10}$/}">
             <el-input :readonly="!staff.mobile.isedit" v-model="model.mobile"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.gender" label="性别" prop="gender">
+          <el-form-item v-if="staff.gender" label="性别" prop="gender"
+                        :rules="{required: staff.gender.isrequired,type: 'number', message: '请选择性别', trigger: 'change'}">
             <el-radio-group :disabled="!staff.gender.isedit" v-model="model.gender">
               <el-radio v-for="item in genders" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth">
+          <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth"
+                        :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change'}">
             <el-date-picker
               :readonly="!staff.dateOfBirth.isedit"
               v-model="model.dateOfBirth"
@@ -38,19 +42,21 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item v-if="staff.idcard" label="身份证号" prop="idcard">
+          <el-form-item v-if="staff.idcard" label="身份证号" prop="idcard"
+                        :rules="{required: staff.idcard.isrequired, message: '请填写正确的身份证号', trigger: 'change',pattern: /^\d{17}(?:\d|[Xx])$/}">
             <el-input :readonly="!staff.idcard.isedit" v-model="model.idcard"></el-input>
           </el-form-item>
 
           <el-form-item v-if="staff.podoMessage" label="户口省份" prop="podoProvince"
-                        :required="staff.podoMessage.isrequired">
+                        :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在省份', trigger: 'change'}">
             <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.podoProvince" placeholder="请选择"
                        @change="queryPodoCities">
               <el-option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.podoMessage" label="户口城市" prop="podoCity" :required="staff.podoMessage.isrequired">
+          <el-form-item v-if="staff.podoMessage" label="户口城市" prop="podoCity"
+                        :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在城市', trigger: 'change'}">
             <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.podoCity" placeholder="请选择">
               <el-option
                 v-for="c in podoCities"
@@ -62,12 +68,12 @@
           </el-form-item>
 
           <el-form-item v-if="staff.podoMessage" label="户口地址" prop="podoAddress"
-                        :required="staff.podoMessage.isrequired">
+                        :rules="{required: staff.podoMessage.isrequired, message: '请输入正确的户口详细地址(最多 256 个字符)', trigger: 'change', max: 256}">
             <el-input :readonly="!staff.podoMessage.isedit" v-model="model.podoAddress"></el-input>
           </el-form-item>
 
           <el-form-item v-if="staff.podoMessage" label="户口性质" prop="typeOfDemicile"
-                        :required="staff.podoMessage.isrequired">
+                        :rules="{required: staff.podoMessage.isrequired, message: '请选择户口性质', trigger: 'change'}">
             <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.typeOfDemicile" placeholder="请选择">
               <el-option
                 v-for="(v, k) in typeOfDemiciles"
@@ -79,7 +85,8 @@
           </el-form-item>
 
 
-          <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace">
+          <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace"
+                        :rules="{required: staff.nativePlace.isrequired, message: '请选择国籍', trigger: 'change'}">
             <el-select :disabled="!staff.nativePlace.isedit" clearable v-model="model.nativePlace" placeholder="请选择">
               <el-option
                 v-for="(v, k) in nativePlaces"
@@ -90,8 +97,10 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="model.nativePlace === '2'" label="护照编号" prop="passportNum">
-            <el-input :readonly="!staff.nativePlace.isedit" v-model="model.passportNum"></el-input>
+          <el-form-item v-if="model.nativePlace === '2'" label="护照编号" prop="passportNum"
+                        :rules="{required: staff.nativePlace.isrequired,  message: '请填写护照号', trigger: 'change'}">
+            <el-input :readonly=" !staff.nativePlace.isedit
+          " v-model="model.passportNum"></el-input>
           </el-form-item>
 
           <el-form-item v-if="model.nativePlace === '2'" label="护照照片">
@@ -108,7 +117,7 @@
             <div v-if="model.passportUrl" class="upload-img-wrapper">
               <img :src="model.passportUrl"/>
             </div>
-            <p class="uploadErrorTip" v-show="passportUrlErrFlag">请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+            <p class="uploadErrorTip" v-show="passportUrlErrFlag">请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
           <el-form-item v-if="staff.idcardPhoUrl" label="身份证正面">
@@ -126,7 +135,7 @@
               <i class="fa fa-times" @click.stop="model.idcardPhoUrl = ''" aria-hidden="true"></i>
               <img :src="model.idcardPhoUrl"/>
             </div>
-            <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+            <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
           <el-form-item v-if="staff.idcardPhoUrl" label="身份证背面">
@@ -144,18 +153,21 @@
               <i class="fa fa-times" @click.stop="model.idcardPhoUrlRev = ''" aria-hidden="true"></i>
               <img :src="model.idcardPhoUrlRev"/>
             </div>
-            <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+            <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
-          <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum">
+          <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
+                        :rules="{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号（最多10个数字）', trigger: 'change', pattern: /^\w{1,10}$/}">
             <el-input :readonly="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum">
+          <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum"
+                        :rules="{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号（最多12个数字）', trigger: 'change'}">
             <el-input :readonly="!staff.accfuNum.isedit" v-model="model.accfuNum"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.bankName" label="银行名称" prop="bankName">
+          <el-form-item v-if="staff.bankName" label="银行名称" prop="bankName"
+                        :rules="{required: staff.bankName.isrequired, message: '请选择银行', trigger: 'change'}">
             <el-select :disabled="!staff.bankName.isedit" clearable v-model="model.bankName" placeholder="请选择">
               <el-option
                 v-for="(v, k) in bankNames"
@@ -166,11 +178,13 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.bankName" label="开户行" prop="openingBank">
+          <el-form-item v-if="staff.bankName" label="开户行" prop="openingBank"
+                        :rules="{required: staff.bankName.isrequired, message: '请填写正确的开户行名称(最多 64 个字符)', trigger: 'change', max: 64}">
             <el-input :readonly="!staff.bankName.isedit" v-model="model.openingBank"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber">
+          <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber"
+                        :rules="{required: staff.bankName.isrequired,min:16,max:64, message: '请填写正确的银行卡号', trigger: 'change'}">
             <el-input :readonly="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
           </el-form-item>
 
@@ -189,23 +203,27 @@
               <i class="fa fa-times" @click.stop="model.staffPhoUrl = ''" aria-hidden="true"></i>
               <img :src="model.staffPhoUrl"/>
             </div>
-            <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+            <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
-          <el-form-item v-if="staff.englishName" label="英文名" prop="englishName">
+          <el-form-item v-if="staff.englishName" label="英文名" prop="englishName"
+                        :rules="{required: staff.englishName.isrequired,  message: '请填写正确的英文名(最多 32 个字符)', trigger: 'change', pattern: /^[a-zA-Z]{1,32}$/}">
             <el-input :readonly="!staff.englishName.isedit" v-model="model.englishName"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.qq" label="QQ" prop="qq">
+          <el-form-item v-if="staff.qq" label="QQ" prop="qq"
+                        :rules="{required: staff.qq.isrequired,message: '请填写正确的 QQ 号(最多 24 个字符)', trigger: 'change', pattern: /^\d{1,24}$/}">
             <el-input :readonly="!staff.qq.isedit" v-model="model.qq"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.wechart" label="微信" prop="wechart">
+          <el-form-item v-if="staff.wechart" label="微信" prop="wechart"
+                        :rules="{required: staff.wechart.isrequired,message: '请填写正确的微信号(最少 6 个字符，最多 20 个字符)', trigger: 'blur', pattern: /^[a-zA-Z0-9-_]{6,20}$/}">
             <el-input :readonly="!staff.wechart.isedit" v-model="model.wechart"></el-input>
           </el-form-item>
 
 
-          <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus">
+          <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus"
+                        :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'change'}">
             <el-select :disabled="!staff.maritalStatus.isedit" clearable v-model="model.maritalStatus"
                        placeholder="请选择">
               <el-option
@@ -217,7 +235,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.nation" label="民族" prop="nation">
+          <el-form-item v-if="staff.nation" label="民族" prop="nation"
+                        :rules="{required: staff.nation.isrequired,message: '请选择民族', trigger: 'change'}">
             <el-select :disabled="!staff.nation.isedit" clearable v-model="model.nation" placeholder="请选择">
               <el-option
                 v-for="(v, k) in nations"
@@ -228,7 +247,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.politicsStatus" label="政治面貌" prop="politicsStatus">
+          <el-form-item v-if="staff.politicsStatus" label="政治面貌" prop="politicsStatus"
+                        :rules="{required: staff.politicsStatus.isrequired,message: '请选择政治面貌', trigger: 'change'}">
             <el-select :disabled="!staff.politicsStatus.isedit" clearable v-model="model.politicsStatus"
                        placeholder="请选择">
               <el-option
@@ -240,7 +260,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间" prop="thePartyTime">
+          <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间" prop="thePartyTime"
+                        :rules="{required: staff.politicsStatus.isrequired,message: '请选择入党时间', trigger: 'change'}">
             <el-date-picker
               :readonly="!staff.politicsStatus.isedit"
               v-model="model.thePartyTime"
@@ -250,7 +271,8 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item v-if="staff.theArcIns" label="存档机构" prop="theArcIns">
+          <el-form-item v-if="staff.theArcIns" label="存档机构" prop="theArcIns"
+                        :rules="{required: staff.theArcIns.isrequired,message: '请输入正确的存档机构(最多 128 个字符)', trigger: 'change',max: 128}">
             <el-input :readonly="!staff.theArcIns.isedit" v-model="model.theArcIns"></el-input>
           </el-form-item>
 
@@ -270,7 +292,7 @@
               <i class="fa fa-times" @click.stop="model.houregPhoUrl = ''" aria-hidden="true"></i>
               <img :src="model.houregPhoUrl"/>
             </div>
-            <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+            <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
           <el-form-item v-if="staff.houregPhoUrl" label="本人户口页">
@@ -290,7 +312,7 @@
               <img :src="model.houregPerphoUrl"/>
             </div>
             <p class="uploadErrorTip" v-show="houregPerphoUrlErrFlag">
-              请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+              请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
           <el-form-item v-if="staff.houregPhoUrl" label="本人户口页背面">
@@ -310,7 +332,7 @@
               <img :src="model.houregPerrevphoUrl"/>
             </div>
             <p class="uploadErrorTip" v-show="houregPerrevphoUrlErrFlag">
-              请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+              请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
           <el-form-item v-if="staff.ResperMessage" label="居住证">
@@ -322,7 +344,8 @@
             </el-switch>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证省份" prop="residenceProvince">
+          <el-form-item v-if="model.hasResper" label="居住证省份" prop="residenceProvince"
+                        :rules="{required: staff.hasResper.isrequired,message: '请选择居住证所在省份', trigger: 'change'}">
             <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceProvince"
                        placeholder="请选择" @change="queryResidenceCities">
               <el-option
@@ -334,7 +357,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证城市" prop="residenceCity">
+          <el-form-item v-if="model.hasResper" label="居住证城市" prop="residenceCity"
+                        :rules="{required: staff.hasResper.isrequired,message: '请选择居住证所在城市', trigger: 'change'}">
             <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceCity"
                        placeholder="请选择">
               <el-option
@@ -346,7 +370,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证办理时间" prop="resperst">
+          <el-form-item v-if="model.hasResper" label="居住证办理时间" prop="resperst"
+                        :rules="{required: staff.hasResper.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change'}">
             <el-date-picker
               :readonly="!staff.ResperMessage.isedit"
               v-model="model.resperst"
@@ -356,7 +381,8 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证截止日期" prop="resperet">
+          <el-form-item v-if="model.hasResper" label="居住证截止日期" prop="resperet"
+                        :rules="{required: staff.hasResper.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change'}">
             <el-date-picker
               :readonly="!staff.ResperMessage.isedit"
               v-model="model.resperet"
@@ -366,7 +392,8 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item v-if="staff.poreLocation" label="现居住地省份" prop="poreProvince">
+          <el-form-item v-if="staff.poreLocation" label="现居住地省份" prop="poreProvince"
+                        :rules="{required: staff.poreLocation.isrequired, message: '请选择现居住地所在省份', trigger: 'change'}">
             <el-select :disabled="!staff.poreLocation.isedit" clearable v-model="model.poreProvince" placeholder="请选择"
                        @change="queryPoreCities">
               <el-option
@@ -378,7 +405,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.poreLocation" label="现居住地城市" prop="poreCity">
+          <el-form-item v-if="staff.poreLocation" label="现居住地城市" prop="poreCity"
+                        :rules="{required: staff.poreLocation.isrequired,message: '请选择现居住地所在城市', trigger: 'change'}">
             <el-select :disabled="!staff.poreLocation.isedit" clearable v-model="model.poreCity" placeholder="请选择">
               <el-option
                 v-for="c in poreCities"
@@ -389,11 +417,13 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.poreLocation" label="现居住地址" prop="poreAddress">
+          <el-form-item v-if="staff.poreLocation" label="现居住地址" prop="poreAddress"
+                        :rules="{required: staff.poreLocation.isrequired,message: '请输入正确的现居住地详细地址(最多 256 个字符)', trigger: 'change', max: 256}">
             <el-input :readonly="!staff.poreLocation.isedit" v-model="model.poreAddress"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.personalEmail" label="个人邮箱" prop="personalEmail">
+          <el-form-item v-if="staff.personalEmail" label="个人邮箱" prop="personalEmail"
+                        :rules="{required: staff.personalEmail.isrequired,type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', max: 30}">
             <el-input :readonly="!staff.personalEmail.isedit" v-model="model.personalEmail"></el-input>
           </el-form-item>
 
@@ -404,7 +434,7 @@
             <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
               <el-form-item label="姓名" label-width="3.1em"
                             :prop="'contacts[' + idx + '].emergContact'"
-                            :rules="{min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : ''}">
+                            :rules="{min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
                 <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContact">
                   <el-button v-if="idx > 0" :disabled="!staff.emergencyContact.isedit"
                              slot="append"
@@ -413,7 +443,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="电话" label-width="3.1em" :prop="'contacts[' + idx + '].emergContactPhone'"
-                            :rules="{message: '请输入紧急联系人电话', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : '', pattern: /^1\d{10}$/}">
+                            :rules="{message: '请输入紧急联系人电话', trigger: 'change', pattern: /^1\d{10}$/}">
                 <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContactPhone"></el-input>
               </el-form-item>
             </div>
@@ -435,7 +465,7 @@
           <div v-if="staff.hasChilds && model.hasChild">
             <div class="child" v-for="(item, idx) in model.childs">
               <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'"
-                            :rules="{min: 2, max: 32, message: '请输入子女姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform: value => typeof value === 'string' ? value.trim() : ''}">
+                            :rules="{required: staff.hasChilds.isrequired,min: 2, max: 32, message: '请输入子女姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
                 <el-input :readonly="!staff.hasChilds.isedit" style="width: 100%" v-model="item.name">
                   <el-button slot="append" v-if="idx > 0" :disabled="!staff.hasChilds.isedit" @click="rmvChild(item)">
                     <i class="el-icon-delete"></i>
@@ -443,14 +473,14 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'"
-                            :rules="{type: 'number', message: '请选择子女性别', trigger: 'change', validator: (rule, value, callback) => {callback()}}">
+                            :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'change'}">
                 <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
                   <el-radio :label="1">男</el-radio>
                   <el-radio :label="0">女</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'"
-                            :rules="{type: 'date', message: '请选择子女出生日期', trigger: 'change', validator: (rule, value, callback) => {callback()}}">
+                            :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择子女出生日期', trigger: 'change'}">
                 <el-date-picker
                   :readonly="!staff.hasChilds.isedit"
                   v-model="item.dateOfBirth"
@@ -472,7 +502,7 @@
                   <span>如子女不满1周岁需要提供出生证明</span>
                 </el-upload>
                 <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"/>
-                <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+                <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
               </el-form-item>
             </div>
             <el-button class="add-child" type="primary" :disabled="!staff.hasChilds.isedit" @click="addChild">
@@ -480,11 +510,13 @@
             </el-button>
           </div>
 
-          <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom">
+          <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom"
+                        :rules="{required: staff.finallyEmpCom.isrequired,message: '请输入正确的上一家受聘公司(最多 256 个字符)', trigger: 'change', max: 256}">
             <el-input :readonly="!staff.finallyEmpCom.isedit" v-model="model.finallyEmpCom"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="最高学历" prop="maxinumDeucaLevel">
+          <el-form-item v-if="staff.eduInfor" label="最高学历" prop="maxinumDeucaLevel"
+                        :rules="{required: staff.eduInfor.isrequired, message: '请选择最高学历', trigger: 'change'}">
             <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.maxinumDeucaLevel" placeholder="请选择">
               <el-option
                 v-for="(v, k) in maxinumDeucaLevels"
@@ -495,7 +527,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="学历类型" prop="diplomaType">
+          <el-form-item v-if="staff.eduInfor" label="学历类型" prop="diplomaType"
+                        :rules="{required: staff.eduInfor.isrequired, message: '请选择学历类型', trigger: 'change'}">
             <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.diplomaType" placeholder="请选择">
               <el-option
                 v-for="(v, k) in diplomaTypes"
@@ -506,11 +539,13 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="毕业院校" prop="graduateInst">
+          <el-form-item v-if="staff.eduInfor" label="毕业院校" prop="graduateInst"
+                        :rules="{required: staff.eduInfor.isrequired, message: '请输入正确的毕业院校(最多 64 个字符)', trigger: 'change', max: 64}">
             <el-input :readonly="!staff.eduInfor.isedit" v-model="model.graduateInst"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="入学日期" prop="entSchst">
+          <el-form-item v-if="staff.eduInfor" label="入学日期" prop="entSchst"
+                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change'}">
             <el-date-picker
               :readonly="!staff.eduInfor.isedit"
               v-model="model.entSchst"
@@ -520,7 +555,8 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="毕业日期" prop="entSchet">
+          <el-form-item v-if="staff.eduInfor" label="毕业日期" prop="entSchet"
+                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change'}">
             <el-date-picker
               :readonly="!staff.eduInfor.isedit"
               v-model="model.entSchet"
@@ -531,7 +567,8 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="专业" prop="major">
+          <el-form-item v-if="staff.eduInfor" label="专业" prop="major"
+                        :rules="{required: staff.eduInfor.isrequired,message: '请输入正确的专业名称(最多 32 个字符)', trigger: 'change',max: 32}">
             <el-input :readonly="!staff.eduInfor.isedit" v-model="model.major"></el-input>
           </el-form-item>
 
@@ -570,10 +607,11 @@
               <i class="fa fa-times" @click.stop="model.greducaCertUrl = ''" aria-hidden="true"></i>
               <img :src="model.greducaCertUrl"/>
             </div>
-            <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+            <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
-          <el-form-item v-if="staff.technicalTitle" label="职称" prop="technicalTitle">
+          <el-form-item v-if="staff.technicalTitle" label="职称" prop="technicalTitle"
+                        :rules="{required: staff.technicalTitle.isrequired, message: '请输入正确的职称(最多 32 个字符)', trigger: 'change', max: 32}">
             <el-input :readonly="!staff.technicalTitle.isedit" v-model="model.technicalTitle"></el-input>
           </el-form-item>
 
@@ -603,7 +641,8 @@
                 off-text="无">
               </el-switch>
             </el-form-item>
-            <el-form-item v-if="model.hasComres" prop="hasComresRmk">
+            <el-form-item v-if="model.hasComres" prop="hasComresRmk"
+                          :rules="{required: staff.hasComres.isrequired,message: '请输入备注信息(最多 32 个字符)', trigger: 'change',max: 32}">
               <el-input :readonly="!staff.hasComres.isedit" v-model="model.hasComresRmk" placeholder="备注信息"></el-input>
             </el-form-item>
           </el-form-item>
@@ -619,10 +658,14 @@
               :before-upload="beforeEmplsepacertUrl">
               <i class="el-icon-plus"> 上传离职证明</i>
             </el-upload>
-            <p v-if="model.emplsepacertUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"
-                                                                           @click.stop="model.emplsepacertUrl = ''"></i>
-            </p>
-            <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">请上传正确的离职证明(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+            <!--<p v-if="model.emplsepacertUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"-->
+            <!--@click.stop="model.emplsepacertUrl = ''"></i>-->
+            <!--</p>-->
+            <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
+              <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''" aria-hidden="true"></i>
+              <img :src="model.emplsepacertUrl"/>
+            </div>
+            <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">请上传正确的离职证明照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
         </el-form>
         <div class="save-wrapper">
@@ -647,8 +690,8 @@
             <span>{{ formalEndTime }}</span>
           </el-form-item>
           <!--<el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同附件">-->
-            <!--<a v-if="model.record.contract.contractUrl"-->
-               <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+          <!--<a v-if="model.record.contract.contractUrl"-->
+          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
           <!--</el-form-item>-->
           <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="候选人来源渠道">
             <span>{{recruitmentChannels[+model.record.contract.recruitmentChannel]}}</span>
@@ -667,8 +710,8 @@
             <span>{{datefmt(model.record.contract.endTime)}}</span>
           </el-form-item>
           <!--<el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">-->
-            <!--<a v-if="model.record.contract.contractUrl"-->
-               <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+          <!--<a v-if="model.record.contract.contractUrl"-->
+          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
           <!--</el-form-item>-->
           <!-- 返聘 -->
           <el-form-item label="返聘合同生效日期" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
@@ -786,6 +829,14 @@
     // console.log(rule, value, source, options);
     // return true;
     callback();
+  };
+  let cardNumber1 = (rule, value, callback) => {
+    let val = value.trim().replace(/\s/g, '');
+    if (!val.length || /^\d{16,64}$/.test(val)) {
+      callback();
+    } else {
+      callback(new Error(rule.message));
+    }
   };
 
   V.use(ElementUI);
@@ -1028,220 +1079,213 @@
           }
         },
         rules: {
-          name: [
-            {
-              required: true, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform
-            }
-          ],
-          gender: [
-            {
-              type: 'number', required: true, message: '请选择性别', trigger: 'change'
-            }
-          ],
-          mobile: [
-            {
-              required: true, message: '请输入正确的手机号', trigger: 'change', transform, pattern: /^1\d{10}$/
-            }
-          ],
-          nativePlace: [
-            {
-              message: '请选择国籍', trigger: 'change', validator: noopValidator
-            }
-          ],
-          passportNum: [
-            {
-              message: '请填写护照号', trigger: 'change', transform
-            }
-          ],
-          idcard: [
-            {
-              required: true, message: '请填写正确的身份证号', trigger: 'change',
-              transform, pattern: /^\d{17}(?:\d|[Xx])$/
-            }
-          ],
-          socsecNum: [
-            {
-              message: '请填写正确的社保编号（最多10个数字）', trigger: 'change',
-              transform, pattern: /^\w{1,10}$/
-            }
-          ],
-          accfuNum: [
-            {
-              message: '请填写正确的公积金编号（最多12个数字）', trigger: 'change', transform, pattern: /^\d{1,12}$/
-            }
-          ],
-          bankName: [
-            {
-              message: '请选择银行', trigger: 'change', validator: noopValidator
-            }
-          ],
-          openingBank: [
-            {
-              message: '请填写正确的开户行名称(最多 64 个字符)', trigger: 'change', transform, max: 64
-            }
-          ],
-          cardNumber: [
-            {
-              message: '请填写正确的银行卡号', trigger: 'change', validator: (rule, value, callback) => {
-              let val = value.trim().replace(/\s/g, '');
-              if (!val.length || /^\d{16,64}$/.test(val)) {
-                callback();
-              } else {
-                callback(new Error(rule.message));
-              }
-            }
-            }
-          ],
-          englishName: [
-            {
-              message: '请填写正确的英文名(最多 32 个字符)', trigger: 'change', transform, pattern: /^[a-zA-Z]{1,32}$/
-            }
-          ],
-          qq: [
-            {
-              message: '请填写正确的 QQ 号(最多 24 个字符)', trigger: 'change', transform, pattern: /^\d{1,24}$/
-            }
-          ],
-          wechart: [
-            {
-              message: '请填写正确的微信号(最少 6 个字符，最多 20 个字符)', trigger: 'blur', transform, pattern: /^[a-zA-Z0-9-_]{6,20}$/
-            }
-          ],
-          maritalStatus: [
-            {
-              message: '请选择婚姻状况', trigger: 'change', validator: noopValidator
-            }
-          ],
-          nation: [
-            {
-              message: '请选择民族', trigger: 'change', validator: noopValidator
-            }
-          ],
-          politicsStatus: [
-            {
-              message: '请选择政治面貌', trigger: 'change', validator: noopValidator
-            }
-          ],
-          thePartyTime: [
-            {
-              message: '请选择入党时间', trigger: 'change', validator: noopValidator
-            }
-          ],
-          theArcIns: [
-            {
-              message: '请输入正确的存档机构(最多 128 个字符)', trigger: 'change', transform, max: 128
-            }
-          ],
-          dateOfBirth: [
-            {
-              required: true, type: 'date', message: '请选择出生日期', trigger: 'change'
-            }
-          ],
-          podoProvince: [
-            {
-              message: '请选择户口所在省份', trigger: 'change'
-            }
-          ],
-          podoCity: [
-            {
-              message: '请选择户口所在城市', trigger: 'change'
-            }
-          ],
-          podoAddress: [
-            {
-              message: '请输入正确的户口详细地址(最多 256 个字符)', trigger: 'change', transform, max: 256
-            }
-          ],
-          typeOfDemicile: [
-            {
-              message: '请选择户口性质', trigger: 'change'
-            }
-          ],
-          residenceProvince: [
-            {
-              message: '请选择居住证所在省份', trigger: 'change', validator: noopValidator
-            }
-          ],
-          residenceCity: [
-            {
-              message: '请选择居住证所在城市', trigger: 'change', validator: noopValidator
-            }
-          ],
-          resperst: [
-            {
-              type: 'date', message: '请选择居住证办理时间', trigger: 'change', validator: noopValidator
-            }
-          ],
-          resperet: [
-            {
-              type: 'date', message: '请选择居住证截止日期', trigger: 'change', validator: noopValidator
-            }
-          ],
-          poreProvince: [
-            {
-              message: '请选择现居住地所在省份', trigger: 'change', validator: noopValidator
-            }
-          ],
-          poreCity: [
-            {
-              message: '请选择现居住地所在城市', trigger: 'change', validator: noopValidator
-            }
-          ],
-          poreAddress: [
-            {
-              message: '请输入正确的现居住地详细地址(最多 256 个字符)', trigger: 'change', transform, max: 256
-            }
-          ],
-          personalEmail: [
-            {
-              type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', transform, max: 30
-            }
-          ],
-          finallyEmpCom: [
-            {
-              message: '请输入正确的上一家受聘公司(最多 256 个字符)', trigger: 'change', transform, max: 256
-            }
-          ],
-          maxinumDeucaLevel: [
-            {
-              message: '请选择最高学历', trigger: 'change', validator: noopValidator
-            }
-          ],
-          diplomaType: [
-            {
-              message: '请选择学历类型', trigger: 'change', validator: noopValidator
-            }
-          ],
-          graduateInst: [
-            {
-              message: '请输入正确的毕业院校(最多 64 个字符)', trigger: 'change', transform, max: 64
-            }
-          ],
-          entSchst: [
-            {
-              type: 'date', message: '请选择入学日期', trigger: 'change', validator: noopValidator
-            }
-          ],
-          entSchet: [
-            {
-              type: 'date', message: '请选择毕业日期', trigger: 'change', validator: noopValidator
-            }
-          ],
-          major: [
-            {
-              message: '请输入正确的专业名称(最多 32 个字符)', trigger: 'change', transform, max: 32
-            }
-          ],
-          technicalTitle: [
-            {
-              message: '请输入正确的职称(最多 32 个字符)', trigger: 'change', transform, max: 32
-            }
-          ],
-          hasComresRmk: [
-            {
-              message: '请输入备注信息(最多 32 个字符)', trigger: 'change', transform, max: 32
-            }
-          ],
+//          name: [
+//            {
+//              required: true, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform
+//            }
+//          ],
+//          gender: [
+//            {
+//              type: 'number', required: true, message: '请选择性别', trigger: 'change'
+//            }
+//          ],
+//          mobile: [
+//            {
+//              required: true, message: '请输入正确的手机号', trigger: 'change', transform, pattern: /^1\d{10}$/
+//            }
+//          ],
+//          nativePlace: [
+//            {
+//              message: '请选择国籍', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          passportNum: [
+//            {
+//              message: '请填写护照号', trigger: 'change', transform
+//            }
+//          ],
+//          idcard: [
+//            {
+//              required: true, message: '请填写正确的身份证号', trigger: 'change',
+//              transform, pattern: /^\d{17}(?:\d|[Xx])$/
+//            }
+//          ],
+//          socsecNum: [
+//            {
+//              message: '请填写正确的社保编号（最多10个数字）', trigger: 'change',
+//              transform, pattern: /^\w{1,10}$/
+//            }
+//          ],
+//          accfuNum: [
+//            {
+//              message: '请填写正确的公积金编号（最多12个数字）', trigger: 'change', transform, pattern: /^\d{1,12}$/
+//            }
+//          ],
+//          bankName: [
+//            {
+//              message: '请选择银行', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          openingBank: [
+//            {
+//              message: '请填写正确的开户行名称(最多 64 个字符)', trigger: 'change', transform, max: 64
+//            }
+//          ],
+//          cardNumber: [
+//            {
+//              message: '请填写正确的银行卡号', trigger: 'change', validator: cardNumber1
+//            }
+//          ],
+//          englishName: [
+//            {
+//              message: '请填写正确的英文名(最多 32 个字符)', trigger: 'change', transform, pattern: /^[a-zA-Z]{1,32}$/
+//            }
+//          ],
+//          qq: [
+//            {
+//              message: '请填写正确的 QQ 号(最多 24 个字符)', trigger: 'change', transform, pattern: /^\d{1,24}$/
+//            }
+//          ],
+//          wechart: [
+//            {
+//              message: '请填写正确的微信号(最少 6 个字符，最多 20 个字符)', trigger: 'blur', transform, pattern: /^[a-zA-Z0-9-_]{6,20}$/
+//            }
+//          ],
+//          maritalStatus: [
+//            {
+//              message: '请选择婚姻状况', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          nation: [
+//            {
+//              message: '请选择民族', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          politicsStatus: [
+//            {
+//              message: '请选择政治面貌', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          thePartyTime: [
+//            {
+//              message: '请选择入党时间', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          theArcIns: [
+//            {
+//              message: '请输入正确的存档机构(最多 128 个字符)', trigger: 'change', transform, max: 128
+//            }
+//          ],
+//          dateOfBirth: [
+//            {
+//              required: true, type: 'date', message: '请选择出生日期', trigger: 'change'
+//            }
+//          ],
+//          podoProvince: [
+//            {
+//              message: '请选择户口所在省份', trigger: 'change'
+//            }
+//          ],
+//          podoCity: [
+//            {
+//              message: '请选择户口所在城市', trigger: 'change'
+//            }
+//          ],
+//          podoAddress: [
+//            {
+//              message: '请输入正确的户口详细地址(最多 256 个字符)', trigger: 'change', transform, max: 256
+//            }
+//          ],
+//          typeOfDemicile: [
+//            {
+//              message: '请选择户口性质', trigger: 'change'
+//            }
+//          ],
+//          residenceProvince: [
+//            {
+//              message: '请选择居住证所在省份', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          residenceCity: [
+//            {
+//              message: '请选择居住证所在城市', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          resperst: [
+//            {
+//              type: 'date', message: '请选择居住证办理时间', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          resperet: [
+//            {
+//              type: 'date', message: '请选择居住证截止日期', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          poreProvince: [
+//            {
+//              message: '请选择现居住地所在省份', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          poreCity: [
+//            {
+//              message: '请选择现居住地所在城市', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          poreAddress: [
+//            {
+//              message: '请输入正确的现居住地详细地址(最多 256 个字符)', trigger: 'change', transform, max: 256
+//            }
+//          ],
+//          personalEmail: [
+//            {
+//              type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', transform, max: 30
+//            }
+//          ],
+//          finallyEmpCom: [
+//            {
+//              message: '请输入正确的上一家受聘公司(最多 256 个字符)', trigger: 'change', transform, max: 256
+//            }
+//          ],
+//          maxinumDeucaLevel: [
+//            {
+//              message: '请选择最高学历', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          diplomaType: [
+//            {
+//              message: '请选择学历类型', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          graduateInst: [
+//            {
+//              message: '请输入正确的毕业院校(最多 64 个字符)', trigger: 'change', transform, max: 64
+//            }
+//          ],
+//          entSchst: [
+//            {
+//              type: 'date', message: '请选择入学日期', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          entSchet: [
+//            {
+//              type: 'date', message: '请选择毕业日期', trigger: 'change', validator: noopValidator
+//            }
+//          ],
+//          major: [
+//            {
+//              message: '请输入正确的专业名称(最多 32 个字符)', trigger: 'change', transform, max: 32
+//            }
+//          ],
+//          technicalTitle: [
+//            {
+//              message: '请输入正确的职称(最多 32 个字符)', trigger: 'change', transform, max: 32
+//            }
+//          ],
+//          hasComresRmk: [
+//            {
+//              message: '请输入备注信息(最多 32 个字符)', trigger: 'change', transform, max: 32
+//            }
+//          ],
           'record.contract.contracType': [
             {
               required: true, message: '请选择合同类型', trigger: 'change'
@@ -1552,7 +1596,7 @@
       makeChildCheck(item) {
         return function (file) {
           let isImage = utils.isImage(file);
-          let isInSize = utils.isInSize(file);
+          let isInSize = utils.isInSize(file, 5);
 
           if (isImage && isInSize) {
             item.err = false;
@@ -1570,7 +1614,7 @@
       },
       beforePassportUrl(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.passportUrlErrFlag = false;
         } else {
@@ -1587,7 +1631,7 @@
       beforeIdcardPhoUrl(file) {
         console.log('file', file);
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.idcardPhoUrlErrFlag = false;
         } else {
@@ -1602,7 +1646,7 @@
       },
       beforeIdcardPhoUrlRev(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.idcardPhoUrlRevErrFlag = false;
         } else {
@@ -1617,7 +1661,7 @@
       },
       beforeStaffPhoUrl(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.staffPhoUrlErrFlag = false;
         } else {
@@ -1632,7 +1676,7 @@
       },
       beforeHouregPhoUrl(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.houregPhoUrlErrFlag = false;
         } else {
@@ -1647,7 +1691,7 @@
       },
       beforeHouregPerphoUrl(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.houregPerphoUrlErrFlag = false;
         } else {
@@ -1662,7 +1706,7 @@
       },
       beforeHouregPerrevphoUrl(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.houregPerrevphoUrlErrFlag = false;
         } else {
@@ -1706,7 +1750,7 @@
       },
       beforeDiplomaUrl(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.diplomaUrlErrFlag = false;
         } else {
@@ -1721,7 +1765,7 @@
       },
       beforeGreducaCertUrl(file) {
         let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
           this.greducaCertUrlErrFlag = false;
         } else {
@@ -1750,14 +1794,14 @@
         }
       },
       beforeEmplsepacertUrl(file) {
-        let isDoc = utils.isDoc(file);
-        let isInSize = utils.isInSize(file);
-        if (isDoc && isInSize) {
+        let isImage = utils.isImage(file);
+        let isInSize = utils.isInSize(file, 5);
+        if (isImage && isInSize) {
           this.emplsepacertUrlErrFlag = false;
         } else {
           this.emplsepacertUrlErrFlag = true;
         }
-        return isDoc && isInSize;
+        return isImage && isInSize;
       },
       contractUrlOk(res, file) {
         if (res.code === 200) {

@@ -224,7 +224,7 @@
         },
         selected: '1',
         selectedData: '',
-        selectedDataApply: '',
+        selectedDataApply: 0,
         selectedDataApproval: 0,
         pickerValue: '',
         optionsApproval: {},
@@ -307,13 +307,15 @@
 //        this.$nextTick(() => {
         this.optionsApply = this.applyTypeName;
         //此区域是在在点击提交申请的时候进行选中传参start
-        this.selectedDataApply = this.getCookie('leaveType').toString();
-//              this.shengqingclick(this.selectedDataApply);
-        //此区域是在在点击提交申请的时候进行选中传参end
-
-
-        //此处代码为了在打开提交时在提交申请时显示 start
-        this.selectedDataApply = this.getCookie('leaveType');
+//        this.selectedDataApply = this.getCookie('leaveType').toString();
+////              this.shengqingclick(this.selectedDataApply);
+//        console.log('sbsb',this.selectedDataApply);
+//        //此区域是在在点击提交申请的时候进行选中传参end
+//
+//
+//        //此处代码为了在打开提交时在提交申请时显示 start
+//        this.selectedDataApply = this.getCookie('leaveType');
+//        console.log('sbsb',this.selectedDataApply);
 
 
         for (let i = 0; i < this.optionsApply.length; i++) {  //循环初始化的时候选中一个select属性值和参数
@@ -323,7 +325,7 @@
           }
         }
         if (this.selectedDataApply == '0') { //请假
-          console.log('选择请假路线');
+//          console.log('选择请假路线');
           this.changeApply = true; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -333,7 +335,7 @@
 
         }
         if (this.selectedDataApply == '1') {
-          console.log('忘记打卡路线')
+//          console.log('忘记打卡路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -343,7 +345,7 @@
 
         }
         if (this.selectedDataApply == '2') {
-          console.log('外出申请路线')
+//          console.log('外出申请路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -353,7 +355,7 @@
 
         }
         if (this.selectedDataApply == '3') {
-          console.log('加班路线')
+//          console.log('加班路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = false; //上传图片隐藏

@@ -44,10 +44,9 @@ let openIdD;
         },
         methods: {
           handerClickBing(){
-
             this.$http.post('/api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
               console.log(response.body.code);
-              if(response.body.code==200){
+              if(response.body.code===200){
                 this.$router.push({path:'/ManyCompany'});
               }else{
                 this.$router.push({path:'/index'});
@@ -60,13 +59,13 @@ let openIdD;
           handerClickQuick(){
             this.$http.post('/api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
               console.log(response.body.code);
-              if(response.body.code==200){
+              if(response.body.code===200){
                 this.$router.push({path:'/signIn'});
-              }else if(response.body.code==500){
+              }else if(response.body.code===500){
                 MessageBox.confirm('暂未绑定，确认进行绑定').then(action => {
                   this.$router.push({path:'/index'});
                 });
-              }else  if(response.body.code==1001){
+              }else if(response.body.code===1001){
                 alert("登录超时");
               }
             }, response => {
