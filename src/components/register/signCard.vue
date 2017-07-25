@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="state">
     <div class="bg">
       <div style="padding-top: 1rem;color:#ffffff;padding-left: 1rem; overflow: hidden">
         <div class="siginLeft">
@@ -34,7 +34,6 @@
           <span>签到打卡</span>
         </mt-button>
       </div>
-
     </div>
     <div style="margin-top: 1rem;height: 10rem">
       <a class="mint-cell" @click="changeList(0)">
@@ -127,12 +126,14 @@
 </template>
 <script>
   import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
+  import {Indicator} from 'mint-ui';
 
   //  let oneselfData = {};
 
   export default {
     data(){
       return {
+        state: false,
         isVisible: false,
         closeOnClickModal: true,
         punchCard: false, // 判断是否需要打卡
@@ -166,6 +167,8 @@
       }
     },
     created: function () {
+      this.state = false;
+      Indicator.open('正在加载...');
       //设置的切换start
       this.init = false;
       this.initBlue = true;
@@ -210,6 +213,8 @@
               console.log('record.staffPhoUrl的images值为空')
             }
           }
+          this.state = true;
+          Indicator.close();//关闭加载中
         }, response => {
           console.log('error callback');
         });

@@ -1373,7 +1373,7 @@
     /*line-height: 9rem;*/
     /*text-align: center;*/
     position: absolute;
-    top: 20.5rem;
+    top: 40vh;
     left: 50%;
     margin-left: -8rem;
   }
