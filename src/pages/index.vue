@@ -83,18 +83,13 @@
         alertMessage: '', //进行赋值的错误信息
         alertMessageShow: true,
         kk: '',
-
       }
     },
     created: function () {
-
-      this.handerList();        //先查询是否有绑定 有返回手机号
       Indicator.open('加载中...');
-
-      //获取openidstart  6-2早注释为了本地测试 提交需解除注释
+      //====获取openidstart  6-2早注释为了本地测试 提交需解除注释---------此处电脑端调试要注释掉
       var _href = window.location.href;
       console.log(window.location.href);
-
       function getUrlParam(url, name) { //获取地址栏的参数
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = url.substring(url.indexOf('?') + 1).match(reg);
@@ -102,22 +97,17 @@
         return null;
       }
 
-//    getUrlParam(_href, "openid");
       var openID = getUrlParam(_href, "openid");
-
       if (openID == null) {
         let path = '/api/v1.0/wechat';
         let protocol = location.protocol;
         let hostname = location.hostname;
-//        console.log(`${protocol}//${hostname}${path}`);
         window.location.href = `${protocol}//${hostname}${path}`;
         return;
       }
       this.setCookie('openId', openID, 365);
-      console.log('openid修改过的' + this.getCookie('openId'));
-
-
-      //获取openid end
+      this.handerList();        //先查询是否有绑定 有返回手机号
+      //====获取openid 结束====
 
 
     },

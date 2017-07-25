@@ -193,28 +193,33 @@
       searchStaff(){
 
         this.$http.post('/api/v1.0/client/findStaff').then(response => {
-          this.punchCard = response.body.result.punchCard;
-          console.log("111", response.body.result.record);
-          this.arryOneself.push(response.body.result);
-          console.log("rryOne", this.arryOneself);
-          this.infoObj = response.body.result.record;
-          for (let i = 0; i < this.arryOneself.length; i++) {
-            this.oneselfData = {
-              name: this.arryOneself[i].name,
-            };
-            this.setCookie('infoObjPassPostion', this.infoObj.deptName, 365);
-            this.setCookie('infoObjPassName', this.oneselfData.name, 365);
-            if (this.arryOneself[i].staffPhoUrl) {
-              this.imgSrc.comAddress = this.arryOneself[i].staffPhoUrl;
-              this.setCookie('avatarImages', this.imgSrc.comAddress, 365);
+          if (response.body.code === 200) {
+            if (response.body.result) {
+              console.log('response.body.result', response.body.result);
+              this.punchCard = response.body.result.punchCard;
+//            console.log("111", response.body.result.record);
+              this.arryOneself.push(response.body.result);
+              console.log("rryOne", this.arryOneself);
+              this.infoObj = response.body.result.record;
+              for (let i = 0; i < this.arryOneself.length; i++) {
+                this.oneselfData = {
+                  name: this.arryOneself[i].name,
+                };
+                this.setCookie('infoObjPassPostion', this.infoObj.deptName, 365);
+                this.setCookie('infoObjPassName', this.oneselfData.name, 365);
+                if (this.arryOneself[i].staffPhoUrl) {
+                  this.imgSrc.comAddress = this.arryOneself[i].staffPhoUrl;
+                  this.setCookie('avatarImages', this.imgSrc.comAddress, 365);
 
-            } else {
-              this.setCookie('avatarImages', '', 365);//6-30-15 更新
-              console.log('record.staffPhoUrl的images值为空')
+                } else {
+                  this.setCookie('avatarImages', '', 365);//6-30-15 更新
+                  console.log('record.staffPhoUrl的images值为空')
+                }
+              }
+              this.state = true;
+              Indicator.close();//关闭加载中
             }
           }
-          this.state = true;
-          Indicator.close();//关闭加载中
         }, response => {
           console.log('error callback');
         });
