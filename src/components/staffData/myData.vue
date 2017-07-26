@@ -229,8 +229,8 @@
               <el-option
                 v-for="(v, k) in maritalStatuses"
                 :key="k"
-                :label="v"
-                :value="k">
+                :label="v.name"
+                :value="v.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -241,8 +241,8 @@
               <el-option
                 v-for="(v, k) in nations"
                 :key="k"
-                :label="v"
-                :value="k">
+                :label="v.name"
+                :value="v.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -428,13 +428,13 @@
           </el-form-item>
 
           <!-- DO NOT DEL -->
-          <el-form-item v-if="staff.emergencyContact" label="紧急联系人">
+          <el-form-item v-if="staff.emergencyContact" label="紧急联系人" :required="staff.emergencyContact.isrequired">
           </el-form-item>
           <div v-if="staff.emergencyContact" class="contacts-wrapper">
             <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
-              <el-form-item label="姓名" label-width="3.1em"
+              <el-form-item label="姓名" label-width="4em"
                             :prop="'contacts[' + idx + '].emergContact'"
-                            :rules="{min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
+                            :rules="{required:staff.emergencyContact.isrequired,min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
                 <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContact">
                   <el-button v-if="idx > 0" :disabled="!staff.emergencyContact.isedit"
                              slot="append"
@@ -442,8 +442,8 @@
                     class="el-icon-delete"></i></el-button>
                 </el-input>
               </el-form-item>
-              <el-form-item label="电话" label-width="3.1em" :prop="'contacts[' + idx + '].emergContactPhone'"
-                            :rules="{message: '请输入紧急联系人电话', trigger: 'change', pattern: /^1\d{10}$/}">
+              <el-form-item label="电话" label-width="4em" :prop="'contacts[' + idx + '].emergContactPhone'"
+                            :rules="{required:staff.emergencyContact.isrequired,message: '请输入紧急联系人电话', trigger: 'change', pattern: /^1\d{10}$/}">
                 <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContactPhone"></el-input>
               </el-form-item>
             </div>
@@ -480,7 +480,7 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'"
-                            :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择子女出生日期', trigger: 'change'}">
+                            :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择子女出生日期', trigger: 'blur',validator:isDate}">
                 <el-date-picker
                   :readonly="!staff.hasChilds.isedit"
                   v-model="item.dateOfBirth"
@@ -528,7 +528,7 @@
           </el-form-item>
 
           <el-form-item v-if="staff.eduInfor" label="学历类型" prop="diplomaType"
-                        :rules="{required: staff.eduInfor.isrequired, message: '请选择学历类型', trigger: 'change'}">
+                        :rules="{required: staff.eduInfor.isrequired,type:'number', message: '请选择学历类型', trigger: 'change'}">
             <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.diplomaType" placeholder="请选择">
               <el-option
                 v-for="(v, k) in diplomaTypes"
@@ -1472,6 +1472,16 @@
       },
     },
     methods: {
+      isDate(rule, value, callback) {
+        if (rule.required) {
+//          if (moment.isDate(value)) callback();
+          if (value) callback();
+          else callback(new Error(rule.message));
+          console.log('value1234', value)
+        } else {
+          callback();
+        }
+      },
       datefmt(str) {
         if (str) return moment(str).format('YYYY-MM-DD');
         else return '';
@@ -1834,15 +1844,12 @@
         return isDoc && isInSize;
       },
       save() {
-
+        console.log('model.maritalStatus', this.model.maritalStatus);
         let makePost = () => {
-
           let out = {};
           let record = {};
           let shareOption = {};
-
           out.uid = this.model.uid;
-
           out.name = this.model.name;
           out.gender = this.model.gender;
           out.mobile = this.model.mobile;
@@ -1900,7 +1907,7 @@
             return out;
           })(this.model.contacts);
           out.contacts = contacts;
-          out.hasChild = this.model.hasChild // boolean 是否有子女
+          out.hasChild = this.model.hasChild; // boolean 是否有子女
           let childs = ((childs, hasChild) => {
             var out = [];
             if (!hasChild) {
@@ -1937,7 +1944,6 @@
           out.hasComres = this.model.hasComres; // boolean 有无竞业协议
           out.hasComresRmk = this.model.hasComresRmk; // 竞业协议备注信息
           out.emplsepacertUrl = this.model.emplsepacertUrl; // 离职证明
-
           record.dateOfEntry = new Date(this.model.record.dateOfEntry).getTime(); // 入职日期
           record.probation = this.model.record.probation; // 试用期
           record.companyAge = this.model.record.companyAge; // 司龄
@@ -1976,12 +1982,10 @@
               o.endTime = new Date(v.endTime).getTime();
               o.contractUrl = v.contractUrl;
             }
-
             if (this.model.uid) {
               o.uid = v.uid;
               o.recordUid = v.recordUid
             }
-
             return o;
           })(this.model.record.contract);
           record.contract = contract;
@@ -1992,8 +1996,6 @@
             record.staffUid = this.model.record.staffUid;
           }
           out.record = record;
-
-
           shareOption.awardDate = new Date(this.model.shareOption.awardDate).getTime(); // 授予日期
           shareOption.awardAmount = this.model.shareOption.awardAmount; // 授予总数量
           shareOption.awardRate = this.model.shareOption.awardRate; // 授予总比例
@@ -2011,14 +2013,14 @@
 
           return out;
         };
-
+        let flaf = 0;
         let flag = 0;
         this.$refs.personFm.validate(valid => {
           if (valid) {
             this.personFlag = false;
           } else {
             this.personFlag = true;
-            flag++;
+            flaf++;
             return false;
           }
         });
@@ -2042,7 +2044,7 @@
           }
         });
 
-        if (flag) {
+        if (flag || flaf) {
           return;
         }
 
@@ -2055,244 +2057,14 @@
           .then(res => {
             res = res.body;
             if (res.code === 200) {
-//            this.$message.success({message: '保存并更新成功！', showClose: true});
+              this.$message.success({message: '保存并更新成功！', showClose: true});
               this.$router.push({path: '/signCard'});
 
-              // this.reset();
+//               this.reset();
               // this.selected = '1';
             }
           })
           .catch(err => console.log(err.status, err.statusText));
-
-
-//        let makePost = () => {
-//
-//          let out = {};
-//          let record = {};
-//          let shareOption = {};
-//
-//          out.uid = this.model.uid;
-//
-//          if (this.model.name.trim()) out.name = this.model.name;
-//          if (this.model.gender !== '') out.gender = this.model.gender;
-//          if (this.model.mobile.trim()) out.mobile = this.model.mobile;
-//          if (this.model.nativePlace !== '') out.nativePlace = this.model.nativePlace; // 国籍
-//          if (this.model.passportNum.trim() && this.model.nativePlace === 2) out.passportNum = this.model.passportNum; // 护照号
-//          if (this.model.passportUrl && this.model.nativePlace === 2) out.passportUrl = this.model.passportUrl; // 护照图片
-//          if (this.model.idcard.trim()) out.idcard = this.model.idcard; // 身份证号
-//          if (this.model.idcardPhoUrl) out.idcardPhoUrl = this.model.idcardPhoUrl; // 身份证照片正面
-//          if (this.model.idcardPhoUrlRev) out.idcardPhoUrlRev = this.model.idcardPhoUrlRev; // 身份证照片反面
-//          if (this.model.socsecNum.trim()) out.socsecNum = this.model.socsecNum; // 社保号
-//          if (this.model.accfuNum.trim()) out.accfuNum = this.model.accfuNum; // 公积金编号
-//          if (this.model.bankName !== '') out.bankName = this.model.bankName; // 银行名称
-//          if (this.model.openingBank.trim()) out.openingBank = this.model.openingBank; // 开户行
-//          if (this.model.cardNumber.trim()) out.cardNumber = this.model.cardNumber; // 银行卡号
-//          if (this.model.staffPhoUrl) out.staffPhoUrl = this.model.staffPhoUrl; // 员工照片
-//          if (this.model.englishName.trim()) out.englishName = this.model.englishName; // 英文名
-//          if (this.model.qq.trim()) out.qq = this.model.qq;
-//          if (this.model.wechart.trim()) out.wechart = this.model.wechart;
-//          if (this.model.maritalStatus !== '') out.maritalStatus = this.model.maritalStatus; // 婚姻状况
-//          if (this.model.nation !== '') out.nation = this.model.nation; // 民族
-//          if (this.model.politicsStatus !== '') out.politicsStatus = this.model.politicsStatus; // 政治面貌
-//          if (this.model.thePartyTime) out.thePartyTime = new Date(this.model.thePartyTime).getTime(); // 入党时间
-//          if (this.model.theArcIns.trim()) out.theArcIns = this.model.theArcIns; // 存档机构
-//          if (this.model.dateOfBirth) out.dateOfBirth = new Date(this.model.dateOfBirth).getTime(); // 生日
-//          if (this.model.podoProvince !== '') out.podoProvince = this.model.podoProvince; // 户口所在省
-//          if (this.model.podoCity !== '') out.podoCity = this.model.podoCity; // 户口所在城市
-//          if (this.model.podoAddress.trim()) out.podoAddress = this.model.podoAddress; // 户口详细地址
-//          if (this.model.typeOfDemicile !== '') out.typeOfDemicile = this.model.typeOfDemicile; // 户口性质
-//          if (this.model.houregPhoUrl) out.houregPhoUrl = this.model.houregPhoUrl; // 户口本首页
-//          if (this.model.houregPerphoUrl) out.houregPerphoUrl = this.model.houregPerphoUrl; // 户口本本人页
-//          if (this.model.houregPerrevphoUrl) out.houregPerrevphoUrl = this.model.houregPerrevphoUrl; // 户口本本人页背面
-//          out.hasResper = this.model.hasResper; // boolean 是否有居中证
-//          if (this.model.residenceProvince !== '' && this.model.hasResper) out.residenceProvince = this.model.residenceProvince; // 居住证省份
-//          if (this.model.residenceCity !== '' && this.model.hasResper) out.residenceCity = this.model.residenceCity; // 居住证城市
-//          if (this.model.resperst && this.model.hasResper) out.resperst = new Date(this.model.resperst).getTime(); // 居住证开始
-//          if (this.model.resperet && this.model.hasResper) out.resperet = new Date(this.model.resperet).getTime(); // 居住证结束
-//          if (this.model.poreProvince !== '') out.poreProvince = this.model.poreProvince; // 现居住地省
-//          if (this.model.poreCity !== '') out.poreCity = this.model.poreCity; // 现居住地城市
-//          if (this.model.poreAddress.trim()) out.poreAddress = this.model.poreAddress; // 现居住地详细地址
-//          if (this.model.personalEmail.trim()) out.personalEmail = this.model.personalEmail; // 个人邮箱
-//          let contacts = ((contacts) => {
-//            var out = [];
-//            contacts.forEach(v => {
-//              let o = {};
-//              if (typeof v.emergContact === 'string' && v.emergContact.trim()) o.emergContact = v.emergContact;
-//              if (typeof v.emergContact === 'string' && v.emergContactPhone.trim()) o.emergContactPhone = v.emergContactPhone;
-//              if (this.model.uid) {
-//                if (v.uid) o.uid = v.uid;
-//                if (v.staffUid) o.staffUid = v.staffUid;
-//              }
-//              if (Object.keys(o).length) {
-//                out.push(o);
-//              }
-//            });
-//            return out;
-//          })(this.model.contacts);
-//          if (contacts.length) out.contacts = contacts;
-//          out.hasChild = this.model.hasChild // boolean 是否有子女
-//          let childs = ((childs, hasChild) => {
-//            var out = [];
-//            if (!hasChild) {
-//              return out;
-//            }
-//            childs.forEach(v => {
-//              let o = {};
-//              if (v.name.trim()) o.name = v.name;
-//              if (v.gender !== '') o.gender = v.gender;
-//              if (v.dateOfBirth) o.dateOfBirth = new Date(v.dateOfBirth).getTime();
-//              if (v.birthCertifUrl) o.birthCertifUrl = v.birthCertifUrl;
-//              if (this.model.uid) {
-//                if (v.uid) o.uid = v.uid;
-//                if (v.staffUid) o.staffUid = v.staffUid;
-//              }
-//              if (Object.keys(o).length) {
-//                out.push(o);
-//              }
-//            });
-//            return out;
-//          })(this.model.childs, this.model.hasChild);
-//          if (childs.length) out.childs = childs;
-//          if (this.model.finallyEmpCom.trim()) out.finallyEmpCom = this.model.finallyEmpCom; // 上一家受聘公司
-//          if (this.model.maxinumDeucaLevel !== '') out.maxinumDeucaLevel = this.model.maxinumDeucaLevel; // 最高学历
-//          if (this.model.diplomaType !== '') out.diplomaType = this.model.diplomaType; // 学历类型
-//          if (this.model.graduateInst.trim()) out.graduateInst = this.model.graduateInst; // 毕业院校
-//          if (this.model.entSchst) out.entSchst = new Date(this.model.entSchst).getTime(); // 入学时间
-//          if (this.model.entSchet) out.entSchet = new Date(this.model.entSchet).getTime(); // 毕业时间
-//          if (this.model.major.trim()) out.major = this.model.major; // 专业
-//          if (this.model.diplomaUrl) out.diplomaUrl = this.model.diplomaUrl; // 学位证书
-//          if (this.model.greducaCertUrl) out.greducaCertUrl = this.model.greducaCertUrl; // 毕业证书
-//          if (this.model.technicalTitle.trim()) out.technicalTitle = this.model.technicalTitle; // 职称
-//          if (this.model.resumeUrl) out.resumeUrl = this.model.resumeUrl; // 简历
-//          out.hasComres = this.model.hasComres; // boolean 有无竞业协议
-//          if (this.model.hasComresRmk.trim() && this.model.hasComres) out.hasComresRmk = this.model.hasComresRmk; // 竞业协议备注信息
-//          if (this.model.emplsepacertUrl) out.emplsepacertUrl = this.model.emplsepacertUrl; // 离职证明
-//
-//          if (this.model.record.dateOfEntry) record.dateOfEntry = new Date(this.model.record.dateOfEntry).getTime(); // 入职日期
-//          if (this.model.record.probation !== '') record.probation = this.model.record.probation; // 试用期
-//          if (this.model.record.companyAge) record.companyAge = this.model.record.companyAge; // 司龄
-//          if (this.model.record.position.trim()) record.position = this.model.record.position; // 职位
-//          if (this.model.record.jobGrade.trim()) record.jobGrade = this.model.record.jobGrade; // 职级
-//          if (this.model.record.deptUid !== '') record.deptUid = this.model.record.deptUid; // 所在部门
-//          if (this.model.record.fristWorkTime) record.fristWorkTime = new Date
-//          (this.model.record.fristWorkTime).getTime(); // 首次参加工作时间
-//          if (this.model.record.workAge) record.workAge = this.model.record.workAge; // 工龄
-//          if (this.model.record.workEmail.trim()) record.workEmail = this.model.record.workEmail;
-//          if (this.model.record.jobNumber.trim()) record.jobNumber = this.model.record.jobNumber; // 工号
-//          if (this.model.record.reporterJobNumber !== '') record.reporterJobNumber = this.model.record.reporterJobNumber; // 汇报人工号
-//          if (this.model.record.workProvince !== '') record.workProvince = this.model.record.workProvince;
-//          if (this.model.record.workCity !== '') record.workCity = this.model.record.workCity;
-//          if (this.model.record.workAddress.trim()) record.workAddress = this.model.record.workAddress;
-//
-//          let contract = ((v) => {
-//            var o = {};
-//            if (v.contracType !== '') o.contracType = v.contracType;
-//            if (v.contracType === '0') {
-//              if (v.startTime) o.startTime = new Date(v.startTime).getTime();
-//              if (v.contractPeriod !== '') o.contractPeriod = v.contractPeriod;
-//              if (this.formalEndTime) o.endTime = Number(moment(this.formalEndTime).format('x'));
-//              if (v.contractUrl) o.contractUrl = v.contractUrl;
-//              if (v.recruitmentChannel !== '') o.recruitmentChannel = v.recruitmentChannel;
-//              if (this.model.record.baseSalary.trim()) record.baseSalary = this.model.record.baseSalary; // 基础薪资
-//              if (this.model.record.trialSalary.trim()) record.trialSalary = this.model.record.trialSalary; // 试用薪资
-//            } else if (v.contracType === '1') {
-//              if (v.startTime) o.startTime = new Date(v.startTime).getTime();
-//              if (v.endTime) o.endTime = new Date(v.endTime).getTime();
-//              if (v.contractUrl) o.contractUrl = v.contractUrl;
-//            } else if (v.contracType === '2') {
-//              if (v.contractUrl) o.contractUrl = v.contractUrl;
-//            } else if (v.contracType === '3') {
-//              if (v.startTime) o.startTime = new Date(v.startTime).getTime();
-//              if (v.endTime) o.endTime = new Date(v.endTime).getTime();
-//              if (v.contractUrl) o.contractUrl = v.contractUrl;
-//            }
-//
-//            if (this.model.uid) {
-//              if (v.uid) o.uid = v.uid;
-//              if (v.recordUid) o.recordUid = v.recordUid
-//            }
-//
-//            return o;
-//          })(this.model.record.contract);
-//          if (Object.keys(contract).length) record.contract = contract;
-//
-//          if (this.model.uid) {
-//            if (this.model.record.uid) record.uid = this.model.record.uid;
-//            if (this.model.record.companyUid) record.companyUid = this.model.record.companyUid;
-//            if (this.model.record.staffUid) record.staffUid = this.model.record.staffUid;
-//          }
-//          if (Object.keys(record).length) out.record = record;
-//
-//
-//          if (this.model.shareOption.awardDate) shareOption.awardDate = new Date(this.model.shareOption.awardDate).getTime(); // 授予日期
-//          if (this.model.shareOption.awardAmount.trim()) shareOption.awardAmount = this.model.shareOption.awardAmount; // 授予总数量
-//          if (this.model.shareOption.awardRate.trim()) shareOption.awardRate = this.model.shareOption.awardRate; // 授予总比例
-//          if (this.model.shareOption.awardRound.trim()) shareOption.awardRound = this.model.shareOption.awardRound; // 授予轮次
-//          if (this.model.shareOption.exercSchedule.trim()) shareOption.exercSchedule = this.model.shareOption.exercSchedule; // 行权期
-//          if (this.model.shareOption.terminallyCount.trim()) shareOption.terminallyCount = this.model.shareOption.terminallyCount; // 每期数量
-//          if (this.model.shareOption.terminallyRate.trim()) shareOption.terminallyRate = this.model.shareOption.terminallyRate; // 每期比例
-//          if (this.model.shareOption.contractUrl) shareOption.contractUrl = this.model.shareOption.contractUrl; // 期权合同
-//
-//          if (this.model.uid) {
-//            if (this.model.shareOption.uid) shareOption.uid = this.model.shareOption.uid;
-//            if (this.model.shareOption.recordUid) shareOption.recordUid = this.model.shareOption.recordUid;
-//          }
-//          if (Object.keys(shareOption).length) out.shareOption = shareOption;
-//
-//          return out;
-//        };
-//
-//        let flag = 0;
-//        this.$refs.personFm.validate(valid => {
-//          if (valid) {
-//            this.personFlag = false;
-//          } else {
-//            this.personFlag = true;
-//            flag++;
-//            return false;
-//          }
-//        });
-//
-//        this.$refs.postFm.validate(valid => {
-//          if (valid) {
-//            this.postFlag = false;
-//          } else {
-//            this.postFlag = true;
-//            flag++;
-//            return false;
-//          }
-//        });
-//
-//        this.$refs.optionFm.validate(valid => {
-//          if (valid) {
-//            this.optionFlag = false;
-//          } else {
-//            this.optionFlag = true;
-//            return false;
-//          }
-//        });
-//
-//        if (flag) {
-//          return;
-//        }
-//
-//
-//        console.log(makePost());
-//        let staffApi = '/api/v1.0/client/updateStaff';
-//
-//        // return;
-//        this.$http.post(staffApi, makePost())
-//          .then(res => {
-//            res = res.body;
-//            if (res.code === 200) {
-////            this.$message.success({message: '保存并更新成功！', showClose: true});
-//              this.$router.push({path: '/signCard'});
-//
-//              // this.reset();
-//              // this.selected = '1';
-//            }
-//          })
-//          .catch(err => console.log(err.status, err.statusText));
       },
       reset() {
         this.$refs.personFm.resetFields();
@@ -2469,6 +2241,7 @@
             return arr;
           }(emp.contacts);
           this.model.hasChild = emp.hasChild;
+          console.log('ec', emp.childs);
           this.model.childs = function (childs) {
             if (!(childs && childs.length)) {
               return [{
@@ -2597,8 +2370,8 @@
         this.typeOfDemiciles = this.publicParams.typeOfDemicile;
         this.nativePlaces = this.publicParams.nativePlace;
         this.bankNames = this.publicParams.bankName;
-        this.maritalStatuses = this.publicParams.maritalStatus;
-        this.nations = this.publicParams.nation;
+        this.maritalStatuses = this.publicParams.maritalStatusOrg;
+        this.nations = this.publicParams.nationOrg;
         this.politicsStatuses = this.publicParams.politicsStatus;
         this.maxinumDeucaLevels = this.publicParams.maxinumDeucaLevel;
         this.diplomaTypes = this.publicParams.diplomaTypeOrg;
