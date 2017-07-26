@@ -32,7 +32,7 @@
           </el-form-item>
 
           <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth"
-                        :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change'}">
+                        :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change',validator:isDate}">
             <el-date-picker
               :readonly="!staff.dateOfBirth.isedit"
               v-model="model.dateOfBirth"
@@ -157,17 +157,17 @@
           </el-form-item>
 
           <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
-                        :rules="{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号（最多10个数字）', trigger: 'change', pattern: /^\w{1,10}$/}">
+                        :rules="{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号（最多10个数字）', trigger: 'blur', pattern: /^\w{1,10}$/}">
             <el-input :readonly="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
           </el-form-item>
 
           <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum"
-                        :rules="{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号（最多12个数字）', trigger: 'change'}">
+                        :rules="{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号（最多12个数字）', trigger: 'blur'}">
             <el-input :readonly="!staff.accfuNum.isedit" v-model="model.accfuNum"></el-input>
           </el-form-item>
 
           <el-form-item v-if="staff.bankName" label="银行名称" prop="bankName"
-                        :rules="{required: staff.bankName.isrequired, message: '请选择银行', trigger: 'change'}">
+                        :rules="{required: staff.bankName.isrequired, message: '请选择银行', trigger: 'blur'}">
             <el-select :disabled="!staff.bankName.isedit" clearable v-model="model.bankName" placeholder="请选择">
               <el-option
                 v-for="(v, k) in bankNames"
@@ -179,12 +179,12 @@
           </el-form-item>
 
           <el-form-item v-if="staff.bankName" label="开户行" prop="openingBank"
-                        :rules="{required: staff.bankName.isrequired, message: '请填写正确的开户行名称(最多 64 个字符)', trigger: 'change', max: 64}">
+                        :rules="{required: staff.bankName.isrequired, message: '请填写正确的开户行名称(最多 64 个字符)', trigger: 'blur', max: 64}">
             <el-input :readonly="!staff.bankName.isedit" v-model="model.openingBank"></el-input>
           </el-form-item>
 
           <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber"
-                        :rules="{required: staff.bankName.isrequired,min:16,max:64, message: '请填写正确的银行卡号', trigger: 'change'}">
+                        :rules="{required: staff.bankName.isrequired,min:16,max:64, message: '请填写正确的银行卡号', trigger: 'blur'}">
             <el-input :readonly="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
           </el-form-item>
 
@@ -207,7 +207,7 @@
           </el-form-item>
 
           <el-form-item v-if="staff.englishName" label="英文名" prop="englishName"
-                        :rules="{required: staff.englishName.isrequired,  message: '请填写正确的英文名(最多 32 个字符)', trigger: 'change', pattern: /^[a-zA-Z]{1,32}$/}">
+                        :rules="{required: staff.englishName.isrequired,  message: '请填写正确的英文名(最多 32 个字符)', trigger: 'blur', pattern: /^[a-zA-Z]{1,32}$/}">
             <el-input :readonly="!staff.englishName.isedit" v-model="model.englishName"></el-input>
           </el-form-item>
 
@@ -223,7 +223,7 @@
 
 
           <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus"
-                        :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'change'}">
+                        :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'blur'}">
             <el-select :disabled="!staff.maritalStatus.isedit" clearable v-model="model.maritalStatus"
                        placeholder="请选择">
               <el-option
@@ -236,7 +236,7 @@
           </el-form-item>
 
           <el-form-item v-if="staff.nation" label="民族" prop="nation"
-                        :rules="{required: staff.nation.isrequired,message: '请选择民族', trigger: 'change'}">
+                        :rules="{required: staff.nation.isrequired,message: '请选择民族', trigger: 'blur'}">
             <el-select :disabled="!staff.nation.isedit" clearable v-model="model.nation" placeholder="请选择">
               <el-option
                 v-for="(v, k) in nations"
@@ -371,7 +371,7 @@
           </el-form-item>
 
           <el-form-item v-if="model.hasResper" label="居住证办理时间" prop="resperst"
-                        :rules="{required: staff.hasResper.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change'}">
+                        :rules="{required: staff.hasResper.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change',validator:isDate}">
             <el-date-picker
               :readonly="!staff.ResperMessage.isedit"
               v-model="model.resperst"
@@ -382,7 +382,7 @@
           </el-form-item>
 
           <el-form-item v-if="model.hasResper" label="居住证截止日期" prop="resperet"
-                        :rules="{required: staff.hasResper.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change'}">
+                        :rules="{required: staff.hasResper.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isDate}">
             <el-date-picker
               :readonly="!staff.ResperMessage.isedit"
               v-model="model.resperet"
@@ -434,7 +434,7 @@
             <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
               <el-form-item label="姓名" label-width="4em"
                             :prop="'contacts[' + idx + '].emergContact'"
-                            :rules="{required:staff.emergencyContact.isrequired,min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
+                            :rules="{required:staff.emergencyContact.isrequired,min: 2, max: 32, message: '请输入紧急联系人姓名(最少 2 个字符，最多 32 个字符)', trigger: 'blur'}">
                 <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContact">
                   <el-button v-if="idx > 0" :disabled="!staff.emergencyContact.isedit"
                              slot="append"
@@ -443,7 +443,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="电话" label-width="4em" :prop="'contacts[' + idx + '].emergContactPhone'"
-                            :rules="{required:staff.emergencyContact.isrequired,message: '请输入紧急联系人电话', trigger: 'change', pattern: /^1\d{10}$/}">
+                            :rules="{required:staff.emergencyContact.isrequired,message: '请输入紧急联系人电话', trigger: 'blur', pattern: /^1\d{10}$/}">
                 <el-input :readonly="!staff.emergencyContact.isedit" v-model="item.emergContactPhone"></el-input>
               </el-form-item>
             </div>
@@ -473,7 +473,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'"
-                            :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'change'}">
+                            :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'blur'}">
                 <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
                   <el-radio :label="1">男</el-radio>
                   <el-radio :label="0">女</el-radio>
@@ -516,7 +516,7 @@
           </el-form-item>
 
           <el-form-item v-if="staff.eduInfor" label="最高学历" prop="maxinumDeucaLevel"
-                        :rules="{required: staff.eduInfor.isrequired, message: '请选择最高学历', trigger: 'change'}">
+                        :rules="{required: staff.eduInfor.isrequired, message: '请选择最高学历', trigger: 'blur'}">
             <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.maxinumDeucaLevel" placeholder="请选择">
               <el-option
                 v-for="(v, k) in maxinumDeucaLevels"
@@ -528,8 +528,8 @@
           </el-form-item>
 
           <el-form-item v-if="staff.eduInfor" label="学历类型" prop="diplomaType"
-                        :rules="{required: staff.eduInfor.isrequired,type:'number', message: '请选择学历类型', trigger: 'change'}">
-            <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.diplomaType" placeholder="请选择">
+                        :rules="{required: staff.eduInfor.isrequired, message: '请选择学历类型', trigger: 'blur',validator:noopValidat}">
+            <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.diplomaType" placeholder="请选择学历类型">
               <el-option
                 v-for="(v, k) in diplomaTypes"
                 :key="k"
@@ -545,7 +545,7 @@
           </el-form-item>
 
           <el-form-item v-if="staff.eduInfor" label="入学日期" prop="entSchst"
-                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change'}">
+                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change',validator:isDate}">
             <el-date-picker
               :readonly="!staff.eduInfor.isedit"
               v-model="model.entSchst"
@@ -556,14 +556,13 @@
           </el-form-item>
 
           <el-form-item v-if="staff.eduInfor" label="毕业日期" prop="entSchet"
-                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change'}">
+                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change',validator:isDates}">
             <el-date-picker
               :readonly="!staff.eduInfor.isedit"
               v-model="model.entSchet"
               type="month"
               placeholder="选择日期"
-              :editable="false"
-              :picker-options="pickerOptions">
+              :editable="false">
             </el-date-picker>
           </el-form-item>
 
@@ -845,11 +844,11 @@
   export default {
     data() {
       return {
-        pickerOptions: {
-          disabledDate(time){
-            return time.getTime() < new Date().getTime();
-          }
-        },
+//        pickerOptions: {
+//          disabledDate(time){
+//            return time.getTime() < new Date().getTime();
+//          }
+//        },
         selected: '1',
         status: false,
         staffStatusList: [],//  员工状态列表
@@ -1013,7 +1012,7 @@
           childs: [
             {
               name: '',
-              gender: '',
+              gender: 1,
               dateOfBirth: '',
               birthCertifUrl: '',
               key: Date.now(),
@@ -1472,14 +1471,45 @@
       },
     },
     methods: {
+      noopValidat(rule, value, callback, source, options) {
+        // console.log(rule, value, source, options);
+        // return true;
+        callback();
+      },
       isDate(rule, value, callback) {
         if (rule.required) {
 //          if (moment.isDate(value)) callback();
           if (value) callback();
           else callback(new Error(rule.message));
-          console.log('value1234', value)
         } else {
           callback();
+        }
+      },
+      isDates(rule, value, callback) {
+        if (rule.required) {
+          if (value) {
+            if (this.model.entSchst) {
+              if (value.getTime() > this.model.entSchst.getTime()) {
+                callback();
+              } else {
+                callback(new Error(rule.message = "毕业日期不能小于入学日期"));
+              }
+            }
+          } else {
+            callback(new Error(rule.message));
+          }
+        } else {
+          if (value) {
+            if (this.model.entSchst) {
+              if (value.getTime() > this.model.entSchst.getTime()) {
+                callback();
+              } else {
+                callback(new Error(rule.message = "毕业日期不能小于入学日期"));
+              }
+            }
+          } else {
+            callback();
+          }
         }
       },
       datefmt(str) {
@@ -1740,7 +1770,7 @@
       addChild() {
         this.model.childs.push({
           name: '',
-          gender: '',
+          gender: 1,
           dateOfBirth: '',
           birthCertifUrl: '',
           key: Date.now(),
@@ -2049,7 +2079,7 @@
         }
 
 
-        console.log(makePost());
+        console.log('12345', makePost());
         let staffApi = '/api/v1.0/client/updateStaff';
 
         // return;
@@ -2057,7 +2087,7 @@
           .then(res => {
             res = res.body;
             if (res.code === 200) {
-              this.$message.success({message: '保存并更新成功！', showClose: true});
+//              this.$message.success({message: '保存并更新成功！', showClose: true});
               this.$router.push({path: '/signCard'});
 
 //               this.reset();
@@ -2074,7 +2104,7 @@
         this.model.childs = [
           {
             name: '',
-            gender: '',
+            gender: 1,
             dateOfBirth: '',
             birthCertifUrl: '',
             key: Date.now(),
@@ -2246,7 +2276,7 @@
             if (!(childs && childs.length)) {
               return [{
                 name: '',
-                gender: '',
+                gender: 1,
                 dateOfBirth: '',
                 birthCertifUrl: ''
               }];
@@ -2307,7 +2337,6 @@
 
           this.model.record.contract.uid = emp.record.contract.uid;
           this.model.record.contract.recordUid = emp.record.contract.recordUid;
-          console.log(emp.record, 'emp.record.contract.contracType这里面的是空值light');
           this.model.record.contract.contracType = toStr(emp.record.contract.contracType); // 合同类型
           this.model.record.contract.startTime = dateProcess(emp.record.contract.startTime); // 合同生效日期
           this.model.record.contract.contractPeriod = emp.record.contract.contractPeriod || ''; // 合同期限
