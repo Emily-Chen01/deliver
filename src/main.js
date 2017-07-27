@@ -6,58 +6,29 @@ import router from './router'
 import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Field,Header ,TabContainer, TabContainerItem,Radio,Indicator } from 'mint-ui';
 import Mint from 'mint-ui';
 import VueResource from 'vue-resource'
-// import { Indicator } from 'mint-ui';
-// import fullCalendar from 'vue-fullcalendar'
 import 'mint-ui/lib/style.css'
 
-// import BaiduMap from 'vue-baidu-map'
-
-
 Vue.use(Mint);
-
 Vue.use(VueResource);
 Vue.use(Indicator);
-
-
 
 Vue.component(Tabbar.name, Tabbar);
 Vue.component(TabItem.name, TabItem);
 Vue.component(Navbar.name, Navbar);
-// Vue.component(Toast.name, Toast);
 Vue.component(Button.name, Button);
-// Vue.use(Toast);
 Vue.component(Progress.name, Progress);
 Vue.component(Popup.name, Popup);
 Vue.component(Field.name, Field);
 Vue.component(DatetimePicker.name, DatetimePicker);
-// Vue.component('full-calendar', fullCalendar);
 Vue.component(Header.name, Header);
 Vue.component(TabContainer.name, TabContainer);
 Vue.component(TabContainerItem.name, TabContainerItem);
 Vue.component(Radio .name, Radio );
-// Vue.component(Indicator .name, Indicator );
 
-
-// Vue.use(BaiduMap, {
-//   // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
-//   ak: 'FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4'
-// })
-
-
-
-
-
-
-// let ff=JSON.parse(sessionStorage.obj);
-// console.log(ff.openIDD);
-// let openId=ff.openIDD;
 Vue.http.interceptors.push(function (request, next) {
   // Vue.http.headers.common['token'] = sessionStorage.getItem('token');
   // sessionStorage.setItem('openId', openId);
   request.headers.set('openId', this.getCookie('openId'));
-
-
-
   // continue to next interceptor
   next(response => {
     if (response.body.code === 4001) {
@@ -71,15 +42,15 @@ Vue.http.interceptors.push(function (request, next) {
 //cook开始
 Vue.prototype.setCookie=  function (c_name,value,expiredays)
 {
-  var exdate=new Date()
-  exdate.setDate(exdate.getDate()+expiredays)
+  let exdate=new Date();
+  exdate.setDate(exdate.getDate()+expiredays);
   document.cookie=c_name+ "=" +escape(value)+
     ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
-}
+};
 
 
 
-//取回cookie
+//=========取回cookie==========
 Vue.prototype.getCookie=  function (c_name)
 
 {
@@ -99,9 +70,7 @@ Vue.prototype.getCookie=  function (c_name)
   }
   return ""
 };
-//cook结束
-
-
+//============cook结束==============
 
 
 Vue.config.productionTip = false;
@@ -112,4 +81,4 @@ new Vue({
   router,
   template: '<App/>',
   components: { App }
-})
+});
