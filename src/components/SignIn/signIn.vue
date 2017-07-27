@@ -316,7 +316,6 @@
 
   let df = 'HH:mm:ss';
   let timer1 = null;
-  let jwresult = {"lat": 0.0, "lng": 0.0};
   export default {
     data(){
       return {
@@ -454,7 +453,7 @@
               this.fanwei = response.body.result.twOutside;
               this.fanweixia = response.body.result.owOutside;
               this.toDaKaStatusIsInit = response.body.result.twStatus; //上班状态赋值
-              this.toDaKaStatusIsOutsideInit = response.body.result.twOutside //上班是否在区域外
+              this.toDaKaStatusIsOutsideInit = response.body.result.twOutside; //上班是否在区域外
               this.toDownKaStatusIsInit = response.body.result.owStatus;//下班状态赋值
               this.toDownKaStatusIsOutsideInit = response.body.result.owOutside; //下班是否在区域外
               if (response.body.result.overTime !== null) {
@@ -523,7 +522,6 @@
                   this.absenteeismStatus2 = true;
                   this.tokuangWdk = false;
                   this.lateStatus = false;
-
                 });
               }
 
@@ -670,10 +668,8 @@
       //提交申请跳转路由结束
 
       okClickEvent(){
-
         this.qulocation = false;
         this.downClickSpan = false;
-//        Indicator.open('正在获取位置...');  //本地调节注释
         // d点击获取定位开始
         this.toClickSpan = false;
         this.getLocations = true;
@@ -683,8 +679,8 @@
         let curl;
 
         //判断是不是安卓苹果
-        var u = navigator.userAgent;
-        var isAndroid = '0';
+        let u = navigator.userAgent;
+        let isAndroid = '0';
         isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         if (isAndroid) {
           curl = {
@@ -699,15 +695,15 @@
         //判断结束
         new Promise((resolve, reject) => {
           window._initBaiduMap = function () {
-            window.document.body.removeChild($script)
+            window.document.body.removeChild($script);
             window._initBaiduMap = null;
             resolve();
             BMap = window.BMap;
             map = new BMap.Map();
             console.log('bmap', BMap, map);
-          }
-          const $script = document.createElement('script')
-          window.document.body.appendChild($script)
+          };
+          const $script = document.createElement('script');
+          window.document.body.appendChild($script);
           $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`
         }).then(() => {
           this.$http.post('/api/v1.0/wechat/sign', curl).then(response => { //获取签名接口开始
@@ -827,7 +823,7 @@
                                         self.initDownRecord = true;
                                         self.toUp = true;
                                         self.downClickSpan = true;
-                                        self.toUpYuanShow = false
+                                        self.toUpYuanShow = false;
                                         self.lateStatusAddW = false;
 
                                       }
@@ -895,7 +891,6 @@
                                         self.overTime = false;
                                         self.absenteeismStatusAlert = false;
                                         self.isYellow2 = true;
-                                        self.isYellowAddQ = false; //区域外隐藏
                                         self.lateStatus = false; //您迟到了
                                         self.isYellow2 = true;
                                         self.isYellowAddQ = true;
@@ -984,7 +979,7 @@
                                     self.toDownKaStatusIsOutside = response.body.result.owOutside; //下班是否在区域外
 
                                     self.addTimeAlert = response.body.result.overTime; //alert 加班时间
-                                    if (self.toDaKaStatusIsInit == null) {//上班打卡
+                                    if (self.toDaKaStatusIsInit == null) { //上班打卡
                                       self.toUp = false;
                                       self.popupVisible = true;
                                       self.downTimeMiddleShow = false;
@@ -1019,15 +1014,20 @@
                                         self.tokuangWdk = true;
                                         //测试过
                                       }
-                                      if (self.toDaKaStatusIsOutside) { //区域外   条件？？？？？
+                                      if (self.toDaKaStatusIsOutside) { //区域外
                                         self.isYellowAddQ = true; //alert区域外
+                                        if (self.toDaKaStatusIs == 0) {
+                                          self.lateStatusAddW = true; //区域外span
+                                          self.initDownRecord = true;
+                                          self.isYellow2 = true;
+                                        }
                                       }
-                                      if (self.toDaKaStatusIsOutside && self.toDaKaStatusIs == 0) { //区域外   条件？？？？？
-                                        self.isYellowAddQ = true; //alert区域外
-                                        self.lateStatusAddW = true; //区域外span
-                                        self.initDownRecord = true;
-                                        self.isYellow2 = true;
-                                      }
+//                                      if (self.toDaKaStatusIsOutside && ) { //区域外   条件？？？？？
+//                                        self.isYellowAddQ = true; //alert区域外
+//                                        self.lateStatusAddW = true; //区域外span
+//                                        self.initDownRecord = true;
+//                                        self.isYellow2 = true;
+//                                      }
                                       self.toClickSpan = false;
                                     } else if (self.toDaKaStatusIsInit !== null && self.toDownKaStatusIsInit == null) { //下班打卡
                                       //在下班打卡前要确定是否在范围内 然后返回结果  进行打卡状态展示
@@ -1067,7 +1067,6 @@
                                         self.overTime = false;
                                         self.absenteeismStatusAlert = false;
                                         self.isYellow2 = true;
-                                        self.isYellowAddQ = false; //区域外隐藏
                                         self.lateStatus = false; //您迟到了
                                         self.isYellow2 = true;
                                         self.isYellowAddQ = true;
@@ -1142,8 +1141,8 @@
                 cancel: function (res) {
                   Indicator.close();
                   //判断是不是安卓苹果
-                  var u = navigator.userAgent;
-                  var isAndroid = '0';
+                  let u = navigator.userAgent;
+                  let isAndroid = '0';
                   isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
                   if (isAndroid) {
                     alert('您拒绝了获取定位请求，只有允许才能进行打卡');
@@ -1200,12 +1199,8 @@
 <style scoped>
   .imageClassSuccess {
     width: 16rem;
-    /*top: 10rem;*/
     height: 12rem;
-    /*line-height: 11rem;*/
     border-radius: 4px;
-    /*background: pink;*/
-
   }
 
   .colseClassAlert {
@@ -1261,15 +1256,9 @@
     color: #ffffff;
   }
 
-  .xiaShowOpacity {
-    opacity: 0;
-  }
-
   .siginLeft {
-    /*display: inline-block;*/
     width: 21rem;
     float: left;
-    /*height: 4.2rem;*/
     margin: 1.5% 0 0 1.5%;
     position: relative;
   }
@@ -1285,7 +1274,6 @@
   }
 
   .siginRight {
-    /*display: inline-block;*/
     width: 3rem;
     float: right;
     height: 4.2rem;
@@ -1302,25 +1290,13 @@
 
   .nameClass {
     width: 16.5rem;
-    /*height: 2rem;*/
-    /*background: pink;*/
-    /*position: absolute;*/
     margin-top: 1.5rem;
     font-size: 16px;
     color: #ffffff;
     float: right;
     box-sizing: border-box;
     padding-right: 5rem;
-    /*top: 1rem;*/
-    /*left: 4.5rem;*/
     text-align: left;
-  }
-
-  .detailClass {
-    width: 9rem;
-    float: left;
-    height: 2rem;
-    line-height: 2rem;
   }
 
   .timeClass {
@@ -1373,7 +1349,7 @@
     /*line-height: 9rem;*/
     /*text-align: center;*/
     position: absolute;
-    top: 40vh;
+    top: 19rem;
     left: 50%;
     margin-left: -8rem;
   }
@@ -1421,15 +1397,6 @@
     width: 100%;
     text-align: center;
     margin: 0;
-    line-height: 20px;
-
-  }
-
-  .popupClass {
-    width: 20rem;
-    height: 24rem;
-    border-radius: 4px;
-    background-color: #ffffff;
   }
 
   .daKaAlert {
@@ -1438,7 +1405,6 @@
     line-height: 4rem;
     font-size: 1.2rem;
     color: #ffffff;
-    /*padding-top: 2.2rem;*/
     position: relative;
   }
 
@@ -1449,14 +1415,6 @@
     position: absolute;
     top: 2.5rem;
     left: 3rem;
-  }
-
-  .daKaAlert .daKaSpan {
-    display: block;
-    height: 5rem;
-    line-height: 5rem;
-    position: absolute;
-    left: 7.5rem;
   }
 
   .middleSpan {
@@ -1486,31 +1444,7 @@
 
   }
 
-  /*.dakahr {*/
-  /*width: 69.6%;*/
-  /*height: 1px;*/
-  /*background: #000000;*/
-  /*position: absolute;*/
-  /*left: 3.2rem;*/
-  /*top: 4rem*/
-  /*}*/
-
-  .dakahrWhite {
-    width: 100%;
-    height: 1px;
-    background-color: #ffffff;
-    position: absolute;
-    top: 5rem;
-
-  }
-
   .spanKnow {
-    /*color: #ffffff;*/
-    /*!*font-weight: 600;*!*/
-    /*font-size: 1.3rem;*/
-    /*position: absolute;*/
-    /*top: 6.8rem;*/
-    /*left: 5.3rem;*/
     height: 3rem;
     line-height: 3rem;
     text-align: center;
@@ -1545,30 +1479,6 @@
     top: 0.1rem;
     font-size: 0.8rem;
     border-radius: 4px
-  }
-
-  .addTimeTotleClass {
-    background-color: #6e83c5;
-    color: #ffffff;
-    width: 5.7rem;
-    left: -0.9rem;
-    height: 1.8rem;
-    position: absolute;
-    top: 0.1rem;
-    font-size: 0.8rem !important;
-    border-radius: 4px;
-  }
-
-  .toDaKaStatusSecond {
-    background-color: rgb(139, 156, 172);
-    color: #000000;
-    width: 5.7rem;
-    left: 5rem;
-    height: 1.8rem;
-    position: absolute;
-    top: 0.1rem;
-    font-size: 0.8rem;
-    border-radius: 8px
   }
 
   .toDaKaStatusSecondQ {
@@ -1667,29 +1577,4 @@
     line-height: 1.5rem
   }
 
-  .active {
-    width: 20rem;
-    height: 24rem;
-    border-radius: 4px;
-    background-color: #ffffff;
-  }
-
-  .active2 {
-    width: 20rem;
-    height: 24rem;
-    border-radius: 4px;
-    background-color: #ffffff;
-  }
-
-  .absenteeismClass {
-    width: 20rem;
-    height: 24rem;
-    border-radius: 4px;
-    background-color: #ffffff;
-  }
-
-  .maohaoClass {
-    color: #26a2ff;
-    opacity: 0;
-  }
 </style>

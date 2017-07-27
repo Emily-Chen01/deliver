@@ -61,7 +61,6 @@
   import ManyCompany from "@/components/register/manyCompany"
   import Vue from 'vue'
 
-  let jwresult = {"lat": 0.0, "lng": 0.0};
   let timer1 = null;
 
   export default {
@@ -77,8 +76,6 @@
         msgPhone: '您需要先绑定手机!',
         phoneNumber: '',
         phoneNumberValue: '',//验证码值
-        yyy: false,
-        result: {"lat": 0.0, "lng": 0.0},
         sumSearch: '',
         sumSearchUid: [],
         isCompany: '',
