@@ -2429,7 +2429,7 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .mint-indicator-mask {
     top: 0;
     left: 0;
@@ -2478,7 +2478,6 @@
   .my-data .uploadErrorTip {
     color: #ff4949;
     font-size: 12px;
-    line-height: 1;
     margin-top: 0;
     margin-bottom: 0;
     line-height: 1.3;
