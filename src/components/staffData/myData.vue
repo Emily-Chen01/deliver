@@ -227,12 +227,14 @@
           </el-form-item>
 
           <el-form-item v-if="staff.qq" label="QQ" prop="qq"
-                        :rules="{required: staff.qq.isrequired,message: '请填写正确的 QQ 号(最多 24 个字符)', trigger: 'change', pattern: /^\d{1,24}$/}">
+                        :rules="[{required: staff.qq.isrequired,message: '请填写正确的 QQ 号(数字)', trigger: 'blur', pattern: /^\d+$/},
+                        {message: '不能超过24个字符', trigger: 'blur',max: 24}]">
             <el-input :disabled="!staff.qq.isedit" v-model="model.qq"></el-input>
           </el-form-item>
 
           <el-form-item v-if="staff.wechart" label="微信" prop="wechart"
-                        :rules="{required: staff.wechart.isrequired,message: '请填写正确的微信号(最少 6 个字符，最多 20 个字符)', trigger: 'blur', pattern: /^[a-zA-Z0-9-_]{6,20}$/}">
+                        :rules="[{required: staff.wechart.isrequired,message: '请填写正确的微信号', trigger: 'blur', pattern: /^[a-zA-Z0-9-_]+$/},
+                        {message: '不能少于6个或超过20个字符', trigger: 'blur',min:6,max: 20}]">
             <el-input :disabled="!staff.wechart.isedit" v-model="model.wechart"></el-input>
           </el-form-item>
 
