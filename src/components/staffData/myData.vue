@@ -12,7 +12,8 @@
     <mt-tab-container v-model="selected">
       <mt-tab-container-item id="1">
 
-        <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth" ref="personFm">
+        <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth"
+                 style="padding-bottom: 10px" ref="personFm">
 
           <el-form-item v-if="staff.name" label="姓名" prop="name"
                         :rules="{required: staff.name.isrequired, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
@@ -103,7 +104,8 @@
           " v-model="model.passportNum"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照照片">
+          <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照照片" prop="passportUrl"
+                        :rules="{required: staff.nativePlace.isrequired, message: '请上传护照照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.nativePlace.isedit"
               action="/api/v1.0/client/upload"
@@ -119,6 +121,7 @@
             </div>
             <p class="uploadErrorTip" v-show="passportUrlErrFlag">请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
+
           <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照国家" prop="state"
                         :rules="{required: staff.nativePlace.isrequired, message: '请选择护照国家', trigger: 'change'}">
             <el-select filterable clearable v-model="model.state" placeholder="请选择">
@@ -130,7 +133,9 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-if="staff.idcardPhoUrl" label="身份证正面">
+
+          <el-form-item v-if="staff.idcardPhoUrl" label="身份证正面" prop="idcardPhoUrl"
+                        :rules="{required: staff.idcardPhoUrl.isrequired, message: '请上传身份证照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.idcardPhoUrl.isedit"
               action="/api/v1.0/client/upload"
@@ -148,7 +153,8 @@
             <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
-          <el-form-item v-if="staff.idcardPhoUrl" label="身份证背面">
+          <el-form-item v-if="staff.idcardPhoUrl" label="身份证背面" prop="idcardPhoUrlRev"
+                        :rules="{required: staff.idcardPhoUrl.isrequired, message: '请上传身份证照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.idcardPhoUrl.isedit"
               action="/api/v1.0/client/upload"
@@ -201,7 +207,8 @@
             <el-input :disabled="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.staffPhoUrl" label="员工照片">
+          <el-form-item v-if="staff.staffPhoUrl" label="员工照片" prop="staffPhoUrl"
+                        :rules="{required: staff.staffPhoUrl.isrequired, message: '请上传员工照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.staffPhoUrl.isedit"
               action="/api/v1.0/client/upload"
@@ -276,7 +283,7 @@
           </el-form-item>
 
           <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间" prop="thePartyTime"
-                        :rules="{required: staff.politicsStatus.isrequired,message: '请选择入党时间', trigger: 'change'}">
+                        :rules="{required: staff.politicsStatus.isrequired,type: 'date',message: '请选择入党时间', trigger: 'change',validator:isDate}">
             <el-date-picker
               :disabled="!staff.politicsStatus.isedit"
               v-model="model.thePartyTime"
@@ -292,7 +299,8 @@
             <el-input :disabled="!staff.theArcIns.isedit" v-model="model.theArcIns"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.houregPhoUrl" label="户口本首页">
+          <el-form-item v-if="staff.houregPhoUrl" label="户口本首页" prop="houregPhoUrl"
+                        :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口本首页照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.houregPhoUrl.isedit"
               action="/api/v1.0/client/upload"
@@ -311,7 +319,8 @@
             <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
-          <el-form-item v-if="staff.houregPhoUrl" label="本人户口页">
+          <el-form-item v-if="staff.houregPhoUrl" label="本人户口页" prop="houregPerphoUrl"
+                        :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口页照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.houregPhoUrl.isedit"
               action="/api/v1.0/client/upload"
@@ -331,7 +340,8 @@
               请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
           </el-form-item>
 
-          <el-form-item v-if="staff.houregPhoUrl" label="本人户口页背面">
+          <el-form-item v-if="staff.houregPhoUrl" label="本人户口页背面" prop="houregPerrevphoUrl"
+                        :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口页背面照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.houregPhoUrl.isedit"
               action="/api/v1.0/client/upload"
@@ -593,7 +603,8 @@
             <el-input :disabled="!staff.eduInfor.isedit" v-model="model.major"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="学位证书">
+          <el-form-item v-if="staff.eduInfor" label="学位证书" prop="diplomaUrl"
+                        :rules="{required: staff.eduInfor.isrequired, message: '请上传学位证书照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.eduInfor.isedit"
               action="/api/v1.0/client/upload"
@@ -612,7 +623,8 @@
             <p class="uploadErrorTip" v-show="diplomaUrlErrFlag">请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
           </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="毕业证书">
+          <el-form-item v-if="staff.eduInfor" label="毕业证书" prop="greducaCertUrl"
+                        :rules="{required: staff.eduInfor.isrequired, message: '请上传毕业证书照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.eduInfor.isedit"
               action="/api/v1.0/client/upload"
@@ -637,7 +649,8 @@
             <el-input :disabled="!staff.technicalTitle.isedit" v-model="model.technicalTitle"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.resumeUrl" label="简历">
+          <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrl"
+                        :rules="{required: staff.resumeUrl.isrequired, message: '请上传简历', trigger: 'blur'}">
             <el-upload
               v-if="staff.resumeUrl.isedit"
               action="/api/v1.0/client/upload"
@@ -655,22 +668,22 @@
           </el-form-item>
 
           <el-form-item v-if="staff.hasComres" label="是否有竞业协议">
-            <el-form-item>
-              <el-switch
-                :disabled="!staff.hasComres.isedit"
-                v-model="model.hasComres"
-                on-text="有"
-                off-text="无">
-              </el-switch>
-            </el-form-item>
-            <el-form-item v-if="model.hasComres && staff.hasComres" prop="hasComresRmk"
-                          :rules="[{required: staff.hasComres.isrequired,message: '请输入备注信息', trigger: 'blur'},
+            <el-switch
+              :disabled="!staff.hasComres.isedit"
+              v-model="model.hasComres"
+              on-text="有"
+              off-text="无">
+            </el-switch>
+          </el-form-item>
+          <el-form-item v-if="model.hasComres && staff.hasComres" label="竞业协议备注" prop="hasComresRmk"
+                        :rules="[{required: staff.hasComres.isrequired,message: '请输入备注信息', trigger: 'blur'},
                         {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
-              <el-input :disabled="!staff.hasComres.isedit" v-model="model.hasComresRmk" placeholder="备注信息"></el-input>
-            </el-form-item>
+            <el-input :disabled="!staff.hasComres.isedit" v-model="model.hasComresRmk" placeholder="备注信息"></el-input>
           </el-form-item>
 
-          <el-form-item v-if="staff.emplsepacertUrl" label="离职证明">
+
+          <el-form-item v-if="staff.emplsepacertUrl" label="离职证明" prop="emplsepacertUrl"
+                        :rules="{required: staff.emplsepacertUrl.isrequired, message: '请上传离职证明照片', trigger: 'blur'}">
             <el-upload
               v-if="staff.emplsepacertUrl.isedit"
               action="/api/v1.0/client/upload"
