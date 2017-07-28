@@ -85,7 +85,6 @@
             </el-select>
           </el-form-item>
 
-
           <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace"
                         :rules="{required: staff.nativePlace.isrequired, message: '请选择国籍', trigger: 'change'}">
             <el-select :disabled="!staff.nativePlace.isedit" clearable v-model="model.nativePlace" placeholder="请选择">
@@ -238,7 +237,6 @@
             <el-input :disabled="!staff.wechart.isedit" v-model="model.wechart"></el-input>
           </el-form-item>
 
-
           <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus"
                         :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'blur'}">
             <el-select :disabled="!staff.maritalStatus.isedit" clearable v-model="model.maritalStatus"
@@ -362,7 +360,7 @@
             </el-switch>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证省份" prop="residenceProvince"
+          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证省份" prop="residenceProvince"
                         :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在省份', trigger: 'change'}">
             <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceProvince"
                        placeholder="请选择" @change="queryResidenceCities">
@@ -375,7 +373,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证城市" prop="residenceCity"
+          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证城市" prop="residenceCity"
                         :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在城市', trigger: 'change'}">
             <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceCity"
                        placeholder="请选择">
@@ -388,7 +386,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证办理时间" prop="resperst"
+          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证办理时间" prop="resperst"
                         :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change',validator:isDate}">
             <el-date-picker
               :disabled="!staff.ResperMessage.isedit"
@@ -399,7 +397,7 @@
             </el-date-picker>
           </el-form-item>
 
-          <el-form-item v-if="model.hasResper" label="居住证截止日期" prop="resperet"
+          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证截止日期" prop="resperet"
                         :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isDate}">
             <el-date-picker
               :disabled="!staff.ResperMessage.isedit"
@@ -665,8 +663,9 @@
                 off-text="无">
               </el-switch>
             </el-form-item>
-            <el-form-item v-if="model.hasComres" prop="hasComresRmk"
-                          :rules="{required: staff.hasComres.isrequired,message: '请输入备注信息(最多 32 个字符)', trigger: 'change',max: 32}">
+            <el-form-item v-if="model.hasComres && staff.hasComres" prop="hasComresRmk"
+                          :rules="[{required: staff.hasComres.isrequired,message: '请输入备注信息', trigger: 'blur'},
+                        {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
               <el-input :disabled="!staff.hasComres.isedit" v-model="model.hasComresRmk" placeholder="备注信息"></el-input>
             </el-form-item>
           </el-form-item>
