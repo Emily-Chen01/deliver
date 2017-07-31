@@ -14,16 +14,21 @@
 
         <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth"
                  style="padding-bottom: 10px" ref="personFm">
+          <div v-for="confListItem in confList">
+            <div v-if="confListItem.jname==='name'">
+              <el-form-item v-if="staff.name" label="姓名" prop="name"
+                            :rules="{required: staff.name.isrequired, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
+                <el-input :disabled="!staff.name.isedit" v-model="model.name"></el-input>
+              </el-form-item>
+            </div>
+            <div v-if="confListItem.jname==='mobile'">
+              <el-form-item v-if="staff.mobile" label="手机号" prop="mobile"
+                            :rules="{required: staff.mobile.isrequired, message: '请输入正确的手机号', trigger: 'change', pattern: /^1\d{10}$/}">
+                <el-input :disabled="!staff.mobile.isedit" v-model="model.mobile"></el-input>
+              </el-form-item>
+            </div>
+          </div>
 
-          <el-form-item v-if="staff.name" label="姓名" prop="name"
-                        :rules="{required: staff.name.isrequired, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
-            <el-input :disabled="!staff.name.isedit" v-model="model.name"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.mobile" label="手机号" prop="mobile"
-                        :rules="{required: staff.mobile.isrequired, message: '请输入正确的手机号', trigger: 'change', pattern: /^1\d{10}$/}">
-            <el-input :disabled="!staff.mobile.isedit" v-model="model.mobile"></el-input>
-          </el-form-item>
 
           <el-form-item v-if="staff.gender" label="性别" prop="gender"
                         :rules="{required: staff.gender.isrequired,type: 'number', message: '请选择性别', trigger: 'change'}">
