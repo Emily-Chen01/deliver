@@ -1,175 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--<meta name="viewport" content="width=maxWidth,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>-->
-  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!--修改了这个5-21 下班 content="width=device-width,-->
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HR SAAS</title>
   <link rel="stylesheet" href="static/calendar/css/lCalendar.css">
 </head>
 <script src="static/calendar/js/lCalendar.js"></script>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-<!--//获取经纬度使用-->
-<script>
-  //    let html = document.documentElement;
-  //    let maxWidth=document.documentElement.clientWidth;
-  //    if(maxWidth>480){
-  //      maxWidth=480;
-  //    }
-  //    window.rem = maxWidth/ 25 ;
-  //    html.style.fontSize = window.rem + 'px';
-  //                      let html = document.documentElement;
-  //                      let maxWidth=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth;
-  //                        if(maxWidth>480){
-  //                          maxWidth=480;
-  //                        }
-  //                        window.rem = maxWidth/ 25 ;
-  //                        html.style.fontSize = window.rem + 'px';
-  //
-  //    alert(maxWidth);
-
-  //
-  //      //手机获取宽度
-  //$(document).ready(function(){
-  //  alert($(window).width()); //浏览器当前窗口可视区域宽度
-  ////  console.log($(document).width());//浏览器当前窗口文档对象宽度
-  //  alert($(document.body).outerWidth(true));//浏览器当前窗口文档body的总宽度 包括border padding margin
-  //
-  //})
-  //手机获取宽度
-
-
-
-  //获取签名接口开始
-  //    this.$http.get('/api/v1.0/wechat/sign').then(response => { //获取签名接口开始
-  //      console.log(response);
-  //
-  //    }, response => {
-  //      console.log( 'error callback');
-  //    });
-  //获取签名接口结束
-
-
-  //    //经纬度开始测试
-  //var timestamp = Date.parse(new Date()); //获取时间戳
-  //    alert(Math.round(Math.random()*10));
-  //    alert(timestamp);
-  //
-  //  wx.config({
-  //    debug: false,
-  //    appId: '123',
-  //    timestamp: timestamp,
-  //    nonceStr: Math.round(Math.random()*10),
-  //    signature: '<?php echo $signPackage["signature"];?>',
-  //    jsApiList: [
-  //    'checkJsApi',
-  //    'openLocation',
-  //    'getLocation'
-  //  ]
-  //  });
-  //
-  //
-  //  wx.checkJsApi({
-  //    jsApiList: [
-  //      'getLocation'
-  //    ],
-  //    success: function (res) {
-  //      // alert(JSON.stringify(res));
-  //      // alert(JSON.stringify(res.checkResult.getLocation));
-  //      if (res.checkResult.getLocation == false) {
-  //        alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-  //        return;
-  //      }
-  //    }
-  //  });
-  //
-  //  wx.getLocation({
-  //    success: function (res) {
-  //      var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-  //      var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-  //      var speed = res.speed; // 速度，以米/每秒计
-  //      var accuracy = res.accuracy; // 位置精度
-  //      alert('纬度'+latitude+'经度'+longitude);
-  //    },
-  //    cancel: function (res) {
-  //      alert('用户拒绝授权获取地理位置');
-  //    }
-  //  });
-
-
-  //经纬度结束测试
-
-
-  //    开始测试
-
-  //    var match,
-  //      scale,
-  //      TARGET_WIDTH = 320;
-  //
-  //    if (match = navigator.userAgent.match(/Android (\d+\.\d+)/)) {
-  //      if (parseFloat(match[1]) < 4.4) {
-  //        if (TARGET_WIDTH == 320) TARGET_WIDTH++;
-  //        var scale = window.screen.width / TARGET_WIDTH;
-  //        document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=' + TARGET_WIDTH + ', initial-scale = ' + scale + ', target-densitydpi=device-dpi');
-  //      }
-  //    } else {
-  //      document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=' + TARGET_WIDTH);
-  //    }
-  //    结束测试
-
-  //    var userAgentInfo = navigator.userAgent;
-  //    var Agents = [ "iPhone", "iPad"];
-  //
-  //    for (var v = 0; v < Agents.length; v++) {
-  //      if (userAgentInfo.indexOf(Agents[v]) > 0) {
-  //
-  //        let maxWidth=document.documentElement.clientWidth;
-  //        if(maxWidth>480){
-  //          maxWidth=480;
-  //        }
-  //        window.rem = maxWidth/ 25 ;
-  //        console.log('你的屏幕宽度是d'+maxWidth);
-  //        html.style.fontSize = window.rem + 'px';
-  //
-  //      }
-  //    }
-
-</script>
 
 <style>
-  /*html{*/
-  /*font-size: 32px;*/
-  /*width: 100%;*/
-  /*height: 100%;*/
-  /*}*/
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC","Helvetica Neue",STHeiti,"Microsoft Yahei",Tahoma,Simsun,sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", STHeiti, "Microsoft Yahei", Tahoma, Simsun, sans-serif;
     margin: 0;
-    /*padding: 8px;*/
-
   }
 
-  /*[data-dpr="2"] div { font-size: 24px; }*/
-  /*[data-dpr="3"] div { font-size: 36px; }*/
+  html {
+    font-size: 10px
+  }
 
-  html{font-size:10px}
-  @media screen and (min-width:320px) and (max-width:374px){html{
-    font-size:12.8px}}
-  @media screen and (min-width:375px) and (max-width:413px){html{
-    font-size:15px}}
-  @media screen and (min-width:414px) and (max-width:638px){html{
-    font-size:16.56px}}
-  @media screen and (min-width:639px) and (max-width:721px){html{
-    font-size:19.2px}}
-  /*@media screen and (min-width:720px) and (max-width:749px){html{*/
-  /*font-size:22.5px}}*/
-  /*@media screen and (min-width:750px) and (max-width:799px){html{*/
-  /*font-size:23.5px}}*/
-  /*@media screen and (min-width:800px){html{font-size:25px}}*/
+  @media screen and (min-width: 320px) and (max-width: 374px) {
+    html {
+      font-size: 12.8px
+    }
+  }
 
+  @media screen and (min-width: 375px) and (max-width: 413px) {
+    html {
+      font-size: 15px
+    }
+  }
+
+  @media screen and (min-width: 414px) and (max-width: 638px) {
+    html {
+      font-size: 16.56px
+    }
+  }
+
+  @media screen and (min-width: 639px) and (max-width: 721px) {
+    html {
+      font-size: 19.2px
+    }
+  }
+
+  @media screen and (min-width: 722px) {
+    html {
+      font-size: 20px
+    }
+  }
 
 </style>
-<body >
+<body>
 <div id="app"></div>
 <!-- built files will be auto injected -->
 </body>
