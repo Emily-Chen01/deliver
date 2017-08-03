@@ -288,7 +288,7 @@
       this.addTimeValue = this.getCookie('upAddTime');
 
 
-//          this.addTimeValue=this.getCookie('leaveType');
+//      this.addTimeValue = this.getCookie('leaveType');
       console.log(this.addTimeValue, '在打卡加班传来的加班时间');
 
       this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
@@ -313,8 +313,8 @@
 //        //此区域是在在点击提交申请的时候进行选中传参end
 //
 //
-//        //此处代码为了在打开提交时在提交申请时显示 start
-//        this.selectedDataApply = this.getCookie('leaveType');
+        //此处代码为了在打开提交时在提交申请时显示 start
+        this.selectedDataApply = this.getCookie('leaveType');
 //        console.log('sbsb',this.selectedDataApply);
 
 

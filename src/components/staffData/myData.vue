@@ -128,7 +128,8 @@
 
           <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照国家" prop="state"
                         :rules="{required: staff.nativePlace.isrequired, message: '请选择护照国家', trigger: 'change'}">
-            <el-select :disabled=" !staff.nativePlace.isedit" filterable clearable v-model="model.state" placeholder="请选择">
+            <el-select :disabled=" !staff.nativePlace.isedit" filterable clearable v-model="model.state"
+                       placeholder="请选择">
               <el-option
                 v-for="item in states"
                 :key="item.id"
@@ -388,7 +389,7 @@
           </el-form-item>
 
           <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证城市" prop="residenceCity"
-                        :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在城市', trigger: 'change'}">
+                        :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在城市', trigger: 'blur'}">
             <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceCity"
                        placeholder="请选择">
               <el-option
@@ -412,7 +413,7 @@
           </el-form-item>
 
           <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证截止日期" prop="resperet"
-                        :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isDate}">
+                        :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isResperDate}">
             <el-date-picker
               :disabled="!staff.ResperMessage.isedit"
               v-model="model.resperet"
@@ -1559,6 +1560,33 @@
                 callback();
               } else {
                 callback(new Error(rule.message = "毕业日期不能小于入学日期"));
+              }
+            }
+          } else {
+            callback();
+          }
+        }
+      },
+      isResperDate(rule, value, callback) {
+        if (rule.required) {
+          if (value) {
+            if (this.model.resperst) {
+              if (value.getTime() > this.model.resperst.getTime()) {
+                callback();
+              } else {
+                callback(new Error(rule.message = "截止日期不能小于办理日期"));
+              }
+            }
+          } else {
+            callback(new Error(rule.message));
+          }
+        } else {
+          if (value) {
+            if (this.model.resperst) {
+              if (value.getTime() > this.model.resperst.getTime()) {
+                callback();
+              } else {
+                callback(new Error(rule.message = "截止日期不能小于办理日期"));
               }
             }
           } else {
