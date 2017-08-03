@@ -105,8 +105,7 @@
 
           <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照编号" prop="passportNum"
                         :rules="{required: staff.nativePlace.isrequired,  message: '请填写护照号', trigger: 'change'}">
-            <el-input :disabled=" !staff.nativePlace.isedit
-          " v-model="model.passportNum"></el-input>
+            <el-input :disabled=" !staff.nativePlace.isedit" v-model="model.passportNum"></el-input>
           </el-form-item>
 
           <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照照片" prop="passportUrl"
@@ -129,7 +128,7 @@
 
           <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照国家" prop="state"
                         :rules="{required: staff.nativePlace.isrequired, message: '请选择护照国家', trigger: 'change'}">
-            <el-select filterable clearable v-model="model.state" placeholder="请选择">
+            <el-select :disabled=" !staff.nativePlace.isedit" filterable clearable v-model="model.state" placeholder="请选择">
               <el-option
                 v-for="item in states"
                 :key="item.id"
