@@ -6,6 +6,5 @@ yarn-error.log*
 test/e2e/reports
 selenium-debug.log
 .idea
-dist
 *.rar
 *.zip
