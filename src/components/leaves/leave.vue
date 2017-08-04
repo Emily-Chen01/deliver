@@ -66,7 +66,9 @@
                 @imageuploaded="imageuploaded"
                 :data="data"
                 :headers="tokenHeader"
-                :max-file-size="41943040"
+                @errorhandle="errorhandle"
+                extensions="png,jpeg,jpg"
+                :max-file-size="5242880"
                 compress="60"
                 url="/api/v1.0/client/upload">
                 <div class="CardDivImg" v-if="initUpImage"><img width="150" :src="imgSrc.shenFenIconShowCamera"
@@ -586,6 +588,17 @@
 //              console.log(this.imgSrc.shenFenIcon);
 //            }
 
+      },
+      errorhandle(res){
+        this.leaveSuccess = true;
+        this.alertSuccessImage = false;
+        if (res === 'TYPE ERROR') {
+          this.alertMessage = '上传图片格式为png,jpeg,jpg';
+        } else {
+          this.alertMessage = '上传图片大小不能超过5M';
+        }
+
+        console.log(res);
       },
       handerStartValue(){
         console.log('我是开始时间' + this.startTimeValue);
