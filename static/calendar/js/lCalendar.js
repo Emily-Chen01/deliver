@@ -21,6 +21,7 @@ window.lCalendar = (function() {
     }
     MobileCalendar.prototype = {
         init: function(params) {
+          console.log('params',params);
             this.type = params.type;
             this.trigger = document.querySelector(params.trigger);
             if (this.trigger.getAttribute("data-lcalendar") != null) {
@@ -34,9 +35,10 @@ window.lCalendar = (function() {
                 this.maxM = ~~maxArr[1];
                 this.maxD = ~~maxArr[2];
             }
-            this.bindEvent(this.type);
+            this.bindEvent(this.type,params.startTimeValue);
         },
-        bindEvent: function(type) {
+        bindEvent: function(type,startTime) {
+          console.log('console',startTime)
             var _self = this;
             //呼出日期插件
             function popupDate(e) {
@@ -155,7 +157,7 @@ window.lCalendar = (function() {
                     '</div>' + //date_roll_mask
                     '</div>';
                 document.body.appendChild(_self.gearDate);
-                dateTimeCtrlInit();
+                dateTimeCtrlInit(startTime);
                 var lcalendar_cancel = _self.gearDate.querySelector(".lcalendar_cancel");
                 lcalendar_cancel.addEventListener('touchstart', closeMobileCalendar);
                 var lcalendar_finish = _self.gearDate.querySelector(".lcalendar_finish");
@@ -182,8 +184,15 @@ window.lCalendar = (function() {
                 // time_mm.addEventListener('touchend', gearTouchEnd);
             }
             //初始化年月日时分插件默认值
-            function dateTimeCtrlInit() {
+            function dateTimeCtrlInit(Time) {
+              if(Time){
+                var date = new Date(Time);
+                console.log('startTime12',Time)
+              }else {
                 var date = new Date();
+                console.log('startTime34',Time)
+              }
+
                 var dateArr = {
                     yy: date.getYear(),
                     mm: date.getMonth(),

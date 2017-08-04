@@ -14,700 +14,743 @@
 
         <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth"
                  style="padding-bottom: 10px" ref="personFm">
-          <div v-for="confListItem in confList">
+          <div v-for="confListItem in confList" v-if="confListItem.isdefault===true">
             <div v-if="confListItem.jname==='name'">
               <el-form-item v-if="staff.name" label="姓名" prop="name"
                             :rules="{required: staff.name.isrequired, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
                 <el-input :disabled="!staff.name.isedit" v-model="model.name"></el-input>
               </el-form-item>
             </div>
-            <div v-if="confListItem.jname==='mobile'">
+            <div v-else-if="confListItem.jname==='mobile'">
               <el-form-item v-if="staff.mobile" label="手机号" prop="mobile"
                             :rules="{required: staff.mobile.isrequired, message: '请输入正确的手机号', trigger: 'change', pattern: /^1\d{10}$/}">
                 <el-input :disabled="!staff.mobile.isedit" v-model="model.mobile"></el-input>
               </el-form-item>
             </div>
-          </div>
-
-
-          <el-form-item v-if="staff.gender" label="性别" prop="gender"
-                        :rules="{required: staff.gender.isrequired,type: 'number', message: '请选择性别', trigger: 'change'}">
-            <el-radio-group :disabled="!staff.gender.isedit" v-model="model.gender">
-              <el-radio v-for="item in genders" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth"
-                        :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change',validator:isDate}">
-            <el-date-picker
-              :disabled="!staff.dateOfBirth.isedit"
-              v-model="model.dateOfBirth"
-              type="date"
-              placeholder="选择出生日期"
-              :editable="false">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item v-if="staff.idcard" label="身份证号" prop="idcard"
-                        :rules="{required: staff.idcard.isrequired, message: '请填写正确的身份证号', trigger: 'change',pattern: /^\d{17}(?:\d|[Xx])$/}">
-            <el-input :disabled="!staff.idcard.isedit" v-model="model.idcard"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.podoMessage" label="户口省份" prop="podoProvince"
-                        :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在省份', trigger: 'change'}">
-            <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.podoProvince" placeholder="请选择"
-                       @change="queryPodoCities">
-              <el-option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.podoMessage" label="户口城市" prop="podoCity"
-                        :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在城市', trigger: 'change'}">
-            <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.podoCity" placeholder="请选择">
-              <el-option
-                v-for="c in podoCities"
-                :key="c.uid"
-                :label="c.name"
-                :value="c.uid">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.podoMessage" label="户口地址" prop="podoAddress"
-                        :rules="[{required: staff.podoMessage.isrequired, message: '请输入正确的户口详细地址', trigger: 'change'},
-                        {message: '不能超过256个字符', trigger: 'blur', max: 256}]">
-            <el-input :disabled="!staff.podoMessage.isedit" v-model="model.podoAddress"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.podoMessage" label="户口性质" prop="typeOfDemicile"
-                        :rules="{required: staff.podoMessage.isrequired, message: '请选择户口性质', trigger: 'change'}">
-            <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.typeOfDemicile" placeholder="请选择">
-              <el-option
-                v-for="(v, k) in typeOfDemiciles"
-                :key="k"
-                :label="v"
-                :value="k">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace"
-                        :rules="{required: staff.nativePlace.isrequired, message: '请选择国籍', trigger: 'change'}">
-            <el-select :disabled="!staff.nativePlace.isedit" clearable v-model="model.nativePlace" placeholder="请选择">
-              <el-option
-                v-for="(v, k) in nativePlaces"
-                :key="k"
-                :label="v"
-                :value="k">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照编号" prop="passportNum"
-                        :rules="{required: staff.nativePlace.isrequired,  message: '请填写护照号', trigger: 'change'}">
-            <el-input :disabled=" !staff.nativePlace.isedit" v-model="model.passportNum"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照照片" prop="passportUrl"
-                        :rules="{required: staff.nativePlace.isrequired, message: '请上传护照照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.nativePlace.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="passportUrlOk"
-              :before-upload="beforePassportUrl">
-              <i class="el-icon-plus"> 上传护照照片</i>
-            </el-upload>
-            <div v-if="model.passportUrl" class="upload-img-wrapper">
-              <img :src="model.passportUrl"/>
-            </div>
-            <p class="uploadErrorTip" v-show="passportUrlErrFlag">请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照国家" prop="state"
-                        :rules="{required: staff.nativePlace.isrequired, message: '请选择护照国家', trigger: 'change'}">
-            <el-select :disabled=" !staff.nativePlace.isedit" filterable clearable v-model="model.state"
-                       placeholder="请选择">
-              <el-option
-                v-for="item in states"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.idcardPhoUrl" label="身份证正面" prop="idcardPhoUrl"
-                        :rules="{required: staff.idcardPhoUrl.isrequired, message: '请上传身份证照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.idcardPhoUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="idcardPhoUrlOk"
-              :before-upload="beforeIdcardPhoUrl">
-              <i class="el-icon-plus"> 上传身份证正面照片</i>
-            </el-upload>
-            <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.idcardPhoUrl = ''" aria-hidden="true"></i>
-              <img :src="model.idcardPhoUrl"/>
-            </div>
-            <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.idcardPhoUrl" label="身份证背面" prop="idcardPhoUrlRev"
-                        :rules="{required: staff.idcardPhoUrl.isrequired, message: '请上传身份证照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.idcardPhoUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="idcardPhoUrlRevOk"
-              :before-upload="beforeIdcardPhoUrlRev">
-              <i class="el-icon-plus"> 上传身份证背面照片</i>
-            </el-upload>
-            <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.idcardPhoUrlRev = ''" aria-hidden="true"></i>
-              <img :src="model.idcardPhoUrlRev"/>
-            </div>
-            <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
-                        :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号', trigger: 'blur', pattern: /^\w+$/},
-                        {message: '7-9个数字', trigger: 'blur', min:7,max:9}]">
-            <el-input :disabled="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum"
-                        :rules="[{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号', trigger: 'blur'},
-                        {message: '不能超过12个数字', trigger: 'blur', pattern: /^\w{1,12}$/}]">
-            <el-input :disabled="!staff.accfuNum.isedit" v-model="model.accfuNum"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.bankName" label="银行名称" prop="bankName"
-                        :rules="{required: staff.bankName.isrequired, message: '请选择银行', trigger: 'blur'}">
-            <el-select :disabled="!staff.bankName.isedit" clearable v-model="model.bankName" placeholder="请选择">
-              <el-option
-                v-for="(v, k) in bankNames"
-                :key="k"
-                :label="v"
-                :value="k">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.bankName" label="开户行" prop="openingBank"
-                        :rules="[{required: staff.bankName.isrequired, message: '请填写正确的开户行名称', trigger: 'blur'},
-                        {message: '不能超过 64 个字符', trigger: 'blur', max: 64}]">
-            <el-input :disabled="!staff.bankName.isedit" v-model="model.openingBank"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber"
-                        :rules="{required: staff.bankName.isrequired,min:16,max:64, message: '请填写正确的银行卡号', trigger: 'blur'}">
-            <el-input :disabled="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.staffPhoUrl" label="员工照片" prop="staffPhoUrl"
-                        :rules="{required: staff.staffPhoUrl.isrequired, message: '请上传员工照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.staffPhoUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="staffPhoUrlOk"
-              :before-upload="beforeStaffPhoUrl">
-              <i class="el-icon-plus"> 上传员工照片</i>
-            </el-upload>
-            <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.staffPhoUrl = ''" aria-hidden="true"></i>
-              <img :src="model.staffPhoUrl"/>
-            </div>
-            <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.englishName" label="英文名" prop="englishName"
-                        :rules="[{required: staff.englishName.isrequired,  message: '请填写正确的英文名', trigger: 'blur', pattern: /^[a-zA-Z]+$/},
-                                  {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
-            <el-input :disabled="!staff.englishName.isedit" v-model="model.englishName"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.qq" label="QQ" prop="qq"
-                        :rules="[{required: staff.qq.isrequired,message: '请填写正确的 QQ 号(数字)', trigger: 'blur', pattern: /^\d+$/},
-                        {message: '不能超过24个字符', trigger: 'blur',max: 24}]">
-            <el-input :disabled="!staff.qq.isedit" v-model="model.qq"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.wechart" label="微信" prop="wechart"
-                        :rules="[{required: staff.wechart.isrequired,message: '请填写正确的微信号', trigger: 'blur', pattern: /^[a-zA-Z0-9-_]+$/},
-                        {message: '不能少于6个或超过20个字符', trigger: 'blur',min:6,max: 20}]">
-            <el-input :disabled="!staff.wechart.isedit" v-model="model.wechart"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus"
-                        :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'blur'}">
-            <el-select :disabled="!staff.maritalStatus.isedit" clearable v-model="model.maritalStatus"
-                       placeholder="请选择">
-              <el-option
-                v-for="(v, k) in maritalStatuses"
-                :key="k"
-                :label="v.name"
-                :value="v.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.nation" label="民族" prop="nation"
-                        :rules="{required: staff.nation.isrequired,message: '请选择民族', trigger: 'blur'}">
-            <el-select :disabled="!staff.nation.isedit" clearable v-model="model.nation" placeholder="请选择">
-              <el-option
-                v-for="(v, k) in nations"
-                :key="k"
-                :label="v.name"
-                :value="v.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.politicsStatus" label="政治面貌" prop="politicsStatus"
-                        :rules="{required: staff.politicsStatus.isrequired,message: '请选择政治面貌', trigger: 'change'}">
-            <el-select :disabled="!staff.politicsStatus.isedit" clearable v-model="model.politicsStatus"
-                       placeholder="请选择">
-              <el-option
-                v-for="(v, k) in politicsStatuses"
-                :key="k"
-                :label="v"
-                :value="k">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间" prop="thePartyTime"
-                        :rules="{required: staff.politicsStatus.isrequired,type: 'date',message: '请选择入党时间', trigger: 'change',validator:isDate}">
-            <el-date-picker
-              :disabled="!staff.politicsStatus.isedit"
-              v-model="model.thePartyTime"
-              type="month"
-              placeholder="选择入党时间"
-              :editable="false">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item v-if="staff.theArcIns" label="存档机构" prop="theArcIns"
-                        :rules="[{required: staff.theArcIns.isrequired,message: '请输入正确的存档机构', trigger: 'change'},
-                                  {message: '不能超过128个字符', trigger: 'blur', max: 128}]">
-            <el-input :disabled="!staff.theArcIns.isedit" v-model="model.theArcIns"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.houregPhoUrl" label="户口本首页" prop="houregPhoUrl"
-                        :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口本首页照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.houregPhoUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="houregPhoUrlOk"
-              :before-upload="beforeHouregPhoUrl">
-              <i class="el-icon-plus"></i>
-              <span>户口本首页</span>
-            </el-upload>
-            <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.houregPhoUrl = ''" aria-hidden="true"></i>
-              <img :src="model.houregPhoUrl"/>
-            </div>
-            <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.houregPhoUrl" label="本人户口页" prop="houregPerphoUrl"
-                        :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口页照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.houregPhoUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="houregPerphoUrlOk"
-              :before-upload="beforeHouregPerphoUrl">
-              <i class="el-icon-plus"></i>
-              <span>本人户口页</span>
-            </el-upload>
-            <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.houregPerphoUrl = ''" aria-hidden="true"></i>
-              <img :src="model.houregPerphoUrl"/>
-            </div>
-            <p class="uploadErrorTip" v-show="houregPerphoUrlErrFlag">
-              请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.houregPhoUrl" label="本人户口页背面" prop="houregPerrevphoUrl"
-                        :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口页背面照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.houregPhoUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="houregPerrevphoUrlOk"
-              :before-upload="beforeHouregPerrevphoUrl">
-              <i class="el-icon-plus"></i>
-              <span>本人户口页背面</span>
-            </el-upload>
-            <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.houregPerrevphoUrl = ''" aria-hidden="true"></i>
-              <img :src="model.houregPerrevphoUrl"/>
-            </div>
-            <p class="uploadErrorTip" v-show="houregPerrevphoUrlErrFlag">
-              请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.ResperMessage" label="居住证">
-            <el-switch
-              :disabled="!staff.ResperMessage.isedit"
-              v-model="model.hasResper"
-              on-text="有"
-              off-text="无">
-            </el-switch>
-          </el-form-item>
-
-          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证省份" prop="residenceProvince"
-                        :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在省份', trigger: 'change'}">
-            <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceProvince"
-                       placeholder="请选择" @change="queryResidenceCities">
-              <el-option
-                v-for="p in provinces"
-                :key="p.uid"
-                :label="p.name"
-                :value="p.uid">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证城市" prop="residenceCity"
-                        :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在城市', trigger: 'blur'}">
-            <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceCity"
-                       placeholder="请选择">
-              <el-option
-                v-for="c in residenceCities"
-                :key="c.uid"
-                :label="c.name"
-                :value="c.uid">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证办理时间" prop="resperst"
-                        :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change',validator:isDate}">
-            <el-date-picker
-              :disabled="!staff.ResperMessage.isedit"
-              v-model="model.resperst"
-              type="date"
-              placeholder="选择日期"
-              :editable="false">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证截止日期" prop="resperet"
-                        :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isResperDate}">
-            <el-date-picker
-              :disabled="!staff.ResperMessage.isedit"
-              v-model="model.resperet"
-              type="date"
-              placeholder="选择日期"
-              :editable="false">
-            </el-date-picker>
-          </el-form-item>
-
-          <el-form-item v-if="staff.poreLocation" label="现居住地省份" prop="poreProvince"
-                        :rules="{required: staff.poreLocation.isrequired, message: '请选择现居住地所在省份', trigger: 'change'}">
-            <el-select :disabled="!staff.poreLocation.isedit" clearable v-model="model.poreProvince" placeholder="请选择"
-                       @change="queryPoreCities">
-              <el-option
-                v-for="p in provinces"
-                :key="p.uid"
-                :label="p.name"
-                :value="p.uid">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.poreLocation" label="现居住地城市" prop="poreCity"
-                        :rules="{required: staff.poreLocation.isrequired,message: '请选择现居住地所在城市', trigger: 'change'}">
-            <el-select :disabled="!staff.poreLocation.isedit" clearable v-model="model.poreCity" placeholder="请选择">
-              <el-option
-                v-for="c in poreCities"
-                :key="c.uid"
-                :label="c.name"
-                :value="c.uid">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.poreLocation" label="现居住地址" prop="poreAddress"
-                        :rules="[{required: staff.poreLocation.isrequired,message: '请输入正确的现居住地详细地址', trigger: 'change'},
-                        {message: '不能超过 256 个字符', trigger: 'blur', max: 256}]">
-            <el-input :disabled="!staff.poreLocation.isedit" v-model="model.poreAddress"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.personalEmail" label="个人邮箱" prop="personalEmail"
-                        :rules="{required: staff.personalEmail.isrequired,type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', max: 30}">
-            <el-input :disabled="!staff.personalEmail.isedit" v-model="model.personalEmail"></el-input>
-          </el-form-item>
-
-          <!-- DO NOT DEL -->
-          <el-form-item v-if="staff.emergencyContact" label="紧急联系人" :required="staff.emergencyContact.isrequired">
-          </el-form-item>
-          <div v-if="staff.emergencyContact" class="contacts-wrapper">
-            <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
-              <el-form-item label="姓名" label-width="4em"
-                            :prop="'contacts[' + idx + '].emergContact'"
-                            :rules="[{required:staff.emergencyContact.isrequired, message: '请输入姓名', trigger: 'blur'},
-                            {message: ' 长度小于32个字符', trigger: 'blur', max: 32}]">
-                <el-input :disabled="!staff.emergencyContact.isedit" v-model="item.emergContact">
-                  <el-button v-if="idx > 0" :disabled="!staff.emergencyContact.isedit"
-                             slot="append"
-                             @click="rmvContact(item)"><i
-                    class="el-icon-delete"></i></el-button>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="电话" label-width="4em" :prop="'contacts[' + idx + '].emergContactPhone'"
-                            :rules="{required:staff.emergencyContact.isrequired,message: '请输入紧急联系人电话', trigger: 'blur', pattern: /^1\d{10}$/}">
-                <el-input :disabled="!staff.emergencyContact.isedit" v-model="item.emergContactPhone"></el-input>
-              </el-form-item>
-            </div>
-            <el-button :disabled="!staff.emergencyContact.isedit" v-if="model.contacts.length < 3" class="add-contact"
-                       type="primary" @click="addContact">
-              <span>添加紧急联系人</span>
-            </el-button>
-          </div>
-
-          <el-form-item v-if="staff.hasChilds" label="是否有子女">
-            <el-switch
-              :disabled="!staff.hasChilds.isedit"
-              v-model="model.hasChild"
-              on-text="有"
-              off-text="无">
-            </el-switch>
-          </el-form-item>
-
-          <div v-if="staff.hasChilds && model.hasChild">
-            <div class="child" v-for="(item, idx) in model.childs">
-              <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'" label-position="top" labelWidth="105px"
-                            :rules="[{required: staff.hasChilds.isrequired, message: '请输入子女姓名', trigger: 'change'},
-                                    {message: ' 长度小于32个字符', trigger: 'blur', max: 32,}]">
-                <el-input :disabled="!staff.hasChilds.isedit" style="width: 100%" v-model="item.name">
-                  <el-button slot="append" v-if="idx > 0" :disabled="!staff.hasChilds.isedit" @click="rmvChild(item)">
-                    <i class="el-icon-delete"></i>
-                  </el-button>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'" labelWidth="105px"
-                            :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'blur'}">
-                <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
-                  <el-radio :label="1">男</el-radio>
-                  <el-radio :label="0">女</el-radio>
+            <div v-else-if="confListItem.jname==='gender'">
+              <el-form-item v-if="staff.gender" label="性别" prop="gender"
+                            :rules="{required: staff.gender.isrequired,type: 'number', message: '请选择性别', trigger: 'change'}">
+                <el-radio-group :disabled="!staff.gender.isedit" v-model="model.gender">
+                  <el-radio v-for="item in genders" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="105px"
-                            :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择出生日期', trigger: 'blur',validator:isDate}">
+            </div>
+            <div v-else-if="confListItem.jname==='dateOfBirth'">
+              <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth"
+                            :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change',validator:isDate}">
                 <el-date-picker
-                  :disabled="!staff.hasChilds.isedit"
-                  v-model="item.dateOfBirth"
+                  :disabled="!staff.dateOfBirth.isedit"
+                  v-model="model.dateOfBirth"
                   type="date"
                   placeholder="选择出生日期"
                   :editable="false">
                 </el-date-picker>
               </el-form-item>
-              <el-form-item label="子女出生证明" labelWidth="105px">
+            </div>
+            <div v-else-if="confListItem.jname==='idcard'">
+              <el-form-item v-if="staff.idcard" label="身份证号" prop="idcard"
+                            :rules="{required: staff.idcard.isrequired, message: '请填写正确的身份证号', trigger: 'change',pattern: /^\d{17}(?:\d|[Xx])$/}">
+                <el-input :disabled="!staff.idcard.isedit" v-model="model.idcard"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='podoMessage'">
+
+              <el-form-item v-if="staff.podoMessage" label="户口省份" prop="podoProvince"
+                            :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在省份', trigger: 'change'}">
+                <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.podoProvince"
+                           placeholder="请选择"
+                           @change="queryPodoCities">
+                  <el-option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="staff.podoMessage" label="户口城市" prop="podoCity"
+                            :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在城市', trigger: 'change'}">
+                <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.podoCity" placeholder="请选择">
+                  <el-option
+                    v-for="c in podoCities"
+                    :key="c.uid"
+                    :label="c.name"
+                    :value="c.uid">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="staff.podoMessage" label="户口地址" prop="podoAddress"
+                            :rules="[{required: staff.podoMessage.isrequired, message: '请输入正确的户口详细地址', trigger: 'change'},
+                        {message: '不能超过256个字符', trigger: 'blur', max: 256}]">
+                <el-input :disabled="!staff.podoMessage.isedit" v-model="model.podoAddress"></el-input>
+              </el-form-item>
+
+              <el-form-item v-if="staff.podoMessage" label="户口性质" prop="typeOfDemicile"
+                            :rules="{required: staff.podoMessage.isrequired, message: '请选择户口性质', trigger: 'change'}">
+                <el-select :disabled="!staff.podoMessage.isedit" clearable v-model="model.typeOfDemicile"
+                           placeholder="请选择">
+                  <el-option
+                    v-for="(v, k) in typeOfDemiciles"
+                    :key="k"
+                    :label="v"
+                    :value="k">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </div>
+          <div v-for="confListItem in confList" v-if="confListItem.isdefault===false">
+            <div v-if="confListItem.jname==='nativePlace'">
+              <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace"
+                            :rules="{required: staff.nativePlace.isrequired, message: '请选择国籍', trigger: 'change'}">
+                <el-select :disabled="!staff.nativePlace.isedit" clearable v-model="model.nativePlace"
+                           placeholder="请选择">
+                  <el-option
+                    v-for="(v, k) in nativePlaces"
+                    :key="k"
+                    :label="v"
+                    :value="k">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照编号" prop="passportNum"
+                            :rules="{required: staff.nativePlace.isrequired,  message: '请填写护照号', trigger: 'change'}">
+                <el-input :disabled=" !staff.nativePlace.isedit" v-model="model.passportNum"></el-input>
+              </el-form-item>
+
+              <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照照片" prop="passportUrl"
+                            :rules="{required: staff.nativePlace.isrequired, message: '请上传护照照片', trigger: 'blur'}">
                 <el-upload
-                  v-if="staff.hasChilds.isedit"
+                  v-if="staff.nativePlace.isedit"
                   action="/api/v1.0/client/upload"
                   name="files"
                   :show-file-list="false"
                   :headers="tokenHeader"
-                  :on-success="makeChildOk(item)"
-                  :before-upload="makeChildCheck(item)">
-                  <i class="el-icon-plus"></i>
-                  <span>如子女不满1周岁需要提供出生证明</span>
+                  :on-success="passportUrlOk"
+                  :before-upload="beforePassportUrl">
+                  <i class="el-icon-plus"> 上传护照照片</i>
                 </el-upload>
-                <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"/>
-                <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+                <div v-if="model.passportUrl" class="upload-img-wrapper">
+                  <img :src="model.passportUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="passportUrlErrFlag">请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
+
+              <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照国家" prop="state"
+                            :rules="{required: staff.nativePlace.isrequired, message: '请选择护照国家', trigger: 'change'}">
+                <el-select :disabled=" !staff.nativePlace.isedit" filterable clearable v-model="model.state"
+                           placeholder="请选择">
+                  <el-option
+                    v-for="item in states"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </div>
-            <el-button class="add-child" type="primary" :disabled="!staff.hasChilds.isedit" @click="addChild">
-              <span>添加子女</span>
-            </el-button>
-          </div>
+            <div v-else-if="confListItem.jname==='idcardPhoUrl'">
+              <el-form-item v-if="staff.idcardPhoUrl" label="身份证正面" prop="idcardPhoUrl"
+                            :rules="{required: staff.idcardPhoUrl.isrequired, message: '请上传身份证照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.idcardPhoUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="idcardPhoUrlOk"
+                  :before-upload="beforeIdcardPhoUrl">
+                  <i class="el-icon-plus"> 上传身份证正面照片</i>
+                </el-upload>
+                <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.idcardPhoUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.idcardPhoUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">
+                  请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
 
-          <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom"
-                        :rules="[{required: staff.finallyEmpCom.isrequired,message: '请输入正确的上一家受聘公司', trigger: 'change'},
+              <el-form-item v-if="staff.idcardPhoUrl" label="身份证背面" prop="idcardPhoUrlRev"
+                            :rules="{required: staff.idcardPhoUrl.isrequired, message: '请上传身份证照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.idcardPhoUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="idcardPhoUrlRevOk"
+                  :before-upload="beforeIdcardPhoUrlRev">
+                  <i class="el-icon-plus"> 上传身份证背面照片</i>
+                </el-upload>
+                <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.idcardPhoUrlRev = ''" aria-hidden="true"></i>
+                  <img :src="model.idcardPhoUrlRev"/>
+                </div>
+                <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">
+                  请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='socsecNum'">
+              <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
+                            :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号', trigger: 'blur', pattern: /^\w+$/},
+                        {message: '7-9个数字', trigger: 'blur', min:7,max:9}]">
+                <el-input :disabled="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='accfuNum'">
+              <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum"
+                            :rules="[{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号', trigger: 'blur'},
+                        {message: '不能超过12个数字', trigger: 'blur', pattern: /^\w{1,12}$/}]">
+                <el-input :disabled="!staff.accfuNum.isedit" v-model="model.accfuNum"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='bankName'">
+              <el-form-item v-if="staff.bankName" label="银行名称" prop="bankName"
+                            :rules="{required: staff.bankName.isrequired, message: '请选择银行', trigger: 'blur'}">
+                <el-select :disabled="!staff.bankName.isedit" clearable v-model="model.bankName" placeholder="请选择">
+                  <el-option
+                    v-for="(v, k) in bankNames"
+                    :key="k"
+                    :label="v"
+                    :value="k">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="staff.bankName" label="开户行" prop="openingBank"
+                            :rules="[{required: staff.bankName.isrequired, message: '请填写正确的开户行名称', trigger: 'blur'},
+                        {message: '不能超过 64 个字符', trigger: 'blur', max: 64}]">
+                <el-input :disabled="!staff.bankName.isedit" v-model="model.openingBank"></el-input>
+              </el-form-item>
+
+              <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber"
+                            :rules="{required: staff.bankName.isrequired,min:16,max:64, message: '请填写正确的银行卡号', trigger: 'blur'}">
+                <el-input :disabled="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='staffPhoUrl'">
+              <el-form-item v-if="staff.staffPhoUrl" label="员工照片" prop="staffPhoUrl"
+                            :rules="{required: staff.staffPhoUrl.isrequired, message: '请上传员工照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.staffPhoUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="staffPhoUrlOk"
+                  :before-upload="beforeStaffPhoUrl">
+                  <i class="el-icon-plus"> 上传员工照片</i>
+                </el-upload>
+                <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.staffPhoUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.staffPhoUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='englishName'">
+              <el-form-item v-if="staff.englishName" label="英文名" prop="englishName"
+                            :rules="[{required: staff.englishName.isrequired,  message: '请填写正确的英文名', trigger: 'blur', pattern: /^[a-zA-Z]+$/},
+                                  {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
+                <el-input :disabled="!staff.englishName.isedit" v-model="model.englishName"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='qq'">
+              <el-form-item v-if="staff.qq" label="QQ" prop="qq"
+                            :rules="[{required: staff.qq.isrequired,message: '请填写正确的 QQ 号(数字)', trigger: 'blur', pattern: /^\d+$/},
+                        {message: '不能超过24个字符', trigger: 'blur',max: 24}]">
+                <el-input :disabled="!staff.qq.isedit" v-model="model.qq"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='wechart'">
+              <el-form-item v-if="staff.wechart" label="微信" prop="wechart"
+                            :rules="[{required: staff.wechart.isrequired,message: '请填写正确的微信号', trigger: 'blur', pattern: /^[a-zA-Z0-9-_]+$/},
+                        {message: '不能少于6个或超过20个字符', trigger: 'blur',min:6,max: 20}]">
+                <el-input :disabled="!staff.wechart.isedit" v-model="model.wechart"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='maritalStatus'">
+              <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus"
+                            :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'blur'}">
+                <el-select :disabled="!staff.maritalStatus.isedit" clearable v-model="model.maritalStatus"
+                           placeholder="请选择">
+                  <el-option
+                    v-for="(v, k) in maritalStatuses"
+                    :key="k"
+                    :label="v.name"
+                    :value="v.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='nation'">
+              <el-form-item v-if="staff.nation" label="民族" prop="nation"
+                            :rules="{required: staff.nation.isrequired,message: '请选择民族', trigger: 'blur'}">
+                <el-select :disabled="!staff.nation.isedit" clearable v-model="model.nation" placeholder="请选择">
+                  <el-option
+                    v-for="(v, k) in nations"
+                    :key="k"
+                    :label="v.name"
+                    :value="v.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='politicsStatus'">
+              <el-form-item v-if="staff.politicsStatus" label="政治面貌" prop="politicsStatus"
+                            :rules="{required: staff.politicsStatus.isrequired,message: '请选择政治面貌', trigger: 'change'}">
+                <el-select :disabled="!staff.politicsStatus.isedit" clearable v-model="model.politicsStatus"
+                           placeholder="请选择">
+                  <el-option
+                    v-for="(v, k) in politicsStatuses"
+                    :key="k"
+                    :label="v"
+                    :value="k">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间" prop="thePartyTime"
+                            :rules="{required: staff.politicsStatus.isrequired,type: 'date',message: '请选择入党时间', trigger: 'change',validator:isDate}">
+                <el-date-picker
+                  :disabled="!staff.politicsStatus.isedit"
+                  v-model="model.thePartyTime"
+                  type="month"
+                  placeholder="选择入党时间"
+                  :editable="false">
+                </el-date-picker>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='theArcIns'">
+              <el-form-item v-if="staff.theArcIns" label="存档机构" prop="theArcIns"
+                            :rules="[{required: staff.theArcIns.isrequired,message: '请输入正确的存档机构', trigger: 'change'},
+                                  {message: '不能超过128个字符', trigger: 'blur', max: 128}]">
+                <el-input :disabled="!staff.theArcIns.isedit" v-model="model.theArcIns"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='houregPhoUrl'">
+              <el-form-item v-if="staff.houregPhoUrl" label="户口本首页" prop="houregPhoUrl"
+                            :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口本首页照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.houregPhoUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="houregPhoUrlOk"
+                  :before-upload="beforeHouregPhoUrl">
+                  <i class="el-icon-plus"></i>
+                  <span>户口本首页</span>
+                </el-upload>
+                <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.houregPhoUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.houregPhoUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">
+                  请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
+
+              <el-form-item v-if="staff.houregPhoUrl" label="本人户口页" prop="houregPerphoUrl"
+                            :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口页照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.houregPhoUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="houregPerphoUrlOk"
+                  :before-upload="beforeHouregPerphoUrl">
+                  <i class="el-icon-plus"></i>
+                  <span>本人户口页</span>
+                </el-upload>
+                <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.houregPerphoUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.houregPerphoUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="houregPerphoUrlErrFlag">
+                  请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
+
+              <el-form-item v-if="staff.houregPhoUrl" label="本人户口页背面" prop="houregPerrevphoUrl"
+                            :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口页背面照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.houregPhoUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="houregPerrevphoUrlOk"
+                  :before-upload="beforeHouregPerrevphoUrl">
+                  <i class="el-icon-plus"></i>
+                  <span>本人户口页背面</span>
+                </el-upload>
+                <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.houregPerrevphoUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.houregPerrevphoUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="houregPerrevphoUrlErrFlag">
+                  请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='ResperMessage'">
+              <el-form-item v-if="staff.ResperMessage" label="居住证">
+                <el-switch
+                  :disabled="!staff.ResperMessage.isedit"
+                  v-model="model.hasResper"
+                  on-text="有"
+                  off-text="无">
+                </el-switch>
+              </el-form-item>
+
+              <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证省份" prop="residenceProvince"
+                            :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在省份', trigger: 'change'}">
+                <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceProvince"
+                           placeholder="请选择" @change="queryResidenceCities">
+                  <el-option
+                    v-for="p in provinces"
+                    :key="p.uid"
+                    :label="p.name"
+                    :value="p.uid">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证城市" prop="residenceCity"
+                            :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在城市', trigger: 'blur'}">
+                <el-select :disabled="!staff.ResperMessage.isedit" clearable v-model="model.residenceCity"
+                           placeholder="请选择">
+                  <el-option
+                    v-for="c in residenceCities"
+                    :key="c.uid"
+                    :label="c.name"
+                    :value="c.uid">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证办理时间" prop="resperst"
+                            :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change',validator:isDate}">
+                <el-date-picker
+                  :disabled="!staff.ResperMessage.isedit"
+                  v-model="model.resperst"
+                  type="date"
+                  placeholder="选择日期"
+                  :editable="false">
+                </el-date-picker>
+              </el-form-item>
+
+              <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证截止日期" prop="resperet"
+                            :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isResperDate}">
+                <el-date-picker
+                  :disabled="!staff.ResperMessage.isedit"
+                  v-model="model.resperet"
+                  type="date"
+                  placeholder="选择日期"
+                  :editable="false">
+                </el-date-picker>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='poreLocation'">
+              <el-form-item v-if="staff.poreLocation" label="现居住地省份" prop="poreProvince"
+                            :rules="{required: staff.poreLocation.isrequired, message: '请选择现居住地所在省份', trigger: 'change'}">
+                <el-select :disabled="!staff.poreLocation.isedit" clearable v-model="model.poreProvince"
+                           placeholder="请选择"
+                           @change="queryPoreCities">
+                  <el-option
+                    v-for="p in provinces"
+                    :key="p.uid"
+                    :label="p.name"
+                    :value="p.uid">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="staff.poreLocation" label="现居住地城市" prop="poreCity"
+                            :rules="{required: staff.poreLocation.isrequired,message: '请选择现居住地所在城市', trigger: 'change'}">
+                <el-select :disabled="!staff.poreLocation.isedit" clearable v-model="model.poreCity" placeholder="请选择">
+                  <el-option
+                    v-for="c in poreCities"
+                    :key="c.uid"
+                    :label="c.name"
+                    :value="c.uid">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item v-if="staff.poreLocation" label="现居住地址" prop="poreAddress"
+                            :rules="[{required: staff.poreLocation.isrequired,message: '请输入正确的现居住地详细地址', trigger: 'change'},
+                        {message: '不能超过 256 个字符', trigger: 'blur', max: 256}]">
+                <el-input :disabled="!staff.poreLocation.isedit" v-model="model.poreAddress"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='personalEmail'">
+              <el-form-item v-if="staff.personalEmail" label="个人邮箱" prop="personalEmail"
+                            :rules="{required: staff.personalEmail.isrequired,type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', max: 30}">
+                <el-input :disabled="!staff.personalEmail.isedit" v-model="model.personalEmail"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='emergencyContact'">
+              <el-form-item v-if="staff.emergencyContact" label="紧急联系人" :required="staff.emergencyContact.isrequired">
+              </el-form-item>
+              <div v-if="staff.emergencyContact" class="contacts-wrapper">
+                <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
+                  <el-form-item label="姓名" label-width="4em"
+                                :prop="'contacts[' + idx + '].emergContact'"
+                                :rules="[{required:staff.emergencyContact.isrequired, message: '请输入姓名', trigger: 'blur'},
+                            {message: ' 长度小于32个字符', trigger: 'blur', max: 32}]">
+                    <el-input :disabled="!staff.emergencyContact.isedit" v-model="item.emergContact">
+                      <el-button v-if="idx > 0" :disabled="!staff.emergencyContact.isedit"
+                                 slot="append"
+                                 @click="rmvContact(item)"><i
+                        class="el-icon-delete"></i></el-button>
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item label="电话" label-width="4em" :prop="'contacts[' + idx + '].emergContactPhone'"
+                                :rules="{required:staff.emergencyContact.isrequired,message: '请输入紧急联系人电话', trigger: 'blur', pattern: /^1\d{10}$/}">
+                    <el-input :disabled="!staff.emergencyContact.isedit" v-model="item.emergContactPhone"></el-input>
+                  </el-form-item>
+                </div>
+                <el-button :disabled="!staff.emergencyContact.isedit" v-if="model.contacts.length < 3"
+                           class="add-contact"
+                           type="primary" @click="addContact">
+                  <span>添加紧急联系人</span>
+                </el-button>
+              </div>
+            </div>
+            <div v-else-if="confListItem.jname==='hasChilds'">
+              <el-form-item v-if="staff.hasChilds" label="是否有子女">
+                <el-switch
+                  :disabled="!staff.hasChilds.isedit"
+                  v-model="model.hasChild"
+                  on-text="有"
+                  off-text="无">
+                </el-switch>
+              </el-form-item>
+
+              <div v-if="staff.hasChilds && model.hasChild">
+                <div class="child" v-for="(item, idx) in model.childs">
+                  <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'" label-position="top" labelWidth="105px"
+                                :rules="[{required: staff.hasChilds.isrequired, message: '请输入子女姓名', trigger: 'change'},
+                                    {message: ' 长度小于32个字符', trigger: 'blur', max: 32,}]">
+                    <el-input :disabled="!staff.hasChilds.isedit" style="width: 100%" v-model="item.name">
+                      <el-button slot="append" v-if="idx > 0" :disabled="!staff.hasChilds.isedit"
+                                 @click="rmvChild(item)">
+                        <i class="el-icon-delete"></i>
+                      </el-button>
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'" labelWidth="105px"
+                                :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'blur'}">
+                    <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
+                      <el-radio :label="1">男</el-radio>
+                      <el-radio :label="0">女</el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="105px"
+                                :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择出生日期', trigger: 'blur',validator:isDate}">
+                    <el-date-picker
+                      :disabled="!staff.hasChilds.isedit"
+                      v-model="item.dateOfBirth"
+                      type="date"
+                      placeholder="选择出生日期"
+                      :editable="false">
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="子女出生证明" labelWidth="105px">
+                    <el-upload
+                      v-if="staff.hasChilds.isedit"
+                      action="/api/v1.0/client/upload"
+                      name="files"
+                      :show-file-list="false"
+                      :headers="tokenHeader"
+                      :on-success="makeChildOk(item)"
+                      :before-upload="makeChildCheck(item)">
+                      <i class="el-icon-plus"></i>
+                      <span>如子女不满1周岁需要提供出生证明</span>
+                    </el-upload>
+                    <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"/>
+                    <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+                  </el-form-item>
+                </div>
+                <el-button class="add-child" type="primary" :disabled="!staff.hasChilds.isedit" @click="addChild">
+                  <span>添加子女</span>
+                </el-button>
+              </div>
+            </div>
+            <div v-else-if="confListItem.jname==='finallyEmpCom'">
+              <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom"
+                            :rules="[{required: staff.finallyEmpCom.isrequired,message: '请输入正确的上一家受聘公司', trigger: 'change'},
                                 {message: '不能超过 256 个字符', trigger: 'blur', max: 256}]">
-            <el-input :disabled="!staff.finallyEmpCom.isedit" v-model="model.finallyEmpCom"></el-input>
-          </el-form-item>
+                <el-input :disabled="!staff.finallyEmpCom.isedit" v-model="model.finallyEmpCom"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='eduInfor'">
+              <el-form-item v-if="staff.eduInfor" label="最高学历" prop="maxinumDeucaLevel"
+                            :rules="{required: staff.eduInfor.isrequired, message: '请选择最高学历', trigger: 'blur'}">
+                <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.maxinumDeucaLevel"
+                           placeholder="请选择">
+                  <el-option
+                    v-for="(v, k) in maxinumDeucaLevels"
+                    :key="k"
+                    :label="v"
+                    :value="k">
+                  </el-option>
+                </el-select>
+              </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="最高学历" prop="maxinumDeucaLevel"
-                        :rules="{required: staff.eduInfor.isrequired, message: '请选择最高学历', trigger: 'blur'}">
-            <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.maxinumDeucaLevel" placeholder="请选择">
-              <el-option
-                v-for="(v, k) in maxinumDeucaLevels"
-                :key="k"
-                :label="v"
-                :value="k">
-              </el-option>
-            </el-select>
-          </el-form-item>
+              <el-form-item v-if="staff.eduInfor" label="学历类型" prop="diplomaType"
+                            :rules="{required: staff.eduInfor.isrequired, message: '请选择学历类型', trigger: 'blur',validator:noopValidat}">
+                <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.diplomaType"
+                           placeholder="请选择学历类型">
+                  <el-option
+                    v-for="(v, k) in diplomaTypes"
+                    :key="k"
+                    :label="v.name"
+                    :value="k">
+                  </el-option>
+                </el-select>
+              </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="学历类型" prop="diplomaType"
-                        :rules="{required: staff.eduInfor.isrequired, message: '请选择学历类型', trigger: 'blur',validator:noopValidat}">
-            <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.diplomaType" placeholder="请选择学历类型">
-              <el-option
-                v-for="(v, k) in diplomaTypes"
-                :key="k"
-                :label="v.name"
-                :value="k">
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item v-if="staff.eduInfor" label="毕业院校" prop="graduateInst"
-                        :rules="[{required: staff.eduInfor.isrequired, message: '请输入正确的毕业院校', trigger: 'change'},
+              <el-form-item v-if="staff.eduInfor" label="毕业院校" prop="graduateInst"
+                            :rules="[{required: staff.eduInfor.isrequired, message: '请输入正确的毕业院校', trigger: 'change'},
                         {message: '不能超过64个字符', trigger: 'blur', max: 64}]">
-            <el-input :disabled="!staff.eduInfor.isedit" v-model="model.graduateInst"></el-input>
-          </el-form-item>
+                <el-input :disabled="!staff.eduInfor.isedit" v-model="model.graduateInst"></el-input>
+              </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="入学日期" prop="entSchst"
-                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change',validator:isDate}">
-            <el-date-picker
-              :disabled="!staff.eduInfor.isedit"
-              v-model="model.entSchst"
-              type="month"
-              placeholder="选择日期"
-              :editable="false">
-            </el-date-picker>
-          </el-form-item>
+              <el-form-item v-if="staff.eduInfor" label="入学日期" prop="entSchst"
+                            :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change',validator:isDate}">
+                <el-date-picker
+                  :disabled="!staff.eduInfor.isedit"
+                  v-model="model.entSchst"
+                  type="month"
+                  placeholder="选择日期"
+                  :editable="false">
+                </el-date-picker>
+              </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="毕业日期" prop="entSchet"
-                        :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change',validator:isDates}">
-            <el-date-picker
-              :disabled="!staff.eduInfor.isedit"
-              v-model="model.entSchet"
-              type="month"
-              placeholder="选择日期"
-              :editable="false">
-            </el-date-picker>
-          </el-form-item>
+              <el-form-item v-if="staff.eduInfor" label="毕业日期" prop="entSchet"
+                            :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change',validator:isDates}">
+                <el-date-picker
+                  :disabled="!staff.eduInfor.isedit"
+                  v-model="model.entSchet"
+                  type="month"
+                  placeholder="选择日期"
+                  :editable="false">
+                </el-date-picker>
+              </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="专业" prop="major"
-                        :rules="[{required: staff.eduInfor.isrequired,message: '请输入正确的专业名称', trigger: 'change'},
+              <el-form-item v-if="staff.eduInfor" label="专业" prop="major"
+                            :rules="[{required: staff.eduInfor.isrequired,message: '请输入正确的专业名称', trigger: 'change'},
                         {message: '不能超过32个字符', trigger: 'blur',max: 32}]">
-            <el-input :disabled="!staff.eduInfor.isedit" v-model="model.major"></el-input>
-          </el-form-item>
+                <el-input :disabled="!staff.eduInfor.isedit" v-model="model.major"></el-input>
+              </el-form-item>
 
-          <el-form-item v-if="staff.eduInfor" label="学位证书" prop="diplomaUrl"
-                        :rules="{required: staff.eduInfor.isrequired, message: '请上传学位证书照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.eduInfor.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="diplomaUrlOk"
-              :before-upload="beforeDiplomaUrl">
-              <i class="el-icon-plus"></i>
-              <span>学位证书</span>
-            </el-upload>
-            <div v-if="model.diplomaUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.diplomaUrl = ''" aria-hidden="true"></i>
-              <img :src="model.diplomaUrl"/>
+              <el-form-item v-if="staff.eduInfor" label="学位证书" prop="diplomaUrl"
+                            :rules="{required: staff.eduInfor.isrequired, message: '请上传学位证书照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.eduInfor.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="diplomaUrlOk"
+                  :before-upload="beforeDiplomaUrl">
+                  <i class="el-icon-plus"></i>
+                  <span>学位证书</span>
+                </el-upload>
+                <div v-if="model.diplomaUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.diplomaUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.diplomaUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="diplomaUrlErrFlag">请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+              </el-form-item>
+
+              <el-form-item v-if="staff.eduInfor" label="毕业证书" prop="greducaCertUrl"
+                            :rules="{required: staff.eduInfor.isrequired, message: '请上传毕业证书照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.eduInfor.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="greducaCertUrlOk"
+                  :before-upload="beforeGreducaCertUrl">
+                  <i class="el-icon-plus"></i>
+                  <span>毕业证书</span>
+                </el-upload>
+                <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.greducaCertUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.greducaCertUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">
+                  请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
             </div>
-            <p class="uploadErrorTip" v-show="diplomaUrlErrFlag">请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.eduInfor" label="毕业证书" prop="greducaCertUrl"
-                        :rules="{required: staff.eduInfor.isrequired, message: '请上传毕业证书照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.eduInfor.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="greducaCertUrlOk"
-              :before-upload="beforeGreducaCertUrl">
-              <i class="el-icon-plus"></i>
-              <span>毕业证书</span>
-            </el-upload>
-            <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.greducaCertUrl = ''" aria-hidden="true"></i>
-              <img :src="model.greducaCertUrl"/>
-            </div>
-            <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.technicalTitle" label="职称" prop="technicalTitle"
-                        :rules="[{required: staff.technicalTitle.isrequired, message: '请输入正确的职称', trigger: 'change'},
+            <div v-else-if="confListItem.jname==='technicalTitle'">
+              <el-form-item v-if="staff.technicalTitle" label="职称" prop="technicalTitle"
+                            :rules="[{required: staff.technicalTitle.isrequired, message: '请输入正确的职称', trigger: 'change'},
                         {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
-            <el-input :disabled="!staff.technicalTitle.isedit" v-model="model.technicalTitle"></el-input>
-          </el-form-item>
-
-          <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrl"
-                        :rules="{required: staff.resumeUrl.isrequired, message: '请上传简历', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.resumeUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="resumeUrlOk"
-              :before-upload="beforeResumeUrl">
-              <i class="el-icon-plus"> 上传简历</i>
-            </el-upload>
-            <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"
-                                                                     @click.stop="model.resumeUrl = ''"></i>
-            </p>
-            <p class="uploadErrorTip" v-show="resumeUrlErrFlag">请上传正确的简历(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
-          </el-form-item>
-
-          <el-form-item v-if="staff.hasComres" label="是否有竞业协议">
-            <el-switch
-              :disabled="!staff.hasComres.isedit"
-              v-model="model.hasComres"
-              on-text="有"
-              off-text="无">
-            </el-switch>
-          </el-form-item>
-          <el-form-item v-if="model.hasComres && staff.hasComres" label="竞业协议备注" prop="hasComresRmk"
-                        :rules="[{required: staff.hasComres.isrequired,message: '请输入备注信息', trigger: 'blur'},
-                        {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
-            <el-input :disabled="!staff.hasComres.isedit" v-model="model.hasComresRmk" placeholder="备注信息"></el-input>
-          </el-form-item>
-
-
-          <el-form-item v-if="staff.emplsepacertUrl" label="离职证明" prop="emplsepacertUrl"
-                        :rules="{required: staff.emplsepacertUrl.isrequired, message: '请上传离职证明照片', trigger: 'blur'}">
-            <el-upload
-              v-if="staff.emplsepacertUrl.isedit"
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="emplsepacertUrlOk"
-              :before-upload="beforeEmplsepacertUrl">
-              <i class="el-icon-plus"> 上传离职证明</i>
-            </el-upload>
-            <!--<p v-if="model.emplsepacertUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"-->
-            <!--@click.stop="model.emplsepacertUrl = ''"></i>-->
-            <!--</p>-->
-            <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
-              <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''" aria-hidden="true"></i>
-              <img :src="model.emplsepacertUrl"/>
+                <el-input :disabled="!staff.technicalTitle.isedit" v-model="model.technicalTitle"></el-input>
+              </el-form-item>
             </div>
-            <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">请上传正确的离职证明照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </el-form-item>
+            <div v-else-if="confListItem.jname==='resumeUrl'">
+              <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrl"
+                            :rules="{required: staff.resumeUrl.isrequired, message: '请上传简历', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.resumeUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="resumeUrlOk"
+                  :before-upload="beforeResumeUrl">
+                  <i class="el-icon-plus"> 上传简历</i>
+                </el-upload>
+                <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"
+                                                                         @click.stop="model.resumeUrl = ''"></i>
+                </p>
+                <p class="uploadErrorTip" v-show="resumeUrlErrFlag">请上传正确的简历(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='hasComres'">
+              <el-form-item v-if="staff.hasComres" label="是否有竞业协议">
+                <el-switch
+                  :disabled="!staff.hasComres.isedit"
+                  v-model="model.hasComres"
+                  on-text="有"
+                  off-text="无">
+                </el-switch>
+              </el-form-item>
+              <el-form-item v-if="model.hasComres && staff.hasComres" label="竞业协议备注" prop="hasComresRmk"
+                            :rules="[{required: staff.hasComres.isrequired,message: '请输入备注信息', trigger: 'blur'},
+                        {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
+                <el-input :disabled="!staff.hasComres.isedit" v-model="model.hasComresRmk"
+                          placeholder="备注信息"></el-input>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='emplsepacertUrl'">
+              <el-form-item v-if="staff.emplsepacertUrl" label="离职证明" prop="emplsepacertUrl"
+                            :rules="{required: staff.emplsepacertUrl.isrequired, message: '请上传离职证明照片', trigger: 'blur'}">
+                <el-upload
+                  v-if="staff.emplsepacertUrl.isedit"
+                  action="/api/v1.0/client/upload"
+                  name="files"
+                  :show-file-list="false"
+                  :headers="tokenHeader"
+                  :on-success="emplsepacertUrlOk"
+                  :before-upload="beforeEmplsepacertUrl">
+                  <i class="el-icon-plus"> 上传离职证明</i>
+                </el-upload>
+                <!--<p v-if="model.emplsepacertUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"-->
+                <!--@click.stop="model.emplsepacertUrl = ''"></i>-->
+                <!--</p>-->
+                <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
+                  <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''" aria-hidden="true"></i>
+                  <img :src="model.emplsepacertUrl"/>
+                </div>
+                <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">
+                  请上传正确的离职证明照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+              </el-form-item>
+            </div>
+          </div>
         </el-form>
         <div class="save-wrapper">
           <mt-button class="save" type="primary" @click="save">保存并更新</mt-button>
@@ -715,141 +758,189 @@
       </mt-tab-container-item>
       <mt-tab-container-item id="2">
         <el-form label-position="left" :model="model" :rules="rules" ref="postFm" :label-width="labelWidth">
-          <el-form-item v-if="staffRecord.contracMes" label="合同类型">
-            <span>{{contractTypes && contractTypes[model.record.contract.contracType.toString()]}}</span>
-          </el-form-item>
+          <div v-for="confListItem in confList" v-if="confListItem.isdefault===true">
+            <div v-if="confListItem.jname==='contracMes'">
+              <el-form-item v-if="staffRecord.contracMes" label="合同类型">
+                <span>{{contractTypes && contractTypes[model.record.contract.contracType.toString()]}}</span>
+              </el-form-item>
 
-          <!-- 劳动合同 -->
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同生效日期">
-            <span>{{datefmt(model.record.contract.startTime)}}</span>
-          </el-form-item>
+              <!-- 劳动合同 -->
+              <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同生效日期">
+                <span>{{datefmt(model.record.contract.startTime)}}</span>
+              </el-form-item>
 
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同期限">
-            <span>{{model.record.contract.contractPeriod}}</span>
-          </el-form-item>
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同结束日期">
-            <span>{{ formalEndTime }}</span>
-          </el-form-item>
-          <!--<el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同附件">-->
-          <!--<a v-if="model.record.contract.contractUrl"-->
-          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
-          <!--</el-form-item>-->
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="候选人来源渠道">
-            <span>{{recruitmentChannels[+model.record.contract.recruitmentChannel]}}</span>
-          </el-form-item>
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="基础薪资">
-            <span>{{model.record.baseSalary}}元</span>
-          </el-form-item>
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用薪资">
-            <span>{{model.record.trialSalary}}元</span>
-          </el-form-item>
-          <!-- 实习合同 -->
-          <el-form-item label="实习合同生效日期" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">
-            <span>{{datefmt(model.record.contract.startTime)}}</span>
-          </el-form-item>
-          <el-form-item label="实习合同结束日期" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">
-            <span>{{datefmt(model.record.contract.endTime)}}</span>
-          </el-form-item>
-          <!--<el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">-->
-          <!--<a v-if="model.record.contract.contractUrl"-->
-          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
-          <!--</el-form-item>-->
-          <!-- 返聘 -->
-          <el-form-item label="返聘合同生效日期" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
-            <span>{{datefmt(model.record.contract.startTime)}}</span>
-          </el-form-item>
-          <el-form-item label="返聘合同结束日期" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
-            <span>{{datefmt(model.record.contract.endTime)}}</span>
-          </el-form-item>
-          <!--<el-form-item label="返聘协议" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">-->
-          <!--<a v-if="model.record.contract.contractUrl"-->
-          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
-          <!--</el-form-item>-->
-          <!-- 兼职 -->
-          <el-form-item label="兼职协议生效日期" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
-            <span>{{datefmt(model.record.contract.startTime)}}</span>
-          </el-form-item>
-          <el-form-item label="兼职协议结束日期" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
-            <span>{{datefmt(model.record.contract.endTime)}}</span>
-          </el-form-item>
-          <!--<el-form-item label="兼职协议附件" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">-->
-          <!--<a v-if="model.record.contract.contractUrl"-->
-          <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>-->
-          <!--</el-form-item>-->
-          <el-form-item v-if="staffRecord.dateOfEntry" label="入职时间">
-            <span>{{datefmt(model.record.dateOfEntry)}}</span>
-          </el-form-item>
-          <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用期">
-            <span>{{probations && probations[model.record.probation.toString()]}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.companyAge" label="司龄">
-            <span>{{isCompanyAge}} 年(司龄计算是根据入职日期开始计算)</span>
-          </el-form-item>
+              <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同期限">
+                <span>{{model.record.contract.contractPeriod}}</span>
+              </el-form-item>
+              <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同结束日期">
+                <span>{{ formalEndTime }}</span>
+              </el-form-item>
+              <!--<el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同附件">-->
+              <!--<a v-if="model.record.contract.contractUrl"-->
+              <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+              <!--</el-form-item>-->
+              <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="候选人来源渠道">
+                <span>{{recruitmentChannels[+model.record.contract.recruitmentChannel]}}</span>
+              </el-form-item>
+              <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="基础薪资">
+                <span>{{model.record.baseSalary}}元</span>
+              </el-form-item>
+              <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用薪资">
+                <span>{{model.record.trialSalary}}元</span>
+              </el-form-item>
+              <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用期">
+                <span>{{probations && probations[model.record.probation.toString()]}}</span>
+              </el-form-item>
+              <!-- 实习合同 -->
+              <el-form-item label="实习合同生效日期" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">
+                <span>{{datefmt(model.record.contract.startTime)}}</span>
+              </el-form-item>
+              <el-form-item label="实习合同结束日期" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">
+                <span>{{datefmt(model.record.contract.endTime)}}</span>
+              </el-form-item>
+              <!--<el-form-item label="实习合同附件" v-if="model.record.contract.contracType === '1' && staffRecord.contracMes">-->
+              <!--<a v-if="model.record.contract.contractUrl"-->
+              <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+              <!--</el-form-item>-->
+              <!-- 返聘 -->
+              <el-form-item label="返聘合同生效日期" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
+                <span>{{datefmt(model.record.contract.startTime)}}</span>
+              </el-form-item>
+              <el-form-item label="返聘合同结束日期" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">
+                <span>{{datefmt(model.record.contract.endTime)}}</span>
+              </el-form-item>
+              <!--<el-form-item label="返聘协议" v-if="model.record.contract.contracType === '2' && staffRecord.contracMes">-->
+              <!--<a v-if="model.record.contract.contractUrl"-->
+              <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`"></a>-->
+              <!--</el-form-item>-->
+              <!-- 兼职 -->
+              <el-form-item label="兼职协议生效日期" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
+                <span>{{datefmt(model.record.contract.startTime)}}</span>
+              </el-form-item>
+              <el-form-item label="兼职协议结束日期" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
+                <span>{{datefmt(model.record.contract.endTime)}}</span>
+              </el-form-item>
+              <!--<el-form-item label="兼职协议附件" v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">-->
+              <!--<a v-if="model.record.contract.contractUrl"-->
+              <!--:href="model.record.contract.contractUrl + `&openId=${tokenHeader.openId}`">下载</a>-->
+              <!--</el-form-item>-->
 
-          <el-form-item label="所在部门" v-if="staffRecord.deptUid">
-            <span>{{emp && emp.record && emp.record.deptName}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.position" label="职位">
-            <span>{{model.record.position}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.jobGrade" label="职级">
-            <span>{{model.record.jobGrade}}</span>
-          </el-form-item>
-          <el-form-item v-if="false" label="首次工作时间">
-            <span>{{datefmt(model.record.fristWorkTime)}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.workAge" label="工龄">
-            <span>{{isWorkAge}} 年(工龄计算是根据首次参加工作时间开始计算)</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.jobNumber" label="工号">
-            <span>{{model.record.jobNumber}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.StaffStatus && (model.record.sstaffStatus== state.id)"
-                        v-for="(state,index) in staffStatusList" :key="index" label="员工状态">
-            <span v-text="state.name"></span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.workEmail" label="工作邮箱">
-            <span>{{model.record.workEmail}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级">
-            <span>{{staffRecord.upji}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.workLocation" label="工作地省份">
-            <span>{{provinces && getPC(model.record.workProvince || '', model.record.workCity || '')}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.workLocation" label="工作地城市">
-            <span>{{staticWorkCity}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffRecord.workLocation" label="工作地址">
-            <span>{{model.record.workAddress}}</span>
-          </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='dateOfEntry'">
+              <el-form-item v-if="staffRecord.dateOfEntry" label="入职时间">
+                <span>{{datefmt(model.record.dateOfEntry)}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='companyAge'">
+              <el-form-item v-if="staffRecord.companyAge" label="司龄">
+                <span>{{isCompanyAge}} 年(司龄计算是根据入职日期开始计算)</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='deptUid'">
+              <el-form-item label="所在部门" v-if="staffRecord.deptUid">
+                <span>{{emp && emp.record && emp.record.deptName}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='position'">
+              <el-form-item v-if="staffRecord.position" label="职位">
+                <span>{{model.record.position}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='jobGrade'">
+              <el-form-item v-if="staffRecord.jobGrade" label="职级">
+                <span>{{model.record.jobGrade}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='workAge'">
+              <el-form-item v-if="staffRecord.workAge" label="首次工作时间">
+                <span>{{datefmt(model.record.fristWorkTime)}}</span>
+              </el-form-item>
+              <el-form-item v-if="staffRecord.workAge" label="工龄">
+                <span>{{isWorkAge}} 年(工龄计算是根据首次参加工作时间开始计算)</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='jobNumber'">
+              <el-form-item v-if="staffRecord.jobNumber" label="工号">
+                <span>{{model.record.jobNumber}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='StaffStatus'">
+              <el-form-item v-if="staffRecord.StaffStatus && (model.record.sstaffStatus== state.id)"
+                            v-for="(state,index) in staffStatusList" :key="index" label="员工状态">
+                <span v-text="state.name"></span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='reporterJobNumber'">
+              <el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级">
+                <span>{{staffRecord.upji}}</span>
+              </el-form-item>
+            </div>
+          </div>
+          <div v-for="confListItem in confList" v-if="confListItem.isdefault===false">
+            <div v-if="confListItem.jname==='workLocation'">
+              <el-form-item v-if="staffRecord.workLocation" label="工作地省份">
+                <span>{{provinces && getPC(model.record.workProvince || '', model.record.workCity || '')}}</span>
+              </el-form-item>
+              <el-form-item v-if="staffRecord.workLocation" label="工作地城市">
+                <span>{{staticWorkCity}}</span>
+              </el-form-item>
+              <el-form-item v-if="staffRecord.workLocation" label="工作地址">
+                <span>{{model.record.workAddress}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='workEmail'">
+              <el-form-item v-if="staffRecord.workEmail" label="工作邮箱">
+                <span>{{model.record.workEmail}}</span>
+              </el-form-item>
+            </div>
+          </div>
         </el-form>
         <el-form label-position="left" :model="model" :rules="rules" ref="optionFm" :label-width="labelWidth">
-          <el-form-item v-if="staffShareOption.awardDate" label="授予日期">
-            <span>{{datefmt(model.shareOption.awardDate)}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffShareOption.awardAmount" label="授予数量">
-            <span>{{model.shareOption.awardAmount}}</span>
-          </el-form-item>
-          <el-form-item v-if=" staffShareOption.awardRound" label="授予轮次">
-            <span>{{model.shareOption.awardRound}}轮</span>
-          </el-form-item>
-          <el-form-item v-if="staffShareOption.exercSchedule" label="行权期">
-            <span>{{model.shareOption.exercSchedule}}月</span>
-          </el-form-item>
-          <el-form-item v-if="staffShareOption.terminallyCount" label="每期数量">
-            <span>{{model.shareOption.terminallyCount}}</span>
-          </el-form-item>
-          <el-form-item v-if="staffShareOption.terminallyCount" label="期权合同">
-            <a v-if="model.shareOption.contractUrl"
-               :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`"></a>
-          </el-form-item>
-          <el-form-item v-if="staffShareOption.awardRate" label="授予总比例">
-            <span>{{model.shareOption.awardRate}}%</span>
-          </el-form-item>
-          <el-form-item v-if="staffShareOption.terminallyRate" label="每期比例">
-            <span>{{model.shareOption.terminallyRate}}%</span>
-          </el-form-item>
+          <div v-for="confListItem in confList" v-if="confListItem.isdefault===true">
+            <div v-if="confListItem.jname==='awardDate'">
+              <el-form-item v-if="staffShareOption.awardDate" label="授予日期">
+                <span>{{datefmt(model.shareOption.awardDate)}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='awardAmount'">
+              <el-form-item v-if="staffShareOption.awardAmount" label="授予数量">
+                <span>{{model.shareOption.awardAmount}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='awardRound'">
+              <el-form-item v-if=" staffShareOption.awardRound" label="授予轮次">
+                <span>{{model.shareOption.awardRound}}轮</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='exercSchedule'">
+              <el-form-item v-if="staffShareOption.exercSchedule" label="行权期">
+                <span>{{model.shareOption.exercSchedule}}月</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='terminallyCount'">
+              <el-form-item v-if="staffShareOption.terminallyCount" label="每期数量">
+                <span>{{model.shareOption.terminallyCount}}</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='contractUrl'">
+              <el-form-item v-if="staffShareOption.contractUrl" label="期权合同">
+                <a v-if="model.shareOption.contractUrl"
+                   :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`"></a>
+              </el-form-item>
+            </div>
+          </div>
+          <div v-for="confListItem in confList" v-if="confListItem.isdefault===false">
+            <div v-if="confListItem.jname==='awardRate'">
+              <el-form-item v-if="staffShareOption.awardRate" label="授予总比例">
+                <span>{{model.shareOption.awardRate}}%</span>
+              </el-form-item>
+            </div>
+            <div v-else-if="confListItem.jname==='terminallyRate'">
+              <el-form-item v-if="staffShareOption.terminallyRate" label="每期比例">
+                <span>{{model.shareOption.terminallyRate}}%</span>
+              </el-form-item>
+            </div>
+          </div>
         </el-form>
       </mt-tab-container-item>
     </mt-tab-container>
@@ -1122,213 +1213,6 @@
           }
         },
         rules: {
-//          name: [
-//            {
-//              required: true, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change', transform
-//            }
-//          ],
-//          gender: [
-//            {
-//              type: 'number', required: true, message: '请选择性别', trigger: 'change'
-//            }
-//          ],
-//          mobile: [
-//            {
-//              required: true, message: '请输入正确的手机号', trigger: 'change', transform, pattern: /^1\d{10}$/
-//            }
-//          ],
-//          nativePlace: [
-//            {
-//              message: '请选择国籍', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          passportNum: [
-//            {
-//              message: '请填写护照号', trigger: 'change', transform
-//            }
-//          ],
-//          idcard: [
-//            {
-//              required: true, message: '请填写正确的身份证号', trigger: 'change',
-//              transform, pattern: /^\d{17}(?:\d|[Xx])$/
-//            }
-//          ],
-//          socsecNum: [
-//            {
-//              message: '请填写正确的社保编号（最多10个数字）', trigger: 'change',
-//              transform, pattern: /^\w{1,10}$/
-//            }
-//          ],
-//          accfuNum: [
-//            {
-//              message: '请填写正确的公积金编号（最多12个数字）', trigger: 'change', transform, pattern: /^\d{1,12}$/
-//            }
-//          ],
-//          bankName: [
-//            {
-//              message: '请选择银行', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          openingBank: [
-//            {
-//              message: '请填写正确的开户行名称(最多 64 个字符)', trigger: 'change', transform, max: 64
-//            }
-//          ],
-//          cardNumber: [
-//            {
-//              message: '请填写正确的银行卡号', trigger: 'change', validator: cardNumber1
-//            }
-//          ],
-//          englishName: [
-//            {
-//              message: '请填写正确的英文名(最多 32 个字符)', trigger: 'change', transform, pattern: /^[a-zA-Z]{1,32}$/
-//            }
-//          ],
-//          qq: [
-//            {
-//              message: '请填写正确的 QQ 号(最多 24 个字符)', trigger: 'change', transform, pattern: /^\d{1,24}$/
-//            }
-//          ],
-//          wechart: [
-//            {
-//              message: '请填写正确的微信号(最少 6 个字符，最多 20 个字符)', trigger: 'blur', transform, pattern: /^[a-zA-Z0-9-_]{6,20}$/
-//            }
-//          ],
-//          maritalStatus: [
-//            {
-//              message: '请选择婚姻状况', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          nation: [
-//            {
-//              message: '请选择民族', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          politicsStatus: [
-//            {
-//              message: '请选择政治面貌', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          thePartyTime: [
-//            {
-//              message: '请选择入党时间', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          theArcIns: [
-//            {
-//              message: '请输入正确的存档机构(最多 128 个字符)', trigger: 'change', transform, max: 128
-//            }
-//          ],
-//          dateOfBirth: [
-//            {
-//              required: true, type: 'date', message: '请选择出生日期', trigger: 'change'
-//            }
-//          ],
-//          podoProvince: [
-//            {
-//              message: '请选择户口所在省份', trigger: 'change'
-//            }
-//          ],
-//          podoCity: [
-//            {
-//              message: '请选择户口所在城市', trigger: 'change'
-//            }
-//          ],
-//          podoAddress: [
-//            {
-//              message: '请输入正确的户口详细地址(最多 256 个字符)', trigger: 'change', transform, max: 256
-//            }
-//          ],
-//          typeOfDemicile: [
-//            {
-//              message: '请选择户口性质', trigger: 'change'
-//            }
-//          ],
-//          residenceProvince: [
-//            {
-//              message: '请选择居住证所在省份', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          residenceCity: [
-//            {
-//              message: '请选择居住证所在城市', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          resperst: [
-//            {
-//              type: 'date', message: '请选择居住证办理时间', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          resperet: [
-//            {
-//              type: 'date', message: '请选择居住证截止日期', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          poreProvince: [
-//            {
-//              message: '请选择现居住地所在省份', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          poreCity: [
-//            {
-//              message: '请选择现居住地所在城市', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          poreAddress: [
-//            {
-//              message: '请输入正确的现居住地详细地址(最多 256 个字符)', trigger: 'change', transform, max: 256
-//            }
-//          ],
-//          personalEmail: [
-//            {
-//              type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', transform, max: 30
-//            }
-//          ],
-//          finallyEmpCom: [
-//            {
-//              message: '请输入正确的上一家受聘公司(最多 256 个字符)', trigger: 'change', transform, max: 256
-//            }
-//          ],
-//          maxinumDeucaLevel: [
-//            {
-//              message: '请选择最高学历', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          diplomaType: [
-//            {
-//              message: '请选择学历类型', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          graduateInst: [
-//            {
-//              message: '请输入正确的毕业院校(最多 64 个字符)', trigger: 'change', transform, max: 64
-//            }
-//          ],
-//          entSchst: [
-//            {
-//              type: 'date', message: '请选择入学日期', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          entSchet: [
-//            {
-//              type: 'date', message: '请选择毕业日期', trigger: 'change', validator: noopValidator
-//            }
-//          ],
-//          major: [
-//            {
-//              message: '请输入正确的专业名称(最多 32 个字符)', trigger: 'change', transform, max: 32
-//            }
-//          ],
-//          technicalTitle: [
-//            {
-//              message: '请输入正确的职称(最多 32 个字符)', trigger: 'change', transform, max: 32
-//            }
-//          ],
-//          hasComresRmk: [
-//            {
-//              message: '请输入备注信息(最多 32 个字符)', trigger: 'change', transform, max: 32
-//            }
-//          ],
           'record.contract.contracType': [
             {
               required: true, message: '请选择合同类型', trigger: 'change'
@@ -1533,7 +1417,6 @@
       },
       isDate(rule, value, callback) {
         if (rule.required) {
-//          if (moment.isDate(value)) callback();
           if (value) callback();
           else callback(new Error(rule.message));
         } else {
@@ -1625,7 +1508,6 @@
         this.$http.get('/api/v1.0/common/query/province')
           .then(res => {
             res = res.body;
-            console.log('p', res);
             if (res.code === 200) {
               this.provinces = res.result;
             }
@@ -1956,7 +1838,6 @@
         return isDoc && isInSize;
       },
       save() {
-        console.log('model.maritalStatus', this.model.maritalStatus);
         let makePost = () => {
           let out = {};
           let record = {};
@@ -2161,20 +2042,13 @@
           return;
         }
 
-
         console.log('12345', makePost());
         let staffApi = '/api/v1.0/client/updateStaff';
-
-        // return;
         this.$http.post(staffApi, makePost())
           .then(res => {
             res = res.body;
             if (res.code === 200) {
-//              this.$message.success({message: '保存并更新成功！', showClose: true});
               this.$router.push({path: '/signCard'});
-
-//               this.reset();
-              // this.selected = '1';
             }
           })
           .catch(err => console.log(err.status, err.statusText));
@@ -2183,7 +2057,6 @@
         this.$refs.personFm.resetFields();
         this.$refs.postFm.resetFields();
         this.$refs.optionFm.resetFields();
-
         this.model.childs = [
           {
             name: '',
@@ -2248,7 +2121,9 @@
           .then(res => {
             res = res.body;
             if (res.code === 200) {
-              this.confList = res.result;
+              this.confList = res.result.sort((a, b) => a.sortnum - b.sortnum);
+              console.log('this.confList', this.confList);
+              console.log('res.result', res.result);
               let d = {};
               res.result.forEach(item => {
                 d[item.remark] = item;
@@ -2256,13 +2131,11 @@
                   case 'STAFF':
                     if (item.isconfig && item.isvisible) {
                       this.staff[item.jname] = item;
-                      console.log(this.staff, 'this.staff[item.jname]');
                     }
                     break;
                   case 'STAFF_RECORD':
                     if (item.isconfig && item.isvisible) {
                       this.staffRecord[item.jname] = item;
-                      console.log('this.staffRecord', this.staffRecord)
                     }
                     break;
                   case 'STAFF_SHARE_OPTION':
@@ -2272,8 +2145,6 @@
                     break;
                 }
               });
-
-              console.log('rr', d, this.staff, this.staffRecord, this.staffShareOption);
               if (this.staff || this.staffRecord || this.staffShareOption) {
                 this.status = true;
                 Indicator.close();//关闭加载中
@@ -2319,7 +2190,6 @@
           this.model.thePartyTime = dateProcess(emp.thePartyTime);
           this.model.theArcIns = emp.theArcIns || ''; // 存档机构
           this.model.dateOfBirth = dateProcess(emp.dateOfBirth); // 生日
-          // console.log('tp', this.provinces);
           this.model.podoProvince = emp.podoProvince; // 户口所在省
           this.model.podoCity = emp.podoCity; // 户口所在城市
           this.model.podoAddress = emp.podoAddress || ''; // 户口详细地址
@@ -2355,7 +2225,6 @@
             return arr;
           }(emp.contacts);
           this.model.hasChild = emp.hasChild;
-          console.log('ec', emp.childs);
           this.model.childs = function (childs) {
             if (!(childs && childs.length)) {
               return [{
@@ -2393,12 +2262,9 @@
           this.model.hasComres = emp.hasComres; // 有无竞业协议
           this.model.hasComresRmk = emp.hasComresRmk || ''; // 竞业协议备注信息
           this.model.emplsepacertUrl = emp.emplsepacertUrl || ''; // 离职证明
-
-          console.log(emp.record, 'emp.record');
           this.model.record.uid = emp.record.uid;
           this.model.record.companyUid = emp.record.companyUid;
           this.model.record.staffUid = emp.record.staffUid;
-
           this.model.record.dateOfEntry = dateProcess(emp.record.dateOfEntry); // 入职日期
           this.model.record.probation = toStr(emp.record.probation); // 试用期
           this.model.record.companyAge = emp.record.companyAge || ''; // 司龄
@@ -2415,7 +2281,6 @@
           this.model.record.workAddress = emp.record.workAddress || '';
           this.model.record.baseSalary = toStr(emp.record.baseSalary); // 基础薪资
           this.model.record.trialSalary = toStr(emp.record.trialSalary); // 试用薪资
-
           this.model.record.sstaffStatus = emp.record.staffStatus; // 员工状态  6-16-16新增
 
 
