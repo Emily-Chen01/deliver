@@ -225,13 +225,13 @@
         });
       },
       changeList(indexX){
-
         if (indexX == 0) {
           this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
             console.log(response.body.result.length, 'res');
             if (response.body.result.length == 0) { //此处设置的是在pc端关闭了考勤给出提示关闭了
               this.isVisible = true;
             } else {
+              this.setCookie('leaveType', indexX, 365);
               this.$router.push({path: '/leave'});
             }
           }, response => {

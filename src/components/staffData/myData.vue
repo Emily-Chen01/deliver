@@ -178,8 +178,8 @@
           </el-form-item>
 
           <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
-                        :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号', trigger: 'blur', pattern: /^\w{1,10}$/},
-                        {message: '不能超过10个数字', trigger: 'blur', pattern: /^\w{1,10}$/}]">
+                        :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号', trigger: 'blur', pattern: /^\w+$/},
+                        {message: '7-9个数字', trigger: 'blur', min:7,max:9}]">
             <el-input :disabled="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
           </el-form-item>
 
