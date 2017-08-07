@@ -44,15 +44,15 @@
         <div v-if="changeApplyTime" class="hrClass"></div>
         <div v-if="changeApplyTime" class="contentClass">
           <div class="contentLeft">开始时间</div>
-          <div class="contentRight">
-            <datePick @ieventStart="ieventStart"></datePick>
+          <div class="contentRight" @click="openPicker(0)">
+            <span class="dateSelect" align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"></span>
           </div>
         </div>
         <div v-if="changeApplyTime" class="hrClass"></div>
         <div v-if="changeApplyTime" class="contentClass">
           <div class="contentLeft">结束时间</div>
-          <div class="contentRight">
-            <endDatePick @ieventEnd="ieventEnd"></endDatePick>
+          <div class="contentRight" @click="openPicker(1)">
+            <span class="dateSelect" align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"></span>
           </div>
         </div>
         <div v-if="changeApplyTime" class="hrClass"></div>
@@ -195,6 +195,32 @@
         <span>我知道啦</span>
       </div>
     </mt-popup>
+    <mt-datetime-picker
+      type="datetime"
+      ref="picker0"
+      :startDate="new Date(new Date()-24*60*60*1000)"
+      v-model="startTimeValue1"
+      year-format="{value} 年"
+      month-format="{value} 月"
+      date-format="{value} 日"
+      hour-format="{value} 时"
+      minute-format="{value} 分"
+      @confirm="handleConfirmStart"
+    >
+    </mt-datetime-picker>
+    <mt-datetime-picker
+      type="datetime"
+      ref="picker1"
+      :startDate="new Date(new Date()-24*60*60*1000)"
+      v-model="endTimeValue1"
+      year-format="{value} 年"
+      month-format="{value} 月"
+      date-format="{value} 日"
+      hour-format="{value} 时"
+      minute-format="{value} 分"
+      @confirm="handleConfirmEnd"
+    >
+    </mt-datetime-picker>
   </div>
 </template>
 <script>
@@ -202,14 +228,11 @@
   import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
 
   import VueCoreImageUpload from 'vue-core-image-upload'
-  import datePick from "@/components/components/datePick"
-  import endDatePick from "@/components/components/endDatePick"
-  //  import { TabContainer, TabContainerItem } from 'mint-ui';
   import moment from 'moment'
 
 
   let df = 'YYYY-MM-DD HH:mm';
-  let df2 = 'YYYY/MM/DD HH:mm';
+  let df2 = 'YYYY/MM/DD HH';
 
   export default {
     data(){
@@ -264,7 +287,9 @@
         holidayTypeArray: [], // 假期分类
         holidayTypeName: [], // 假期分类
         startTimeValue: '', //开始时间value
+        startTimeValue1: '',
         endTimeValue: '',  //结束时间value
+        endTimeValue1: '',
         holidayModel: '',
         textareaString: '',
         qingjiauidParam: '',
@@ -281,16 +306,9 @@
 
       };
     },
-    mounted: function () {
-
-    },
     created: function () {
-
-
       this.addTimeValue = this.getCookie('upAddTime');
 
-
-//      this.addTimeValue = this.getCookie('leaveType');
       console.log(this.addTimeValue, '在打卡加班传来的加班时间');
 
       this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
@@ -305,20 +323,10 @@
             }
           )
         }
-        console.log('我是申请类型data' + this.applyTypeName);
-//        this.$nextTick(() => {
         this.optionsApply = this.applyTypeName;
-        //此区域是在在点击提交申请的时候进行选中传参start
-//        this.selectedDataApply = this.getCookie('leaveType').toString();
-////              this.shengqingclick(this.selectedDataApply);
-//        console.log('sbsb',this.selectedDataApply);
-//        //此区域是在在点击提交申请的时候进行选中传参end
-//
-//
-        //此处代码为了在打开提交时在提交申请时显示 start
-        this.selectedDataApply = this.getCookie('leaveType');
-//        console.log('sbsb',this.selectedDataApply);
 
+        //====此处代码为了在打开提交时在提交申请时显示申请类型====
+        this.selectedDataApply = this.getCookie('leaveType');
 
         for (let i = 0; i < this.optionsApply.length; i++) {  //循环初始化的时候选中一个select属性值和参数
           if (this.selectedDataApply !== '') {
@@ -327,7 +335,6 @@
           }
         }
         if (this.selectedDataApply == '0') { //请假
-//          console.log('选择请假路线');
           this.changeApply = true; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -337,7 +344,6 @@
 
         }
         if (this.selectedDataApply == '1') {
-//          console.log('忘记打卡路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -347,7 +353,6 @@
 
         }
         if (this.selectedDataApply == '2') {
-//          console.log('外出申请路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -357,7 +362,6 @@
 
         }
         if (this.selectedDataApply == '3') {
-//          console.log('加班路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = false; //上传图片隐藏
@@ -367,9 +371,7 @@
 
 
         }
-        //此处代码为了在打开提交时在提交申请时显示 start
-
-//        });
+        //=====此处代码为了在打开提交时在提交申请时显示 类型====
 
 
       }, response => {
@@ -437,6 +439,31 @@
 
     },
     methods: {
+      handleConfirmStart(data){
+        if (data) {
+          this.startTimeValue = moment(data).format(df2);
+        }
+        console.log('sbsb', data)
+      },
+      handleConfirmEnd(data){
+        if (data) {
+          this.endTimeValue = moment(data).format(df2);
+          console.log('this.endTimeValue.getTime();', data.getTime())
+          console.log('new date().getTime();', new Date(this.endTimeValue + ':00').getTime())
+        }
+      },
+      openPicker(data) {
+        let pickerslot = document.getElementsByClassName('picker-slot');
+
+        if (data === 0) {
+          pickerslot[4].style.display = 'none';
+          this.$refs.picker0.open();
+        } else {
+          pickerslot[9].style.display = 'none';
+          this.$refs.picker1.open();
+        }
+
+      },
       changeShow(val){ //动态设置tab下划线显示
         let params
         if (val == 1) {
@@ -491,28 +518,6 @@
         });
 
       },
-      ieventStart(...data){
-//            var timestamp2 = new Date(data[0]).getTime();
-//            this.startTimeValue = timestamp2;
-//            console.log(this.startTimeValue);
-//            var timestamp2 = new Date(data[0]).getTime();
-        console.log(data[0].toLocaleString().replace(/-/g, "/") + ':' + '00', 'data[0]');
-
-        this.startTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/") + ':' + '00').getTime();
-        console.log(this.startTimeValue, 'this.startTimeValue转出的开始');
-
-      },
-      ieventEnd(...data){
-
-//            console.log('allEndData:', data);
-//            var timestamp3 = new Date(data[0]).getTime();
-//            console.log(timestamp3);
-
-        console.log(data[0].toLocaleString().replace(/-/g, "/") + ':' + '00', 'data[0]');
-
-        this.endTimeValue = new Date(data[0].toLocaleString().replace(/-/g, "/") + ':' + '00').getTime();
-        console.log(this.endTimeValue, 'this.endTimeValue结束')
-      },
       handerDataSubmit(){
         let params;
         if (this.selectedDataApply == '0') { //请假申请所需参数
@@ -520,8 +525,8 @@
             approvalConfigUid: this.shengqingParam,//申请分类
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
             leaveUid: this.qingjiauidParam,
-            startTime: this.startTimeValue,
-            endTime: this.endTimeValue,
+            startTime: new Date(this.startTimeValue + ':00').getTime(),
+            endTime: new Date(this.endTimeValue + ':00').getTime(),
             image: this.imgSrc.shenFenIcon,
             remarks: this.textareaString
           };
@@ -531,8 +536,8 @@
           params = {
             approvalConfigUid: this.shengqingParam,//申请分类
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
-            startTime: this.startTimeValue,
-            endTime: this.endTimeValue,
+            startTime: new Date(this.startTimeValue + ':00').getTime(),
+            endTime: new Date(this.endTimeValue + ':00').getTime(),
             image: this.imgSrc.shenFenIcon,
             remarks: this.textareaString
           };
@@ -544,8 +549,8 @@
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
             remarks: this.textareaString,
 //            overworkTime: this.addTimeValue,
-            startTime: this.startTimeValue,
-            endTime: this.endTimeValue,
+            startTime: new Date(this.startTimeValue + ':00').getTime(),
+            endTime: new Date(this.endTimeValue + ':00').getTime(),
 
           }
         }
@@ -704,8 +709,6 @@
 
     components: {
       'vue-core-image-upload': VueCoreImageUpload,
-      'datePick': datePick,
-      'endDatePick': endDatePick,
     },
   }
 
@@ -857,6 +860,17 @@
     font-size: 1.1rem;
     background: #ffffff;
     -webkit-appearance: none;
+    padding-left: 1rem;
+  }
+
+  .dateSelect {
+    width: 98%;
+    display: block;
+    /*height: 2rem;*/
+    /*border: none;*/
+    font-size: 1.1rem;
+    /*background: #ffffff;*/
+    /*-webkit-appearance: none;*/
     padding-left: 1rem;
   }
 

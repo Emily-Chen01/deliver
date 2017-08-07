@@ -128,8 +128,6 @@
   import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
   import {Indicator} from 'mint-ui';
 
-  //  let oneselfData = {};
-
   export default {
     data(){
       return {
@@ -138,9 +136,9 @@
         closeOnClickModal: true,
         punchCard: false, // 判断是否需要打卡
         oneselfData: {
-          companyNmae: '北京科锐国际人力资源股份有限公司',
-          department: '产品部',
-          position: '产品员工',
+          companyNmae: '',
+          department: '',
+          position: '',
           name: '',
         },
         infoObj: {},
