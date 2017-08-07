@@ -183,10 +183,9 @@
               <p class="clickClassDown signInFont" v-show="getLocations">当前位置</p>
               <p class="clickClassUp signInFont" v-show="downClickSpan">下班打卡 </p>
               <p class="clickClassDown signInFont" v-show="toClickSpan || downClickSpan">
-                <span id="hour">
-                </span><span :class="{  maohaoClass:maohao}">:</span><span id="minute">
-               </span><span :class="{  maohaoClass:maohao}">:</span><span id="second">
-              </span>
+                <span v-text="hour+ ' : '">
+                </span><span v-text="minute+ ' : '"></span><span>
+               </span><span v-text="second"></span>
               </p>
             </div>
           </mt-button>
@@ -410,20 +409,19 @@
         toDownLateStatusLeft: false,  //在左边的区域外
         qulocation: false, //获取位置弹框
         alertMessage: '',
-
+        hour: 0,
+        minute: 0,
+        second: 0
       }
     },
     created: function () {
-
-//      this.handler(); //注释掉了初始化加载
-      timer1 = setInterval(this.handerSign, 1000);
-
       this.doSearch(); //初始化页面查询数据
-
     },
     methods: {
       //初始开始
       doSearch(){
+        this.handerSign();
+        setInterval(this.handerSign, 1000);
         var imageString = this.getCookie('avatarImages'); //获取缓存的图片
         this.objNr = {
           fetchPostion: this.getCookie('infoObjPassPostion'),
@@ -604,24 +602,10 @@
       },
       //初始结束
       handerSign(){
-        var hour = document.getElementById('hour');
-        var minute = document.getElementById('minute');
-        var second = document.getElementById('second');
-        self = this;
-        function showTime() {
-          var oDate = new Date();
-          var iHours = oDate.getHours();
-          var iMinute = oDate.getMinutes();
-          var iSecond = oDate.getSeconds();
-          hour.innerHTML = AddZero(iHours);
-          minute.innerHTML = AddZero(iMinute);
-          second.innerHTML = AddZero(iSecond);
-          self.maohao = false;
-
-        }
-
-        showTime();
-        setInterval(showTime, 1000);
+        let oDate = new Date();
+        this.hour = AddZero(oDate.getHours());
+        this.minute = AddZero(oDate.getMinutes());
+        this.second = AddZero(oDate.getSeconds());
         function AddZero(n) {
           if (n < 10) {
             return '0' + n;
