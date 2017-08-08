@@ -6,7 +6,7 @@
       <mt-tab-item id="2"><span @click="changeShow(1)">我的申请</span></mt-tab-item>
     </mt-navbar>
     <!-- tab-container -->
-    <mt-tab-container v-model="selected">
+    <mt-tab-container v-model="selected" style="padding-top: 52px;">
       <mt-tab-container-item id="1">
         <!--个人资料-->
         <div style="padding-top: 0.2rem"></div>
@@ -104,7 +104,7 @@
           </mt-button>
         </div>
       </mt-tab-container-item>
-      <mt-tab-container-item id="2" style="background: #eff3f7;padding-bottom: 2rem">
+      <mt-tab-container-item id="2" style="background: #eff3f7;">
         <!--进行编辑内容开始-->
         <div class="changeTitleClass">
           <div @click="changeShow(1)" class="changeShowList" :class="{  active:isActive}">全部 </div>
@@ -114,57 +114,59 @@
         </div>
         <!--//进行编辑内容结束-->
         <!--我的申请-->
-        <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord!==null" style="">
-          <div class="myApplyTitle">
-            <div class="myApplyTitleLeft">
-              <div style="float:left;padding-left: 0.5rem;padding-top: 0.1rem;"><span>| </span></div>
-              <div style="float:left;padding-top: 0.2rem;"> &nbsp{{item.name}}申请<span
-                v-if="item.sname">({{item.sname}})</span></div>
+        <div style="padding-top: 40px;">
+          <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
+            <div class="myApplyTitle">
+              <div class="myApplyTitleLeft">
+                <div style="float:left;padding-left: 0.5rem;padding-top: 0.1rem;"><span>| </span></div>
+                <div style="float:left;padding-top: 0.2rem;"> &nbsp{{item.name}}申请<span
+                  v-if="item.sname">({{item.sname}})</span></div>
+              </div>
+              <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
+              <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
+              <div class="myApplyTitleRight" v-else-if="item.status==2">未通过</div>
+              <div style="clear: both;"></div>
             </div>
-            <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
-            <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
-            <div class="myApplyTitleRight" v-else-if="item.status==2">未通过</div>
-            <div style="clear: both;"></div>
-          </div>
-          <div class="myApplyContent">
-            <div v-if="item.startTime">
-              <div class="myApplyContentLeft">起止日期</div>
-              <div class="myApplyContentNr">
-                <span>{{ datefmt(item.startTime)}}</span>
-                <span>至</span>
-                <span>{{ datefmt(item.endTime)}}</span>
+            <div class="myApplyContent">
+              <div v-if="item.startTime">
+                <div class="myApplyContentLeft">起止日期</div>
+                <div class="myApplyContentNr">
+                  <span>{{ datefmt(item.startTime)}}</span>
+                  <span>至</span>
+                  <span>{{ datefmt(item.endTime)}}</span>
+                </div>
+              </div>
+              <div v-if="item.overworkTime">
+                <div class="myApplyContentLeft">加班时长</div>
+                <div class="myApplyContentNr">
+                  <span>{{item.overworkTime}}小时</span>
+                </div>
+              </div>
+              <div class="myApplyContentLeft">事由</div>
+              <div class="myApplyContentNr"><span>{{item.remarks}}</span>
+              </div>
+              <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
+              <div class="myApplyContentNr" style="padding-bottom: 0.5rem;word-wrap: break-word;" v-if="item.why">
+                <span>{{item.why}}</span>
+              </div>
+              <div v-if="item.image"
+                   style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
+            </div>
+            <div class="myApplyBottom" v-if="item.image">
+              <div>
+                <div class="myApplyBottomNrLeft">附件内容 ：</div>
+                <div class="myApplyBottomNrRight">
+                  <mt-button size="small" type="primary" @click="lookImages(item.image)">
+                    <span>查看图片</span>
+                  </mt-button>
+                </div>
               </div>
             </div>
-            <div v-if="item.overworkTime">
-              <div class="myApplyContentLeft">加班时长</div>
-              <div class="myApplyContentNr">
-                <span>{{item.overworkTime}}小时</span>
-              </div>
-            </div>
-            <div class="myApplyContentLeft">事由</div>
-            <div class="myApplyContentNr"><span>{{item.remarks}}</span>
-            </div>
-            <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
-            <div class="myApplyContentNr" style="padding-bottom: 0.5rem;word-wrap: break-word;" v-if="item.why">
-              <span>{{item.why}}</span>
-            </div>
-            <div v-if="item.image"
-                 style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
+            <div style="clear:both;"></div>
           </div>
-          <div class="myApplyBottom" v-if="item.image">
-            <div>
-              <div class="myApplyBottomNrLeft">附件内容 ：</div>
-              <div class="myApplyBottomNrRight">
-                <mt-button size="small" type="primary" @click="lookImages(item.image)">
-                  <span>查看图片</span>
-                </mt-button>
-              </div>
-            </div>
+          <div class="myApplyNo" v-if="searchApplyRecord.length===0">
+            <span>没有数据</span>
           </div>
-          <div style="clear:both;"></div>
-        </div>
-        <div class="myApply" v-else-if="searchApplyRecord==null">
-          <span>没有数据</span>
         </div>
 
       </mt-tab-container-item>
@@ -412,9 +414,7 @@
         "pageNumber": 1
       };
       this.$http.post('/api/v1.0/client/findApplys', params).then(response => { //查询请假记录
-        console.log(response.body.result, '查询请假记录');
         this.searchApplyRecord = response.body.result;
-
       }, response => {
         console.log('查询请假记录 error callback');
       });
@@ -423,12 +423,9 @@
     },
     watch: {
       addTimeValue: function (val, oldVal) {
-        console.log('我是加班时间' + val);
         this.addTimeValue = val
-
       },
       holidayModel: function (val, oldVal) { //备注value 用于上传参数
-        console.log(val);
         this.textareaString = val.trim();
       },
     },
@@ -437,7 +434,6 @@
         if (data) {
           this.startTimeValue = moment(data).format(df);
         }
-        console.log('sbsb', data)
       },
       handleConfirmEnd(data){
         if (data) {
@@ -457,7 +453,7 @@
 
       },
       changeShow(val){ //动态设置tab下划线显示
-        let params
+        let params = '';
         if (val == 1) {
           this.isActive = true;
           this.isActive2 = false;
@@ -503,8 +499,9 @@
           }
         }
         this.$http.post('/api/v1.0/client/findApplys', params).then(response => { //查询请假接口
-          console.log(response);
-          this.searchApplyRecord = response.body.result;
+          if (response.body.code === 200) {
+            this.searchApplyRecord = response.body.result;
+          }
         }, response => {
           console.log('error callback');
         });
@@ -799,8 +796,14 @@
     font-size: 0.8rem;
   }
 
+  .dataTitle {
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+  }
+
   .dataTitle span {
-    font-size: 1.4rem;
+    font-size: 16px;
   }
 
   .changeSelect {
@@ -850,6 +853,20 @@
   .myApply {
     width: 92%;
     min-height: 12rem;
+    margin: 1rem;
+    background: #ffffff;
+    box-shadow: 0 0 0 1px #cccccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  .myApplyNo {
+    width: 92%;
+    min-height: 12rem;
+    line-height: 12rem;
     margin: 1rem;
     background: #ffffff;
     box-shadow: 0 0 0 1px #cccccc;
@@ -936,11 +953,14 @@
   }
 
   .changeTitleClass {
+    position: fixed;
+    width: 100%;
     display: flex;
     background: rgb(29, 139, 224);
     color: rgba(255, 255, 255, 0.5);
-    height: 2.5rem;
-    line-height: 2.5rem;
+    height: 40px;
+    line-height: 40px;;
+    z-index: 1;
   }
 
   .active {
