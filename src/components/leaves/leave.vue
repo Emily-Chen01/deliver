@@ -380,10 +380,6 @@
 
       this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人列表
         this.approvalTypeObj = response.body.result;
-        console.log(this.approvalTypeObj, '审批人列表');
-
-//            this.optionsApproval=this.approvalTypeName
-
       }, response => {
         console.log('error callback');
       });
@@ -435,31 +431,27 @@
         console.log(val);
         this.textareaString = val.trim();
       },
-
-
     },
     methods: {
       handleConfirmStart(data){
         if (data) {
-          this.startTimeValue = moment(data).format(df2);
+          this.startTimeValue = moment(data).format(df);
         }
         console.log('sbsb', data)
       },
       handleConfirmEnd(data){
         if (data) {
-          this.endTimeValue = moment(data).format(df2);
-          console.log('this.endTimeValue.getTime();', data.getTime())
-          console.log('new date().getTime();', new Date(this.endTimeValue + ':00').getTime())
+          this.endTimeValue = moment(data).format(df);
         }
       },
       openPicker(data) {
-        let pickerslot = document.getElementsByClassName('picker-slot');
+//        let pickerslot = document.getElementsByClassName('picker-slot');
 
         if (data === 0) {
-          pickerslot[4].style.display = 'none';
+//          pickerslot[4].style.display = 'none';
           this.$refs.picker0.open();
         } else {
-          pickerslot[9].style.display = 'none';
+//          pickerslot[9].style.display = 'none';
           this.$refs.picker1.open();
         }
 
@@ -525,8 +517,8 @@
             approvalConfigUid: this.shengqingParam,//申请分类
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
             leaveUid: this.qingjiauidParam,
-            startTime: new Date(this.startTimeValue + ':00').getTime(),
-            endTime: new Date(this.endTimeValue + ':00').getTime(),
+            startTime: new Date(this.startTimeValue).getTime(),
+            endTime: new Date(this.endTimeValue).getTime(),
             image: this.imgSrc.shenFenIcon,
             remarks: this.textareaString
           };
@@ -536,8 +528,8 @@
           params = {
             approvalConfigUid: this.shengqingParam,//申请分类
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
-            startTime: new Date(this.startTimeValue + ':00').getTime(),
-            endTime: new Date(this.endTimeValue + ':00').getTime(),
+            startTime: new Date(this.startTimeValue).getTime(),
+            endTime: new Date(this.endTimeValue).getTime(),
             image: this.imgSrc.shenFenIcon,
             remarks: this.textareaString
           };
@@ -549,8 +541,8 @@
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
             remarks: this.textareaString,
 //            overworkTime: this.addTimeValue,
-            startTime: new Date(this.startTimeValue + ':00').getTime(),
-            endTime: new Date(this.endTimeValue + ':00').getTime(),
+            startTime: new Date(this.startTimeValue).getTime(),
+            endTime: new Date(this.endTimeValue).getTime(),
 
           }
         }
@@ -559,27 +551,15 @@
           this.codeSuccess = response.body.code;
 
           if (response.body.code == 200) {
-//            MessageBox('提示', response.body.message);
             this.leaveSuccess = true;
             this.alertSuccessImage = true;
             this.alertMessage = response.body.message;
-
-//            this.$router.push({path: '/signCard'});
           } else if (response.body.code == 500) {
 
-//            MessageBox('提示', response.body.message);
             this.leaveSuccess = true;
             this.alertSuccessImage = false;
             this.alertMessage = response.body.message
           }
-//              this.holidayTypeArray=response.body.result;
-//              console.log(this.holidayTypeArray);
-//            for(let i=0;i<this.applyTypeArray.length;i++){
-//              this.applyTypeName.push({text:this.applyTypeArray[i].name, value:this.applyTypeArray[i].type,})
-//            }
-//            console.log(this.applyTypeName);
-//            this.optionsApply=this.applyTypeName
-
         }, response => {
           console.log('error callback');
         });
@@ -588,11 +568,6 @@
         console.log(res);
         this.imgSrc.shenFenIcon = res.result;
         this.initUpImage = false;  //把初始化的image隐藏
-//            if (res) {
-//              this.imgSrc.shenFenIcon = res.result;
-//              console.log(this.imgSrc.shenFenIcon);
-//            }
-
       },
       errorhandle(res){
         this.leaveSuccess = true;
@@ -628,9 +603,6 @@
           this.shengqingParam = result.uid;
           this.shengqingParamType = result.value;
         }
-//        console.log(" this.shengqingParam uid" + this.shengqingParam);
-//        console.log("value shengqingParamType:" + this.shengqingParamType);
-
 
         if (this.selectedDataApply == '0') { //请假
           console.log('选择请假路线');
@@ -672,15 +644,11 @@
           this.changeApplyOvertime = false; //加班时间显示
           this.shengqingParamType = '3';
           this.isHideHeight = true;
-
-
         }
       },
 
       qingjiaclick(value){
         this.qingjiauidParam = value.uid;
-        console.log('我是选中的假期类型' + this.qingjiauidParam);
-
       },
       lookImages(imgSrc){ //查看图片
         console.log('图片');
@@ -727,17 +695,6 @@
     height: 0;
   }
 
-  /*.changeSelect::after*/
-  /*{*/
-  /*content:" ------- ";*/
-  /*!*content: url(../../assets/ico_leave.png);*!*/
-  /*!*font-size: 0.5em;*!*/
-  /*!*background-size: 19px 20px;*!*/
-  /*!*display: inline-block;*!*/
-  /*background-color:yellow;*/
-  /*!*color:#ffffff;*!*/
-  /*width: 10%;*/
-  /*}*/
   .icon {
     background: url(../../assets/ico_leave.png) !important;
   }
@@ -746,7 +703,6 @@
     position: absolute;
     width: 12px;
     height: 7px;
-    /*background: pink;*/
     top: 0.3rem;
     right: 0
   }
@@ -807,20 +763,15 @@
 
   .imageClass {
     width: 20rem;
-    /*top: 10rem;*/
     height: 24rem;
     line-height: 24rem;
-
   }
 
   .imageClassSuccess {
     width: 16rem;
-    /*top: 10rem;*/
     height: 13rem;
     line-height: 11rem;
     border-radius: 4px;
-    /*background: pink;*/
-
   }
 
   .myApplyTitle {
@@ -866,11 +817,7 @@
   .dateSelect {
     width: 98%;
     display: block;
-    /*height: 2rem;*/
-    /*border: none;*/
     font-size: 1.1rem;
-    /*background: #ffffff;*/
-    /*-webkit-appearance: none;*/
     padding-left: 1rem;
   }
 
@@ -884,12 +831,6 @@
     top: 0.6rem;
   }
 
-  /*.cardClass div{*/
-  /*width: 9rem;*/
-  /*height: 6.2rem;*/
-  /*position: absolute;*/
-  /*font-size: 1.1rem;*/
-  /*}*/
   .CardImg {
     display: block;
     width: 100%;
@@ -910,8 +851,6 @@
     width: 92%;
     min-height: 12rem;
     margin: 1rem;
-    /*border-radius: 6px;*/
-    /*border: 1px solid #cccccc;*/
     background: #ffffff;
     box-shadow: 0 0 0 1px #cccccc;
     white-space: nowrap;
@@ -961,7 +900,6 @@
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow: hidden;
-    /*padding-bottom: 0.5rem;*/
     line-height: 20px;
 
   }
