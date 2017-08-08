@@ -183,8 +183,8 @@
               <p class="clickClassDown signInFont" v-show="getLocations">当前位置</p>
               <p class="clickClassUp signInFont" v-show="downClickSpan">下班打卡 </p>
               <p class="clickClassDown signInFont" v-show="toClickSpan || downClickSpan">
-                <span v-text="hour+ ' : '">
-                </span><span v-text="minute+ ' : '"></span><span>
+                <span v-text="hour+ ':'">
+                </span><span v-text="minute+ ':'"></span><span>
                </span><span v-text="second"></span>
               </p>
             </div>
@@ -228,7 +228,6 @@
                            v-if="initDownRecord">
                   <span>打卡正常</span>
                 </mt-button>
-
                 <mt-button type="default"
                            class="alertStatusBottonClass"
                            style="background-color: #f6bc2a;"
@@ -1234,7 +1233,7 @@
   }
 
   .alertStatusBottonClass {
-    width: 7.5rem;
+    /*width: 7.5rem;*/
     height: 2rem;
     display: inline-block;
     color: #ffffff;
@@ -1408,23 +1407,27 @@
   }
 
   .middleSpan .middleSpanLeft {
-    width: 3.9rem;
+    /*width: 3.9rem;*/
     height: 2rem;
     line-height: 2rem;
-    padding-left: 5rem;
-    padding-top: 0.5rem;
+    /*padding-left: 5rem;*/
+    /*padding-top: 0.5rem;*/
     font-size: 1.2rem;
-    float: left;
+    /*float: left;*/
+    width: 100%;
+    margin: 0 auto;
 
   }
 
   .middleSpan .middleSpanRight {
-    width: 3rem;
+    /*width: 3rem;*/
     height: 2rem;
     line-height: 2rem;
-    float: left;
-    padding-top: 0.5rem;
+    /*float: left;*/
+    /*padding-top: 0.5rem;*/
     font-size: 1.3rem;
+    width: 100%;
+    margin: 0 auto;
 
   }
 
