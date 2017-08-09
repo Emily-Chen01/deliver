@@ -190,14 +190,14 @@
             </div>
             <div v-else-if="confListItem.jname==='socsecNum'" class="form-padding-bottom">
               <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
-                            :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号(数字)', trigger: 'blur', pattern: /^\w+$/},
+                            :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号(数字)', trigger: 'blur', pattern: /^\d+$/},
                         {message: '不能超过 10 个数字', trigger: 'blur', max:10}]">
                 <el-input :disabled="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
               </el-form-item>
             </div>
             <div v-else-if="confListItem.jname==='accfuNum'" class="form-padding-bottom">
               <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum"
-                            :rules="[{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号(数字)', trigger: 'blur',pattern: /^\w+$/},
+                            :rules="[{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号(数字)', trigger: 'blur',pattern: /^\d+$/},
                         {message: '不能超过12个数字', trigger: 'blur', max:12}]">
                 <el-input :disabled="!staff.accfuNum.isedit" v-model="model.accfuNum"></el-input>
               </el-form-item>
@@ -222,7 +222,7 @@
               </el-form-item>
 
               <el-form-item v-if="staff.bankName" label="银行卡号" prop="cardNumber"
-                            :rules="[{required: staff.bankName.isrequired, message: '请填写正确的银行卡号', trigger: 'blur'},
+                            :rules="[{required: staff.bankName.isrequired, message: '请填写正确的银行卡号', trigger: 'blur',pattern: /^\d+$/},
                         {message: '最少 16 个数字', trigger: 'blur',min:16},
                         {message: '最多 64 个数字', trigger: 'blur',max:64}]">
                 <el-input :disabled="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
