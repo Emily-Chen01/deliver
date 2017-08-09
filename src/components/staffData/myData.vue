@@ -2571,7 +2571,7 @@
   }
 
   .form-padding-bottom {
-    padding-bottom: 11px;
+    padding-top: 11px;
   }
 
   /*修改tab样式结束*/

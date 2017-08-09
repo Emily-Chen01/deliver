@@ -311,11 +311,11 @@
     created: function () {
       this.addTimeValue = this.getCookie('upAddTime');
 
-      console.log(this.addTimeValue, '在打卡加班传来的加班时间');
+//      console.log(this.addTimeValue, '在打卡加班传来的加班时间');
 
       this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
         this.applyTypeArray = response.body.result;
-        console.log(this.applyTypeArray, '查询申请类型列表');
+//        console.log(this.applyTypeArray, '查询申请类型列表');
         for (let i = 0; i < this.applyTypeArray.length; i++) {
           this.applyTypeName.push(
             {
@@ -377,17 +377,17 @@
 
 
       }, response => {
-        console.log('error callback');
+//        console.log('error callback');
       });
 
       this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人列表
         this.approvalTypeObj = response.body.result;
       }, response => {
-        console.log('error callback');
+//        console.log('error callback');
       });
       this.$http.get('/api/v1.0/client/findValidLeaves').then(response => { //假期分类
         this.holidayTypeArray = response.body.result;
-        console.log(this.holidayTypeArray, '假期分类');
+//        console.log(this.holidayTypeArray, '假期分类');
         for (let i = 0; i < this.holidayTypeArray.length; i++) {
           this.holidayTypeName.push(
             {
@@ -402,10 +402,10 @@
         });
 
 
-        console.log(this.optionsHoliday);
+//        console.log(this.optionsHoliday);
 
       }, response => {
-        console.log('假期分类 error callback');
+//        console.log('假期分类 error callback');
       });
 
       let params = {
@@ -416,7 +416,7 @@
       this.$http.post('/api/v1.0/client/findApplys', params).then(response => { //查询请假记录
         this.searchApplyRecord = response.body.result;
       }, response => {
-        console.log('查询请假记录 error callback');
+//        console.log('查询请假记录 error callback');
       });
 
 
@@ -432,22 +432,22 @@
     methods: {
       handleConfirmStart(data){
         if (data) {
-          this.startTimeValue = moment(data).format(df);
+          this.startTimeValue = moment(data).format(df2) + ':00';
         }
       },
       handleConfirmEnd(data){
         if (data) {
-          this.endTimeValue = moment(data).format(df);
+          this.endTimeValue = moment(data).format(df2) + ':00';
         }
       },
       openPicker(data) {
-//        let pickerslot = document.getElementsByClassName('picker-slot');
+        let pickerslot = document.getElementsByClassName('picker-slot');
 
         if (data === 0) {
-//          pickerslot[4].style.display = 'none';
+          pickerslot[4].style.display = 'none';
           this.$refs.picker0.open();
         } else {
-//          pickerslot[9].style.display = 'none';
+          pickerslot[9].style.display = 'none';
           this.$refs.picker1.open();
         }
 
@@ -503,7 +503,7 @@
             this.searchApplyRecord = response.body.result;
           }
         }, response => {
-          console.log('error callback');
+//          console.log('error callback');
         });
 
       },
@@ -544,7 +544,7 @@
           }
         }
         this.$http.post('/api/v1.0/client/apply', params).then(response => { //提交请假申请
-          console.log(response);
+//          console.log(response);
           this.codeSuccess = response.body.code;
 
           if (response.body.code == 200) {
@@ -558,11 +558,11 @@
             this.alertMessage = response.body.message
           }
         }, response => {
-          console.log('error callback');
+//          console.log('error callback');
         });
       },
       imageuploaded(res) { //用于图片参数上传
-        console.log(res);
+//        console.log(res);
         this.imgSrc.shenFenIcon = res.result;
         this.initUpImage = false;  //把初始化的image隐藏
       },
@@ -575,16 +575,16 @@
           this.alertMessage = '上传图片大小不能超过5M';
         }
 
-        console.log(res);
+//        console.log(res);
       },
       handerStartValue(){
-        console.log('我是开始时间' + this.startTimeValue);
+//        console.log('我是开始时间' + this.startTimeValue);
       },
       shengqingclick(value){ //初始是选中一个select然后进行参数选中为了提交用
 //          alert(this.selectedDataApply);
-        console.log(value, typeof value);
+//        console.log(value, typeof value);
 //            return;
-        console.log(this.optionsApply, 'this.optionsApply')
+//        console.log(this.optionsApply, 'this.optionsApply')
 
         function dd(y, array) {
           for (let i = 0; i < array.length; i++) {  //循环初始化的时候选中一个select属性值和参数
@@ -602,7 +602,7 @@
         }
 
         if (this.selectedDataApply == '0') { //请假
-          console.log('选择请假路线');
+//          console.log('选择请假路线');
           this.changeApply = true; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -612,7 +612,7 @@
 
         }
         if (this.selectedDataApply == '1') {
-          console.log('忘记打卡路线')
+//          console.log('忘记打卡路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -623,7 +623,7 @@
 
         }
         if (this.selectedDataApply == '2') {
-          console.log('外出申请路线')
+//          console.log('外出申请路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = true; //上传图片隐藏
@@ -634,7 +634,7 @@
 
         }
         if (this.selectedDataApply == '3') {
-          console.log('加班路线')
+//          console.log('加班路线')
           this.changeApply = false; //假期隐藏
           this.changeApplyTime = true; //时间隐藏
           this.updateImage = false; //上传图片隐藏
@@ -648,15 +648,15 @@
         this.qingjiauidParam = value.uid;
       },
       lookImages(imgSrc){ //查看图片
-        console.log('图片');
-        console.log(imgSrc);
+//        console.log('图片');
+//        console.log(imgSrc);
         if (imgSrc) this.popImgSrc = imgSrc;
         else this.popImgSrc = '';
         this.popupVisible = true;
       },
       closeImage(){
         this.popupVisible = false;
-        console.log('关闭');
+//        console.log('关闭');
         //做到这里
       },
       datefmt(str) {
