@@ -114,7 +114,7 @@
         </div>
         <!--//进行编辑内容结束-->
         <!--我的申请-->
-        <div style="padding-top: 40px;">
+        <div style="padding-top: 40px;padding-bottom: 10px">
           <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
             <div class="myApplyTitle">
               <div class="myApplyTitleLeft">
