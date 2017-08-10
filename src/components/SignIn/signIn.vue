@@ -21,7 +21,7 @@
     <div style="height: 84.5vh; padding-left: 1rem;padding-top: 2rem; position: relative">
       <div style="clear:both;"></div>
       <!--<div style="width: 100%;height: 0.1rem;margin: 1rem 0"></div>-->
-      <div v-show="zcToUpShow" style="min-height: 6rem;">
+      <div v-if="zcToUpShow" style="min-height: 6rem;">
         <div>
           <div class="toWorkLeft">
             <div>上</div>
@@ -32,56 +32,56 @@
               <span>{{initToTime}}</span>
             </div>
             <div class="toWorkRightTime" style="position: relative">
-              <mt-button type="default" class="toDaKaStatus" v-show="initDaKaRecord">
+              <mt-button type="default" class="toDaKaStatus" v-if="initDaKaRecord">
                 <span>打卡正常</span>
               </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondQ" v-show="isYellow">
+              <mt-button type="default" class="toDaKaStatusSecondQ" v-if="isYellow || lateStatusAddW">
                 <span>区域外</span>
               </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondQ" v-show="lateStatusAddW">
-                <!--区域外+迟到显示-->
-                <span>区域外</span>
-              </mt-button>
+              <!--<mt-button type="default" class="toDaKaStatusSecondQ" v-if="lateStatusAddW">-->
+                <!--&lt;!&ndash;区域外+迟到显示&ndash;&gt;-->
+                <!--<span>区域外</span>-->
+              <!--</mt-button>-->
 
-              <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatus">
+              <mt-button type="default" class="toDaKaStatusSecondC" v-if="lateStatus || lateStatusTo">
                 <!--lateStatus-->
                 <span>迟到了</span>
               </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondC" v-show="lateStatusTo">
-                <!--lateStatus-->
-                <span>迟到了</span>
-              </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondK" v-show="absenteeismStatus">
+              <!--<mt-button type="default" class="toDaKaStatusSecondC" v-if="lateStatusTo">-->
+                <!--&lt;!&ndash;lateStatus&ndash;&gt;-->
+                <!--<span>迟到了</span>-->
+              <!--</mt-button>-->
+              <mt-button type="default" class="toDaKaStatusSecondK" v-if="absenteeismStatus">
                 <!--absenteeismStatus-->
                 <span>旷工</span>
               </mt-button>
             </div>
             <div style="clear: both"></div>
             <div style="width: 99%">
-              <div v-show="initDaKaRecordWeiZhi">
+              <div v-if="initDaKaRecordWeiZhi">
                 <img :src="imgSrc.PostionIcon" class="postionClassIcon" style="display: inline-block">
                 <span v-if="!fanwei" style="display: inline-block;line-height: 2rem">地理位置：范围内</span>
                 <span v-if="twRangeShow" style="display: inline-block;line-height: 2rem">地理位置：{{twRangeShow}}附近</span>
               </div>
               <div>
-                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus"
+                <mt-button type="default" class="toDaKaStatusQj" v-if="absenteeismStatus"
                            @click="submitApplyRouter(0)">
                   <!--absenteeismStatus  旷工-->
                   <span>提交请假/外出申请</span>
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus2"
-                           @click="submitApplyRouter(0)">
-                  <!--absenteeismStatus  旷工-->
-                  <span>提交请假/外出申请</span>
-                </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="lateStatus" @click="submitApplyRouter(1)">
+                <!--<mt-button type="default" class="toDaKaStatusQj" v-show="absenteeismStatus2"-->
+                           <!--@click="submitApplyRouter(0)">-->
+                  <!--&lt;!&ndash;absenteeismStatus  旷工&ndash;&gt;-->
+                  <!--<span>提交请假/外出申请</span>-->
+                <!--</mt-button>-->
+                <mt-button type="default" class="toDaKaStatusWj" v-if="lateStatus || tokuangWdk" @click="submitApplyRouter(1)">
                   <!--lateStatus  迟到块-->
                   <span>忘打卡？</span>
                 </mt-button>
-                <mt-button type="default" class="toDaKaStatusWj" v-show="tokuangWdk" @click="submitApplyRouter(1)">
-                  <!--lateStatus  迟到块-->
-                  <span>忘打卡？</span>
-                </mt-button>
+                <!--<mt-button type="default" class="toDaKaStatusWj" v-if="tokuangWdk" @click="submitApplyRouter(1)">-->
+                  <!--&lt;!&ndash;lateStatus  迟到块&ndash;&gt;-->
+                  <!--<span>忘打卡？</span>-->
+                <!--</mt-button>-->
               </div>
             </div>
           </div>
@@ -89,20 +89,20 @@
       </div>
       <div style="clear:both;"></div>
       <!--测试竖线-->
-      <div v-show="showOwStstusX"
+      <div v-if="showOwStstusX"
            style="position: absolute;background: rgb(152,171,191);height: 5.84rem;width: 0.1rem;top:3.63rem;left:2rem"></div>
       <!--测试竖线-->
-      <div style="margin-top: 1.3rem" v-show="showOwStstus" :class={xiaShowOpacity:daAfter}>
+      <div style="margin-top: 1.3rem" v-if="showOwStstus" :class={xiaShowOpacity:daAfter}>
         <!--此处是为了页面上班打卡后显示的初始化下班时间显示-->
-        <div class="toWorkLeft" v-show="showOwStstus">
+        <div class="toWorkLeft" v-if="showOwStstus">
           <div>下</div>
         </div>
         <div class="toWorkRight">
-          <div class="toWorkRightTimeSpan" v-show="showOwStstus">下班时间</div>
+          <div class="toWorkRightTimeSpan" v-if="showOwStstus">下班时间</div>
         </div>
       </div>
 
-      <div v-show="zcDownShowSpan">
+      <div v-if="zcDownShowSpan">
         <div style="margin-top: 1.3rem">
           <!--上面的top原有是5rem 5-16晚改-->
           <div class="toWorkLeft">
@@ -114,26 +114,26 @@
               <span>{{goToTime}}</span>
             </div>
             <div class="toWorkRightTime" style="position: relative">
-              <mt-button type="default" class="toDaKaStatus" v-show="initDownRecord">
+              <mt-button type="default" class="toDaKaStatus" v-if="initDownRecord">
                 <span>打卡正常</span>
               </mt-button>
               <mt-button type="default"
                          style="background-color: rgb(255,204,0);color:#ffffff;width: 5.7rem;left:-0.8rem;height: 1.8rem;position: absolute;top: 0.1rem;font-size: 0.8rem;border-radius: 4px"
-                         v-show="leaveEarly">
+                         v-if="leaveEarly">
                 <span>早退</span>
               </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondQ" v-show="toDownLateStatusAddW">
+              <mt-button type="default" class="toDaKaStatusSecondQ" v-if="toDownLateStatusAddW || toDownLateStatusLeft">
                 <!--区域外+迟到显示-->
                 <span>区域外</span>
               </mt-button>
-              <mt-button type="default" class="toDaKaStatusSeconLeft" v-show="toDownLateStatusLeft">
-                <!--区域外+迟到显示-->
-                <span>区域外</span>
-              </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondC" v-show="toDownLateStatus">
+              <!--<mt-button type="default" class="toDaKaStatusSeconLeft" v-if="toDownLateStatusLeft">-->
+                <!--&lt;!&ndash;区域外+迟到显示&ndash;&gt;-->
+                <!--<span>区域外</span>-->
+              <!--</mt-button>-->
+              <mt-button type="default" class="toDaKaStatusSecondC" v-if="toDownLateStatus">
                 <span>迟到了</span>
               </mt-button>
-              <mt-button type="default" class="toDaKaStatusSecondKG" v-show="toDownKuang">
+              <mt-button type="default" class="toDaKaStatusSecondKG" v-if="toDownKuang">
                 <span>旷工</span>
               </mt-button>
             </div>
@@ -160,24 +160,24 @@
       </div>
       <div style="clear:both;"></div>
       <div class="clickClass">
-        <div v-show="daKaHide">
-          <img v-show="toUp && (toClickSpan || downClickSpan)" :src="imgSrc.bg"
+        <div v-if="daKaHide">
+          <img v-if="toUp && (toClickSpan || downClickSpan)" :src="imgSrc.bg"
                style="width: 16rem;height: 16rem;">
-          <img v-show="toUp && getLocations" :src="imgSrc.bg1"
+          <img v-if="toUp && getLocations" :src="imgSrc.bg1"
                style="width: 16rem;height: 16rem;">
           <!--此处是gif圆-->
         </div>
         <div style="position: absolute;top:4rem;left: 4rem;width:8rem;height: 8rem;text-align: center"
-             v-show="daKaHide">
-          <mt-button class="clickClassButton" type="primary" v-show="toUp" :disabled="getLocations"
+             v-if="daKaHide">
+          <mt-button class="clickClassButton" type="primary" v-if="toUp" :disabled="getLocations"
                      @click="handerClickEvent"
                      style="background: rgba(255,255,255,0);width:100%;height: 8rem;">
             <div class="clickSignCard">
-              <p class="clickClassUp signInFont" v-show="toClickSpan">上班打卡 </p>
-              <p class="clickClassUp signInFont" v-show="getLocations">正在获取</p>
-              <p class="clickClassDown signInFont" v-show="getLocations">当前位置</p>
-              <p class="clickClassUp signInFont" v-show="downClickSpan">下班打卡 </p>
-              <p class="clickClassDown signInFont" v-show="toClickSpan || downClickSpan">
+              <p class="clickClassUp signInFont" v-if="toClickSpan">上班打卡 </p>
+              <p class="clickClassUp signInFont" v-if="getLocations">正在获取</p>
+              <p class="clickClassDown signInFont" v-if="getLocations">当前位置</p>
+              <p class="clickClassUp signInFont" v-if="downClickSpan">下班打卡 </p>
+              <p class="clickClassDown signInFont" v-if="toClickSpan || downClickSpan">
                 <span v-text="hour+ ':'">
                 </span><span v-text="minute+ ':'"></span><span>
                </span><span v-text="second"></span>
@@ -208,12 +208,12 @@
             </div>
 
             <div class="middleSpan">
-              <div class="middleSpanLeft" v-show="alertToSpan">上班</div>
-              <div class="middleSpanLeft" v-show="alertDownSpan">下班</div>
+              <div class="middleSpanLeft" v-if="alertToSpan">上班</div>
+              <div class="middleSpanLeft" v-if="alertDownSpan">下班</div>
 
               <div class="middleSpanRight">
-                <div v-show="toTimeMiddleShow">{{initToTime}}</div>
-                <div v-show="downTimeMiddleShow">{{goToTime}}</div>
+                <div v-if="toTimeMiddleShow">{{initToTime}}</div>
+                <div v-if="downTimeMiddleShow">{{goToTime}}</div>
               </div>
               <div style="clear: both"></div>
               <div style="width: 20rem;">
@@ -379,7 +379,7 @@
         //下面是新增每种少的状态变量
         tokuangWdk: false, //上班旷工显示的忘打卡 状态
         initDaKaRecordWeiZhi: false,
-        absenteeismStatus2: false, //提交外出申请2span
+//        absenteeismStatus2: false, //提交外出申请2span
         lateStatusTo: false, //上班的迟到状态
         addTimeAlert: '', //alert加班时间
         initDownRecord: '',//下班正常
@@ -479,8 +479,8 @@
                 this.lateStatus = false; //第二个忘记打卡
                 this.lateStatusTo = true; //上班的迟到状态
                 this.$nextTick(() => {
-                  this.absenteeismStatus = false; //旷工和提交隐藏
-                  this.absenteeismStatus2 = true; //展示提交
+                  this.absenteeismStatus = true; //旷工和提交隐藏
+//                  this.absenteeismStatus2 = true; //展示提交
                 });
                 this.initDaKaRecordWeiZhi = true; //6-12-15测试提交bug添加
               } else if (this.toDaKaStatusIsInit == 1) { //迟到打卡显示
@@ -508,8 +508,8 @@
                   this.lateStatusAddW = true;
                   this.initDaKaRecord = response.body.result.twStatus == 0 ? true : false;
                   this.initDaKaRecordWeiZhi = true;
-                  this.absenteeismStatus = false; //隐藏包含旷工和提交span
-                  this.absenteeismStatus2 = true;
+                  this.absenteeismStatus = true; //隐藏包含旷工和提交span
+//                  this.absenteeismStatus2 = true;
                   this.tokuangWdk = false;
                   this.lateStatus = false;
                 });
