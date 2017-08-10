@@ -9,7 +9,6 @@ import myData from "@/components/staffData/myData"
 import leave from "@/components/leaves/leave"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import mySalary from "@/components/SignIn/mySalary"
-import datePick from "@/components/components/datePick"
 import set from "@/components/staffData/set"
 
 
@@ -53,10 +52,6 @@ export default new Router({
     {
       path: '/mySalary',  //我的工资条
       component: mySalary
-    },
-    {
-      path: '/datePick',  //我的datepick
-      component: datePick
     },
     {
       path: '/set',  //我的解除绑定
