@@ -15,19 +15,19 @@
         <el-form label-position="left" :model="model" :rules="rules" :label-width="labelWidth"
                  style="padding-bottom: 10px" ref="personFm">
           <div v-for="confListItem in confList" v-if="confListItem.isdefault===true">
-            <div v-if="confListItem.jname==='name'" class="form-padding-bottom">
+            <div v-if="confListItem.jname==='name' && staff.name" class="form-padding-bottom">
               <el-form-item v-if="staff.name" label="姓名" prop="name"
                             :rules="{required: staff.name.isrequired, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">
                 <el-input :disabled="!staff.name.isedit" v-model="model.name"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='mobile'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='mobile' && staff.mobile" class="form-padding-bottom">
               <el-form-item v-if="staff.mobile" label="手机号" prop="mobile"
                             :rules="{required: staff.mobile.isrequired, message: '请输入正确的手机号', trigger: 'change', pattern: /^1\d{10}$/}">
                 <el-input :disabled="!staff.mobile.isedit" v-model="model.mobile"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='gender'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='gender' && staff.gender" class="form-padding-bottom">
               <el-form-item v-if="staff.gender" label="性别" prop="gender"
                             :rules="{required: staff.gender.isrequired,type: 'number', message: '请选择性别', trigger: 'change'}">
                 <el-radio-group :disabled="!staff.gender.isedit" v-model="model.gender">
@@ -35,7 +35,7 @@
                 </el-radio-group>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='dateOfBirth'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='dateOfBirth' && staff.dateOfBirth" class="form-padding-bottom">
               <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth"
                             :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change',validator:isDate}">
                 <el-date-picker
@@ -47,13 +47,13 @@
                 </el-date-picker>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='idcard'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='idcard' && staff.idcard" class="form-padding-bottom">
               <el-form-item v-if="staff.idcard" label="身份证号" prop="idcard"
                             :rules="{required: staff.idcard.isrequired, message: '请填写正确的身份证号', trigger: 'change',pattern: /^\d{17}(?:\d|[Xx])$/}">
                 <el-input :disabled="!staff.idcard.isedit" v-model="model.idcard"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='podoMessage'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='podoMessage' && staff.podoMessage" class="form-padding-bottom">
 
               <el-form-item v-if="staff.podoMessage" label="户口省份" prop="podoProvince"
                             :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在省份', trigger: 'change'}">
@@ -97,7 +97,7 @@
             </div>
           </div>
           <div v-for="confListItem in confList" v-if="confListItem.isdefault===false">
-            <div v-if="confListItem.jname==='nativePlace'" class="form-padding-bottom">
+            <div v-if="confListItem.jname==='nativePlace' && staff.nativePlace" class="form-padding-bottom">
               <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace"
                             :rules="{required: staff.nativePlace.isrequired, message: '请选择国籍', trigger: 'change'}">
                 <el-select :disabled="!staff.nativePlace.isedit" clearable v-model="model.nativePlace"
@@ -147,7 +147,7 @@
                 </el-select>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='idcardPhoUrl'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='idcardPhoUrl' && staff.idcardPhoUrl" class="form-padding-bottom">
               <el-form-item v-if="staff.idcardPhoUrl" label="身份证正面" prop="idcardPhoUrl"
                             :rules="{required: staff.idcardPhoUrl.isrequired, message: '请上传身份证照片', trigger: 'blur'}">
                 <el-upload
@@ -188,21 +188,21 @@
                   请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='socsecNum'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='socsecNum' && staff.socsecNum" class="form-padding-bottom">
               <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
                             :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号(数字)', trigger: 'blur', pattern: /^\d+$/},
                         {message: '不能超过 10 个数字', trigger: 'blur', max:10}]">
                 <el-input :disabled="!staff.socsecNum.isedit" v-model="model.socsecNum"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='accfuNum'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='accfuNum' && staff.accfuNum" class="form-padding-bottom">
               <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum"
                             :rules="[{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号(数字)', trigger: 'blur',pattern: /^\d+$/},
                         {message: '不能超过12个数字', trigger: 'blur', max:12}]">
                 <el-input :disabled="!staff.accfuNum.isedit" v-model="model.accfuNum"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='bankName'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='bankName' && staff.bankName" class="form-padding-bottom">
               <el-form-item v-if="staff.bankName" label="银行名称" prop="bankName"
                             :rules="{required: staff.bankName.isrequired, message: '请选择银行', trigger: 'blur'}">
                 <el-select :disabled="!staff.bankName.isedit" clearable v-model="model.bankName" placeholder="请选择">
@@ -228,7 +228,7 @@
                 <el-input :disabled="!staff.bankName.isedit" v-model="model.cardNumber"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='staffPhoUrl'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='staffPhoUrl' && staff.staffPhoUrl" class="form-padding-bottom">
               <el-form-item v-if="staff.staffPhoUrl" label="员工照片" prop="staffPhoUrl"
                             :rules="{required: staff.staffPhoUrl.isrequired, message: '请上传员工照片', trigger: 'blur'}">
                 <el-upload
@@ -248,28 +248,28 @@
                 <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='englishName'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='englishName' && staff.englishName" class="form-padding-bottom">
               <el-form-item v-if="staff.englishName" label="英文名" prop="englishName"
                             :rules="[{required: staff.englishName.isrequired,  message: '请填写正确的英文名', trigger: 'blur', pattern: /^[a-zA-Z]+$/},
                                   {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
                 <el-input :disabled="!staff.englishName.isedit" v-model="model.englishName"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='qq'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='qq' && staff.qq" class="form-padding-bottom">
               <el-form-item v-if="staff.qq" label="QQ" prop="qq"
                             :rules="[{required: staff.qq.isrequired,message: '请填写正确的 QQ 号(数字)', trigger: 'blur', pattern: /^\d+$/},
                         {message: '不能超过24个字符', trigger: 'blur',max: 24}]">
                 <el-input :disabled="!staff.qq.isedit" v-model="model.qq"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='wechart'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='wechart' && staff.wechart" class="form-padding-bottom">
               <el-form-item v-if="staff.wechart" label="微信" prop="wechart"
                             :rules="[{required: staff.wechart.isrequired,message: '请填写正确的微信号', trigger: 'blur', pattern: /^[a-zA-Z0-9-_]+$/},
                         {message: '不能少于6个或超过20个字符', trigger: 'blur',min:6,max: 20}]">
                 <el-input :disabled="!staff.wechart.isedit" v-model="model.wechart"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='maritalStatus'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='maritalStatus' && staff.maritalStatus" class="form-padding-bottom">
               <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus"
                             :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'blur'}">
                 <el-select :disabled="!staff.maritalStatus.isedit" clearable v-model="model.maritalStatus"
@@ -283,7 +283,7 @@
                 </el-select>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='nation'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='nation' && staff.nation" class="form-padding-bottom">
               <el-form-item v-if="staff.nation" label="民族" prop="nation"
                             :rules="{required: staff.nation.isrequired,message: '请选择民族', trigger: 'blur'}">
                 <el-select :disabled="!staff.nation.isedit" clearable v-model="model.nation" placeholder="请选择">
@@ -296,7 +296,7 @@
                 </el-select>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='politicsStatus'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='politicsStatus' && staff.politicsStatus" class="form-padding-bottom">
               <el-form-item v-if="staff.politicsStatus" label="政治面貌" prop="politicsStatus"
                             :rules="{required: staff.politicsStatus.isrequired,message: '请选择政治面貌', trigger: 'change'}">
                 <el-select :disabled="!staff.politicsStatus.isedit" clearable v-model="model.politicsStatus"
@@ -321,14 +321,14 @@
                 </el-date-picker>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='theArcIns'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='theArcIns' && staff.theArcIns" class="form-padding-bottom">
               <el-form-item v-if="staff.theArcIns" label="存档机构" prop="theArcIns"
                             :rules="[{required: staff.theArcIns.isrequired,message: '请输入正确的存档机构', trigger: 'change'},
                                   {message: '不能超过128个字符', trigger: 'blur', max: 128}]">
                 <el-input :disabled="!staff.theArcIns.isedit" v-model="model.theArcIns"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='houregPhoUrl'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='houregPhoUrl' && staff.houregPhoUrl" class="form-padding-bottom">
               <el-form-item v-if="staff.houregPhoUrl" label="户口本首页" prop="houregPhoUrl"
                             :rules="{required: staff.houregPhoUrl.isrequired, message: '请上传户口本首页照片', trigger: 'blur'}">
                 <el-upload
@@ -392,7 +392,7 @@
                   请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='ResperMessage'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='ResperMessage' && staff.ResperMessage" class="form-padding-bottom">
               <el-form-item v-if="staff.ResperMessage" label="居住证">
                 <el-switch
                   :disabled="!staff.ResperMessage.isedit"
@@ -450,7 +450,7 @@
                 </el-date-picker>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='poreLocation'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='poreLocation' && staff.poreLocation" class="form-padding-bottom">
               <el-form-item v-if="staff.poreLocation" label="现居住地省份" prop="poreProvince"
                             :rules="{required: staff.poreLocation.isrequired, message: '请选择现居住地所在省份', trigger: 'change'}">
                 <el-select :disabled="!staff.poreLocation.isedit" clearable v-model="model.poreProvince"
@@ -483,13 +483,13 @@
                 <el-input :disabled="!staff.poreLocation.isedit" v-model="model.poreAddress"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='personalEmail'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='personalEmail' && staff.personalEmail" class="form-padding-bottom">
               <el-form-item v-if="staff.personalEmail" label="个人邮箱" prop="personalEmail"
                             :rules="{required: staff.personalEmail.isrequired,type: 'email', message: '请输入正确的个人邮箱', trigger: 'change', max: 30}">
                 <el-input :disabled="!staff.personalEmail.isedit" v-model="model.personalEmail"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='emergencyContact'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='emergencyContact' && staff.emergencyContact" class="form-padding-bottom">
               <el-form-item v-if="staff.emergencyContact" label="紧急联系人" :required="staff.emergencyContact.isrequired">
               </el-form-item>
               <div v-if="staff.emergencyContact" class="contacts-wrapper">
@@ -517,7 +517,7 @@
                 </el-button>
               </div>
             </div>
-            <div v-else-if="confListItem.jname==='hasChilds'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='hasChilds' && staff.hasChilds" class="form-padding-bottom">
               <el-form-item v-if="staff.hasChilds" label="是否有子女">
                 <el-switch
                   :disabled="!staff.hasChilds.isedit"
@@ -577,14 +577,14 @@
                 </el-button>
               </div>
             </div>
-            <div v-else-if="confListItem.jname==='finallyEmpCom'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='finallyEmpCom' && staff.finallyEmpCom" class="form-padding-bottom">
               <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom"
                             :rules="[{required: staff.finallyEmpCom.isrequired,message: '请输入正确的上一家受聘公司', trigger: 'change'},
                                 {message: '不能超过 256 个字符', trigger: 'blur', max: 256}]">
                 <el-input :disabled="!staff.finallyEmpCom.isedit" v-model="model.finallyEmpCom"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='eduInfor'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='eduInfor' && staff.eduInfor" class="form-padding-bottom">
               <el-form-item v-if="staff.eduInfor" label="最高学历" prop="maxinumDeucaLevel"
                             :rules="{required: staff.eduInfor.isrequired, message: '请选择最高学历', trigger: 'blur'}">
                 <el-select :disabled="!staff.eduInfor.isedit" clearable v-model="model.maxinumDeucaLevel"
@@ -686,14 +686,14 @@
                   请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='technicalTitle'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='technicalTitle' && staff.technicalTitle" class="form-padding-bottom">
               <el-form-item v-if="staff.technicalTitle" label="职称" prop="technicalTitle"
                             :rules="[{required: staff.technicalTitle.isrequired, message: '请输入正确的职称', trigger: 'change'},
                         {message: '不能超过32个字符', trigger: 'blur', max: 32}]">
                 <el-input :disabled="!staff.technicalTitle.isedit" v-model="model.technicalTitle"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='resumeUrl'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='resumeUrl' && staff.resumeUrl" class="form-padding-bottom">
               <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrl"
                             :rules="{required: staff.resumeUrl.isrequired, message: '请上传简历', trigger: 'blur'}">
                 <el-upload
@@ -712,7 +712,7 @@
                 <p class="uploadErrorTip" v-show="resumeUrlErrFlag">请上传正确的简历(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='hasComres'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='hasComres' && staff.hasComres" class="form-padding-bottom">
               <el-form-item v-if="staff.hasComres" label="是否有竞业协议">
                 <el-switch
                   :disabled="!staff.hasComres.isedit"
@@ -728,7 +728,7 @@
                           placeholder="备注信息"></el-input>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='emplsepacertUrl'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='emplsepacertUrl' && staff.emplsepacertUrl" class="form-padding-bottom">
               <el-form-item v-if="staff.emplsepacertUrl" label="离职证明" prop="emplsepacertUrl"
                             :rules="{required: staff.emplsepacertUrl.isrequired, message: '请上传离职证明照片', trigger: 'blur'}">
                 <el-upload
@@ -761,7 +761,7 @@
       <mt-tab-container-item id="2">
         <el-form label-position="left" :model="model" :rules="rules" ref="postFm" :label-width="labelWidth">
           <div v-for="confListItem in confList" v-if="confListItem.isdefault===true">
-            <div v-if="confListItem.jname==='contracMes'" class="form-padding-bottom">
+            <div v-if="confListItem.jname==='contracMes' && staffRecord.contracMes" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.contracMes" label="合同类型">
                 <span>{{contractTypes && contractTypes[model.record.contract.contracType.toString()]}}</span>
               </el-form-item>
@@ -772,7 +772,6 @@
               </el-form-item>
 
               <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="合同期限">
-                <!--<span>{{model.record.contract.contractPeriod}}</span>-->
                 <span
                   v-text="model.record.contract.contractPeriod===-1 ? '无固定期限' : (model.record.contract.contractPeriod%12===0 ? model.record.contract.contractPeriod/12+'年' : (model.record.contract.contractPeriod%6===0 ? '半年' : model.record.contract.contractPeriod+'个月'))"></span>
               </el-form-item>
@@ -830,32 +829,32 @@
               <!--</el-form-item>-->
 
             </div>
-            <div v-else-if="confListItem.jname==='dateOfEntry'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='dateOfEntry' && staffRecord.dateOfEntry" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.dateOfEntry" label="入职时间">
                 <span>{{datefmt(model.record.dateOfEntry)}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='companyAge'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='companyAge' && staffRecord.companyAge" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.companyAge" label="司龄">
                 <span>{{isCompanyAge}} 年(司龄计算是根据入职日期开始计算)</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='deptUid'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='deptUid' && staffRecord.deptUid" class="form-padding-bottom">
               <el-form-item label="所在部门" v-if="staffRecord.deptUid">
                 <span>{{emp && emp.record && emp.record.deptName}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='position'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='position' && staffRecord.position" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.position" label="职位">
                 <span>{{model.record.position}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='jobGrade'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='jobGrade' && staffRecord.jobGrade" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.jobGrade" label="职级">
                 <span>{{model.record.jobGrade}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='workAge'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='workAge' && staffRecord.workAge" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.workAge" label="首次工作时间">
                 <span>{{datefmt(model.record.fristWorkTime)}}</span>
               </el-form-item>
@@ -863,25 +862,25 @@
                 <span>{{isWorkAge}} 年(工龄计算是根据首次参加工作时间开始计算)</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='jobNumber'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='jobNumber' && staffRecord.jobNumber" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.jobNumber" label="工号">
                 <span>{{model.record.jobNumber}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='StaffStatus'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='StaffStatus' && staffRecord.StaffStatus" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.StaffStatus && (model.record.sstaffStatus== state.id)"
                             v-for="(state,index) in staffStatusList" :key="index" label="员工状态">
                 <span v-text="state.name"></span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='reporterJobNumber'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='reporterJobNumber' && staffRecord.reporterJobNumber" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.reporterJobNumber" label="汇报上级">
                 <span>{{staffRecord.upji}}</span>
               </el-form-item>
             </div>
           </div>
           <div v-for="confListItem in confList" v-if="confListItem.isdefault===false">
-            <div v-if="confListItem.jname==='workLocation'" class="form-padding-bottom">
+            <div v-if="confListItem.jname==='workLocation' && staffRecord.workLocation" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.workLocation" label="工作地省份">
                 <span>{{provinces && getPC(model.record.workProvince || '', model.record.workCity || '')}}</span>
               </el-form-item>
@@ -892,7 +891,7 @@
                 <span>{{model.record.workAddress}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='workEmail'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='workEmail' && staffRecord.workEmail" class="form-padding-bottom">
               <el-form-item v-if="staffRecord.workEmail" label="工作邮箱">
                 <span>{{model.record.workEmail}}</span>
               </el-form-item>
@@ -901,32 +900,32 @@
         </el-form>
         <el-form label-position="left" :model="model" :rules="rules" ref="optionFm" :label-width="labelWidth">
           <div v-for="confListItem in confList" v-if="confListItem.isdefault===true">
-            <div v-if="confListItem.jname==='awardDate'" class="form-padding-bottom">
+            <div v-if="confListItem.jname==='awardDate' && staffShareOption.awardDate" class="form-padding-bottom">
               <el-form-item v-if="staffShareOption.awardDate" label="授予日期">
                 <span>{{datefmt(model.shareOption.awardDate)}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='awardAmount'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='awardAmount' && staffShareOption.awardAmount" class="form-padding-bottom">
               <el-form-item v-if="staffShareOption.awardAmount" label="授予数量">
                 <span>{{model.shareOption.awardAmount}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='awardRound'" class="form-padding-bottom">
-              <el-form-item v-if=" staffShareOption.awardRound" label="授予轮次">
+            <div v-else-if="confListItem.jname==='awardRound' && staffShareOption.awardRound" class="form-padding-bottom">
+              <el-form-item v-if="staffShareOption.awardRound" label="授予轮次">
                 <span>{{model.shareOption.awardRound}}轮</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='exercSchedule'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='exercSchedule' && staffShareOption.exercSchedule" class="form-padding-bottom">
               <el-form-item v-if="staffShareOption.exercSchedule" label="行权期">
                 <span>{{model.shareOption.exercSchedule}}月</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='terminallyCount'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='terminallyCount' && staffShareOption.terminallyCount" class="form-padding-bottom">
               <el-form-item v-if="staffShareOption.terminallyCount" label="每期数量">
                 <span>{{model.shareOption.terminallyCount}}</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='contractUrl'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='contractUrl' && staffShareOption.contractUrl" class="form-padding-bottom">
               <el-form-item v-if="staffShareOption.contractUrl" label="期权合同">
                 <a v-if="model.shareOption.contractUrl"
                    :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`"></a>
@@ -934,12 +933,12 @@
             </div>
           </div>
           <div v-for="confListItem in confList" v-if="confListItem.isdefault===false">
-            <div v-if="confListItem.jname==='awardRate'" class="form-padding-bottom">
+            <div v-if="confListItem.jname==='awardRate' && staffShareOption.awardRate" class="form-padding-bottom">
               <el-form-item v-if="staffShareOption.awardRate" label="授予总比例">
                 <span>{{model.shareOption.awardRate}}%</span>
               </el-form-item>
             </div>
-            <div v-else-if="confListItem.jname==='terminallyRate'" class="form-padding-bottom">
+            <div v-else-if="confListItem.jname==='terminallyRate' && staffShareOption.terminallyRate" class="form-padding-bottom">
               <el-form-item v-if="staffShareOption.terminallyRate" label="每期比例">
                 <span>{{model.shareOption.terminallyRate}}%</span>
               </el-form-item>
