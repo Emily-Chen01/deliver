@@ -717,7 +717,7 @@
                 <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"
                                                                          @click.stop="model.resumeUrl = ''"></i>
                 </p>
-                <p class="uploadErrorTip" v-show="resumeUrlErrFlag">请上传正确的简历(格式为 doc 或 docx 或 pdf，照片体积小于 2 兆)</p>
+                <p class="uploadErrorTip" v-show="resumeUrlErrFlag">请上传正确的简历(格式为 doc 或 docx 或 pdf，文件大小不超过 5 兆)</p>
               </el-form-item>
             </div>
             <div v-else-if="confListItem.jname==='hasComres' && staff.hasComres" class="form-padding-bottom">
@@ -1798,7 +1798,7 @@
       },
       beforeResumeUrl(file) {
         let isDoc = utils.isDoc(file);
-        let isInSize = utils.isInSize(file);
+        let isInSize = utils.isInSize(file, 5);
         if (isDoc && isInSize) {
           this.resumeUrlErrFlag = false;
         } else {
@@ -2588,6 +2588,5 @@
   .form-padding-bottom {
     padding-top: 11px;
   }
-
   /*修改tab样式结束*/
 </style>
