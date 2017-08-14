@@ -3,7 +3,8 @@
     <div class="manyCompanyTitle">{{ msg }}</div>
     <div>
       <div>
-        <a class="mint-cell" v-for="(item , $index) in arryName" @click="handerComeCompany(item,$index)">
+        <a class="mint-cell mint-cell-lineBottom"
+           v-for="(item , $index) in arryName" @click="handerComeCompany(item,$index)">
           <div class="mint-cell-title qing">
             <div class="postionImages">
               <img :src="imgSrc.ico_company" class="imgSize">
@@ -126,13 +127,17 @@
     font-size: 1.4rem;
   }
 
+  .mint-cell-lineBottom {
+    border-bottom: 1px solid #d9d9d9;
+  }
+
   .mint-cell-title {
-    background-image: -webkit-linear-gradient(top, #d9d9d9, #d9d9d9 50%, transparent 0);
-    background-image: linear-gradient(180deg, #d9d9d9, #d9d9d9 50%, transparent 0);
-    background-size: 120% 1px;
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-origin: content-box;
+    /*background-image: -webkit-linear-gradient(top, #d9d9d9, #d9d9d9 50%, transparent 0);*/
+    /*background-image: linear-gradient(180deg, #d9d9d9, #d9d9d9 50%, transparent 0);*/
+    /*background-size: 120% 1px;*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: 0 0;*/
+    /*background-origin: content-box;*/
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
