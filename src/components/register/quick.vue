@@ -45,8 +45,9 @@ let openIdD;
         methods: {
           handerClickBing(){
             this.$http.post('/api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
-              console.log(response.body.code);
+              console.log('1234567',response.body);
               if(response.body.code===200){
+                this.setCookie('iphoneNumber', response.body.result.phone, 365);
                 this.$router.push({path:'/ManyCompany'});
               }else{
                 this.$router.push({path:'/index'});
@@ -60,6 +61,7 @@ let openIdD;
             this.$http.post('/api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
               console.log(response.body.code);
               if(response.body.code===200){
+                this.setCookie('iphoneNumber', response.body.result.phone, 365);
                 this.$router.push({path:'/signIn'});
               }else if(response.body.code===500){
                 MessageBox.confirm('暂未绑定，确认进行绑定').then(action => {
