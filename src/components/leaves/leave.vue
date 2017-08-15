@@ -1,5 +1,5 @@
 <template>
-  <div style="background: #ffffff;height: 100vh">
+  <div id="leave-box" style="background: #ffffff;height: 100vh">
     <!--请假申请-->
     <mt-navbar v-model="selected" class="dataTitle">
       <mt-tab-item id="1"><span>填写申请</span></mt-tab-item>
@@ -57,8 +57,7 @@
         </div>
         <div v-if="changeApplyTime" class="hrClass"></div>
         <div style="clear:both;"></div>
-        <!--<div class="hrClass" v-if="updateImage"></div>-->
-        <div v-if="updateImage" style="width:98%;height: 8rem;line-height: 8rem; position: relative">
+        <div v-if="updateImage" style="height: 8rem;line-height: 8rem; position: relative">
           <div class="cardClass">
             <div>
               <vue-core-image-upload
@@ -82,15 +81,15 @@
         <div style="clear:both;"></div>
         <div :class={hideHeight:isHideHeight} class="hrbei"></div>
 
-        <div style="width: 100%;height: 7rem;">
+        <div>
           <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
-          <div style="width: 95%;margin:  1rem ;">
-               <textarea placeholder="#请输入文字(不超过50字)"
-                         v-model="holidayModel"
-                         style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px">
+          <!--<div>-->
+          <textarea placeholder="#请输入文字(不超过50字)"
+                    v-model="holidayModel"
+                    style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px;resize:none">
                </textarea>
-          </div>
         </div>
+        <!--</div>-->
         <mt-field label="审批人" style="margin-top: 1rem" v-if="approvalTypeObj">
           <div class="showARightSpan">{{approvalTypeObj.NAME}}</div>
         </mt-field>
@@ -125,7 +124,6 @@
               <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
               <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
               <div class="myApplyTitleRight" v-else-if="item.status==2">未通过</div>
-              <div style="clear: both;"></div>
             </div>
             <div class="myApplyContent">
               <div v-if="item.startTime">
@@ -146,11 +144,10 @@
               <div class="myApplyContentNr"><span>{{item.remarks}}</span>
               </div>
               <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
-              <div class="myApplyContentNr" style="padding-bottom: 0.5rem;word-wrap: break-word;" v-if="item.why">
+              <div class="myApplyContentNr" v-if="item.why">
                 <span>{{item.why}}</span>
               </div>
-              <div v-if="item.image"
-                   style="clear: both;width: 96%;margin: 0.4rem 1rem 0.3rem 1rem; height: 1px;margin-left:0.7rem;background: #d3dde5"></div>
+              <hr v-if="item.image" style="clear: both; padding: 0 10px;box-sizing: border-box"/>
             </div>
             <div class="myApplyBottom" v-if="item.image">
               <div>
@@ -679,333 +676,350 @@
 
 </script>
 
-<style scoped>
-  .hrbei {
-    width: 96%;
-    margin: 0 0.8rem;
-    height: 1px;
-    background: #cccccc;
-    line-height: 1px
-  }
+<style lang="scss">
+  #leave-box {
+    .mint-tab-container-wrap {
 
-  .hideHeight {
-    height: 0;
-  }
+    }
+    .mint-tab-container-item {
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+    .mint-cell-wrapper {
+      background: none;
+    }
+    .hrbei {
+      /*width: 96%;*/
+      /*margin: 0 0.8rem;*/
+      height: 1px;
+      background: #cccccc;
+      line-height: 1px
+    }
 
-  .icon {
-    background: url(../../assets/ico_leave.png) !important;
-  }
+    .hideHeight {
+      height: 0;
+    }
 
-  .selectBao {
-    position: absolute;
-    width: 12px;
-    height: 7px;
-    top: 0.3rem;
-    right: 0
-  }
+    .icon {
+      background: url(../../assets/ico_leave.png) !important;
+    }
 
-  .selectShowImg {
-    width: 100%;
-    height: 100%;
-  }
+    .selectBao {
+      position: absolute;
+      width: 12px;
+      height: 7px;
+      top: 0.3rem;
+      right: 0
+    }
 
-  .hrClass {
-    width: 96%;
-    margin: 0 0.8rem;
-    height: 1px;
-    background: #cccccc;
-    line-height: 1px
-  }
+    .selectShowImg {
+      width: 100%;
+      height: 100%;
+    }
 
-  .contentClass {
-    display: flex;
-    padding: 0.5rem 1rem;
-  }
+    .hrClass {
+      /*width: 96%;*/
+      /*margin: 0 0.8rem;*/
+      height: 1px;
+      background: #cccccc;
+      line-height: 1px
+    }
 
-  .contentLeft {
-    flex: 1;
-    text-align: left;
-  }
+    .contentClass {
+      display: flex;
+      padding: 0.5rem 1rem;
+    }
 
-  .contentRight {
-    flex: 3;
-  }
+    .contentLeft {
+      flex: 1;
+      text-align: left;
+    }
 
-  .colseClass {
-    height: 3rem;
-    line-height: 3rem;
-    text-align: center;
-    background: #26a2ff;
-    width: 20rem;
-    color: #ffffff;
-  }
+    .contentRight {
+      flex: 3;
+    }
 
-  .colseClassAlert {
-    height: 3rem;
-    line-height: 3rem;
-    text-align: center;
-    background: #26a2ff;
-    color: #ffffff;
-    width: 14rem;
-    margin: 2rem auto;
-    border-radius: 4px;
-  }
+    .colseClass {
+      height: 3rem;
+      line-height: 3rem;
+      text-align: center;
+      background: #26a2ff;
+      width: 20rem;
+      color: #ffffff;
+    }
 
-  .alertImages {
-    width: 100%;
-    height: 100%;
-    display: block;
-    text-align: center;
-  }
+    .colseClassAlert {
+      height: 3rem;
+      line-height: 3rem;
+      text-align: center;
+      background: #26a2ff;
+      color: #ffffff;
+      width: 14rem;
+      margin: 2rem auto;
+      border-radius: 4px;
+    }
 
-  .imageClass {
-    width: 20rem;
-    height: 24rem;
-    line-height: 24rem;
-  }
+    .alertImages {
+      width: 100%;
+      height: 100%;
+      display: block;
+      text-align: center;
+    }
 
-  .imageClassSuccess {
-    width: 16rem;
-    height: 13rem;
-    line-height: 11rem;
-    border-radius: 4px;
-  }
+    .imageClass {
+      width: 20rem;
+      height: 24rem;
+      line-height: 24rem;
+    }
 
-  .myApplyTitle {
-    background: #d3dde7;
-  }
+    .imageClassSuccess {
+      width: 16rem;
+      height: 13rem;
+      line-height: 11rem;
+      border-radius: 4px;
+    }
 
-  .myApplyBottom {
-    padding-bottom: 1rem;
-    background: #ffffff;
-  }
+    .myApplyTitle {
+      width: 100%;
+      overflow: hidden;
+      background: #d3dde7;
+    }
 
-  .showARightSpan {
-    width: 15rem;
-    height: 2rem;
-    line-height: 2rem;
-    text-align: left;
-  }
+    .myApplyBottom {
+      padding-bottom: 1rem;
+      background: #ffffff;
+    }
 
-  .dateTimeInput {
-    border: none;
-    width: 15rem;
-    height: 2rem;
-    line-height: 2rem;
-    text-align: left;
-    font-size: 0.8rem;
-  }
+    .showARightSpan {
+      width: 15rem;
+      height: 2rem;
+      line-height: 2rem;
+      text-align: left;
+    }
 
-  .dataTitle {
-    position: fixed;
-    width: 100%;
-    z-index: 1;
-  }
+    .dateTimeInput {
+      border: none;
+      width: 15rem;
+      height: 2rem;
+      line-height: 2rem;
+      text-align: left;
+      font-size: 0.8rem;
+    }
 
-  .dataTitle span {
-    font-size: 16px;
-  }
+    .dataTitle {
+      position: fixed;
+      width: 100%;
+      z-index: 1;
+    }
 
-  .changeSelect {
-    width: 98%;
-    display: block;
-    height: 2rem;
-    border: none;
-    font-size: 1.1rem;
-    background: #ffffff;
-    -webkit-appearance: none;
-    padding-left: 1rem;
-  }
+    .dataTitle span {
+      font-size: 16px;
+    }
 
-  .dateSelect {
-    width: 98%;
-    display: block;
-    font-size: 1.1rem;
-    padding-left: 1rem;
-  }
+    .changeSelect {
+      width: 98%;
+      display: block;
+      height: 2rem;
+      border: none;
+      font-size: 1.1rem;
+      background: #ffffff;
+      -webkit-appearance: none;
+      padding-left: 1rem;
+    }
 
-  .cardClass {
-    width: 11rem;
-    height: 6rem;
-    line-height: 6rem;
-    padding-bottom: 1rem;
-    position: absolute;
-    left: 28%;
-    top: 0.6rem;
-  }
+    .dateSelect {
+      width: 98%;
+      display: block;
+      font-size: 1.1rem;
+      padding-left: 1rem;
+    }
 
-  .CardImg {
-    display: block;
-    width: 100%;
-    height: 97%;
-    border-bottom: 1px solid rgba(211, 219, 230, 0.3);
+    .cardClass {
+      width: 11rem;
+      height: 6rem;
+      line-height: 6rem;
+      padding-bottom: 1rem;
+      position: absolute;
+      left: 28%;
+      top: 0.6rem;
+    }
 
-  }
+    .CardImg {
+      display: block;
+      width: 100%;
+      height: 97%;
+      border-bottom: 1px solid rgba(211, 219, 230, 0.3);
 
-  .CardDivImg {
-    display: block;
-    width: 11rem;
-    height: 7rem;
-    padding-left: 0rem;
+    }
 
-  }
+    .CardDivImg {
+      display: block;
+      width: 11rem;
+      height: 7rem;
+      padding-left: 0rem;
 
-  .myApply {
-    width: 92%;
-    min-height: 12rem;
-    margin: 1rem;
-    background: #ffffff;
-    box-shadow: 0 0 0 1px #cccccc;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
+    }
 
-  .myApplyNo {
-    width: 92%;
-    min-height: 12rem;
-    line-height: 12rem;
-    margin: 1rem;
-    background: #ffffff;
-    box-shadow: 0 0 0 1px #cccccc;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
+    .myApply {
+      width: 100%;
+      min-height: 12rem;
+      margin-top: 1rem;
+      padding-bottom: 10px;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #cccccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
 
-  .myApplyTitleLeft {
-    width: 16rem;
-    text-align: left;
-    height: 3rem;
-    line-height: 3rem;
-    float: left;
-    font-weight: 600;
-    font-size: 1.3rem;
-  }
+    .myApplyNo {
+      width: 92%;
+      min-height: 12rem;
+      line-height: 12rem;
+      margin: 1rem;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #cccccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
 
-  .myApplyContent {
-    background: #ffffff;
-  }
+    .myApplyTitleLeft {
+      width: 80%;
+      text-align: left;
+      height: 3rem;
+      line-height: 3rem;
+      float: left;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
 
-  .myApplyContentLeft {
-    width: 7rem;
-    height: 3rem;
-    line-height: 3rem;
-    text-align: left;
-    font-weight: 600;
-    padding-left: 0.8rem;
-    font-size: 1.2rem;
-  }
+    .myApplyContent {
+      background: #ffffff;
+    }
 
-  .myApplyContentNr {
-    width: 98%;
-    min-height: 1rem;
-    line-height: 1rem;
-    text-align: left;
-    padding-left: 0.8rem;
-    font-size: 1.2rem;
-  }
+    .myApplyContentLeft {
+      width: 7rem;
+      height: 3rem;
+      line-height: 3rem;
+      text-align: left;
+      font-weight: 600;
+      padding-left: 0.8rem;
+      font-size: 1.2rem;
+    }
 
-  .myApplyContentNr span {
-    word-break: normal;
-    width: auto;
-    display: block;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow: hidden;
-    line-height: 20px;
+    .myApplyContentNr {
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 1rem;
+      line-height: 1rem;
+      text-align: left;
+      padding: 0 1rem;
+      font-size: 1.2rem;
+    }
 
-  }
+    .myApplyContentNr span {
+      word-break: normal;
+      width: auto;
+      display: block;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow: hidden;
+      line-height: 20px;
 
-  .myApplyBottomNrLeft {
-    width: 6.5rem;
-    display: inline-block;
-    height: 1rem;
-    line-height: 1rem;
-    text-align: left;
-    font-size: 1.2rem;
-  }
+    }
 
-  .myApplyBottomNrRight {
-    width: 15rem;
-    display: inline-block;
-    height: 1rem;
-    line-height: 1rem;
-    text-align: left;
-    font-size: 1.2rem;
-  }
+    .myApplyBottomNrLeft {
+      width: 6.5rem;
+      display: inline-block;
+      height: 1rem;
+      line-height: 1rem;
+      text-align: left;
+      font-size: 1.2rem;
+    }
 
-  .myApplyTitleRight {
-    width: 7rem;
-    height: 3rem;
-    line-height: 3rem;
-    float: right;
-    font-weight: 600;
-    font-size: 1.3rem;
-  }
+    .myApplyBottomNrRight {
+      width: 15rem;
+      display: inline-block;
+      height: 1rem;
+      line-height: 1rem;
+      text-align: left;
+      font-size: 1.2rem;
+    }
 
-  .changeShowList {
-    flex: 1;
-  }
+    .myApplyTitleRight {
+      width: 20%;
+      height: 3rem;
+      line-height: 3rem;
+      float: right;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
 
-  .changeTitleClass {
-    position: fixed;
-    width: 100%;
-    display: flex;
-    background: rgb(29, 139, 224);
-    color: rgba(255, 255, 255, 0.5);
-    height: 40px;
-    line-height: 40px;;
-    z-index: 1;
-  }
+    .changeShowList {
+      flex: 1;
+    }
 
-  .active {
-    width: 24%;
-    border-bottom: 0.2rem solid;
-    color: #ffffff;
-  }
+    .changeTitleClass {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      display: flex;
+      background: rgb(29, 139, 224);
+      color: rgba(255, 255, 255, 0.5);
+      height: 40px;
+      line-height: 40px;;
+      z-index: 1;
+    }
 
-  .active2 {
-    width: 24%;
-    border-bottom: 0.2rem solid;
-    color: #ffffff;
-  }
+    .active {
+      width: 24%;
+      border-bottom: 0.2rem solid;
+      color: #ffffff;
+    }
 
-  .active3 {
-    width: 24%;
-    border-bottom: 0.2rem solid;
-    color: #ffffff;
-  }
+    .active2 {
+      width: 24%;
+      border-bottom: 0.2rem solid;
+      color: #ffffff;
+    }
 
-  .active4 {
-    width: 24%;
-    border-bottom: 0.2rem solid;
-    color: #ffffff;
-  }
+    .active3 {
+      width: 24%;
+      border-bottom: 0.2rem solid;
+      color: #ffffff;
+    }
 
-  /*修改tab样式*/
-  .mint-navbar {
-    background-color: #26a2ff;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    text-align: center;
-  }
+    .active4 {
+      width: 24%;
+      border-bottom: 0.2rem solid;
+      color: #ffffff;
+    }
 
-  .mint-navbar .mint-tab-item.is-selected {
-    border-bottom: 3px solid #ffffff;
-    color: #ffffff;
-    margin-bottom: -1px;
-  }
+    /*修改tab样式*/
+    .mint-navbar {
+      background-color: #26a2ff;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      text-align: center;
+    }
 
-  .mint-navbar .mint-tab-item {
-    padding: 17px 0;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.5);
+    .mint-navbar .mint-tab-item.is-selected {
+      border-bottom: 3px solid #ffffff;
+      color: #ffffff;
+      margin-bottom: -1px;
+    }
+
+    .mint-navbar .mint-tab-item {
+      padding: 17px 0;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.5);
+    }
   }
 
   /*修改tab样式结束*/

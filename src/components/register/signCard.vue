@@ -154,7 +154,6 @@
           setIconBlue: require('../../assets/ico_setting_1.png'),
           setIcon: require('../../assets/ico_setting_2.png'),
           ico_pencil: require('../../assets/ico_pencil.png'),
-          bg1: require('../../assets/bg.png'),
         },
         recordShow: {},
         init: '',
@@ -267,11 +266,8 @@
 <style scoped>
   .imageClassSuccess {
     width: 16rem;
-    /*top: 10rem;*/
     height: 12rem;
-    /*line-height: 11rem;*/
     border-radius: 4px;
-    /*background: pink;*/
 
   }
 
@@ -300,20 +296,13 @@
 
   .qing {
     width: 5rem;
-    postion: relative;
+    position: relative;
   }
 
   .qing::before {
     content: " ------- ";
-    /*content: url(../../assets/ico_leave.png);*/
-    /*font-size: 0.5em;*/
-    /*background-size: 19px 20px;*/
-    /*display: inline-block;*/
-    /*background-color:yellow;*/
     color: #ffffff;
-    /*font-weight:bold;*/
     width: 10%;
-    /*height: 20px;*/
   }
 
   .postionImages {
@@ -334,7 +323,6 @@
     bottom: 0;
     width: 100%;
     height: 5rem;
-    /*line-height: 4rem;*/
     background: #ffffff;
   }
 
@@ -368,8 +356,6 @@
     padding-left: 0.8rem;
     width: 74%;
     float: left;
-    /*height: 5.2rem;*/
-    /*line-height: 5.2rem;*/
     font-size: 1.2rem;
   }
 
@@ -378,8 +364,6 @@
     height: 100%;
     display: block;
     text-align: center !important;
-    /*padding-top: 0.3rem;*/
-    /*padding: 1rem 0 0 0.7rem;*/
   }
 
   .avatarTop {
@@ -394,9 +378,6 @@
 
   .signName {
     text-align: left;
-    /*width: 45%;*/
-    /*height: 1.8rem;*/
-    /*line-height: 1.8rem;*/
     padding-top: 0.2rem;
   }
 
@@ -418,14 +399,10 @@
 
   .signTitle {
     text-align: left;
-    /*height: 1.8rem;*/
-    /*line-height: 1.8rem;*/
   }
 
   .companyNameClass {
     text-align: left;
-    /*height: 1.8rem;*/
-    /*line-height: 1.8rem;*/
     padding-top: 0.2rem;
     padding-bottom: 0.5rem;
   }
