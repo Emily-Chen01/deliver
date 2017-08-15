@@ -555,6 +555,7 @@
     font-size: 14px;
     color: #1f2d3d;
     text-align: left;
+    padding-bottom: 10px;
     .lineStyle {
       height: 1px;
       background: #cccccc;
