@@ -264,12 +264,9 @@
           v-model="qulocation"
           class="imageClassAlert"
           closeOnClickModal="false">
-          <div style="font-size:1.2rem;width: 14rem;height: 1.5rem;text-align: center;margin:2rem auto 0.3rem auto;">
-            <span>HR SAAS系统要使用您的</span>
-          </div>
           <div
-            style="font-size:1.2rem; width: 12rem;height: 1.5rem;text-align: center;margin:0.5rem auto 0.3rem auto;">
-            <span>地理位置，是否允许？</span>
+            style="font-size:1.2rem;width: 14rem;line-height: 2rem;text-align: center;margin:2rem auto 0.3rem auto;">
+            <span>HR SAAS系统要使用您的地理位置，是否允许？</span>
           </div>
           <div style="clear:both;"></div>
           <div @click="closeAlert" class="okClassAlert">
@@ -1187,7 +1184,7 @@
 
   .imageClassAlert {
     width: 19rem;
-    height: 13rem;
+    /*height: 13rem;*/
     background: #ffffff;
     border-radius: 4px;
   }

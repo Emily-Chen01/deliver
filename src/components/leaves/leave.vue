@@ -165,9 +165,7 @@
             <span>没有数据</span>
           </div>
         </div>
-
       </mt-tab-container-item>
-
     </mt-tab-container>
     <mt-popup
       v-model="popupVisible"
@@ -197,7 +195,6 @@
     <mt-datetime-picker
       type="datetime"
       ref="picker0"
-      :startDate="new Date(new Date()-24*60*60*1000)"
       v-model="startTimeValue1"
       year-format="{value} 年"
       month-format="{value} 月"
@@ -210,7 +207,6 @@
     <mt-datetime-picker
       type="datetime"
       ref="picker1"
-      :startDate="new Date(new Date()-24*60*60*1000)"
       v-model="endTimeValue1"
       year-format="{value} 年"
       month-format="{value} 月"
@@ -286,9 +282,9 @@
         holidayTypeArray: [], // 假期分类
         holidayTypeName: [], // 假期分类
         startTimeValue: '', //开始时间value
-        startTimeValue1: '',
+        startTimeValue1: new Date(),
         endTimeValue: '',  //结束时间value
-        endTimeValue1: '',
+        endTimeValue1: new Date(),
         holidayModel: '',
         textareaString: '',
         qingjiauidParam: '',
