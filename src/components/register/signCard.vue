@@ -1,111 +1,108 @@
 <template>
   <div v-if="state">
-    <div class="bg">
-      <div style="padding-top: 1rem;color:#ffffff;padding-left: 1rem; overflow: hidden">
-        <div class="siginLeft">
-          <div class="avatarBorder">
+    <div v-if="toolState">
+      <!--头部-->
+      <div class="bg">
+        <div style="padding-top: 1rem;color:#ffffff;padding-left: 1rem; overflow: hidden">
+          <div class="siginLeft">
+            <div class="avatarBorder">
+              <img :src="imgSrc.comAddress" class="avatarTop">
+            </div>
+          </div>
+          <div class="siginRight" style="position: relative;">
+            <div>
+              <div class="signTitle" style="padding-right: 66px;box-sizing: border-box">{{oneselfData.name}}</div>
+              <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
+              <div
+                style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.4rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;"
+                @click="routerMyData">
+                <div style="display: block;width: 13px;height: 13px;">
+                  <img style="display: block;width: 100%;height: 100%;padding-top: 0.5rem;padding-left: 0.5rem;"
+                       :src="imgSrc.shezhiBackground"/>
+                </div>
+                <div style="font-size: 0.8rem;top: 0.43rem; position: absolute;right: 0.8rem;z-index: 10">设置</div>
+              </div>
+            </div>
+            <div class="companyNameClass">{{infoObj.companyName}}</div>
+          </div>
+        </div>
+        <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative" v-if="punchCard">
+          <mt-button
+            type="primary"
+            style="background-color: #57b9ff;width: 97%;"
+            @click="handerSign"
+          >
+            <img :src="imgSrc.ico_pencil" style="width:12px;height: 12px;" class="imgSizePencil">
+            <span>签到打卡</span>
+          </mt-button>
+        </div>
+      </div>
+      <!--中间选项列表-->
+      <div style="margin-top: 1rem;border-bottom: 1px solid #d9d9d9">
+        <div @click="changeList(0)">
+          <mt-cell title="请假申请" is-link>
+            <span>{{recordShow.apply}}</span>
+            <img slot="icon" :src="imgSrc.ico_leave" class="ImgIcon">
+          </mt-cell>
+        </div>
+        <div @click="changeList(1)">
+          <mt-cell title="我的考勤" is-link>
+            <span>{{recordShow.punchCard}}</span>
+            <img slot="icon" :src="imgSrc.ico_attendance" class="ImgIcon">
+          </mt-cell>
+        </div>
+        <div @click="changeList(2)">
+          <mt-cell title="我的工资条" is-link>
+            <span>{{recordShow.salary}}</span>
+            <img slot="icon" :src="imgSrc.ico_wage" class="ImgIcon">
+          </mt-cell>
+        </div>
+      </div>
+    </div>
+    <div v-if="!toolState" id="Binding-wrapper">
+      <div class="binding-box">
+        <div class="headerImg-wrapper">
+          <div class="headerImg-box">
             <img :src="imgSrc.comAddress" class="avatarTop">
           </div>
         </div>
-        <div class="siginRight" style="position: relative;">
-          <div>
-            <div class="signTitle" style="padding-right: 66px;box-sizing: border-box">{{oneselfData.name}}</div>
-            <div class="signName"><span>{{infoObj.deptName}}</span> <span>{{infoObj.position}}</span></div>
-            <div
-              style="border-bottom-left-radius: 1.5rem;border-top-left-radius: 1.5rem; position: absolute;width: 4.4rem;height: 2rem; background: rgb(26,128,203); top:0;right: -0.5rem;"
-              @click="routerMyData">
-              <div style="display: block;width: 13px;height: 13px;">
-                <img style="display: block;width: 100%;height: 100%;padding-top: 0.5rem;padding-left: 0.5rem;"
-                     :src="imgSrc.shezhiBackground"/>
-              </div>
-              <div style="font-size: 0.8rem;top: 0.43rem; position: absolute;right: 0.8rem;z-index: 10">设置</div>
-            </div>
-          </div>
-          <div class="companyNameClass">{{infoObj.companyName}}</div>
-        </div>
+        <mt-button type="primary" size="large" class="Binding-btn" @click.native="handerUnbundling">解除绑定</mt-button>
+        <div class="Binding-hotLine">客服热线 ：0512-88998989</div>
       </div>
-      <div style="padding: 0 0.8rem 2rem 0.8rem;position: relative" v-if="punchCard">
-        <mt-button
-          type="primary"
-          style="background-color: #57b9ff;width: 97%;"
-          @click="handerSign"
-        >
-          <img :src="imgSrc.ico_pencil" style="width:12px;height: 12px;" class="imgSizePencil">
-          <span>签到打卡</span>
-        </mt-button>
-      </div>
-    </div>
-    <div style="margin-top: 1rem;height: 10rem">
-      <a class="mint-cell" @click="changeList(0)">
-        <div class="mint-cell-wrapper">
-          <div class="mint-cell-title qing">
-            <div class="postionImages">
-              <img :src="imgSrc.ico_leave" class="imgSize">
-            </div>
-            <div class="showSpan">{{recordShow.apply}}</div>
-            <div>
-              <i class="indexicon icon-toast"></i>
-              <span>请假申请</span></div>
-          </div>
-          <div class="mint-cell-value is-link"><span></span></div>
-        </div>
-        <div class="mint-cell-right"></div>
-        <i class="mint-cell-allow-right"></i>
-      </a>
-      <a class="mint-cell" @click="changeList(1)">
-        <div class="mint-cell-wrapper">
-          <div class="mint-cell-title qing">
-            <div class="postionImages">
-              <img :src="imgSrc.ico_attendance" class="imgSize">
-            </div>
-            <div class="showSpan">{{recordShow.punchCard}}</div>
-            <div>
-              <i class="indexicon icon-toast"></i>
-              <span>我的考勤</span></div>
-          </div>
-          <div class="mint-cell-value is-link"><span></span></div>
-        </div>
-        <div class="mint-cell-right"></div>
-        <i class="mint-cell-allow-right"></i>
-      </a>
-      <a class="mint-cell" @click="changeList(2)">
-        <div class="mint-cell-wrapper">
-          <div class="mint-cell-title qing">
-            <div class="postionImages">
-              <img :src="imgSrc.ico_wage" class="imgSize">
-            </div>
-            <div class="showSpan">{{recordShow.salary}}</div>
-            <div>
-              <i class="indexicon icon-toast"></i>
-              <span>我的工资条</span></div>
-          </div>
-          <div class="mint-cell-value is-link"><span></span></div>
-        </div>
-        <div class="mint-cell-right"></div>
-        <i class="mint-cell-allow-right"></i>
-      </a>
     </div>
     <!--底部工具-->
-    <div class="bottomTool">
-      <div style="position: relative">
-        <div style="width: 50%;float: left;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" @click="routerTool(1)">
-          <div style="height: 20px;width: 20px; text-align: center; margin: auto;padding-top: 1rem;">
-            <img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">
-            <img :src="imgSrc.doIcon" class="avatar" v-if="init">
-          </div>
-          <div style="height: 1.5rem;padding-top: 0.5rem;" v-if="init">工作台</div>
-          <div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlue">工作台</div>
-        </div>
-        <div style="width: 50%;float: right;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" @click="routerTool(2)">
-          <div style="height: 20px;width: 20px;text-align: center; margin: auto;padding-top: 1rem;">
-            <img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">
-            <img :src="imgSrc.setIcon" class="avatar" v-if="initSet">
-          </div>
-          <div style="height: 1.5rem;padding-top: 0.5rem;" v-if="initSet">设置</div>
-          <div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlueSet">设置</div>
-        </div>
-      </div>
-    </div>
+    <mt-tabbar v-model="select">
+      <mt-tab-item id="1">
+        <img slot="icon" :src="imgSrc.doIconBlue" class="avatar" v-if="toolState">
+        <img slot="icon" :src="imgSrc.doIcon" class="avatar" v-if="!toolState">
+        <span>工作台</span>
+      </mt-tab-item>
+      <mt-tab-item id="2">
+        <img slot="icon" :src="imgSrc.setIconBlue" class="avatar" v-if="!toolState">
+        <img slot="icon" :src="imgSrc.setIcon" class="avatar" v-if="toolState">
+        <span>设置</span>
+      </mt-tab-item>
+    </mt-tabbar>
+    <!--<div class="bottomTool">-->
+    <!--<div style="position: relative">-->
+    <!--<div style="width: 50%;float: left;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" @click="routerTool(1)">-->
+    <!--<div style="height: 20px;width: 20px; text-align: center; margin: auto;padding-top: 1rem;">-->
+    <!--<img :src="imgSrc.doIconBlue" class="avatar" v-if="initBlue">-->
+    <!--<img :src="imgSrc.doIcon" class="avatar" v-if="init">-->
+    <!--</div>-->
+    <!--<div style="height: 1.5rem;padding-top: 0.5rem;" v-if="init">工作台</div>-->
+    <!--<div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlue">工作台</div>-->
+    <!--</div>-->
+    <!--<div style="width: 50%;float: right;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" @click="routerTool(2)">-->
+    <!--<div style="height: 20px;width: 20px;text-align: center; margin: auto;padding-top: 1rem;">-->
+    <!--<img :src="imgSrc.setIconBlue" class="avatar" v-if="initBlueSet">-->
+    <!--<img :src="imgSrc.setIcon" class="avatar" v-if="initSet">-->
+    <!--</div>-->
+    <!--<div style="height: 1.5rem;padding-top: 0.5rem;" v-if="initSet">设置</div>-->
+    <!--<div style="height: 1.5rem;padding-top: 0.5rem;color:#20a0ff" v-if="initBlueSet">设置</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
     <mt-popup
       v-model="isVisible"
       class="imageClassSuccess"
@@ -116,21 +113,25 @@
         style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin-top: 2rem;font-size: 1.1rem;">
         <span>审批功能已经被关闭了</span>
       </div>
-
       <div @click="closeAlertFail" class="colseClassAlertFail">
         <span>确定</span>
       </div>
     </mt-popup>
-
   </div>
 </template>
 <script>
-  import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
-  import {Indicator} from 'mint-ui';
+  //  import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
+  import Vue from 'vue'
+  import {Indicator, Popup, Cell} from 'mint-ui';
+  import {Tabbar, TabItem} from 'mint-ui';
+  Vue.component(Tabbar.name, Tabbar);
+  Vue.component(TabItem.name, TabItem);
 
   export default {
     data(){
       return {
+        toolState: true,
+        select: '1',
         state: false,
         isVisible: false,
         closeOnClickModal: true,
@@ -163,6 +164,18 @@
 
       }
     },
+    watch: {
+      select: function (val, oldVal) {
+        if (val === '1') {
+          this.toolState = true;
+        } else if (val === '2') {
+          this.toolState = false;
+        }
+      },
+      holidayModel: function (val, oldVal) { //备注value 用于上传参数
+        this.textareaString = val.trim();
+      },
+    },
     created: function () {
       this.state = false;
       Indicator.open('正在加载...');
@@ -183,20 +196,15 @@
     },
     methods: {
       handerSign(){
-
         this.$router.push({path: '/signIn'}); //进入打卡页
-
       },
       searchStaff(){
-
         this.$http.post('/api/v1.0/client/findStaff').then(response => {
           if (response.body.code === 200) {
             if (response.body.result) {
               console.log('response.body.result', response.body.result);
               this.punchCard = response.body.result.punchCard;
-//            console.log("111", response.body.result.record);
               this.arryOneself.push(response.body.result);
-              console.log("rryOne", this.arryOneself);
               this.infoObj = response.body.result.record;
               for (let i = 0; i < this.arryOneself.length; i++) {
                 this.oneselfData = {
@@ -207,10 +215,8 @@
                 if (this.arryOneself[i].staffPhoUrl) {
                   this.imgSrc.comAddress = this.arryOneself[i].staffPhoUrl;
                   this.setCookie('avatarImages', this.imgSrc.comAddress, 365);
-
                 } else {
-                  this.setCookie('avatarImages', '', 365);//6-30-15 更新
-                  console.log('record.staffPhoUrl的images值为空')
+                  this.setCookie('avatarImages', '', 365);
                 }
               }
               this.state = true;
@@ -255,15 +261,23 @@
       },
       closeAlertFail(){
         this.isVisible = false;
-      }
+      },
+      // 解除绑定
+      handerUnbundling(){
+        this.$http.post('/api/v1.0/client/unbind').then(response => {
+          console.log('解除绑定');
+          this.$router.push({path: '/index'});
+        }, response => {
+          console.log('error callback');
+        });
+      },
     },
-
     components: {}
   }
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .imageClassSuccess {
     width: 16rem;
     height: 12rem;
@@ -282,40 +296,6 @@
     margin: 3rem auto;
     border-radius: 4px;
     margin-left: 0.5rem;
-  }
-
-  .showSpan {
-    position: absolute;
-    width: 45%;
-    height: 1.9rem;
-    line-height: 1.9;
-    text-align: right;
-    right: 2.5rem;
-    top: 0.6rem;
-  }
-
-  .qing {
-    width: 5rem;
-    position: relative;
-  }
-
-  .qing::before {
-    content: " ------- ";
-    color: #ffffff;
-    width: 10%;
-  }
-
-  .postionImages {
-    position: absolute;
-    width: 19px;
-    height: 19px;
-    left: 4%;
-    top: 20%;
-  }
-
-  .imgSize {
-    width: 100%;
-    height: 100%
   }
 
   .bottomTool {
@@ -381,22 +361,6 @@
     padding-top: 0.2rem;
   }
 
-  .signImg {
-    display: inline-block;
-    width: 30%;
-    height: 0.5rem;
-    line-height: 0.5rem;
-    position: relative;
-
-  }
-
-  .signImg img {
-    position: absolute;
-    left: -2.2rem;
-    width: 35%;
-    top: -0.6rem;
-  }
-
   .signTitle {
     text-align: left;
   }
@@ -407,25 +371,47 @@
     padding-bottom: 0.5rem;
   }
 
-  .mint-cell-title {
-    background-image: -webkit-linear-gradient(top, #d9d9d9, #d9d9d9 50%, transparent 0);
-    background-image: linear-gradient(180deg, #d9d9d9, #d9d9d9 50%, transparent 0);
-    background-size: 120% 1px;
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    background-origin: content-box;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    box-sizing: border-box;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    font-size: 16px;
-    line-height: 1;
-    min-height: inherit;
-    overflow: hidden;
-    padding: 0 10px;
-    width: 100%;
+  .ImgIcon {
+    margin-right: 8px;
+    width: 19px;
+    height: 19px;
   }
+
+  .mint-cell:last-child {
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: top;
+  }
+
+  #Binding-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    height: 100%;
+    background: #fff;
+    padding-top: 2rem;
+    .binding-box {
+      width: 90%;
+      margin: 0 auto;
+      padding-bottom: 20px;
+      .headerImg-wrapper {
+        width: 100%;
+        height: 8rem;
+        padding-top: 2rem;
+        .headerImg-box {
+          display: inline-block;
+          width: 5.2rem;
+          height: 5.2rem;
+          border-radius: 2.6rem;
+        }
+      }
+      .Binding-btn {
+        width: 100%;
+      }
+      .Binding-hotLine {
+        text-align: center;
+        margin-top: 2rem;
+      }
+    }
+  }
+
 </style>

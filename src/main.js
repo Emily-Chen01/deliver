@@ -3,7 +3,23 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import {DatetimePicker, Button, Toast,Tabbar, TabItem,Navbar,Progress,Popup,Field,Header ,TabContainer, TabContainerItem,Radio,Indicator } from 'mint-ui';
+import {
+  DatetimePicker,
+  Button,
+  Toast,
+  Tabbar,
+  TabItem,
+  Navbar,
+  Progress,
+  Popup,
+  Field,
+  Header,
+  TabContainer,
+  TabContainerItem,
+  Radio,
+  Indicator,
+  Cell
+} from 'mint-ui';
 import Mint from 'mint-ui';
 import VueResource from 'vue-resource'
 import 'mint-ui/lib/style.css'
@@ -23,7 +39,8 @@ Vue.component(DatetimePicker.name, DatetimePicker);
 Vue.component(Header.name, Header);
 Vue.component(TabContainer.name, TabContainer);
 Vue.component(TabContainerItem.name, TabContainerItem);
-Vue.component(Radio .name, Radio );
+Vue.component(Radio.name, Radio);
+Vue.component(Cell.name, Cell);
 
 Vue.http.interceptors.push(function (request, next) {
   // Vue.http.headers.common['token'] = sessionStorage.getItem('token');
@@ -40,32 +57,26 @@ Vue.http.interceptors.push(function (request, next) {
 
 
 //cook开始
-Vue.prototype.setCookie=  function (c_name,value,expiredays)
-{
-  let exdate=new Date();
-  exdate.setDate(exdate.getDate()+expiredays);
-  document.cookie=c_name+ "=" +escape(value)+
-    ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+Vue.prototype.setCookie = function (c_name, value, expiredays) {
+  let exdate = new Date();
+  exdate.setDate(exdate.getDate() + expiredays);
+  document.cookie = c_name + "=" + escape(value) +
+    ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString())
 };
 
 
-
 //=========取回cookie==========
-Vue.prototype.getCookie=  function (c_name)
-
-{
+Vue.prototype.getCookie = function (c_name) {
   var c_start;
-  var  c_end;
+  var c_end;
 
-  if (document.cookie.length>0)
-  {
-    c_start=document.cookie.indexOf(c_name + "=")
-    if (c_start!=-1)
-    {
-      c_start=c_start + c_name.length+1
-      c_end=document.cookie.indexOf(";",c_start)
-      if (c_end==-1) c_end=document.cookie.length
-      return unescape(document.cookie.substring(c_start,c_end))
+  if (document.cookie.length > 0) {
+    c_start = document.cookie.indexOf(c_name + "=")
+    if (c_start != -1) {
+      c_start = c_start + c_name.length + 1
+      c_end = document.cookie.indexOf(";", c_start)
+      if (c_end == -1) c_end = document.cookie.length
+      return unescape(document.cookie.substring(c_start, c_end))
     }
   }
   return ""
@@ -80,5 +91,5 @@ new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: {App}
 });
