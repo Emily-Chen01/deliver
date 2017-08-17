@@ -9,7 +9,6 @@ import myData from "@/components/staffData/myData"
 import leave from "@/components/leaves/leave"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import mySalary from "@/components/SignIn/mySalary"
-import set from "@/components/staffData/set"
 
 
 Vue.use(Router);
@@ -52,10 +51,6 @@ export default new Router({
     {
       path: '/mySalary',  //我的工资条
       component: mySalary
-    },
-    {
-      path: '/set',  //我的解除绑定
-      component: set
-    },
+    }
   ]
 })
