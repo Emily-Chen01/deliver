@@ -35,7 +35,7 @@
         </div>
         <div @click="changeList(1)">
           <mt-cell title="我的考勤" is-link>
-            <span v-text="recordShow.punchCard ? recordShow.punchCard : '本月无考勤记录'">{{}}</span>
+            <span v-text="recordShow.punchCard ? recordShow.punchCard : '本月无考勤异常'">{{}}</span>
             <img slot="icon" :src="imgSrc.ico_attendance" class="ImgIcon">
           </mt-cell>
         </div>
@@ -60,15 +60,15 @@
       </div>
     </div>
     <!--底部工具-->
-    <mt-tabbar v-model="select">
+    <mt-tabbar id="tab-bottom" v-model="select">
       <mt-tab-item id="1">
-        <img slot="icon" :src="imgSrc.doIconBlue" class="avatar" v-if="toolState">
-        <img slot="icon" :src="imgSrc.doIcon" class="avatar" v-if="!toolState">
+        <img slot="icon" :src="imgSrc.doIconBlue" v-if="toolState">
+        <img slot="icon" :src="imgSrc.doIcon" v-if="!toolState">
         <span>工作台</span>
       </mt-tab-item>
       <mt-tab-item id="2">
-        <img slot="icon" :src="imgSrc.setIconBlue" class="avatar" v-if="!toolState">
-        <img slot="icon" :src="imgSrc.setIcon" class="avatar" v-if="toolState">
+        <img slot="icon" :src="imgSrc.setIconBlue" v-if="!toolState">
+        <img slot="icon" :src="imgSrc.setIcon" v-if="toolState">
         <span>设置</span>
       </mt-tab-item>
     </mt-tabbar>
@@ -203,7 +203,7 @@
       overflow: hidden;
       box-sizing: border-box;
       width: 100%;
-      padding: 25px 0 0 95px;
+      padding: 25px 0 20px 95px;
       text-align: left;
       font-size: 14px;
       color: #ffffff;
@@ -219,6 +219,7 @@
         img {
           width: 100%;
           height: 100%;
+          border-radius: 50%;
         }
       }
       .header-top-center {
@@ -261,7 +262,7 @@
       }
     }
     .header-bottom {
-      padding: 20px 0;
+      padding: 0 0 20px 0;
       .hand-btn {
         height: 30px;
         width: 90%;
@@ -288,11 +289,16 @@
     .mint-cell-text, .mint-cell-value {
       font-size: 14px;
     }
+    /*覆盖组件原有样式*/
+    .mint-cell:last-child {
+      background-position: top;
+    }
   }
 
-  /*覆盖组件原有样式*/
-  .mint-cell:last-child {
-    background-position: top;
+  #tab-bottom {
+    .mint-tab-item {
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
   }
 
   /*覆盖组件原有样式*/
@@ -322,6 +328,7 @@
           img {
             width: 100%;
             height: 100%;
+            border-radius: 50%;
           }
         }
       }

@@ -749,15 +749,8 @@
                       :headers="tokenHeader"
                       :on-success="resumeUrlOk"
                       :before-upload="beforeResumeUrl">
-                      <el-button type="primary" size="small"><i class="el-icon-upload el-icon--right"></i>上传简历
-
-
-
-
-
-
-
-
+                      <el-button type="primary" size="small">
+                        <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                       </el-button>
                     </el-upload>
                     <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"
@@ -929,7 +922,7 @@
               <div v-for="confListItem in confList" v-if="confListItem.isdefault===false">
                 <div v-if="confListItem.jname==='workLocation' && staffRecord.workLocation">
                   <el-form-item v-if="staffRecord.workLocation" label="工作地省份">
-                    <span>{{provinces && getPC(model.record.workProvince || '', model.record.workCity || '')}}</span>
+                    <span v-text="getPC(model.record.workProvince || '', model.record.workCity || '')"></span>
                   </el-form-item>
                   <el-form-item v-if="staffRecord.workLocation" label="工作地城市">
                     <span>{{staticWorkCity}}</span>
@@ -1027,6 +1020,9 @@
   export default {
     data() {
       return {
+        loadProvince1: true,
+        loadProvince2: true,
+        loadProvince3: true,
         selected: '1',
         status: false,
         staffStatusList: [],//  员工状态列表
@@ -1126,7 +1122,7 @@
         diplomaTypes: null,
         probations: null,
         depts: null,
-        workCities: null,
+//        workCities: null,
         contractTypes: null,
         recruitmentChannels: ['百度', '51job', '智联', '推荐', 'boss 直聘'],
         states: null,
@@ -1398,7 +1394,7 @@
                       return false;
                     }
                   });
-                  this.workCities = res.result;
+//                  this.workCities = res.result;
                 }
               })
             return false;
@@ -1419,8 +1415,6 @@
           });
       },
       queryPodoCities(pid) {
-        console.log('pid', pid);
-        // podoCity podoCities
         if (!pid) {
           this.podoCities = null;
           this.model.podoProvince = '';
@@ -1432,7 +1426,11 @@
             res = res.body;
             if (res.code === 200) {
               this.podoCities = res.result;
-              this.model.podoCity = res.result[0].uid;
+              if (this.loadProvince1) {
+                this.loadProvince1 = false;
+              } else {
+                this.model.podoCity = res.result[0].uid;
+              }
             }
           })
           .catch(err => {
@@ -1440,7 +1438,6 @@
           });
       },
       queryResidenceCities(pid) {
-        console.log('resident');
         if (!pid) {
           this.residenceCities = null;
           this.model.residenceProvince = '';
@@ -1452,7 +1449,11 @@
             res = res.body;
             if (res.code === 200) {
               this.residenceCities = res.result;
-              this.model.residenceCity = res.result[0].uid;
+              if (this.loadProvince2) {
+                this.loadProvince2 = false;
+              } else {
+                this.model.residenceCity = res.result[0].uid;
+              }
             }
           })
           .catch(err => {
@@ -1471,31 +1472,35 @@
             res = res.body;
             if (res.code === 200) {
               this.poreCities = res.result;
-              this.model.poreCity = res.result[0].uid;
+              if (this.loadProvince3) {
+                this.loadProvince3 = false;
+              } else {
+                this.model.poreCity = res.result[0].uid;
+              }
             }
           })
           .catch(err => {
             console.log(err.status, err.statusText);
           });
       },
-      queryWorkCities(pid) {
-        if (!pid) {
-          this.workCities = null;
-          this.model.record.workProvince = '';
-          this.model.record.workCity = '';
-          return;
-        }
-        this.$http.get(`/api/v1.0/common/query/city/${pid}`)
-          .then(res => {
-            res = res.body;
-            if (res.code === 200) {
-              this.workCities = res.result;
-            }
-          })
-          .catch(err => {
-            console.log(err.status, err.statusText);
-          });
-      },
+//      queryWorkCities(pid) {
+//        if (!pid) {
+//          this.workCities = null;
+//          this.model.record.workProvince = '';
+//          this.model.record.workCity = '';
+//          return;
+//        }
+//        this.$http.get(`/api/v1.0/common/query/city/${pid}`)
+//          .then(res => {
+//            res = res.body;
+//            if (res.code === 200) {
+//              this.workCities = res.result;
+//            }
+//          })
+//          .catch(err => {
+//            console.log(err.status, err.statusText);
+//          });
+//      },
       makeChildOk(item) {
         return function (res, file) {
           if (res.code === 200) {
@@ -1744,6 +1749,7 @@
         return isDoc && isInSize;
       },
       save() {
+        Indicator.open('正在保存...');
         let makePost = () => {
           let out = {};
           let record = {};
@@ -1947,14 +1953,16 @@
         if (flag) {
           return;
         }
-
         console.log('12345', makePost());
         let staffApi = '/api/v1.0/client/updateStaff';
         this.$http.post(staffApi, makePost())
           .then(res => {
             res = res.body;
             if (res.code === 200) {
+              Indicator.close();
               this.$router.push({path: '/signCard'});
+            } else {
+              Indicator.close();
             }
           })
           .catch(err => console.log(err.status, err.statusText));
@@ -2216,7 +2224,7 @@
           if (this.model.podoProvince) this.queryPodoCities(this.model.podoProvince);
           if (this.model.residenceProvince) this.queryResidenceCities(this.model.residenceProvince);
           if (this.model.poreProvince) this.queryPoreCities(this.model.poreProvince);
-          if (this.model.record.workProvince) this.queryWorkCities(this.model.record.workProvince);
+//          if (this.model.record.workProvince) this.queryWorkCities(this.model.record.workProvince);
         };
 
         this.$http.post(`/api/v1.0/client/findStaff`)
