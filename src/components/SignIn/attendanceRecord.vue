@@ -12,10 +12,9 @@
       <div class="egClass"><span class="publicStyle leaveStyle"></span>请假</div>
     </div>
 
-
     <div style="background:rgb(239,241,247);">
       <div class="timeTitle">
-        <div class="todayTime">
+        <div class="todayTime lineStyle">
           <div class="timeDivClass">
             <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
@@ -23,31 +22,17 @@
             <span>今日工时共计：{{connectTime.totalTime}}小时</span>
           </div>
         </div>
-        <div class="lineStyle"></div>
-        <div class="spanListClass">
-          <div class="toWorkLeft">
-            <div>上</div>
+        <div class="punchInfo">
+          <div class="punchInfoLeft">
+            <div class="punchInfoLine"></div>
+            <p class="punchInfoUp">上</p>
+            <p class="punchInfoDown">下</p>
           </div>
-          <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan">
-              <span v-if="toSapnTime">{{toSapnTime}}</span>
-              <span>{{tozhang}}</span>
-            </div>
-          </div>
-        </div>
-        <div class="ver-line"></div>
-        <div class="spanListClass">
-          <div class="toWorkLeft">
-            <div>下</div>
-          </div>
-          <div class="toWorkRight">
-            <div class="toWorkRightTimeSpan">
-              <span v-if="downSapnTime">{{downSapnTime}}</span>
-              <span>{{downzhang}}</span>
-            </div>
+          <div class="punchInfoRight">
+            <p v-text="(toSapnTime ? (toSapnTime+' ') : '')+tozhang"></p>
+            <p v-text="(downSapnTime ? (downSapnTime+' ') : '')+downzhang"></p>
           </div>
         </div>
-        <div style="clear: both;"></div>
       </div>
     </div>
   </div>
@@ -525,6 +510,14 @@
       line-height: 43px;
       display: inline-block;
       font-size: 12px;
+      .publicStyle {
+        width: 0.6rem;
+        height: 0.6rem;
+        margin-right: 6px;
+        line-height: 0.6rem;
+        border-radius: 50%;
+        display: inline-block;
+      }
       .normalStyle {
         background: rgb(32, 161, 255);
       }
@@ -556,85 +549,87 @@
     color: #1f2d3d;
     text-align: left;
     padding-bottom: 10px;
+    .todayTime {
+      height: 44px;
+      line-height: 44px;
+      .timeDivClass {
+        margin-top: 14px;
+        margin-left: 15px;
+        line-height: 16px;
+        display: inline-block;
+        vertical-align: top;
+        .timeImageClass {
+          display: block;
+          width: 16px;
+          height: 16px;
+        }
+      }
+      .timeSpanClass {
+        margin-left: 2px;
+        margin-top: 14px;
+        text-align: left;
+        line-height: 16px;
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
     .lineStyle {
-      height: 1px;
-      background: #cccccc;
-      margin-bottom: 15px;
+      border-bottom: 1px solid #cccccc;
     }
-  }
-
-  .publicStyle {
-    width: 0.6rem;
-    height: 0.6rem;
-    margin-right: 6px;
-    line-height: 0.6rem;
-    border-radius: 50%;
-    display: inline-block;
-  }
-
-  .timeImageClass {
-    display: block;
-    width: 16px;
-    height: 16px;
-  }
-
-  .todayTime {
-    height: 44px;
-    line-height: 44px;
-    .timeDivClass {
-      margin-top: 14px;
-      margin-left: 15px;
-      line-height: 16px;
-      display: inline-block;
-      vertical-align: top;
+    .punchInfo {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 15px 15px;
+      overflow: hidden;
+      p {
+        margin: 0;
+      }
+      .punchInfoLeft {
+        position: relative;
+        width: 22px;
+        float: left;
+        .punchInfoLine {
+          margin-left: 10px;
+          width: 0;
+          height: 59px;
+          border-left: 1px solid #9aaabf;
+        }
+        p {
+          position: absolute;
+          margin: 0;
+          box-sizing: border-box;
+          width: 22px;
+          height: 22px;
+          line-height: 22px;
+          text-align: center;
+          border-radius: 50%;
+          border: 1px solid #9aaabf;
+          color: #9aaabf;
+          background-color: #eff3f7;
+          font-size: 12px;
+        }
+        .punchInfoUp {
+          top: 0;
+        }
+        .punchInfoDown {
+          bottom: 0;
+        }
+      }
+      .punchInfoRight {
+        float: left;
+        margin-left: 10px;
+        p {
+          box-sizing: border-box;
+          width: 100%;
+          height: 22px;
+          line-height: 22px;
+          font-size: 14px;
+          color: #1f2d3d;
+        }
+        p:nth-child(2) {
+          margin-top: 15px;
+        }
+      }
     }
-
-    .timeSpanClass {
-      margin-left: 2px;
-      margin-top: 14px;
-      text-align: left;
-      line-height: 16px;
-      display: inline-block;
-      vertical-align: top;
-    }
-  }
-
-  .spanListClass {
-    height: 22px;
-    padding-left: 15px;
-  }
-
-  .ver-line {
-    width: 0px;
-    height: 15px;
-    margin-left: 25px;
-    border-left: 1px solid #cccccc;
-  }
-
-  .toWorkLeft {
-    text-align: center;
-    width: 22px;
-    height: 22px;
-    float: left;
-    vertical-align: bottom;
-    color: #cccccc;
-  }
-
-  .toWorkLeft div {
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    border-radius: 50%;
-    font-size: 11px;
-    border: 1px solid #cccccc;
-  }
-
-  .toWorkRight {
-    height: 22px;
-    line-height: 22px;
-    float: left;
-    text-align: left;
-    padding-left: 6px;
-    vertical-align: bottom;
   }
 </style>

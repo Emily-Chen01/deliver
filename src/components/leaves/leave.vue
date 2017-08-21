@@ -273,7 +273,6 @@
         changeApplyOvertime: false, //加班时间div
         updateImage: true, //上传图片 div
         Remark: true, //备注div
-        addTimeValue: '',  //加班时间value
         data: {},
         applyTypeArray: [], //申请
         applyTypeName: [], //申请
@@ -302,13 +301,8 @@
       };
     },
     created: function () {
-      this.addTimeValue = this.getCookie('upAddTime');
-
-//      console.log(this.addTimeValue, '在打卡加班传来的加班时间');
-
       this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
         this.applyTypeArray = response.body.result;
-//        console.log(this.applyTypeArray, '查询申请类型列表');
         for (let i = 0; i < this.applyTypeArray.length; i++) {
           this.applyTypeName.push(
             {
@@ -415,9 +409,6 @@
 
     },
     watch: {
-      addTimeValue: function (val, oldVal) {
-        this.addTimeValue = val
-      },
       holidayModel: function (val, oldVal) { //备注value 用于上传参数
         this.textareaString = val.trim();
       },
@@ -530,7 +521,6 @@
             approvalConfigUid: this.shengqingParam,  //申请分类
             currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
             remarks: this.textareaString,
-//            overworkTime: this.addTimeValue,
             startTime: new Date(this.startTimeValue).getTime(),
             endTime: new Date(this.endTimeValue).getTime(),
 
