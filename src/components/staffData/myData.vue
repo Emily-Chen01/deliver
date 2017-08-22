@@ -2275,7 +2275,12 @@
       // 汇报人
       this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人表赋值给汇报上级
         if (response.body.code === 200) {
-          this.staffRecord.upji = response.body.result.NAME; //查询审批接口报错先注释6-16-15
+          if (response.body.result) {
+            this.staffRecord.upji = response.body.result.NAME;
+          } else {
+            this.staffRecord.upji = '';
+          }
+
         }
       }, response => {
         console.log('error callback');
