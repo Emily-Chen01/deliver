@@ -1,5 +1,5 @@
 <template>
-  <div v-if="state">
+  <div v-if="state" id="signCard-wrapper">
     <div v-if="toolState">
       <!--头部-->
       <div id="bg">
@@ -194,150 +194,153 @@
 </script>
 
 <style lang="scss">
-  #bg {
-    width: 100%;
-    background-image: url("../../assets/bg.png");
-    background-repeat: repeat-x;
-    .header-top {
-      position: relative;
-      overflow: hidden;
-      box-sizing: border-box;
+  #signCard-wrapper {
+    #bg {
       width: 100%;
-      padding: 25px 0 20px 95px;
-      text-align: left;
-      font-size: 14px;
-      color: #ffffff;
-      .header-top-left {
-        float: left;
+      background-image: url("../../assets/bg.png");
+      background-repeat: repeat-x;
+      .header-top {
+        position: relative;
+        overflow: hidden;
         box-sizing: border-box;
-        width: 75px;
-        height: 75px;
-        border-radius: 50%;
-        margin-left: -75px;
-        border: 2px solid #fff;
-        background-color: #ffffff;
-        img {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-        }
-      }
-      .header-top-center {
-        float: left;
-        box-sizing: border-box;
-        display: inline-block;
-        padding-left: 10px;
-        padding-right: 15px;
-        p {
-          margin: 0;
-          line-height: 24px;
-        }
-        p:first-child {
-          padding-right: 50px;
-        }
-      }
-      .header-top-right {
-        position: absolute;
-        right: 0;
-        margin-top: -5px;
-        width: 58px;
-        height: 25px;
-        border-bottom-left-radius: 10px;
-        border-top-left-radius: 10px;
-        background-color: rgba(26, 128, 204, 0.4);
-        font-size: 0;
-        img {
-          height: 13px;
-          vertical-align: top;
-          padding: 5px 0 0 7px;
-        }
-        span {
-          display: inline-block;
-          font-size: 11px;
-          height: 11px;
-          line-height: 11px;
-          padding: 7px 0 0 5px;
-          vertical-align: top;
-        }
-      }
-    }
-    .header-bottom {
-      padding: 0 0 20px 0;
-      .hand-btn {
-        height: 30px;
-        width: 90%;
+        width: 100%;
+        padding: 25px 0 20px 95px;
+        text-align: left;
         font-size: 14px;
         color: #ffffff;
-        background-color: rgba(88, 184, 255, 0.8);
-      }
-      img {
-        width: 12px;
-        height: 12px;
-      }
-    }
-  }
-
-  #record-list-wrapper {
-    margin-top: 13px;
-    border-bottom: 1px solid #d9d9d9;
-    .ImgIcon {
-      margin-right: 8px;
-      width: 19px;
-      height: 19px;
-    }
-    /*覆盖组件原有样式*/
-    .mint-cell-text, .mint-cell-value {
-      font-size: 14px;
-    }
-    /*覆盖组件原有样式*/
-    .mint-cell:last-child {
-      background-position: top;
-    }
-  }
-
-  #tab-bottom {
-    .mint-tab-item {
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
-  }
-
-  /*覆盖组件原有样式*/
-  .mint-tabbar > .mint-tab-item.is-selected {
-    background-color: transparent;
-  }
-
-  #Binding-wrapper {
-    width: 100%;
-    margin: 0 auto;
-    height: 100%;
-    background: #fff;
-    padding-top: 2rem;
-    .binding-box {
-      width: 90%;
-      margin: 0 auto;
-      padding-bottom: 20px;
-      .headerImg-wrapper {
-        width: 100%;
-        height: 8rem;
-        padding-top: 2rem;
-        .headerImg-box {
-          display: inline-block;
-          width: 5.2rem;
-          height: 5.2rem;
-          border-radius: 2.6rem;
+        .header-top-left {
+          float: left;
+          box-sizing: border-box;
+          width: 75px;
+          height: 75px;
+          border-radius: 50%;
+          margin-left: -75px;
+          border: 2px solid #fff;
+          background-color: #ffffff;
           img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
           }
         }
+        .header-top-center {
+          float: left;
+          box-sizing: border-box;
+          display: inline-block;
+          padding-left: 10px;
+          padding-right: 15px;
+          p {
+            margin: 0;
+            line-height: 24px;
+          }
+          p:first-child {
+            padding-right: 50px;
+          }
+        }
+        .header-top-right {
+          position: absolute;
+          right: 0;
+          margin-top: -5px;
+          width: 58px;
+          height: 25px;
+          border-bottom-left-radius: 10px;
+          border-top-left-radius: 10px;
+          background-color: rgba(26, 128, 204, 0.4);
+          font-size: 0;
+          img {
+            height: 13px;
+            vertical-align: top;
+            padding: 5px 0 0 7px;
+          }
+          span {
+            display: inline-block;
+            font-size: 11px;
+            height: 11px;
+            line-height: 11px;
+            padding: 7px 0 0 5px;
+            vertical-align: top;
+          }
+        }
       }
-      .Binding-btn {
-        width: 100%;
+      .header-bottom {
+        padding: 0 0 20px 0;
+        .hand-btn {
+          height: 30px;
+          width: 90%;
+          font-size: 14px;
+          color: #ffffff;
+          background-color: rgba(88, 184, 255, 0.8);
+        }
+        img {
+          width: 12px;
+          height: 12px;
+        }
       }
-      .Binding-hotLine {
-        text-align: center;
-        margin-top: 2rem;
+    }
+
+    #record-list-wrapper {
+      margin-top: 13px;
+      border-bottom: 1px solid #d9d9d9;
+      .ImgIcon {
+        margin-right: 8px;
+        width: 19px;
+        height: 19px;
+      }
+      /*覆盖组件原有样式*/
+      .mint-cell-text, .mint-cell-value {
+        font-size: 14px;
+      }
+      /*覆盖组件原有样式*/
+      .mint-cell:last-child {
+        background-position: top;
+        text-align: left;
+      }
+    }
+
+    #tab-bottom {
+      .mint-tab-item {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+    }
+
+    /*覆盖组件原有样式*/
+    .mint-tabbar > .mint-tab-item.is-selected {
+      background-color: transparent;
+    }
+
+    #Binding-wrapper {
+      width: 100%;
+      margin: 0 auto;
+      height: 100%;
+      background: #fff;
+      padding-top: 2rem;
+      .binding-box {
+        width: 90%;
+        margin: 0 auto;
+        padding-bottom: 20px;
+        .headerImg-wrapper {
+          width: 100%;
+          height: 8rem;
+          padding-top: 2rem;
+          .headerImg-box {
+            display: inline-block;
+            width: 5.2rem;
+            height: 5.2rem;
+            border-radius: 2.6rem;
+            img {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+            }
+          }
+        }
+        .Binding-btn {
+          width: 100%;
+        }
+        .Binding-hotLine {
+          text-align: center;
+          margin-top: 2rem;
+        }
       }
     }
   }
