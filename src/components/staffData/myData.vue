@@ -114,14 +114,14 @@
                     </el-select>
                   </el-form-item>
 
-                  <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照编号" prop="passportNum"
-                                :rules="{required: staff.nativePlace.isrequired,  message: '请填写护照号', trigger: 'change'}">
+                  <el-form-item v-if="staff.nativePlace && model.nativePlace !== '0'" label="护照编号" prop="passportNum"
+                                :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')),  message: '请填写护照号', trigger: 'change'}">
                     <el-input :disabled=" !staff.nativePlace.isedit" placeholder="请输入护照编号"
                               v-model="model.passportNum"></el-input>
                   </el-form-item>
 
-                  <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照照片" prop="passportUrl"
-                                :rules="{required: staff.nativePlace.isrequired, message: '请上传护照照片', trigger: 'blur'}">
+                  <el-form-item v-if="staff.nativePlace && model.nativePlace !== '0'" label="护照照片" prop="passportUrl"
+                                :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')), message: '请上传护照照片', trigger: 'blur'}">
                     <el-upload
                       v-if="staff.nativePlace.isedit"
                       action="/api/v1.0/client/upload"
@@ -141,8 +141,8 @@
                       请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                   </el-form-item>
 
-                  <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'" label="护照国家" prop="state"
-                                :rules="{required: staff.nativePlace.isrequired, message: '请选择护照国家', trigger: 'change'}">
+                  <el-form-item v-if="staff.nativePlace && model.nativePlace !== '0'" label="护照国家" prop="state"
+                                :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')), message: '请选择护照国家', trigger: 'change'}">
                     <el-select :disabled=" !staff.nativePlace.isedit" filterable v-model="model.state"
                                placeholder="请选择">
                       <el-option
@@ -202,7 +202,7 @@
                 <div v-else-if="confListItem.jname==='socsecNum' && staff.socsecNum">
                   <el-form-item v-if="staff.socsecNum" label="社保编号" prop="socsecNum"
                                 :rules="[{required: staff.socsecNum.isrequired,message: '请填写正确的社保编号(数字)', trigger: 'blur', pattern: /^\d+$/},
-                        {message: '不能超过 10 个数字', trigger: 'blur', max:10}]">
+                        {message: '不能超过 24 个数字', trigger: 'blur', max:24}]">
                     <el-input :disabled="!staff.socsecNum.isedit" placeholder="请输入社保编号"
                               v-model="model.socsecNum"></el-input>
                   </el-form-item>
@@ -1265,7 +1265,7 @@
       this.$http.get('/api/v1.0/common/config/20').then(res => {
         res = res.body;
         if (res.code === 200) {
-          // console.log('19', res.result);
+//           console.log('19', res.result);
           this.states = res.result;
         }
       }, res => {
@@ -1749,7 +1749,7 @@
         return isDoc && isInSize;
       },
       save() {
-        Indicator.open('正在保存...');
+
         let makePost = () => {
           let out = {};
           let record = {};
@@ -1953,7 +1953,7 @@
         if (flag) {
           return;
         }
-        console.log('12345', makePost());
+        Indicator.open('正在保存...');
         let staffApi = '/api/v1.0/client/updateStaff';
         this.$http.post(staffApi, makePost())
           .then(res => {
@@ -2259,6 +2259,7 @@
         console.log('publicParams', this.publicParams);
         this.typeOfDemiciles = this.publicParams.typeOfDemicile;
         this.nativePlaces = this.publicParams.nativePlace;
+        console.log('234', this.nativePlaces)
         this.bankNames = this.publicParams.bankName;
         this.maritalStatuses = this.publicParams.maritalStatusOrg;
         this.nations = this.publicParams.nationOrg;
