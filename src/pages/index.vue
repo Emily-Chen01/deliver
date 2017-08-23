@@ -69,10 +69,10 @@
     data() {
       return {
         imgSrc: {
-          bg: require('../assets/indexLogo.png'),
+          bg: require('../assets/logo.png'),
           bg2: require('../assets/ico_error.png'),
         },
-        msg: '欢迎使用 EHR SAAS 员工自助服务',
+        msg: '欢迎使用 薪薪乐 员工自助服务',
         msgPhone: '您需要先绑定手机!',
         phoneNumber: '',
         phoneNumberValue: '',//验证码值
