@@ -40,7 +40,7 @@
       </div>
       <div v-if="noneModel" class="index-Bomb-main">
         <p class="fs13">抱歉!</p>
-        <p class="fs12">没有找到您的员工记录,请联系HR</p>
+        <p class="fs12">没有找到您的员工记录,请联系您的HR</p>
       </div>
       <div v-if="alertMessageShow" class="index-Bomb-main">
         <p class="fs12" v-text="alertMessage"></p>
@@ -67,7 +67,6 @@
         phoneNumberValue: '',//验证码值
         sumSearch: '',
         sumSearchUid: [],
-        isCompany: '',
         yanzheng: '获取验证码',//验证码
         YZdisabled: false,
         errorModel: false, //错误弹框
@@ -103,23 +102,8 @@
 
     methods: {
       handerClick(){
-        //测试字符串length
-        function GetLength(str) {
-          ///<summary>获得字符串实际长度，中文2，英文1</summary>
-          ///<param name="str">要获得长度的字符串</param>
-          let realLength = 0, len = str.length, charCode = -1;
-          for (let i = 0; i < len; i++) {
-            charCode = str.charCodeAt(i);
-            if (charCode >= 0 && charCode <= 128) realLength += 1;
-            else realLength += 2;
-          }
-          return realLength;
-        };
-        if (GetLength(this.phoneNumber) === 11) {
-          let number = {
-            phone: this.phoneNumber,
-          };
-          this.$http.get('/api/v1.0/client/code/' + number.phone).then(response => {
+        if (/^1\d{10}$/.test(this.phoneNumber)) {
+          this.$http.get('/api/v1.0/client/code/' + this.phoneNumber).then(response => {
             //获取验证码
             if (response.body.code === 200) {
               //获取验证码倒计时
@@ -129,7 +113,7 @@
               let countdown = 30;
               if (timer1) clearInterval(timer1); //开启前清除下已经开的定时器
               function settime() {
-                if (countdown === 0) {
+                if (countdown <= 0) {
                   self.YZdisabled = false;
                   self.yanzheng = "获取验证码";
                   clearInterval(timer1);
@@ -147,130 +131,117 @@
               this.errorModel = true;
               this.noneModel = true;
               this.alertMessageShow = false; //动态赋值信息false
-              return;
             }
           }, response => {
             console.log('error callback');
           });
 
         } else {
-          this.alertMessageShow = true;
-          this.alertMessage = '手机号码错误';
-          this.errorModel = true;
-          this.noneModel = false; //隐藏没有记录
+//          this.alertMessageShow = true;
+//          this.alertMessage = '手机号码错误';
+//          this.errorModel = true;
+//          this.noneModel = false; //隐藏没有记录
+          this.popupBomb('手机号码错误');
         }
       },
       handerSubmit(){
         let bindingObj = {
-          "code": this.phoneNumberValue,
-          "phone": this.phoneNumber,
+          code: this.phoneNumberValue,
+          phone: this.phoneNumber,
         };
         this.$http.post('/api/v1.0/client/bind', bindingObj).then(response => { //进行手机号码进行绑定
           if (response.body.code === 200) {
-            this.$http.get('/api/v1.0/client/findCompanies/' + this.phoneNumber).then(response => {
-              if (response.body.code === 200) {
-                this.sumSearchUid = response.body.result;
-                if (response.body.result.length === 1) {
-                  //如果等于1就进入 signCard 点击打卡
-                  let param = {
-                    "companyUid": this.sumSearchUid[0].uid,
-                  };
-                  this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
-                    if (response.body.code === 200) {
-                      this.$router.push({path: '/signCard'});
-                    }
-                  }, response => {
-                    console.log('error callback');
-                  });
-                } else {
-                  this.handerCome(); //如果不是只有一个公司进行选择公司
-                }
-              } else {
-                this.alertMessageShow = true;
-                this.errorModel = true;
-                this.noneModel = false; //隐藏没有记录
-                this.alertMessage = response.body.message;
-                return;
-              }
-            }, response => {
-              console.log('error callback');
-            });
+            this.findCompany(this.phoneNumber);
+//            this.$http.get('/api/v1.0/client/findCompanies/' + this.phoneNumber).then(response => {
+//              if (response.body.code === 200) {
+//                this.sumSearchUid = response.body.result;
+//                if (response.body.result.length === 1) {
+//                  //如果等于1就进入 signCard 点击打卡
+//                  let param = {
+//                    companyUid: this.sumSearchUid[0].uid,
+//                  };
+//                  this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
+//                    if (response.body.code === 200) {
+//                      this.$router.push({path: '/signCard'});
+//                    } else {
+//                      this.alertMessageShow = true;
+//                      this.errorModel = true;
+//                      this.noneModel = false; //隐藏没有记录
+//                      this.alertMessage = response.body.message;
+//                    }
+//                  }, response => {
+//                    console.log('error callback');
+//                  });
+//                } else {
+//                  this.handerCome(); //如果不是只有一个公司进行选择公司
+//                }
+//              } else {
+//                this.alertMessageShow = true;
+//                this.errorModel = true;
+//                this.noneModel = false; //隐藏没有记录
+//                this.alertMessage = response.body.message;
+//              }
+//            }, response => {
+//              console.log('error callback');
+//            });
           } else {
-            this.alertMessageShow = true;
-            this.errorModel = true;
-            this.noneModel = false; //隐藏没有记录
-            this.alertMessage = response.body.message;
-            return;
+            this.popupBomb(response.body.message);
+//            this.alertMessageShow = true;
+//            this.errorModel = true;
+//            this.noneModel = false; //隐藏没有记录
+//            this.alertMessage = response.body.message;
           }
         }, response => {
           console.log('error callback');
         });
       },
-      handerList: function (number) {
+      handerList(){
         this.$http.post('/api/v1.0/client/checkStaffWechat').then(response => { //查询员工是否有绑定手机
-          if (!response.body.result) {
-            Indicator.close();
-          }
-          if (number == 1) {//此处判断是当提交的时候判断下是否已经绑定过
-            if (response.body.code === 500) {
-//            MessageBox('提示', response.body.message);
-              this.alertMessageShow = true;
-              this.errorModel = true;
-              this.noneModel = false; //隐藏没有记录
-              this.alertMessage = response.body.message;
-              return;
-
-            }
-          }
-
           if (response.body.code === 200) {
-            let isbing = response.body.result.phone;
-            this.setCookie('iphoneNumber', isbing, 365);//缓存手机号码用于查看公司manyCompany
-            //初始化查询看是否有是一个公司进行跳转signCard  开始
-            let number = {
-              phone: isbing,
-            };
-            this.$http.get('/api/v1.0/client/findCompanies/' + number.phone).then(response => { //初始化查询有没有公司
-              console.log('这个data是查询公司的' + response.body.result);
-              //若是没有公司在此处执行下一个页面  ?/？
-              if (!response.body.result) {
-                Indicator.close();
-              }
-              if (response.body.result) {
-                this.sumSearchUid = response.body.result;
-
-                if (response.body.result.length === 1) {
-                  //如果等于1就进入 signCard 点击打卡
-                  let param = {
-                    "companyUid": this.sumSearchUid[0].uid,
-                  };
-                  this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
-                    if (response.body.code === 200) {
-                      this.$router.push({path: '/signCard'});
-                    }
-                    Indicator.close();//关闭加载
-                  }, response => {
-                    console.log('error callback');
-                  });
-                } else {
-                  this.handerCome(); //如果不是只有一个公司进行选择公司
-                }
-              }
-              //添加查询是否有员工
-              if (response.body.code === 500) {
-                this.isCompany = true;
-              }
-            }, response => {
-//              console.log('findCompanies error callback');
-            });
-            //初始化查询看是否有是一个公司进行跳转signCard  开始
-          } else if (response.body.code === 1001) {
-//              MessageBox('提示', response.body.message);
-            this.alertMessageShow = true;
-            this.errorModel = true;
-            this.noneModel = false; //隐藏没有记录
-            this.alertMessage = response.body.message;
-            return;
+            if (!response.body.result) {
+              Indicator.close();
+            } else {
+              let isbingPhone = response.body.result.phone;
+              this.setCookie('iphoneNumber', isbingPhone, 365);//缓存手机号码用于查看公司manyCompany
+              //初始化查询看是否有是一个公司进行跳转signCard  开始
+              this.findCompany(isbingPhone);
+//            this.$http.get('/api/v1.0/client/findCompanies/' + isbingPhone).then(response => { //初始化查询有没有公司
+//              //若是没有公司在此处执行下一个页面  ?/？
+//              if (!response.body.result) {
+//                Indicator.close();
+//              }
+//              if (response.body.result) {
+//                this.sumSearchUid = response.body.result;
+//
+//                if (response.body.result.length === 1) {
+//                  //如果等于1就进入 signCard 点击打卡
+//                  let param = {
+//                    companyUid: this.sumSearchUid[0].uid,
+//                  };
+//                  this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
+//                    if (response.body.code === 200) {
+//                      this.$router.push({path: '/signCard'});
+//                    }
+//                    Indicator.close();//关闭加载
+//                  }, response => {
+//                    console.log('error callback');
+//                  });
+//                } else {
+//                  this.handerCome(); //如果不是只有一个公司进行选择公司
+//                }
+//              }
+//            }, response => {
+////              console.log('findCompanies error callback');
+//            });
+              //初始化查询看是否有是一个公司进行跳转signCard  开始
+            }
+          } else {
+//            this.alertMessageShow = true;
+//            this.errorModel = true;
+//            this.noneModel = false; //隐藏没有记录
+//            this.alertMessage = response.body.message;
+//            return;
+            this.popupBomb(response.body.message);
           }
         }, response => {
           console.log('error callback');
@@ -280,21 +251,69 @@
         Indicator.close();//关闭加载
         this.$router.push({path: '/ManyCompany'});
       },
-      changeCompany(){
-        let param = {
-          "companyUid": this.sumSearchUid.UID,
-        };
-        this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => {
+
+      findCompany(phone){
+        this.$http.get('/api/v1.0/client/findCompanies/' + phone).then(response => {
           if (response.body.code === 200) {
-            this.$router.push({path: '/signCard'});
+            if (!response.body.result) {
+              Indicator.close();
+            } else {
+              this.sumSearchUid = response.body.result;
+              if (response.body.result.length === 1) {
+                //如果等于1就进入 signCard 点击打卡
+                let param = {
+                  companyUid: this.sumSearchUid[0].uid,
+                };
+                this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
+                  Indicator.close();
+                  if (response.body.code === 200) {
+                    this.$router.push({path: '/signCard'});
+                  } else {
+//                    this.alertMessageShow = true;
+//                    this.errorModel = true;
+//                    this.noneModel = false; //隐藏没有记录
+//                    this.alertMessage = response.body.message;
+                    this.popupBomb(response.body.message);
+                  }
+                }, response => {
+                  console.log('error callback');
+                });
+              } else {
+                this.handerCome(); //如果不是只有一个公司进行选择公司
+              }
+            }
+          } else {
+//            this.alertMessageShow = true;
+//            this.errorModel = true;
+//            this.noneModel = false; //隐藏没有记录
+//            this.alertMessage = response.body.message;
+            this.popupBomb(response.body.message);
           }
         }, response => {
           console.log('error callback');
         });
       },
-      closeClick(){
-        this.errorModel = false;
-      }
+      popupBomb(message){
+        this.alertMessageShow = true;
+        this.errorModel = true;
+        this.noneModel = false; //隐藏没有记录
+        this.alertMessage = message;
+      },
+//      changeCompany(){
+//        let param = {
+//          "companyUid": this.sumSearchUid.UID,
+//        };
+//        this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => {
+//          if (response.body.code === 200) {
+//            this.$router.push({path: '/signCard'});
+//          }
+//        }, response => {
+//          console.log('error callback');
+//        });
+//      },
+//      closeClick(){
+//        this.errorModel = false;
+//      }
     },
     components: {}
   }
