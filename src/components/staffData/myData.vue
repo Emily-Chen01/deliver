@@ -135,7 +135,7 @@
                       </el-button>
                     </el-upload>
                     <div v-if="model.passportUrl" class="upload-img-wrapper">
-                      <img :src="model.passportUrl"/>
+                      <img :src="model.passportUrl" @click="imageScaleOpen(model.passportUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="passportUrlErrFlag">
                       请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -171,7 +171,7 @@
                     </el-upload>
                     <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.idcardPhoUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.idcardPhoUrl"/>
+                      <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">
                       请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -193,7 +193,7 @@
                     </el-upload>
                     <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.idcardPhoUrlRev = ''" aria-hidden="true"></i>
-                      <img :src="model.idcardPhoUrlRev"/>
+                      <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">
                       请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -260,7 +260,7 @@
                     </el-upload>
                     <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.staffPhoUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.staffPhoUrl"/>
+                      <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">
                       请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -367,7 +367,7 @@
                     </el-upload>
                     <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.houregPhoUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.houregPhoUrl"/>
+                      <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">
                       请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -389,7 +389,7 @@
                     </el-upload>
                     <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.houregPerphoUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.houregPerphoUrl"/>
+                      <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerphoUrlErrFlag">
                       请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -411,7 +411,7 @@
                     </el-upload>
                     <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.houregPerrevphoUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.houregPerrevphoUrl"/>
+                      <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerrevphoUrlErrFlag">
                       请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -603,7 +603,8 @@
                             </el-button>
                             <span>如子女不满1周岁需要提供出生证明</span>
                           </el-upload>
-                          <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"/>
+                          <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
+                               @click="imageScaleOpen(item.birthCertifUrl)"/>
                           <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                         </el-form-item>
                       </div>
@@ -702,7 +703,7 @@
                     </el-upload>
                     <div v-if="model.diplomaUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.diplomaUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.diplomaUrl"/>
+                      <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="diplomaUrlErrFlag">
                       请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
@@ -724,7 +725,7 @@
                     </el-upload>
                     <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.greducaCertUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.greducaCertUrl"/>
+                      <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">
                       请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -792,7 +793,7 @@
                     </el-upload>
                     <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''" aria-hidden="true"></i>
-                      <img :src="model.emplsepacertUrl"/>
+                      <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">
                       请上传正确的离职证明照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -989,6 +990,16 @@
         </mt-tab-container-item>
       </mt-tab-container>
     </div>
+    <!--点击图片放大弹框-->
+    <mt-popup
+      v-model="imageScale"
+      class="imageScale-wrapper"
+      closeOnClickModal="false"
+    >
+      <div class="imageScale-box">
+        <img :src="imageScaleUrl" @click="imageScaleClose">
+      </div>
+    </mt-popup>
   </div>
 </template>
 <script>
@@ -1020,9 +1031,11 @@
   export default {
     data() {
       return {
-        loadProvince1: true,
-        loadProvince2: true,
-        loadProvince3: true,
+        imageScale: false,// 图片点击全屏显示
+        imageScaleUrl: '', //图片点击全屏显示的图片地址
+        loadProvince1: true, // 省市联动
+        loadProvince2: true, // 省市联动
+        loadProvince3: true, // 省市联动
         selected: '1',
         status: false,
         staffStatusList: [],//  员工状态列表
@@ -2236,6 +2249,17 @@
           })
           .catch(err => console.log(err.status, err.statusText));
       },
+      // 图片点击全屏放大
+      imageScaleOpen(data){
+        this.imageScale = true;
+        this.imageScaleUrl = data;
+//        console.log('123456', data);
+      },
+      //关闭图片放大
+      imageScaleClose(){
+        this.imageScale = false;
+        this.imageScaleUrl = '';
+      }
     },
     mounted: function () {
 
@@ -2481,6 +2505,17 @@
       padding: 17px 0;
       font-size: 15px;
       color: rgba(255, 255, 255, 0.5);
+    }
+    .imageScale-wrapper {
+      width: 100%;
+      .imageScale-box {
+        width: 100%;
+        max-height: 100vh;
+        overflow: auto;
+        img {
+          width: 100%;
+        }
+      }
     }
   }
 
