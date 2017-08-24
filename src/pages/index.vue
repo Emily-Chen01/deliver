@@ -1,68 +1,59 @@
 <template>
-  <div class="hello" style="padding: 0 8px">
-    <div style="height: 5rem;"></div>
-    <div class="logo"><img :src="imgSrc.bg" style="width: 50%;height: 99.5%"></div>
-    <p class="h1Class">{{ msg }}</p>
-    <p class="titlesSmall">{{ msgPhone }}</p>
-    <div style="clear:both"></div>
-    <div style="padding: 5rem 1rem 1.5rem 1rem;box-sizing:border-box;width: 100%">
-
-      <el-row style="width: 100%">
-        <el-col :span="24">
-          <el-form>
-            <el-form-item>
-              <el-col :span="15">
-                <el-input v-model="phoneNumber" type="number" placeholder="手机号" auto-complete="off"></el-input>
-              </el-col>
-              <el-col :span="8" :push="1">
-                <el-button type="primary" :disabled="YZdisabled" @click.native="handerClick()"
-                           style="width: 100%;text-align: center"><span>{{yanzheng}}</span></el-button>
-              </el-col>
-            </el-form-item>
-            <el-form-item>
-              <el-col :span="24">
-                <el-input type="text" v-model="phoneNumberValue" placeholder="请输入验证码" auto-complete="off"></el-input>
-              </el-col>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-button type="primary" @click.native="handerSubmit" style="width: 100%;margin-top: 1rem">确定</el-button>
-      </el-row>
+  <div id="index-wrapper">
+    <!--头部logo-->
+    <div class="index-header">
+      <div class="index-header-logo"><img :src="imgSrc.bg"></div>
+      <p class="index-header-firstP">欢迎使用 薪薪乐 员工自助服务</p>
+      <p>您需要先绑定手机</p>
     </div>
-
+    <!--内容 输入框-->
+    <el-row class="index-main">
+      <el-col :span="24">
+        <el-form>
+          <el-form-item>
+            <el-col :span="15">
+              <el-input v-model="phoneNumber" type="number" class="fs12" placeholder="手机号..."
+                        auto-complete="off"></el-input>
+            </el-col>
+            <el-col :span="8" :push="1">
+              <el-button type="primary" :disabled="YZdisabled" @click.native="handerClick" class="index-main-btn fs12">
+                <span>{{yanzheng}}</span></el-button>
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <el-col :span="24">
+              <el-input type="text" v-model="phoneNumberValue" class="fs12" placeholder="请输入短信验证码..."
+                        auto-complete="off"></el-input>
+            </el-col>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-button type="primary" @click.native="handerSubmit" class="index-main-btn mt20 fs12">确定</el-button>
+    </el-row>
+    <!--弹框-->
     <mt-popup
       v-model="errorModel"
-      class="imageClassSuccess"
+      class="index-Bomb"
       closeOnClickModal="true">
-      <div @click.native="closeClick"
-           style="width: 2rem;height: 2rem;text-align: center;margin:1.5rem auto 0.3rem auto;">
-        <img width="150" :src="imgSrc.bg2" class="alertImages"/>
+      <div class="index-Bomb-imgBox">
+        <img :src="imgSrc.bg2" class="alertImages"/>
       </div>
-      <div style="clear:both;"></div>
-      <div v-if="noneModel">
-        <div style="font-size:1.2rem; width: 5rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
-          <span>抱歉 ！</span>
-        </div>
-        <div style="font-size:1.2rem;width: 12rem;height: 1.5rem;text-align: center;margin:0.1rem auto 0.3rem auto;">
-          <span>没有找到您的员工记录</span>
-        </div>
-        <div style="font-size:1.2rem;width: 6rem;height: 1.5rem;text-align: center;margin:0.2rem auto 0.3rem auto;">
-          <span>请联系HR</span>
-        </div>
+      <div v-if="noneModel" class="index-Bomb-main">
+        <p class="fs13">抱歉!</p>
+        <p class="fs12">没有找到您的员工记录,请联系HR</p>
       </div>
-      <div v-if="alertMessageShow" style="margin-top: 1.5rem">{{alertMessage}}</div>
+      <div v-if="alertMessageShow" class="index-Bomb-main">
+        <p class="fs12" v-text="alertMessage"></p>
+      </div>
     </mt-popup>
   </div>
 </template>
 
 <script>
   import {Navbar, TabItem, Toast, MessageBox, Popup, Indicator} from 'mint-ui';
-
   import ManyCompany from "@/components/register/manyCompany"
   import Vue from 'vue'
-
   let timer1 = null;
-
   export default {
 
     name: 'hello',
@@ -72,8 +63,6 @@
           bg: require('../assets/logo.png'),
           bg2: require('../assets/ico_error.png'),
         },
-        msg: '欢迎使用 薪薪乐 员工自助服务',
-        msgPhone: '您需要先绑定手机!',
         phoneNumber: '',
         phoneNumberValue: '',//验证码值
         sumSearch: '',
@@ -311,68 +300,77 @@
   }
 </script>
 
-<style scoped>
-  .imageClassSuccess {
-    width: 16rem;
-    height: 12rem;
-    border-radius: 4px;
-  }
-
-  .alertImages {
-    width: 100%;
-    height: 100%;
-    display: block;
-    text-align: center;
-  }
-
-  .hello {
-    background: #ffffff;
+<style lang="scss">
+  #index-wrapper {
+    padding: 0 20px;
     height: 100vh;
-  }
-
-  .logo {
-    width: 100%;
-    height: 3rem;
-  }
-
-  .insterInput input {
-    height: 2.6rem;
-    width: 100%;
-  }
-
-  .verification span {
-    font-size: 0.7rem;
-  }
-
-  .verification button {
-    width: 98%;
-    height: 100%;
-  }
-
-  .verification label span {
-    display: block;
-  }
-
-  .inputValidation input {
-    width: 95%;
-    height: 2.6rem;
-  }
-
-  .confirmBinding button {
-    width: 97%;
-  }
-
-  p {
-    font-weight: 600;
-    font-size: 1.2rem;
-
-  }
-
-  .h1Class {
-    font-size: 1.4rem;
-  }
-
-  .titlesSmall {
-    font-size: 1.2rem;
+    background: #ffffff;
+    .mt20 {
+      margin-top: 20px;
+    }
+    .fs12 {
+      font-size: 12px;
+    }
+    .fs13 {
+      font-size: 13px;
+    }
+    .index-header {
+      width: 100%;
+      .index-header-logo {
+        margin: 0 auto;
+        margin-top: 68px;
+        width: 158px;
+        img {
+          width: 158px;
+          height: 44px;
+        }
+      }
+      p {
+        margin: 0;
+        width: 100%;
+        text-align: center;
+        line-height: 24px;
+        font-size: 14px;
+        color: #8492a6;
+      }
+      .index-header-firstP {
+        margin-top: 20px;
+      }
+    }
+    .index-main {
+      width: 100%;
+      margin-top: 35px;
+      // 复写elementUI样式
+      .el-form-item {
+        margin-bottom: 10px;
+      }
+      .index-main-btn {
+        width: 100%;
+      }
+    }
+    .index-Bomb {
+      width: 200px;
+      border-radius: 4px;
+      background-color: rgba(31, 46, 62, 0.85);
+      color: #ffffff;
+      .index-Bomb-imgBox {
+        margin: 0 auto;
+        margin-top: 25px;
+        width: 35px;
+        height: 35px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .index-Bomb-main {
+        padding: 5px 20px 25px;
+        p {
+          margin: 0;
+          text-align: center;
+          line-height: 25px;
+        }
+      }
+    }
   }
 </style>
