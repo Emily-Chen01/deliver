@@ -168,14 +168,16 @@
         </div>
       </mt-tab-container-item>
     </mt-tab-container>
-    <mt-popup
-      v-model="popupVisible"
-      class="imageClass"
-      closeOnClickModal="true">
-      <div class="colseClass">
-        <img :src="popImgSrc" class="alertImages" @click="closeImage"/>
-      </div>
-    </mt-popup>
+    <div class="imagePopup-box">
+      <mt-popup
+        v-model="popupVisible"
+        class="imageClass"
+        closeOnClickModal="true">
+        <div class="colseClass">
+          <img :src="popImgSrc" class="alertImages" @click="closeImage"/>
+        </div>
+      </mt-popup>
+    </div>
     <mt-popup
       v-model="leaveSuccess"
       class="imageClassSuccess"
@@ -664,10 +666,13 @@
 
 <style lang="scss">
   #leave-box {
-    .v-modal {
-      opacity: 1;
-      background-color: #ffffff;
+    .imagePopup-box {
+      .v-modal {
+        opacity: 1;
+        background-color: #ffffff;
+      }
     }
+
     .mint-tab-container-wrap {
 
     }
