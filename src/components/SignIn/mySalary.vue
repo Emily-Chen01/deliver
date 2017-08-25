@@ -76,7 +76,7 @@
 
     methods: {
       moneyFormat(money){
-        let Money = money ? ((money >= 0) ? (money + '元') : '无') : '无';
+        let Money = Math.abs(money) ? (money + '元') : '无';
         return Money;
       },
       // 上一个月

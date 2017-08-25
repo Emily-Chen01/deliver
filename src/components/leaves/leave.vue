@@ -147,7 +147,7 @@
               <div class="myApplyContentNr" v-if="item.why">
                 <span>{{item.why}}</span>
               </div>
-              <hr v-if="item.image" style="clear: both; padding: 0 10px;box-sizing: border-box"/>
+              <hr v-if="item.image" style="clear: both;border: none;height: 0;border-top: 1px solid #d3dce6; padding: 0 10px;box-sizing: border-box"/>
             </div>
             <div class="myApplyBottom" v-if="item.image">
               <div>
@@ -852,12 +852,11 @@
       margin-top: 1rem;
       padding-bottom: 10px;
       background: #ffffff;
-      box-shadow: 0 0 0 1px #cccccc;
+      box-shadow: 0 0 0 1px #d3dce6;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
+      border-radius: 6px;
     }
 
     .myApplyNo {
