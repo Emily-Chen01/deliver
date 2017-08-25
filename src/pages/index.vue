@@ -123,7 +123,6 @@
                   self.yanzheng = "重新发送(" + countdown + ")";
                 }
               }
-
               //获取验证码倒计时
               timer1 = setInterval(settime, 1000);
               this.setCookie('iphoneNumber', this.phoneNumber, 365);
@@ -137,10 +136,6 @@
           });
 
         } else {
-//          this.alertMessageShow = true;
-//          this.alertMessage = '手机号码错误';
-//          this.errorModel = true;
-//          this.noneModel = false; //隐藏没有记录
           this.popupBomb('手机号码错误');
         }
       },
@@ -152,44 +147,8 @@
         this.$http.post('/api/v1.0/client/bind', bindingObj).then(response => { //进行手机号码进行绑定
           if (response.body.code === 200) {
             this.findCompany(this.phoneNumber);
-//            this.$http.get('/api/v1.0/client/findCompanies/' + this.phoneNumber).then(response => {
-//              if (response.body.code === 200) {
-//                this.sumSearchUid = response.body.result;
-//                if (response.body.result.length === 1) {
-//                  //如果等于1就进入 signCard 点击打卡
-//                  let param = {
-//                    companyUid: this.sumSearchUid[0].uid,
-//                  };
-//                  this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
-//                    if (response.body.code === 200) {
-//                      this.$router.push({path: '/signCard'});
-//                    } else {
-//                      this.alertMessageShow = true;
-//                      this.errorModel = true;
-//                      this.noneModel = false; //隐藏没有记录
-//                      this.alertMessage = response.body.message;
-//                    }
-//                  }, response => {
-//                    console.log('error callback');
-//                  });
-//                } else {
-//                  this.handerCome(); //如果不是只有一个公司进行选择公司
-//                }
-//              } else {
-//                this.alertMessageShow = true;
-//                this.errorModel = true;
-//                this.noneModel = false; //隐藏没有记录
-//                this.alertMessage = response.body.message;
-//              }
-//            }, response => {
-//              console.log('error callback');
-//            });
           } else {
             this.popupBomb(response.body.message);
-//            this.alertMessageShow = true;
-//            this.errorModel = true;
-//            this.noneModel = false; //隐藏没有记录
-//            this.alertMessage = response.body.message;
           }
         }, response => {
           console.log('error callback');
@@ -205,43 +164,9 @@
               this.setCookie('iphoneNumber', isbingPhone, 365);//缓存手机号码用于查看公司manyCompany
               //初始化查询看是否有是一个公司进行跳转signCard  开始
               this.findCompany(isbingPhone);
-//            this.$http.get('/api/v1.0/client/findCompanies/' + isbingPhone).then(response => { //初始化查询有没有公司
-//              //若是没有公司在此处执行下一个页面  ?/？
-//              if (!response.body.result) {
-//                Indicator.close();
-//              }
-//              if (response.body.result) {
-//                this.sumSearchUid = response.body.result;
-//
-//                if (response.body.result.length === 1) {
-//                  //如果等于1就进入 signCard 点击打卡
-//                  let param = {
-//                    companyUid: this.sumSearchUid[0].uid,
-//                  };
-//                  this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
-//                    if (response.body.code === 200) {
-//                      this.$router.push({path: '/signCard'});
-//                    }
-//                    Indicator.close();//关闭加载
-//                  }, response => {
-//                    console.log('error callback');
-//                  });
-//                } else {
-//                  this.handerCome(); //如果不是只有一个公司进行选择公司
-//                }
-//              }
-//            }, response => {
-////              console.log('findCompanies error callback');
-//            });
-              //初始化查询看是否有是一个公司进行跳转signCard  开始
             }
           } else {
-//            this.alertMessageShow = true;
-//            this.errorModel = true;
-//            this.noneModel = false; //隐藏没有记录
-//            this.alertMessage = response.body.message;
-//            return;
-            this.popupBomb(response.body.message);
+            Indicator.close();
           }
         }, response => {
           console.log('error callback');
@@ -255,9 +180,7 @@
       findCompany(phone){
         this.$http.get('/api/v1.0/client/findCompanies/' + phone).then(response => {
           if (response.body.code === 200) {
-            if (!response.body.result) {
-              Indicator.close();
-            } else {
+            if (response.body.result){
               this.sumSearchUid = response.body.result;
               if (response.body.result.length === 1) {
                 //如果等于1就进入 signCard 点击打卡
@@ -269,10 +192,6 @@
                   if (response.body.code === 200) {
                     this.$router.push({path: '/signCard'});
                   } else {
-//                    this.alertMessageShow = true;
-//                    this.errorModel = true;
-//                    this.noneModel = false; //隐藏没有记录
-//                    this.alertMessage = response.body.message;
                     this.popupBomb(response.body.message);
                   }
                 }, response => {
@@ -283,10 +202,6 @@
               }
             }
           } else {
-//            this.alertMessageShow = true;
-//            this.errorModel = true;
-//            this.noneModel = false; //隐藏没有记录
-//            this.alertMessage = response.body.message;
             this.popupBomb(response.body.message);
           }
         }, response => {
@@ -299,21 +214,6 @@
         this.noneModel = false; //隐藏没有记录
         this.alertMessage = message;
       },
-//      changeCompany(){
-//        let param = {
-//          "companyUid": this.sumSearchUid.UID,
-//        };
-//        this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => {
-//          if (response.body.code === 200) {
-//            this.$router.push({path: '/signCard'});
-//          }
-//        }, response => {
-//          console.log('error callback');
-//        });
-//      },
-//      closeClick(){
-//        this.errorModel = false;
-//      }
     },
     components: {}
   }
@@ -337,7 +237,7 @@
       width: 100%;
       .index-header-logo {
         margin: 0 auto;
-        margin-top: 68px;
+        padding-top: 68px;
         width: 158px;
         img {
           width: 158px;

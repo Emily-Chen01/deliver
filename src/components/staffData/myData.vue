@@ -114,13 +114,13 @@
                     </el-select>
                   </el-form-item>
 
-                  <el-form-item v-if="staff.nativePlace && model.nativePlace !== '0'" label="护照编号" prop="passportNum"
+                  <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')" label="护照编号" prop="passportNum"
                                 :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')),  message: '请填写护照号', trigger: 'change'}">
                     <el-input :disabled=" !staff.nativePlace.isedit" placeholder="请输入护照编号"
                               v-model="model.passportNum"></el-input>
                   </el-form-item>
 
-                  <el-form-item v-if="staff.nativePlace && model.nativePlace !== '0'" label="护照照片" prop="passportUrl"
+                  <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')" label="护照照片" prop="passportUrl"
                                 :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')), message: '请上传护照照片', trigger: 'blur'}">
                     <el-upload
                       v-if="staff.nativePlace.isedit"
@@ -141,7 +141,7 @@
                       请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                   </el-form-item>
 
-                  <el-form-item v-if="staff.nativePlace && model.nativePlace !== '0'" label="护照国家" prop="state"
+                  <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')" label="护照国家" prop="state"
                                 :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')), message: '请选择护照国家', trigger: 'change'}">
                     <el-select :disabled=" !staff.nativePlace.isedit" filterable v-model="model.state"
                                placeholder="请选择">
@@ -2257,8 +2257,8 @@
       },
       //关闭图片放大
       imageScaleClose(){
-        this.imageScale = false;
-        this.imageScaleUrl = '';
+//        this.imageScale = false;
+//        this.imageScaleUrl = '';
       }
     },
     mounted: function () {
