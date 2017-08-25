@@ -147,7 +147,8 @@
               <div class="myApplyContentNr" v-if="item.why">
                 <span>{{item.why}}</span>
               </div>
-              <hr v-if="item.image" style="clear: both;border: none;height: 0;border-top: 1px solid #d3dce6; padding: 0 10px;box-sizing: border-box"/>
+              <hr v-if="item.image"
+                  style="clear: both;border: none;height: 0;border-top: 1px solid #d3dce6; padding: 0 10px;box-sizing: border-box"/>
             </div>
             <div class="myApplyBottom" v-if="item.image">
               <div>
@@ -171,9 +172,8 @@
       v-model="popupVisible"
       class="imageClass"
       closeOnClickModal="true">
-      <img width="150" :src="popImgSrc" class="alertImages" v-if="popImgSrc"/>
-      <div @click="closeImage" class="colseClass">
-        <span>关闭</span>
+      <div class="colseClass">
+        <img :src="popImgSrc" class="alertImages" @click="closeImage"/>
       </div>
     </mt-popup>
     <mt-popup
@@ -664,6 +664,10 @@
 
 <style lang="scss">
   #leave-box {
+    .v-modal {
+      opacity: 1;
+      background-color: #ffffff;
+    }
     .mint-tab-container-wrap {
 
     }
@@ -726,12 +730,12 @@
     }
 
     .colseClass {
-      height: 3rem;
-      line-height: 3rem;
-      text-align: center;
-      background: #26a2ff;
-      width: 20rem;
-      color: #ffffff;
+      width: 100%;
+      max-height: 100vh;
+      overflow: auto;
+      img {
+        width: 100%;
+      }
     }
 
     .colseClassAlert {
@@ -753,9 +757,7 @@
     }
 
     .imageClass {
-      width: 20rem;
-      height: 24rem;
-      line-height: 24rem;
+      width: 100%;
     }
 
     .imageClassSuccess {
@@ -892,9 +894,10 @@
       height: 3rem;
       line-height: 3rem;
       text-align: left;
-      font-weight: 600;
+      font-weight: bold;
       padding-left: 0.8rem;
-      font-size: 1.2rem;
+      font-size: 16px;
+      color: #324057;
     }
 
     .myApplyContentNr {
@@ -904,13 +907,14 @@
       line-height: 1rem;
       text-align: left;
       padding: 0 1rem;
-      font-size: 1.2rem;
+      font-size: 14px;
+      color: #324057;
     }
 
     .myApplyContentNr span {
       word-break: normal;
       width: auto;
-      display: block;
+      display: inline-block;
       white-space: pre-wrap;
       word-wrap: break-word;
       overflow: hidden;
