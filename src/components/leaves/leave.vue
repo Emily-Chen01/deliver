@@ -1,166 +1,131 @@
 <template>
-  <div id="leave-box" style="background: #ffffff;height: 100vh">
-    <!--请假申请-->
-    <mt-navbar v-model="selected" class="dataTitle">
-      <mt-tab-item id="1"><span>填写申请</span></mt-tab-item>
-      <mt-tab-item id="2"><span @click="changeShow(1)">我的申请</span></mt-tab-item>
+  <div id="leave-wrapper">
+    <mt-navbar v-model="selected" class="leave-header">
+      <mt-tab-item id="1">
+        <span>填写申请</span>
+      </mt-tab-item>
+      <mt-tab-item id="2">
+        <div @click="changeShow(1)"><span>我的申请</span></div>
+      </mt-tab-item>
     </mt-navbar>
-    <!-- tab-container -->
-    <mt-tab-container v-model="selected" style="padding-top: 52px;">
-      <mt-tab-container-item id="1">
-        <!--个人资料-->
-        <div style="padding-top: 0.2rem"></div>
-        <div class="hrClass"></div>
-        <div class="contentClass">
-          <div class="contentLeft" style="padding-top: 0.3rem">申请分类</div>
-          <div class="contentRight" style="position: relative;">
-            <div class="selectBao">
-              <img width="150" :src="imgSrc.selectShow" class="selectShowImg"/>
-            </div>
-            <select v-model="selectedDataApply" class="changeSelect" @change="shengqingclick(selectedDataApply)">
-              <!--shengqingclick(selectedDataApply)-->
-              <option v-for="option in optionsApply" v-bind:value="option.value">
-                <span>{{ option.text }}</span>
-              </option>
+    <mt-tab-container v-model="selected" class="leave-main">
+      <mt-tab-container-item id="1" class="leave-main-box">
+        <div class="leave-main-box-apply">
+          <div class="leave-main-box-apply-left">申请分类</div>
+          <div class="leave-main-box-apply-center">
+            <select v-model="selectedDataApply" @change="shengqingclick(selectedDataApply)">
+              <option v-for="option in optionsApply" :value="option.value" v-text="option.text"></option>
             </select>
           </div>
+          <div class="leave-main-box-apply-right">
+            <img :src="imgSrc.selectShow"/>
+          </div>
         </div>
-
-        <div class="hrClass" v-if="changeApply"></div>
-        <div class="contentClass" v-if="changeApply">
-          <div class="contentLeft" style="padding-top: 0.3rem">假期分类</div>
-          <div class="contentRight" style="position: relative;">
-            <div class="selectBao">
-              <img width="150" :src="imgSrc.selectShow" class="selectShowImg"/>
-            </div>
-            <select v-model="selectedDataHoliday" class="changeSelect" @change="qingjiaclick(selectedDataHoliday)">
-              <option selectedChange>选择假期类型</option>
-              <option v-for="option in optionsHoliday" v-bind:value="option">
-                <span>{{ option.text }}</span>
-              </option>
+        <div class="leave-main-box-apply" v-if="changeApply">
+          <div class="leave-main-box-apply-left">假期分类</div>
+          <div class="leave-main-box-apply-center">
+            <select v-model="selectedDataHoliday" @change="qingjiaclick(selectedDataHoliday)">
+              <option>选择假期类型</option>
+              <option v-for="option in optionsHoliday" :value="option" v-text="option.text"></option>
             </select>
           </div>
-        </div>
-        <div v-if="changeApplyTime" class="hrClass"></div>
-        <div v-if="changeApplyTime" class="contentClass">
-          <div class="contentLeft">开始时间</div>
-          <div class="contentRight" @click="openPicker(0)">
-            <span class="dateSelect" align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"></span>
+          <div class="leave-main-box-apply-right">
+            <img :src="imgSrc.selectShow"/>
           </div>
         </div>
-        <div v-if="changeApplyTime" class="hrClass"></div>
-        <div v-if="changeApplyTime" class="contentClass">
-          <div class="contentLeft">结束时间</div>
-          <div class="contentRight" @click="openPicker(1)">
-            <span class="dateSelect" align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"></span>
+        <div class="leave-main-box-apply">
+          <div class="leave-main-box-apply-left">开始时间</div>
+          <div class="leave-main-box-apply-center" @click="openPicker(0)">
+            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"></span>
           </div>
         </div>
-        <div v-if="changeApplyTime" class="hrClass"></div>
-        <div style="clear:both;"></div>
-        <div v-if="updateImage" style="height: 8rem;line-height: 8rem; position: relative">
-          <div class="cardClass">
-            <div>
-              <vue-core-image-upload
-                crop-ratio="1:1"
-                @imageuploaded="imageuploaded"
-                :data="data"
-                :headers="tokenHeader"
-                @errorhandle="errorhandle"
-                extensions="png,jpeg,jpg"
-                :max-file-size="5242880"
-                compress="60"
-                url="/api/v1.0/client/upload">
-                <div class="CardDivImg" v-if="initUpImage"><img width="150" :src="imgSrc.shenFenIconShowCamera"
-                                                                class="CardImg"/></div>
-                <div class="CardDivImg" v-if="imgSrc.shenFenIcon"><img width="150" :src="imgSrc.shenFenIcon"
-                                                                       class="CardImg"/></div>
-              </vue-core-image-upload>
+        <div class="leave-main-box-apply">
+          <div class="leave-main-box-apply-left">结束时间</div>
+          <div class="leave-main-box-apply-center" @click="openPicker(1)">
+            <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"></span>
+          </div>
+        </div>
+        <div class="leave-main-box-applyImg">
+          <el-upload
+            v-if="updateImage"
+            action="/api/v1.0/client/upload"
+            name="files"
+            :show-file-list="false"
+            :headers="tokenHeader"
+            :on-success="passportUrlOk"
+            :before-upload="beforePassportUrl">
+            <div class="leave-main-box-apply-upload">
+              <img :src="imgSrc.shenFenIcon ? imgSrc.shenFenIcon : imgSrc.shenFenIconShowCamera"/>
             </div>
-          </div>
+          </el-upload>
+          <p v-show="passportUrlErrFlag">
+            请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
         </div>
-        <div style="clear:both;"></div>
-        <div :class={hideHeight:isHideHeight} class="hrbei"></div>
-
-        <div>
-          <div style="text-align:left;font-size: 1.2rem;padding:0.2rem 0 0.5rem 1.4rem">备注</div>
-          <!--<div>-->
-          <textarea placeholder="#请输入文字(不超过50字)"
-                    v-model="holidayModel"
-                    style=" overflow: hidden;overflow-y: scroll;width: 98%;height: 4rem;border-radius: 4px;resize:none">
-               </textarea>
+        <div class="leave-main-box-applyText">
+          <div class="leave-main-box-applyText-top">备注</div>
+          <textarea placeholder="#请输入文字(不超过50字)" v-model="holidayModel"></textarea>
         </div>
-        <!--</div>-->
-        <mt-field label="审批人" style="margin-top: 1rem" v-if="approvalTypeObj">
-          <div class="showARightSpan">{{approvalTypeObj.NAME}}</div>
-        </mt-field>
-        <div>
+        <div class="leave-main-box-apply" v-if="approvalTypeObj">
+          <div class="leave-main-box-apply-left">审批人</div>
+          <div class="leave-main-box-apply-center" v-text="approvalTypeObj.NAME"></div>
         </div>
-        <div style="padding-top: 2rem">
-          <mt-button type="primary"
-                     style="background-color: rgb(32, 161, 255);width: 20rem;height:3rem;line-height: 3rem"
+        <div class="leave-main-box-applyBtn">
+          <mt-button type="primary" class="leave-main-box-applyBtn-btn"
                      @click.native="handerDataSubmit()">
             <span>提交</span>
           </mt-button>
         </div>
       </mt-tab-container-item>
-      <mt-tab-container-item id="2" style="background: #eff3f7;">
-        <!--进行编辑内容开始-->
-        <div class="changeTitleClass">
-          <div @click="changeShow(1)" class="changeShowList" :class="{  active:isActive}">全部 </div>
-          <div @click="changeShow(2)" class="changeShowList" :class="{  active2:isActive2}">审核中</div>
-          <div @click="changeShow(3)" class="changeShowList" :class="{  active3:isActive3}">已通过 </div>
-          <div @click="changeShow(4)" class="changeShowList" :class="{  active4:isActive4}">未通过</div>
-        </div>
-        <!--//进行编辑内容结束-->
-        <!--我的申请-->
-        <div style="padding-top: 40px;padding-bottom: 10px">
-          <div class="myApply" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
-            <div class="myApplyTitle">
-              <div class="myApplyTitleLeft">
-                <div style="float:left;padding-left: 0.5rem;padding-top: 0.1rem;"><span>| </span></div>
-                <div style="float:left;padding-top: 0.2rem;"> &nbsp{{item.name}}申请<span
-                  v-if="item.sname">({{item.sname}})</span></div>
-              </div>
-              <div class="myApplyTitleRight" v-if="item.status==0">审核中</div>
-              <div class="myApplyTitleRight" v-else-if="item.status==1">已通过</div>
-              <div class="myApplyTitleRight" v-else-if="item.status==2">未通过</div>
+      <mt-tab-container-item id="2" class="leave-main-applyInfo">
+        <mt-navbar v-model="selectInfo" class="leave-header">
+          <mt-tab-item id="a">
+            <div @click="changeShow(1)"><span>全部</span></div>
+          </mt-tab-item>
+          <mt-tab-item id="b">
+            <div @click="changeShow(2)"><span>审核中</span></div>
+          </mt-tab-item>
+          <mt-tab-item id="c">
+            <div @click="changeShow(3)"><span>已通过</span></div>
+          </mt-tab-item>
+          <mt-tab-item id="d">
+            <div @click="changeShow(4)"><span>未通过</span></div>
+          </mt-tab-item>
+        </mt-navbar>
+        <div class="leave-main-content">
+          <div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
+            <div class="leave-main-content-top">
+              <h3 class="leave-main-content-title">
+                <span class="leave-main-content-title-left">{{item.name}}申请</span>
+                <span class="leave-main-content-title-right"
+                      v-text="item.status===0 ? '审核中' : (item.status===1 ? '已通过' : '未通过')"></span>
+              </h3>
             </div>
-            <div class="myApplyContent">
-              <div v-if="item.startTime">
-                <div class="myApplyContentLeft">起止日期</div>
-                <div class="myApplyContentNr">
-                  <span>{{ datefmt(item.startTime)}}</span>
-                  <span>至</span>
-                  <span>{{ datefmt(item.endTime)}}</span>
-                </div>
-              </div>
-              <div v-if="item.overworkTime">
-                <div class="myApplyContentLeft">加班时长</div>
-                <div class="myApplyContentNr">
-                  <span>{{item.overworkTime}}小时</span>
-                </div>
-              </div>
-              <div class="myApplyContentLeft">事由</div>
-              <div class="myApplyContentNr"><span>{{item.remarks}}</span>
-              </div>
-              <div class="myApplyContentLeft" v-if="item.why">拒绝原因</div>
-              <div class="myApplyContentNr" v-if="item.why">
-                <span>{{item.why}}</span>
-              </div>
-              <hr v-if="item.image"
-                  style="clear: both;border: none;height: 0;border-top: 1px solid #d3dce6; padding: 0 10px;box-sizing: border-box"/>
-            </div>
-            <div class="myApplyBottom" v-if="item.image">
+            <div class="leave-main-content-Info">
               <div>
-                <div class="myApplyBottomNrLeft">附件内容 ：</div>
-                <div class="myApplyBottomNrRight">
-                  <mt-button size="small" type="primary" @click="lookImages(item.image)">
-                    <span>查看图片</span>
-                  </mt-button>
-                </div>
+                <h3>起止日期</h3>
+                <p>
+                  <span v-text="datefmt(item.startTime)"></span> 至 <span v-text="datefmt(item.endTime)"></span>
+                </p>
+              </div>
+              <div v-if="item.overworkTime" class="marginTop10">
+                <h3>加班时长</h3>
+                <p>{{item.overworkTime}}小时</p>
+              </div>
+              <div class="marginTop10">
+                <h3>事由</h3>
+                <p v-text="item.remarks "></p>
+              </div>
+              <div v-if="item.why" class="marginTop10">
+                <h3>拒绝原因</h3>
+                <p v-text="item.why"></p>
               </div>
             </div>
-            <div style="clear:both;"></div>
+            <div class="leave-main-content-append" v-if="item.image">
+              <h3>附件内容：</h3>
+              <mt-button size="small" class="leave-main-content-btn" type="primary" @click="lookImages(item.image)">
+                <span>查看附件</span>
+              </mt-button>
+            </div>
           </div>
           <div class="myApplyNo" v-if="searchApplyRecord.length===0">
             <span>没有数据</span>
@@ -183,8 +148,7 @@
       class="imageClassSuccess"
       closeOnClickModal="true">
       <div style="width: 3rem;height: 3rem;text-align: center;margin:2rem auto 0.3rem auto;">
-        <img width="150" :src="imgSrc.ico_success" class="alertImages" v-if="alertSuccessImage"/>
-        <img width="150" :src="imgSrc.ico_error" class="alertImages" v-if="!alertSuccessImage"/>
+        <img width="150" :src="alertSuccessImage ? imgSrc.ico_success : imgSrc.ico_error" class="alertImages" v-if="alertSuccessImage"/>
       </div>
       <div style="clear:both;"></div>
       <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin:0 auto;font-size: 1.1rem;">
@@ -223,7 +187,7 @@
 <script>
   import {DatetimePicker, Radio} from 'mint-ui';
   import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
-
+  import utils from '@/components/utils'
   import VueCoreImageUpload from 'vue-core-image-upload'
   import moment from 'moment'
 
@@ -234,6 +198,16 @@
   export default {
     data(){
       return {
+        tokenHeader: {
+          charset: 'utf-8',
+          openId: this.getCookie('openId')
+        },
+        passportUrlErrFlag: false,// 判断图片格式是否正确
+
+        selected: '1',// 最上层的填写申请，申请分类的nav
+        selectInfo: 'a', // 申请分类的nav
+
+
         popImgSrc: '',
         popupVisible: false,
         closeOnClickModal: true,
@@ -241,10 +215,7 @@
         isActive2: false, //显示下滑线
         isActive3: false, //显示下滑线
         isActive4: false, //显示下滑线
-        tokenHeader: {
-          openId: this.getCookie('openId')
-        },
-        selected: '1',
+
         selectedData: '',
         selectedDataApply: 0,
         selectedDataApproval: 0,
@@ -279,7 +250,6 @@
         applyTypeArray: [], //申请
         applyTypeName: [], //申请
         approvalTypeObj: {}, // 审批人
-        approvalTypeName: [], // 审批人
         holidayTypeArray: [], // 假期分类
         holidayTypeName: [], // 假期分类
         startTimeValue: '', //开始时间value
@@ -387,6 +357,7 @@
         }
         this.$nextTick(() => {
           this.optionsHoliday = this.holidayTypeName;
+          console.log(this.optionsHoliday)
 
         });
 
@@ -548,6 +519,7 @@
       },
       imageuploaded(res) { //用于图片参数上传
 //        console.log(res);
+//        this.imgSrc.shenFenIconShowCamera= res.result;
         this.imgSrc.shenFenIcon = res.result;
         this.initUpImage = false;  //把初始化的image隐藏
       },
@@ -654,6 +626,22 @@
           this.$router.push({path: '/signCard'});
         }
       },
+      passportUrlOk(res, file) {
+        this.imgSrc.shenFenIconShowCamera = URL.createObjectURL(file.raw);
+        if (res.code === 200) {
+          this.imgSrc.shenFenIconShowCamera = res.result;
+        }
+      },
+      beforePassportUrl(file) {
+        let isImage = utils.isImage(file);
+        let isInSize = utils.isInSize(file, 5);
+        if (isImage && isInSize) {
+          this.passportUrlErrFlag = false;
+        } else {
+          this.passportUrlErrFlag = true;
+        }
+        return isImage && isInSize;
+      },
 
     },
 
@@ -665,7 +653,230 @@
 </script>
 
 <style lang="scss">
-  #leave-box {
+  #leave-wrapper {
+    background: #ffffff;
+    min-height: 100vh;
+    .leave-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 44px;
+      z-index: 1;
+      span {
+        display: inline-block;
+        font-size: 14px;
+      }
+    }
+    // 复写mint ui 组件，头部样式
+    .mint-navbar {
+      .mint-tab-item.is-selected {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        span {
+          display: inline-block;
+          padding-bottom: 10px;
+          border-bottom: 3px solid #ffffff;
+        }
+      }
+    }
+    .leave-main {
+      padding-top: 44px;
+      .leave-main-box {
+        padding: 0 15px;
+        .leave-main-box-apply {
+          overflow: hidden;
+          height: 50px;
+          line-height: 50px;
+          font-size: 15px;
+          border-bottom: 1px solid #d2dce6;
+          .leave-main-box-apply-left {
+            float: left;
+            width: 100px;
+            color: #8492a6;
+            text-align: left;
+          }
+          .leave-main-box-apply-center {
+            float: left;
+            box-sizing: border-box;
+            padding-left: 100px;
+            /*padding-right: 30px;*/
+            margin-top: -50px;
+            color: #1f2d3d;
+            text-align: left;
+            width: 100%;
+            select {
+              width: 100%;
+              overflow: hidden;
+              border: none;
+              outline: none;
+              font-size: 15px;
+            }
+            span {
+              padding-left: 4px;
+              font-size: 15px;
+            }
+          }
+          .leave-main-box-apply-right {
+            float: right;
+            width: 20px;
+            margin-top: -50px;
+            background-color: #ffffff;
+            img {
+              width: 15px;
+            }
+          }
+        }
+        .leave-main-box-applyImg {
+          padding: 10px 0 5px;
+          border-bottom: 1px solid #d2dce6;
+          .leave-main-box-apply-upload {
+            width: 100%;
+            img {
+              display: block;
+              width: 180px;
+              height: 120px;
+            }
+          }
+          p {
+            font-size: 15px;
+            color: red;
+          }
+        }
+        .leave-main-box-applyText {
+          padding-bottom: 10px;
+          border-bottom: 1px solid #d2dce6;
+          font-size: 15px;
+          .leave-main-box-applyText-top {
+            text-align: left;
+            padding: 10px 0;
+            color: #8492a6;
+          }
+          textarea {
+            outline: none;
+            overflow: hidden;
+            overflow-y: scroll;
+            width: 98%;
+            height: 4rem;
+            border-radius: 4px;
+            resize: none;
+          }
+        }
+        .leave-main-box-applyBtn {
+          margin-top: 20px;
+          width: 100%;
+          .leave-main-box-applyBtn-btn {
+            width: 80%;
+            font-size: 15px;
+          }
+        }
+      }
+      .leave-main-applyInfo {
+        width: 100%;
+        background: #eff3f7;
+        .leave-header {
+          position: fixed;
+          top: 44px;
+          left: 0;
+          width: 100%;
+          height: 44px;
+          z-index: 1;
+          a {
+            background-color: #1d8be0;
+          }
+
+        }
+        .leave-main-content {
+          padding: 56px 5px 10px;
+          .leave-main-content-wrapper {
+            margin-bottom: 12px;
+            overflow: hidden;
+            width: 100%;
+            border: 1px solid #d3dce6;
+            border-radius: 4px;
+            .leave-main-content-top {
+              height: 35px;
+              background-color: #d3dde7;
+              .leave-main-content-title {
+                overflow: hidden;
+                margin: 0;
+                height: 35px;
+                line-height: 35px;
+                text-align: left;
+                font-size: 14px;
+                color: #1f2d3d;
+                .leave-main-content-title-left {
+                  margin-left: 10px;
+                  margin-top: 10px;
+                  padding-left: 4px;
+                  height: 14px;
+                  line-height: 14px;
+                  float: left;
+                  border-left: 2px solid #1f2d3d;
+                }
+                .leave-main-content-title-right {
+                  float: right;
+                  margin-right: 15px;
+                }
+              }
+            }
+            .leave-main-content-Info {
+              box-sizing: border-box;
+              padding: 15px;
+              background-color: #ffffff;
+              text-align: left;
+              h3, p {
+                font-size: 14px;
+                line-height: 16px;
+
+              }
+              h3 {
+                color: #20a0ff;
+              }
+              p {
+                margin-top: 5px;
+                color: #324057;
+              }
+              .marginTop10 {
+                margin-top: 10px;
+              }
+            }
+            .leave-main-content-append {
+              box-sizing: border-box;
+              padding-left: 15px;
+              height: 35px;
+              line-height: 35px;
+              border-top: 1px solid #d3dce6;
+              background-color: #ffffff;
+              text-align: left;
+
+              h3 {
+                display: inline-block;
+                font-size: 14px;
+                color: #20a0ff;
+              }
+              .leave-main-content-btn {
+                height: 22px;
+                font-size: 12px;
+              }
+            }
+          }
+          .myApplyNo {
+            width: 100%;
+            height: 150px;
+            line-height: 150px;
+            text-align: center;
+            border: 1px solid #d3dce6;
+            border-radius: 4px;
+            color: #324057;
+            background: #ffffff;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  #leave-wrapper {
     .imagePopup-box {
       .v-modal {
         opacity: 1;
@@ -866,19 +1077,19 @@
       border-radius: 6px;
     }
 
-    .myApplyNo {
-      width: 92%;
-      min-height: 12rem;
-      line-height: 12rem;
-      margin: 1rem;
-      background: #ffffff;
-      box-shadow: 0 0 0 1px #cccccc;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
-    }
+    /*.myApplyNo {*/
+    /*width: 92%;*/
+    /*min-height: 12rem;*/
+    /*line-height: 12rem;*/
+    /*margin: 1rem;*/
+    /*background: #ffffff;*/
+    /*box-shadow: 0 0 0 1px #cccccc;*/
+    /*white-space: nowrap;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+    /*border-top-left-radius: 6px;*/
+    /*border-top-right-radius: 6px;*/
+    /*}*/
 
     .myApplyTitleLeft {
       width: 80%;
