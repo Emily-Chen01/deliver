@@ -5,7 +5,7 @@
         <span>填写申请</span>
       </mt-tab-item>
       <mt-tab-item id="2">
-        <div @click="changeShow(1)"><span>我的申请</span></div>
+        <div @click="changeShow(-1)"><span>我的申请</span></div>
       </mt-tab-item>
     </mt-navbar>
     <mt-tab-container v-model="selected" class="leave-main">
@@ -13,8 +13,8 @@
         <div class="leave-main-box-apply">
           <div class="leave-main-box-apply-left">申请分类</div>
           <div class="leave-main-box-apply-center">
-            <select v-model="selectedDataApply" @change="shengqingclick(selectedDataApply)">
-              <option v-for="option in optionsApply" :value="option.value" v-text="option.text"></option>
+            <select v-model="selectedDataApply" @change="shengqingclick">
+              <option v-for="option in applyTypeArray" :value="option.type" v-text="option.name"></option>
             </select>
           </div>
           <div class="leave-main-box-apply-right">
@@ -26,7 +26,7 @@
           <div class="leave-main-box-apply-center">
             <select v-model="selectedDataHoliday" @change="qingjiaclick(selectedDataHoliday)">
               <option>选择假期类型</option>
-              <option v-for="option in optionsHoliday" :value="option" v-text="option.text"></option>
+              <option v-for="option in holidayTypeArray" :value="option" v-text="option.NAME"></option>
             </select>
           </div>
           <div class="leave-main-box-apply-right">
@@ -45,9 +45,8 @@
             <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"></span>
           </div>
         </div>
-        <div class="leave-main-box-applyImg">
+        <div class="leave-main-box-applyImg" v-if="updateImage">
           <el-upload
-            v-if="updateImage"
             action="/api/v1.0/client/upload"
             name="files"
             :show-file-list="false"
@@ -79,16 +78,16 @@
       <mt-tab-container-item id="2" class="leave-main-applyInfo">
         <mt-navbar v-model="selectInfo" class="leave-header">
           <mt-tab-item id="a">
-            <div @click="changeShow(1)"><span>全部</span></div>
+            <div @click="changeShow(-1)"><span>全部</span></div>
           </mt-tab-item>
           <mt-tab-item id="b">
-            <div @click="changeShow(2)"><span>审核中</span></div>
+            <div @click="changeShow(0)"><span>审核中</span></div>
           </mt-tab-item>
           <mt-tab-item id="c">
-            <div @click="changeShow(3)"><span>已通过</span></div>
+            <div @click="changeShow(1)"><span>已通过</span></div>
           </mt-tab-item>
           <mt-tab-item id="d">
-            <div @click="changeShow(4)"><span>未通过</span></div>
+            <div @click="changeShow(2)"><span>未通过</span></div>
           </mt-tab-item>
         </mt-navbar>
         <div class="leave-main-content">
@@ -136,25 +135,22 @@
     <div class="imagePopup-box">
       <mt-popup
         v-model="popupVisible"
-        class="imageClass"
+        class="imageScale-wrapper"
         closeOnClickModal="true">
-        <div class="colseClass">
-          <img :src="popImgSrc" class="alertImages" @click="closeImage"/>
+        <div class="imageScale-box">
+          <img :src="popImgSrc" @click="closeImage"/>
         </div>
       </mt-popup>
     </div>
     <mt-popup
       v-model="leaveSuccess"
-      class="imageClassSuccess"
-      closeOnClickModal="true">
-      <div style="width: 3rem;height: 3rem;text-align: center;margin:2rem auto 0.3rem auto;">
-        <img width="150" :src="alertSuccessImage ? imgSrc.ico_success : imgSrc.ico_error" class="alertImages" v-if="alertSuccessImage"/>
+      class="image-Success"
+      closeOnClickModal="false">
+      <div class="image-box">
+        <img :src="alertSuccessImage ? imgSrc.ico_success : imgSrc.ico_error"/>
       </div>
-      <div style="clear:both;"></div>
-      <div style="width: 16rem;height: 1.8rem;line-height:1.8rem;text-align: center; margin:0 auto;font-size: 1.1rem;">
-        <span>{{alertMessage}}</span>
-      </div>
-      <div @click="closeAlert" class="colseClassAlert">
+      <p v-text="alertMessage"></p>
+      <div @click="closeAlert" class="image-btn">
         <span>我知道啦</span>
       </div>
     </mt-popup>
@@ -188,7 +184,6 @@
   import {DatetimePicker, Radio} from 'mint-ui';
   import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
   import utils from '@/components/utils'
-  import VueCoreImageUpload from 'vue-core-image-upload'
   import moment from 'moment'
 
 
@@ -203,138 +198,46 @@
           openId: this.getCookie('openId')
         },
         passportUrlErrFlag: false,// 判断图片格式是否正确
-
         selected: '1',// 最上层的填写申请，申请分类的nav
         selectInfo: 'a', // 申请分类的nav
-
-
-        popImgSrc: '',
-        popupVisible: false,
-        closeOnClickModal: true,
-        isActive: false, //显示下滑线
-        isActive2: false, //显示下滑线
-        isActive3: false, //显示下滑线
-        isActive4: false, //显示下滑线
-
-        selectedData: '',
-        selectedDataApply: 0,
-        selectedDataApproval: 0,
-        pickerValue: '',
-        optionsApproval: {},
-        optionsApply: [
-//                { text: '请假申请', value: 0 ,uid:12,type:'q'},
-
-        ],
-        selectedDataHoliday: '选择假期类型',
-        optionsHoliday: [
-//                { text: '端午节' },
-        ],
+        popImgSrc: '', // 查看的图片
+        popupVisible: false, // 查看图片弹框
+        selectedDataApply: 0, //选择的申请类型
+        applyTypeArray: [], //申请分类
+        selectedDataHoliday: '选择假期类型', // 选择的假期类型
+        holidayTypeArray: [], // 假期类型列表
         imgSrc: {
           shenFenIcon: '',
-          shenFenIconShow: require('../../assets/shenfenzheng.png'),
           shenFenIconShowCamera: require('../../assets/camera.png'),
-
           selectShow: require('../../assets/arrow_2.png'),
           ico_success: require('../../assets/ico_success.png'),
           ico_error: require('../../assets/ico_error.png'),
-
-
         },
-        changeApply: true,
-        changeApplyTime: true,
-//              changeApplyOutside:false,
-        changeApplyOvertime: false, //加班时间div
-        updateImage: true, //上传图片 div
-        Remark: true, //备注div
-        data: {},
-        applyTypeArray: [], //申请
-        applyTypeName: [], //申请
+        changeApply: true, // 是否显示假期分类
+        updateImage: true, //上传图片按钮是否隐藏
+        holidayModel: '', //备注div
         approvalTypeObj: {}, // 审批人
-        holidayTypeArray: [], // 假期分类
-        holidayTypeName: [], // 假期分类
         startTimeValue: '', //开始时间value
-        startTimeValue1: new Date(),
+        startTimeValue1: new Date(),  //初始化日历插件
         endTimeValue: '',  //结束时间value
-        endTimeValue1: new Date(),
-        holidayModel: '',
-        textareaString: '',
-        qingjiauidParam: '',
-        shengqingParam: '',
-        shengqingParamType: '', //判断加班申请param的类型
-        imagestring: '',
+        endTimeValue1: new Date(),//初始化日历插件
+        textareaString: '',// 去除空格缩进后的备注信息
+        qingjiauidParam: '', // 假期类型uid
+        shengqingParam: '',  //申请类型uid
         searchApplyRecord: [], //搜索申请记录
-        initUpImage: true, //初始化加载的上传图片
         leaveSuccess: false, //成功显示的弹框
-        alertMessage: ' 申请已提交成功',//提交弹框文字
-        alertSuccessImage: '',//成功文字
+        alertMessage: '',//提交弹框文字，显示提交状态
+        alertSuccessImage: false,//显示提交状态
         codeSuccess: '',//点击我知道了进行状态判断跳转
-        isHideHeight: '',
-
       };
     },
     created: function () {
       this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
-        this.applyTypeArray = response.body.result;
-        for (let i = 0; i < this.applyTypeArray.length; i++) {
-          this.applyTypeName.push(
-            {
-              text: this.applyTypeArray[i].name,
-              value: this.applyTypeArray[i].type,
-              uid: this.applyTypeArray[i].uid
-            }
-          )
+        if (response.body.code === 200) {
+          this.applyTypeArray = response.body.result;
+          this.selectedDataApply = parseInt(this.getCookie('leaveType'));
+          this.shengqingclick();
         }
-        this.optionsApply = this.applyTypeName;
-
-        //====此处代码为了在打开提交时在提交申请时显示申请类型====
-        this.selectedDataApply = this.getCookie('leaveType');
-
-        for (let i = 0; i < this.optionsApply.length; i++) {  //循环初始化的时候选中一个select属性值和参数
-          if (this.selectedDataApply !== '') {
-            this.shengqingParam = this.optionsApply[this.selectedDataApply].uid;
-            this.shengqingParamType = this.optionsApply[this.selectedDataApply].value;
-          }
-        }
-        if (this.selectedDataApply == '0') { //请假
-          this.changeApply = true; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
-          this.updateImage = true; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '0';
-          this.isHideHeight = false;
-
-        }
-        if (this.selectedDataApply == '1') {
-          this.changeApply = false; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
-          this.updateImage = true; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '1';
-          this.isHideHeight = false;
-
-        }
-        if (this.selectedDataApply == '2') {
-          this.changeApply = false; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
-          this.updateImage = true; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '2';
-          this.isHideHeight = false;
-
-        }
-        if (this.selectedDataApply == '3') {
-          this.changeApply = false; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
-          this.updateImage = false; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '3';
-          this.isHideHeight = true;
-
-
-        }
-        //=====此处代码为了在打开提交时在提交申请时显示 类型====
-
-
       }, response => {
 //        console.log('error callback');
       });
@@ -346,40 +249,9 @@
       });
       this.$http.get('/api/v1.0/client/findValidLeaves').then(response => { //假期分类
         this.holidayTypeArray = response.body.result;
-//        console.log(this.holidayTypeArray, '假期分类');
-        for (let i = 0; i < this.holidayTypeArray.length; i++) {
-          this.holidayTypeName.push(
-            {
-              text: this.holidayTypeArray[i].NAME,
-              value: this.holidayTypeArray[i].TYPE,
-              uid: this.holidayTypeArray[i].LEAVE_INFO_UID
-            })
-        }
-        this.$nextTick(() => {
-          this.optionsHoliday = this.holidayTypeName;
-          console.log(this.optionsHoliday)
-
-        });
-
-
-//        console.log(this.optionsHoliday);
-
       }, response => {
 //        console.log('假期分类 error callback');
       });
-
-      let params = {
-        "status": "-1",
-        "pageSize": 100,
-        "pageNumber": 1
-      };
-      this.$http.post('/api/v1.0/client/findApplys', params).then(response => { //查询请假记录
-        this.searchApplyRecord = response.body.result;
-      }, response => {
-//        console.log('查询请假记录 error callback');
-      });
-
-
     },
     watch: {
       holidayModel: function (val, oldVal) { //备注value 用于上传参数
@@ -387,19 +259,21 @@
       },
     },
     methods: {
+      // 开始时间格式化
       handleConfirmStart(data){
         if (data) {
           this.startTimeValue = moment(data).format(df2) + ':00';
         }
       },
+      // 结束时间格式化
       handleConfirmEnd(data){
         if (data) {
           this.endTimeValue = moment(data).format(df2) + ':00';
         }
       },
+      // 日历样式
       openPicker(data) {
         let pickerslot = document.getElementsByClassName('picker-slot');
-
         if (data === 0) {
           pickerslot[4].style.display = 'none';
           this.$refs.picker0.open();
@@ -407,55 +281,13 @@
           pickerslot[9].style.display = 'none';
           this.$refs.picker1.open();
         }
-
       },
-      changeShow(val){ //动态设置tab下划线显示
-        let params = '';
-        if (val == 1) {
-          this.isActive = true;
-          this.isActive2 = false;
-          this.isActive3 = false;
-          this.isActive4 = false;
-          params = {
-            "status": "-1",
-            "pageSize": 100,
-            "pageNumber": 1
-          }
-        }
-        if (val == 2) {
-          this.isActive2 = true;
-          this.isActive = false;
-          this.isActive3 = false;
-          this.isActive4 = false;
-          params = {
-            "status": "0",
-            "pageSize": 100,
-            "pageNumber": 1
-          }
-        }
-        if (val == 3) {
-          this.isActive3 = true;
-          this.isActive2 = false;
-          this.isActive = false;
-          this.isActive4 = false;
-          params = {
-            "status": "1",
-            "pageSize": 100,
-            "pageNumber": 1
-          }
-        }
-        if (val == 4) {
-          this.isActive4 = true;
-          this.isActive3 = false;
-          this.isActive2 = false;
-          this.isActive = false;
-          params = {
-            "status": "2",
-            "pageSize": 100,
-            "pageNumber": 1
-          }
-        }
-        this.$http.post('/api/v1.0/client/findApplys', params).then(response => { //查询请假接口
+      changeShow(val){ //查看申请记录
+        this.$http.post('/api/v1.0/client/findApplys', {
+          status: val,
+          pageSize: 100,
+          pageNumber: 1
+        }).then(response => { //查询请假接口
           if (response.body.code === 200) {
             this.searchApplyRecord = response.body.result;
           }
@@ -465,51 +297,22 @@
 
       },
       handerDataSubmit(){
-        let params;
-        if (this.selectedDataApply == '0') { //请假申请所需参数
-          params = {
-            approvalConfigUid: this.shengqingParam,//申请分类
-            currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
-            leaveUid: this.qingjiauidParam,
-            startTime: new Date(this.startTimeValue).getTime(),
-            endTime: new Date(this.endTimeValue).getTime(),
-            image: this.imgSrc.shenFenIcon,
-            remarks: this.textareaString
-          };
-        }
-        ;
-        if (this.selectedDataApply == '2' || this.selectedDataApply == '1') { //忘打卡或外出申请所需参数
-          params = {
-            approvalConfigUid: this.shengqingParam,//申请分类
-            currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
-            startTime: new Date(this.startTimeValue).getTime(),
-            endTime: new Date(this.endTimeValue).getTime(),
-            image: this.imgSrc.shenFenIcon,
-            remarks: this.textareaString
-          };
-        }
-        ;
-        if (this.selectedDataApply == '3') { //加班所需参数
-          params = {
-            approvalConfigUid: this.shengqingParam,  //申请分类
-            currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
-            remarks: this.textareaString,
-            startTime: new Date(this.startTimeValue).getTime(),
-            endTime: new Date(this.endTimeValue).getTime(),
-
-          }
-        }
+        let params = {
+          approvalConfigUid: this.shengqingParam,//申请分类
+          currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
+          leaveUid: this.qingjiauidParam,
+          startTime: new Date(this.startTimeValue).getTime(),
+          endTime: new Date(this.endTimeValue).getTime(),
+          image: this.imgSrc.shenFenIcon,
+          remarks: this.textareaString
+        };
         this.$http.post('/api/v1.0/client/apply', params).then(response => { //提交请假申请
-//          console.log(response);
           this.codeSuccess = response.body.code;
-
-          if (response.body.code == 200) {
-            this.leaveSuccess = true;
+          this.leaveSuccess = true;
+          if (response.body.code === 200) {
             this.alertSuccessImage = true;
             this.alertMessage = response.body.message;
-          } else if (response.body.code == 500) {
-
-            this.leaveSuccess = true;
+          } else {
             this.alertSuccessImage = false;
             this.alertMessage = response.body.message
           }
@@ -517,121 +320,56 @@
 //          console.log('error callback');
         });
       },
-      imageuploaded(res) { //用于图片参数上传
-//        console.log(res);
-//        this.imgSrc.shenFenIconShowCamera= res.result;
-        this.imgSrc.shenFenIcon = res.result;
-        this.initUpImage = false;  //把初始化的image隐藏
-      },
-      errorhandle(res){
-        this.leaveSuccess = true;
-        this.alertSuccessImage = false;
-        if (res === 'TYPE ERROR') {
-          this.alertMessage = '上传图片格式为png,jpeg,jpg';
-        } else {
-          this.alertMessage = '上传图片大小不能超过5M';
-        }
 
-//        console.log(res);
-      },
-      handerStartValue(){
-//        console.log('我是开始时间' + this.startTimeValue);
-      },
-      shengqingclick(value){ //初始是选中一个select然后进行参数选中为了提交用
-//          alert(this.selectedDataApply);
-//        console.log(value, typeof value);
-//            return;
-//        console.log(this.optionsApply, 'this.optionsApply')
-
-        function dd(y, array) {
-          for (let i = 0; i < array.length; i++) {  //循环初始化的时候选中一个select属性值和参数
-            if (y == array[i].value) {
-              return array[i];
-            }
+      // 选择申请分类
+      shengqingclick(){ //初始是选中一个select然后进行参数选中为了提交用
+        this.updateImage = true; //上传图片按钮是否隐藏 true显示false隐藏
+        this.changeApply = false; //假期类型隐藏
+        for (let i = 0; i < this.applyTypeArray.length; i++) {
+          if (this.selectedDataApply === this.applyTypeArray[i].type) {
+            this.shengqingParam = this.applyTypeArray[i].uid;
           }
         }
-
-
-        let result = dd(this.selectedDataApply, this.optionsApply);
-        if (result) {
-          this.shengqingParam = result.uid;
-          this.shengqingParamType = result.value;
+        if (this.selectedDataApply === 0) { //请假
+          this.changeApply = true; //假期类型显示
         }
-
-        if (this.selectedDataApply == '0') { //请假
-//          console.log('选择请假路线');
-          this.changeApply = true; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
-          this.updateImage = true; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '0';
-          this.isHideHeight = false;
-
-        }
-        if (this.selectedDataApply == '1') {
-//          console.log('忘记打卡路线')
-          this.changeApply = false; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
-          this.updateImage = true; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '1';
-          this.isHideHeight = false;
-
-
-        }
-        if (this.selectedDataApply == '2') {
-//          console.log('外出申请路线')
-          this.changeApply = false; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
-          this.updateImage = true; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '2';
-          this.isHideHeight = false;
-
-
-        }
-        if (this.selectedDataApply == '3') {
-//          console.log('加班路线')
-          this.changeApply = false; //假期隐藏
-          this.changeApplyTime = true; //时间隐藏
+        if (this.selectedDataApply === 3) {
           this.updateImage = false; //上传图片隐藏
-          this.changeApplyOvertime = false; //加班时间显示
-          this.shengqingParamType = '3';
-          this.isHideHeight = true;
         }
       },
-
       qingjiaclick(value){
-        this.qingjiauidParam = value.uid;
+        this.qingjiauidParam = value.LEAVE_INFO_UID;
       },
-      lookImages(imgSrc){ //查看图片
-//        console.log('图片');
-//        console.log(imgSrc);
+      // 打开查看附件弹框
+      lookImages(imgSrc){
         if (imgSrc) this.popImgSrc = imgSrc;
         else this.popImgSrc = '';
         this.popupVisible = true;
       },
+      // 关闭查看附件弹框
       closeImage(){
         this.popupVisible = false;
-//        console.log('关闭');
-        //做到这里
       },
+      // 格式化申请记录中的日期
       datefmt(str) {
         if (str) return moment(str).format(df);
         else return '';
       },
-      closeAlert(){ //提交成功的提交alert
+      //提交成功的弹框
+      closeAlert(){
         this.leaveSuccess = false;
-        if (this.codeSuccess == 200) {
+        if (this.codeSuccess === 200) {
           this.$router.push({path: '/signCard'});
         }
       },
+      // 上传图片成功
       passportUrlOk(res, file) {
         this.imgSrc.shenFenIconShowCamera = URL.createObjectURL(file.raw);
         if (res.code === 200) {
           this.imgSrc.shenFenIconShowCamera = res.result;
         }
       },
+      // 上传图片前验证
       beforePassportUrl(file) {
         let isImage = utils.isImage(file);
         let isInSize = utils.isInSize(file, 5);
@@ -642,14 +380,9 @@
         }
         return isImage && isInSize;
       },
-
     },
-
-    components: {
-      'vue-core-image-upload': VueCoreImageUpload,
-    },
+    components: {},
   }
-
 </script>
 
 <style lang="scss">
@@ -682,7 +415,7 @@
     .leave-main {
       padding-top: 44px;
       .leave-main-box {
-        padding: 0 15px;
+        padding: 0 15px 15px;
         .leave-main-box-apply {
           overflow: hidden;
           height: 50px;
@@ -710,6 +443,7 @@
               border: none;
               outline: none;
               font-size: 15px;
+              background: transparent;
             }
             span {
               padding-left: 4px;
@@ -874,337 +608,56 @@
         }
       }
     }
-  }
-
-  #leave-wrapper {
+    /*查看附件*/
     .imagePopup-box {
+      .imageScale-wrapper {
+        width: 100%;
+        .imageScale-box {
+          width: 100%;
+          max-height: 100vh;
+          overflow: auto;
+          img {
+            width: 100%;
+          }
+        }
+      }
       .v-modal {
         opacity: 1;
         background-color: #ffffff;
       }
     }
-
-    .mint-tab-container-wrap {
-
-    }
-    .mint-tab-container-item {
+    .image-Success {
       box-sizing: border-box;
-      padding: 0 10px;
-    }
-    .mint-cell-wrapper {
-      background: none;
-    }
-    .hrbei {
-      /*width: 96%;*/
-      /*margin: 0 0.8rem;*/
-      height: 1px;
-      background: #cccccc;
-      line-height: 1px
-    }
-
-    .hideHeight {
-      height: 0;
-    }
-
-    .icon {
-      background: url(../../assets/ico_leave.png) !important;
-    }
-
-    .selectBao {
-      position: absolute;
-      width: 12px;
-      height: 7px;
-      top: 0.3rem;
-      right: 0
-    }
-
-    .selectShowImg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .hrClass {
-      /*width: 96%;*/
-      /*margin: 0 0.8rem;*/
-      height: 1px;
-      background: #cccccc;
-      line-height: 1px
-    }
-
-    .contentClass {
-      display: flex;
-      padding: 0.5rem 1rem;
-    }
-
-    .contentLeft {
-      flex: 1;
-      text-align: left;
-    }
-
-    .contentRight {
-      flex: 3;
-    }
-
-    .colseClass {
-      width: 100%;
-      max-height: 100vh;
-      overflow: auto;
-      img {
-        width: 100%;
+      width: 250px;
+      padding: 15px;
+      border-radius: 4px;
+      .image-box {
+        margin: 0 auto;
+        width: 34px;
+        height: 34px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      p {
+        margin-top: 10px;
+        font-size: 15px;
+        line-height: 20px;
+        color: #1f2d3d;
+      }
+      .image-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 0 10px;
+        height: 36px;
+        line-height: 36px;
+        background-color: #20a2ff;
+        color: #ffffff;
+        font-size: 14px;
+        border-radius: 4px;
       }
     }
-
-    .colseClassAlert {
-      height: 3rem;
-      line-height: 3rem;
-      text-align: center;
-      background: #26a2ff;
-      color: #ffffff;
-      width: 14rem;
-      margin: 2rem auto;
-      border-radius: 4px;
-    }
-
-    .alertImages {
-      width: 100%;
-      height: 100%;
-      display: block;
-      text-align: center;
-    }
-
-    .imageClass {
-      width: 100%;
-    }
-
-    .imageClassSuccess {
-      width: 16rem;
-      height: 13rem;
-      line-height: 11rem;
-      border-radius: 4px;
-    }
-
-    .myApplyTitle {
-      width: 100%;
-      overflow: hidden;
-      background: #d3dde7;
-    }
-
-    .myApplyBottom {
-      padding-bottom: 1rem;
-      background: #ffffff;
-    }
-
-    .showARightSpan {
-      width: 15rem;
-      height: 2rem;
-      line-height: 2rem;
-      text-align: left;
-    }
-
-    .dateTimeInput {
-      border: none;
-      width: 15rem;
-      height: 2rem;
-      line-height: 2rem;
-      text-align: left;
-      font-size: 0.8rem;
-    }
-
-    .dataTitle {
-      position: fixed;
-      width: 100%;
-      z-index: 1;
-    }
-
-    .dataTitle span {
-      font-size: 16px;
-    }
-
-    .changeSelect {
-      width: 98%;
-      display: block;
-      height: 2rem;
-      border: none;
-      font-size: 1.1rem;
-      background: #ffffff;
-      -webkit-appearance: none;
-      padding-left: 1rem;
-    }
-
-    .dateSelect {
-      width: 98%;
-      display: block;
-      font-size: 1.1rem;
-      padding-left: 1rem;
-    }
-
-    .cardClass {
-      width: 11rem;
-      height: 6rem;
-      line-height: 6rem;
-      padding-bottom: 1rem;
-      position: absolute;
-      left: 28%;
-      top: 0.6rem;
-    }
-
-    .CardImg {
-      display: block;
-      width: 100%;
-      height: 97%;
-      border-bottom: 1px solid rgba(211, 219, 230, 0.3);
-
-    }
-
-    .CardDivImg {
-      display: block;
-      width: 11rem;
-      height: 7rem;
-      padding-left: 0rem;
-
-    }
-
-    .myApply {
-      width: 100%;
-      min-height: 12rem;
-      margin-top: 1rem;
-      padding-bottom: 10px;
-      background: #ffffff;
-      box-shadow: 0 0 0 1px #d3dce6;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      border-radius: 6px;
-    }
-
-    /*.myApplyNo {*/
-    /*width: 92%;*/
-    /*min-height: 12rem;*/
-    /*line-height: 12rem;*/
-    /*margin: 1rem;*/
-    /*background: #ffffff;*/
-    /*box-shadow: 0 0 0 1px #cccccc;*/
-    /*white-space: nowrap;*/
-    /*overflow: hidden;*/
-    /*text-overflow: ellipsis;*/
-    /*border-top-left-radius: 6px;*/
-    /*border-top-right-radius: 6px;*/
-    /*}*/
-
-    .myApplyTitleLeft {
-      width: 80%;
-      text-align: left;
-      height: 3rem;
-      line-height: 3rem;
-      float: left;
-      font-weight: 600;
-      font-size: 1.3rem;
-    }
-
-    .myApplyContent {
-      background: #ffffff;
-    }
-
-    .myApplyContentLeft {
-      width: 7rem;
-      height: 3rem;
-      line-height: 3rem;
-      text-align: left;
-      font-weight: bold;
-      padding-left: 0.8rem;
-      font-size: 16px;
-      color: #324057;
-    }
-
-    .myApplyContentNr {
-      box-sizing: border-box;
-      width: 100%;
-      min-height: 1rem;
-      line-height: 1rem;
-      text-align: left;
-      padding: 0 1rem;
-      font-size: 14px;
-      color: #324057;
-    }
-
-    .myApplyContentNr span {
-      word-break: normal;
-      width: auto;
-      display: inline-block;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow: hidden;
-      line-height: 20px;
-
-    }
-
-    .myApplyBottomNrLeft {
-      width: 6.5rem;
-      display: inline-block;
-      height: 1rem;
-      line-height: 1rem;
-      text-align: left;
-      font-size: 1.2rem;
-    }
-
-    .myApplyBottomNrRight {
-      width: 15rem;
-      display: inline-block;
-      height: 1rem;
-      line-height: 1rem;
-      text-align: left;
-      font-size: 1.2rem;
-    }
-
-    .myApplyTitleRight {
-      width: 20%;
-      height: 3rem;
-      line-height: 3rem;
-      float: right;
-      font-weight: 600;
-      font-size: 1.3rem;
-    }
-
-    .changeShowList {
-      flex: 1;
-    }
-
-    .changeTitleClass {
-      position: fixed;
-      left: 0;
-      width: 100%;
-      display: flex;
-      background: rgb(29, 139, 224);
-      color: rgba(255, 255, 255, 0.5);
-      height: 40px;
-      line-height: 40px;;
-      z-index: 1;
-    }
-
-    .active {
-      width: 24%;
-      border-bottom: 0.2rem solid;
-      color: #ffffff;
-    }
-
-    .active2 {
-      width: 24%;
-      border-bottom: 0.2rem solid;
-      color: #ffffff;
-    }
-
-    .active3 {
-      width: 24%;
-      border-bottom: 0.2rem solid;
-      color: #ffffff;
-    }
-
-    .active4 {
-      width: 24%;
-      border-bottom: 0.2rem solid;
-      color: #ffffff;
-    }
-
     /*修改tab样式*/
     .mint-navbar {
       background-color: #26a2ff;
@@ -1213,7 +666,10 @@
       display: flex;
       text-align: center;
     }
-
+    .mint-tab-container-item {
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
     .mint-navbar .mint-tab-item.is-selected {
       border-bottom: 3px solid #ffffff;
       color: #ffffff;
@@ -1224,8 +680,7 @@
       padding: 17px 0;
       font-size: 15px;
       color: rgba(255, 255, 255, 0.5);
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
   }
-
-  /*修改tab样式结束*/
 </style>
