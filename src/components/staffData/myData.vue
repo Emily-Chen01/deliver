@@ -1,12 +1,10 @@
 <template>
   <div id="MyData" v-if="status">
-    <div class="my-data" style="background: #ffffff">
+    <div class="my-data">
 
       <mt-navbar fixed v-model="selected" class="dataTitle">
-        <mt-tab-item id="1"><i v-if="personFlag" class="el-icon-warning fa-error"
-                               aria-hidden="true">&nbsp;</i><span>个人资料</span></mt-tab-item>
-        <mt-tab-item id="2"><i v-if="postFlag || optionFlag" class="el-icon-warning fa-error"
-                               aria-hidden="true">&nbsp;</i><span>岗位信息</span></mt-tab-item>
+        <mt-tab-item id="1"><span>个人资料</span></mt-tab-item>
+        <mt-tab-item id="2"><span>岗位信息</span></mt-tab-item>
       </mt-navbar>
 
       <!-- tab-container -->
@@ -39,43 +37,42 @@
                 <div v-else-if="confListItem.jname==='dateOfBirth' && staff.dateOfBirth">
                   <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth"
                                 :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change',validator:isDate}">
-                    <el-date-picker
-                      :disabled="!staff.dateOfBirth.isedit"
-                      v-model="model.dateOfBirth"
-                      type="date"
-                      placeholder="选择出生日期"
-                      :clearable="false"
-                      :editable="false">
-                    </el-date-picker>
+                    <!--<el-date-picker-->
+                    <!--:disabled="!staff.dateOfBirth.isedit"-->
+                    <!--v-model="model.dateOfBirth"-->
+                    <!--type="date"-->
+                    <!--placeholder="选择出生日期"-->
+                    <!--:clearable="false"-->
+                    <!--:editable="false">-->
+                    <!--</el-date-picker>-->
+                    <p class="pl10" :class="{'fc-bbb':!staff.dateOfBirth.isedit}" v-text="model.dateOfBirth"></p>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='idcard' && staff.idcard">
                   <el-form-item v-if="staff.idcard" label="身份证号" prop="idcard"
                                 :rules="{required: staff.idcard.isrequired, message: '请填写正确的身份证号', trigger: 'change',pattern: /^\d{17}(?:\d|[Xx])$/}">
-                    <el-input :disabled="!staff.idcard.isedit" placeholder="请输入身份证号" v-model="model.idcard"></el-input>
+                    <el-input :disabled="!staff.idcard.isedit" placeholder="请输入身份证号" @change="staffIdcard(model.idcard)"
+                              v-model="model.idcard"></el-input>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='podoMessage' && staff.podoMessage">
 
                   <el-form-item v-if="staff.podoMessage" label="户口省份" prop="podoProvince"
                                 :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在省份', trigger: 'change'}">
-                    <el-select :disabled="!staff.podoMessage.isedit" v-model="model.podoProvince"
-                               placeholder="请选择"
-                               @change="queryPodoCities">
-                      <el-option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></el-option>
-                    </el-select>
+                    <select :disabled="!staff.podoMessage.isedit" v-model="model.podoProvince"
+                            @change="queryPodoCities(model.podoProvince)" :class="{'option-color':!model.podoProvince}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="p in provinces" :key="p.uid" v-text="p.name" :value="p.uid"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.podoMessage" label="户口城市" prop="podoCity"
                                 :rules="{required: staff.podoMessage.isrequired, message: '请选择户口所在城市', trigger: 'change'}">
-                    <el-select :disabled="!staff.podoMessage.isedit" v-model="model.podoCity" placeholder="请选择">
-                      <el-option
-                        v-for="c in podoCities"
-                        :key="c.uid"
-                        :label="c.name"
-                        :value="c.uid">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.podoMessage.isedit" v-model="model.podoCity"
+                            :class="{'option-color':!model.podoCity}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="c in podoCities" :key="c.uid" v-text="c.name" :value="c.uid"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.podoMessage" label="户口地址" prop="podoAddress"
@@ -87,15 +84,11 @@
 
                   <el-form-item v-if="staff.podoMessage" label="户口性质" prop="typeOfDemicile"
                                 :rules="{required: staff.podoMessage.isrequired, message: '请选择户口性质', trigger: 'change'}">
-                    <el-select :disabled="!staff.podoMessage.isedit" v-model="model.typeOfDemicile"
-                               placeholder="请选择">
-                      <el-option
-                        v-for="(v, k) in typeOfDemiciles"
-                        :key="k"
-                        :label="v"
-                        :value="k">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.podoMessage.isedit" v-model="model.typeOfDemicile"
+                            :class="{'option-color':!model.typeOfDemicile}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="(v, k) in typeOfDemiciles" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
                 </div>
               </div>
@@ -103,15 +96,11 @@
                 <div v-if="confListItem.jname==='nativePlace' && staff.nativePlace">
                   <el-form-item v-if="staff.nativePlace" label="国籍" prop="nativePlace"
                                 :rules="{required: staff.nativePlace.isrequired, message: '请选择国籍', trigger: 'change'}">
-                    <el-select :disabled="!staff.nativePlace.isedit" v-model="model.nativePlace"
-                               placeholder="请选择">
-                      <el-option
-                        v-for="(v, k) in nativePlaces"
-                        :key="k"
-                        :label="v"
-                        :value="k">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.nativePlace.isedit" v-model="model.nativePlace"
+                            :class="{'option-color':!model.nativePlace}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="(v, k) in nativePlaces" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')"
@@ -143,18 +132,14 @@
                       请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                   </el-form-item>
 
-                  <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')"
+                  <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'"
                                 label="护照国家" prop="state"
-                                :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')), message: '请选择护照国家', trigger: 'change'}">
-                    <el-select :disabled=" !staff.nativePlace.isedit" filterable v-model="model.state"
-                               placeholder="请选择">
-                      <el-option
-                        v-for="item in states"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                      </el-option>
-                    </el-select>
+                                :rules="{required: (staff.nativePlace.isrequired && (model.nativePlace === '2')), message: '请选择护照国家', trigger: 'change'}">
+                    <select :disabled=" !staff.nativePlace.isedit" v-model="model.state"
+                            :class="{'option-color':!model.state}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="item in states" :key="item.id" :label="item.name" :value="item.id"></option>
+                    </select>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='idcardPhoUrl' && staff.idcardPhoUrl">
@@ -221,14 +206,11 @@
                 <div v-else-if="confListItem.jname==='bankName' && staff.bankName">
                   <el-form-item v-if="staff.bankName" label="银行名称" prop="bankName"
                                 :rules="{required: staff.bankName.isrequired, message: '请选择银行', trigger: 'blur'}">
-                    <el-select :disabled="!staff.bankName.isedit" v-model="model.bankName" placeholder="请选择">
-                      <el-option
-                        v-for="(v, k) in bankNames"
-                        :key="k"
-                        :label="v"
-                        :value="k">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.bankName.isedit" v-model="model.bankName"
+                            :class="{'option-color':!model.bankName}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="(v, k) in bankNames" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.bankName" label="开户行" prop="openingBank"
@@ -294,55 +276,48 @@
                 <div v-else-if="confListItem.jname==='maritalStatus' && staff.maritalStatus">
                   <el-form-item v-if="staff.maritalStatus" label="婚姻状况" prop="maritalStatus"
                                 :rules="{required: staff.maritalStatus.isrequired,message: '请选择婚姻状况', trigger: 'blur'}">
-                    <el-select :disabled="!staff.maritalStatus.isedit" v-model="model.maritalStatus"
-                               placeholder="请选择">
-                      <el-option
-                        v-for="(v, k) in maritalStatuses"
-                        :key="k"
-                        :label="v.name"
-                        :value="v.id">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.maritalStatus.isedit" v-model="model.maritalStatus"
+                            :class="{'option-color':!model.maritalStatus}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="(v, k) in maritalStatuses" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='nation' && staff.nation">
                   <el-form-item v-if="staff.nation" label="民族" prop="nation"
                                 :rules="{required: staff.nation.isrequired,message: '请选择民族', trigger: 'blur'}">
-                    <el-select :disabled="!staff.nation.isedit" v-model="model.nation" placeholder="请选择">
-                      <el-option
-                        v-for="(v, k) in nations"
-                        :key="k"
-                        :label="v.name"
-                        :value="v.id">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.nation.isedit" v-model="model.nation"
+                            :class="{'option-color':!model.nation}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="(v, k) in nations" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='politicsStatus' && staff.politicsStatus">
                   <el-form-item v-if="staff.politicsStatus" label="政治面貌" prop="politicsStatus"
                                 :rules="{required: staff.politicsStatus.isrequired,message: '请选择政治面貌', trigger: 'change'}">
-                    <el-select :disabled="!staff.politicsStatus.isedit" v-model="model.politicsStatus"
-                               placeholder="请选择">
-                      <el-option
-                        v-for="(v, k) in politicsStatuses"
-                        :key="k"
-                        :label="v"
-                        :value="k">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.politicsStatus.isedit" v-model="model.politicsStatus"
+                            :class="{'option-color':!model.politicsStatus}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="(v, k) in politicsStatuses" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间"
                                 prop="thePartyTime"
                                 :rules="{required: staff.politicsStatus.isrequired,type: 'date',message: '请选择入党时间', trigger: 'change',validator:isDate}">
-                    <el-date-picker
-                      :disabled="!staff.politicsStatus.isedit"
-                      v-model="model.thePartyTime"
-                      type="month"
-                      placeholder="选择入党时间"
-                      :clearable="false"
-                      :editable="false">
-                    </el-date-picker>
+                    <!--<el-date-picker-->
+                    <!--:disabled="!staff.politicsStatus.isedit"-->
+                    <!--v-model="model.thePartyTime"-->
+                    <!--type="month"-->
+                    <!--placeholder="选择入党时间"-->
+                    <!--:clearable="false"-->
+                    <!--:editable="false">-->
+                    <!--</el-date-picker>-->
+                    <p class="pl10" v-if="staff.politicsStatus.isedit"
+                       v-text="model.thePartyTime ? model.thePartyTime:'请选择日期' "
+                       @click="openPicker(3,0,0,model.thePartyTime)"></p>
+                    <p class="pl10 fc-bbb" v-else v-text="model.thePartyTime ? model.thePartyTime:'请选择日期'"></p>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='theArcIns' && staff.theArcIns">
@@ -432,79 +407,74 @@
 
                   <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证省份" prop="residenceProvince"
                                 :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在省份', trigger: 'change'}">
-                    <el-select :disabled="!staff.ResperMessage.isedit" v-model="model.residenceProvince"
-                               placeholder="请选择" @change="queryResidenceCities">
-                      <el-option
-                        v-for="p in provinces"
-                        :key="p.uid"
-                        :label="p.name"
-                        :value="p.uid">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.ResperMessage.isedit" v-model="model.residenceProvince"
+                            :class="{'option-color':!model.residenceProvince}"
+                            @change="queryResidenceCities(model.residenceProvince)">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证城市" prop="residenceCity"
                                 :rules="{required: staff.ResperMessage.isrequired,message: '请选择居住证所在城市', trigger: 'blur'}">
-                    <el-select :disabled="!staff.ResperMessage.isedit" v-model="model.residenceCity"
-                               placeholder="请选择">
-                      <el-option
-                        v-for="c in residenceCities"
-                        :key="c.uid"
-                        :label="c.name"
-                        :value="c.uid">
-                      </el-option>
-                    </el-select>
+
+                    <select :disabled="!staff.ResperMessage.isedit" v-model="model.residenceCity"
+                            :class="{'option-color':!model.residenceCity}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="c in residenceCities" :key="c.uid" :label="c.name" :value="c.uid"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证办理时间" prop="resperst"
                                 :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change',validator:isDate}">
-                    <el-date-picker
-                      :disabled="!staff.ResperMessage.isedit"
-                      v-model="model.resperst"
-                      type="date"
-                      placeholder="选择日期"
-                      :clearable="false"
-                      :editable="false">
-                    </el-date-picker>
+                    <!--<el-date-picker-->
+                    <!--:disabled="!staff.ResperMessage.isedit"-->
+                    <!--v-model="model.resperst"-->
+                    <!--type="date"-->
+                    <!--placeholder="选择日期"-->
+                    <!--:clearable="false"-->
+                    <!--:editable="false">-->
+                    <!--</el-date-picker>-->
+                    <p class="pl10" v-if="staff.ResperMessage.isedit" v-text="model.resperst ? model.resperst:'请选择日期'"
+                       @click="openPicker(3,1,0,model.resperst)"></p>
+                    <p class="pl10 fc-bbb" v-else v-text="model.resperst ? model.resperst:'请选择日期'"></p>
                   </el-form-item>
 
                   <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证截止日期" prop="resperet"
                                 :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isResperDate}">
-                    <el-date-picker
-                      :disabled="!staff.ResperMessage.isedit"
-                      v-model="model.resperet"
-                      type="date"
-                      placeholder="选择日期"
-                      :clearable="false"
-                      :editable="false">
-                    </el-date-picker>
+                    <!--<el-date-picker-->
+                    <!--:disabled="!staff.ResperMessage.isedit"-->
+                    <!--v-model="model.resperet"-->
+                    <!--type="date"-->
+                    <!--placeholder="选择日期"-->
+                    <!--:clearable="false"-->
+                    <!--:editable="false">-->
+                    <!--</el-date-picker>-->
+                    <p class="pl10" v-if="staff.ResperMessage.isedit" v-text="model.resperet ? model.resperet:'请选择日期' "
+                       @click="openPicker(3,2,0,model.resperet)"></p>
+                    <p class="pl10 fc-bbb" v-else v-text="model.resperet ? model.resperet:'请选择日期' "></p>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='poreLocation' && staff.poreLocation">
                   <el-form-item v-if="staff.poreLocation" label="现居住地省份" prop="poreProvince"
                                 :rules="{required: staff.poreLocation.isrequired, message: '请选择现居住地所在省份', trigger: 'change'}">
-                    <el-select :disabled="!staff.poreLocation.isedit" v-model="model.poreProvince"
-                               placeholder="请选择"
-                               @change="queryPoreCities">
-                      <el-option
-                        v-for="p in provinces"
-                        :key="p.uid"
-                        :label="p.name"
-                        :value="p.uid">
-                      </el-option>
-                    </el-select>
+
+                    <select :disabled="!staff.poreLocation.isedit" v-model="model.poreProvince"
+                            :class="{'option-color':!model.poreProvince}"
+                            @change="queryPoreCities(model.poreProvince)">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.poreLocation" label="现居住地城市" prop="poreCity"
                                 :rules="{required: staff.poreLocation.isrequired,message: '请选择现居住地所在城市', trigger: 'change'}">
-                    <el-select :disabled="!staff.poreLocation.isedit" v-model="model.poreCity" placeholder="请选择">
-                      <el-option
-                        v-for="c in poreCities"
-                        :key="c.uid"
-                        :label="c.name"
-                        :value="c.uid">
-                      </el-option>
-                    </el-select>
+
+                    <select :disabled="!staff.poreLocation.isedit" v-model="model.poreCity"
+                            :class="{'option-color':!model.poreCity}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="c in poreCities" :key="c.uid" :label="c.name" :value="c.uid"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.poreLocation" label="现居住地址" prop="poreAddress"
@@ -583,14 +553,18 @@
                         </el-form-item>
                         <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="105px"
                                       :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择出生日期', trigger: 'blur',validator:isDate}">
-                          <el-date-picker
-                            :disabled="!staff.hasChilds.isedit"
-                            v-model="item.dateOfBirth"
-                            type="date"
-                            placeholder="选择出生日期"
-                            :clearable="false"
-                            :editable="false">
-                          </el-date-picker>
+                          <!--<el-date-picker-->
+                          <!--:disabled="!staff.hasChilds.isedit"-->
+                          <!--v-model="item.dateOfBirth"-->
+                          <!--type="date"-->
+                          <!--placeholder="选择出生日期"-->
+                          <!--:clearable="false"-->
+                          <!--:editable="false">-->
+                          <!--</el-date-picker>-->
+                          <p class="pl10" v-if="staff.hasChilds.isedit"
+                             v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期' "
+                             @click="openPicker(3,3,idx,item.dateOfBirth)"></p>
+                          <p class="pl10 fc-bbb" v-else v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期'"></p>
                         </el-form-item>
                         <el-form-item label="子女出生证明" labelWidth="105px">
                           <el-upload
@@ -621,7 +595,7 @@
                 <div v-else-if="confListItem.jname==='finallyEmpCom' && staff.finallyEmpCom">
                   <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom"
                                 :rules="[{required: staff.finallyEmpCom.isrequired,message: '请输入正确的上一家受聘公司', trigger: 'change'},
-                                {message: '不能超过 256 个字符', trigger: 'blur', max: 256}]">
+                                {message: '不能超过 255 个字符', trigger: 'blur', max: 255}]">
                     <el-input :disabled="!staff.finallyEmpCom.isedit" placeholder="请输入上一家受聘公司"
                               v-model="model.finallyEmpCom"></el-input>
                   </el-form-item>
@@ -629,28 +603,20 @@
                 <div v-else-if="confListItem.jname==='eduInfor' && staff.eduInfor">
                   <el-form-item v-if="staff.eduInfor" label="最高学历" prop="maxinumDeucaLevel"
                                 :rules="{required: staff.eduInfor.isrequired, message: '请选择最高学历', trigger: 'blur'}">
-                    <el-select :disabled="!staff.eduInfor.isedit" v-model="model.maxinumDeucaLevel"
-                               placeholder="请选择">
-                      <el-option
-                        v-for="(v, k) in maxinumDeucaLevels"
-                        :key="k"
-                        :label="v"
-                        :value="k">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.eduInfor.isedit" v-model="model.maxinumDeucaLevel"
+                            :class="{'option-color':!model.maxinumDeucaLevel}">
+                      <option value="" disabled>请选择</option>
+                      <option v-for="(v, k) in maxinumDeucaLevels" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.eduInfor" label="学历类型" prop="diplomaType"
                                 :rules="{required: staff.eduInfor.isrequired, message: '请选择学历类型', trigger: 'blur',validator:noopValidat}">
-                    <el-select :disabled="!staff.eduInfor.isedit" v-model="model.diplomaType"
-                               placeholder="请选择学历类型">
-                      <el-option
-                        v-for="(v, k) in diplomaTypes"
-                        :key="k"
-                        :label="v.name"
-                        :value="k">
-                      </el-option>
-                    </el-select>
+                    <select :disabled="!staff.eduInfor.isedit" v-model="model.diplomaType"
+                            :class="{'option-color':!model.diplomaType}">
+                      <option value="" disabled>请选择学历类型</option>
+                      <option v-for="(v, k) in diplomaTypes" :key="k" v-text="v.name" :value="v.id"></option>
+                    </select>
                   </el-form-item>
 
                   <el-form-item v-if="staff.eduInfor" label="毕业院校" prop="graduateInst"
@@ -662,26 +628,32 @@
 
                   <el-form-item v-if="staff.eduInfor" label="入学日期" prop="entSchst"
                                 :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change',validator:isDate}">
-                    <el-date-picker
-                      :disabled="!staff.eduInfor.isedit"
-                      v-model="model.entSchst"
-                      type="month"
-                      placeholder="选择日期"
-                      :clearable="false"
-                      :editable="false">
-                    </el-date-picker>
+                    <!--<el-date-picker-->
+                    <!--:disabled="!staff.eduInfor.isedit"-->
+                    <!--v-model="model.entSchst"-->
+                    <!--type="month"-->
+                    <!--placeholder="选择日期"-->
+                    <!--:clearable="false"-->
+                    <!--:editable="false">-->
+                    <!--</el-date-picker>-->
+                    <p class="pl10" v-if="staff.eduInfor.isedit" v-text="model.entSchst ? model.entSchst:'请选择日期' "
+                       @click="openPicker(4,4,0,model.entSchst)"></p>
+                    <p class="pl10 fc-bbb" v-else v-text="model.entSchst ? model.entSchst:'请选择日期' "></p>
                   </el-form-item>
 
                   <el-form-item v-if="staff.eduInfor" label="毕业日期" prop="entSchet"
                                 :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change',validator:isDates}">
-                    <el-date-picker
-                      :disabled="!staff.eduInfor.isedit"
-                      v-model="model.entSchet"
-                      type="month"
-                      placeholder="选择日期"
-                      :clearable="false"
-                      :editable="false">
-                    </el-date-picker>
+                    <!--<el-date-picker-->
+                    <!--:disabled="!staff.eduInfor.isedit"-->
+                    <!--v-model="model.entSchet"-->
+                    <!--type="month"-->
+                    <!--placeholder="选择日期"-->
+                    <!--:clearable="false"-->
+                    <!--:editable="false">-->
+                    <!--</el-date-picker>-->
+                    <p class="pl10" v-if="staff.eduInfor.isedit" v-text="model.entSchet ? model.entSchet:'请选择日期' "
+                       @click="openPicker(4,5,0,model.entSchet)"></p>
+                    <p class="pl10 fc-bbb" v-else v-text="model.entSchet ? model.entSchet:'请选择日期' "></p>
                   </el-form-item>
 
                   <el-form-item v-if="staff.eduInfor" label="专业" prop="major"
@@ -994,15 +966,30 @@
       </mt-tab-container>
     </div>
     <!--点击图片放大弹框-->
-    <mt-popup
-      v-model="imageScale"
-      class="imageScale-wrapper"
-      closeOnClickModal="false"
-    >
-      <div class="imageScale-box">
-        <img :src="imageScaleUrl" @click="imageScaleClose">
-      </div>
-    </mt-popup>
+    <div id="imageScale-wrapper">
+      <mt-popup
+        v-model="imageScale"
+        class="imageScale-wrapper"
+        closeOnClickModal="false"
+      >
+        <div class="imageScale-box">
+          <img :src="imageScaleUrl" @click="imageScaleClose">
+        </div>
+      </mt-popup>
+    </div>
+    <!--<dateTime ref="dateTime" @selcetDateTime="selcetDateTime"></dateTime>-->
+    <mt-datetime-picker
+      :startDate="startDate"
+      :type="pickerType"
+      ref="picker"
+      v-model="nowDateTime"
+      year-format="{value} 年"
+      month-format="{value} 月"
+      date-format="{value} 日"
+      hour-format="{value} 时"
+      minute-format="{value} 分"
+      @confirm="handleConfirm">
+    </mt-datetime-picker>
   </div>
 </template>
 <script>
@@ -1012,28 +999,35 @@
   import 'element-ui/lib/theme-default/index.css'
   import V from 'vue'
   import utils from '@/components/utils'
-  import {Indicator} from 'mint-ui';
-
-
-  let transform = value => typeof value === 'string' ? value.trim() : '';
-  let noopValidator = (rule, value, callback, source, options) => {
-    // console.log(rule, value, source, options);
-    // return true;
-    callback();
-  };
-  let cardNumber1 = (rule, value, callback) => {
-    let val = value.trim().replace(/\s/g, '');
-    if (!val.length || /^\d{16,64}$/.test(val)) {
-      callback();
-    } else {
-      callback(new Error(rule.message));
-    }
-  };
+  import {Indicator,Switch} from 'mint-ui';
+  import dateTime from '@/components/dateTime'
   V.use(ElementUI);
 
+  let df1 = 'YYYY-MM-DD';
+  let df2 = 'YYYY-MM';
+  // ====日历组件需求开始====
+  let df0 = 'YYYY-MM-DD HH:mm';
+  let df12 = 'YYYY-MM-DD HH';
+  let df3 = 'YYYY-MM-DD';
+  let df4 = 'YYYY-MM';
+  let df5 = 'YYYY';
+  let pickerslot = document.getElementsByClassName('picker-slot');
+  // ====日历组件需求结束====
   export default {
     data() {
       return {
+        // =====日历选择器字段开始=====
+        startDate: '',
+        nowDateTime: new Date(),
+        selectDateTime: '',
+        pickerType: 'dateTime',
+        startHour: 0,
+        dateType: 0,
+        type: 0,
+        pos: 0, // 如果日期是在数组中，判断在数组中的位置
+        // =====日历选择器字段结束=====
+
+        startTimeValue1: '',
         imageScale: false,// 图片点击全屏显示
         imageScaleUrl: '', //图片点击全屏显示的图片地址
         loadProvince1: true, // 省市联动
@@ -1138,13 +1132,9 @@
         diplomaTypes: null,
         probations: null,
         depts: null,
-//        workCities: null,
         contractTypes: null,
         recruitmentChannels: ['百度', '51job', '智联', '推荐', 'boss 直聘'],
         states: null,
-        personFlag: false,
-        postFlag: false,
-        optionFlag: false,
         model: {
           uid: '',
           name: '',
@@ -1235,11 +1225,6 @@
             workProvince: '',
             workCity: '',
             workAddress: '',
-            // staffStatus: '', // 员工状态
-            // jobTransferTime: '', // 调岗日期
-            // jobTransferResult: '', // 调岗原因
-            // becomeFullTime: '', // 转正日期
-            // becomeFullEvaluate: '', // 转正评价
             baseSalary: '', // 基础薪资
             trialSalary: '', // 试用薪资
             contract: {
@@ -1249,8 +1234,6 @@
               endTime: '', // 合同结束日期
               contractUrl: '', // 合同附件
               recruitmentChannel: '', // 候选人来源渠道
-              // terminaleTime: '', // 合同终止日期
-              // terminaleResult: '' // 合同终止原因
             }
           },
           shareOption: {
@@ -1267,28 +1250,26 @@
       }
     },
     created: function () {
+      // ====日历组件需求开始====
+      let Year = new Date().getFullYear() - 64;
+      this.startDate = new Date(Year + '-' + 1 + '-' + 1);
+      // ====日历组件需求结束====
       this.status = false;
       Indicator.open('正在加载...');
-      //  员工状态列表查询
-      this.$http.get('/api/v1.0/common/config/6').then(response => {
-        if (response.body.code === 200) {
-          this.staffStatusList = response.body.result;
-          console.log('this.staffStatusList', this.staffStatusList)
+      V.Promise.all([
+        this.$http.get('/api/v1.0/common/config/6'),
+        // 行业规模列表
+        this.$http.get('/api/v1.0/common/config/20')
+      ]).then(res => {
+        // 员工状态列表
+        if (res[0].body.code === 200) {
+          this.staffStatusList = res[0].body.result;
         }
-      }, response => {
-        // error callback
-      });
-      this.$http.get('/api/v1.0/common/config/20').then(res => {
-        res = res.body;
-        if (res.code === 200) {
-//           console.log('19', res.result);
-          this.states = res.result;
+        //国家信息列表
+        if (res[1].body.code === 200) {
+          this.states = res[1].body.result;
         }
-      }, res => {
-        // error callback
       });
-
-
     },
     computed: {
       formalEndTime() {
@@ -1325,6 +1306,97 @@
       },
     },
     methods: {
+      sb(){
+        this.$refs.picker0.open();
+      },
+      handleConfirmStart(){
+      },
+      // 选择日期组件
+      // openPicker(date,type,pos)中有三个参数
+      //其中date有三个值0表示有年月日时分，1表示有年月日时，2表示有年月，3表示年，4表示时分
+      //其中type表示用来记录判断操作的对象
+      //其中pos表示如果操作对象在数组中，其表示在数组的位置，如果不在数组中可以任意传值
+      //其中currentDate表示当前已经选中的时间，日历会定位在这里，若是没有在定位到当前时间
+//      openPicker(date, type, pos, currentDate){
+//        this.$refs.dateTime.open(date, type, pos, currentDate);
+//      },
+      // ====日历组件方法开始====
+      openPicker(date, type, pos, currentDate){
+        this.dateType = date;
+        this.type = type;
+        this.pos = pos;
+        if (currentDate) {
+          this.nowDateTime = new Date(currentDate);
+        }
+        for (let i = 0; i < pickerslot.length; i++) {
+          pickerslot[i].style.display = 'block';
+        }
+        if (this.dateType === 0) {
+          this.pickerType = 'datetime';
+        } else if (this.dateType === 1) {
+          pickerslot[4].style.display = 'none';
+          this.pickerType = 'datetime';
+        } else if (this.dateType === 2) {
+          pickerslot[4].style.display = 'none';
+          this.pickerType = 'datetime';
+        } else if (this.dateType === 3) {
+          this.pickerType = 'date';
+        } else if (this.dateType === 4) {
+          pickerslot[2].style.display = 'none';
+          this.pickerType = 'date';
+        } else if (this.dateType === 5) {
+          pickerslot[1].style.display = 'none';
+          pickerslot[2].style.display = 'none';
+          this.pickerType = 'date';
+        }
+        this.$refs.picker.open();
+      },
+      handleConfirm(data){
+        if (data) {
+          if (this.dateType === 0) {
+            this.selectDateTime = moment(data).format(df0);
+          } else if (this.dateType === 1) {
+            this.selectDateTime = moment(data).format(df12) + ':00';
+          } else if (this.dateType === 2) {
+            this.selectDateTime = moment(data).format(df12);
+          } else if (this.dateType === 3) {
+            this.selectDateTime = moment(data).format(df3);
+          } else if (this.dateType === 4) {
+            this.selectDateTime = moment(data).format(df4);
+          } else if (this.dateType === 5) {
+            this.selectDateTime = moment(data).format(df5);
+          }
+          this.selcetDateTime({time: this.selectDateTime, type: this.type, pos: this.pos});
+        }
+      },
+      // ====日历组件方法结束====
+      // 选择日期组件，传回来的值
+      selcetDateTime(data){
+        // 入党时间
+        if (data.type === 0) {
+          this.model.thePartyTime = data.time;
+        }
+        // 居住证办理时间
+        if (data.type === 1) {
+          this.model.resperst = data.time;
+        }
+        // 居住证截止时间
+        if (data.type === 2) {
+          this.model.resperet = data.time;
+        }
+        //子女的出生日期
+        if (data.type === 3) {
+          this.model.childs[data.pos].dateOfBirth = data.time;
+        }
+        // 入学时间
+        if (data.type === 4) {
+          this.model.entSchst = data.time;
+        }
+        // 毕业时间
+        if (data.type === 5) {
+          this.model.entSchet = data.time;
+        }
+      },
       noopValidat(rule, value, callback, source, options) {
         // return true;
         callback();
@@ -1341,7 +1413,7 @@
         if (rule.required) {
           if (value) {
             if (this.model.entSchst) {
-              if (value.getTime() > this.model.entSchst.getTime()) {
+              if (new Date(value).getTime() > new Date(this.model.entSchst).getTime()) {
                 callback();
               } else {
                 callback(new Error(rule.message = "毕业日期不能小于入学日期"));
@@ -1353,7 +1425,7 @@
         } else {
           if (value) {
             if (this.model.entSchst) {
-              if (value.getTime() > this.model.entSchst.getTime()) {
+              if (new Date(value).getTime() > new Date(this.model.entSchst).getTime()) {
                 callback();
               } else {
                 callback(new Error(rule.message = "毕业日期不能小于入学日期"));
@@ -1368,7 +1440,7 @@
         if (rule.required) {
           if (value) {
             if (this.model.resperst) {
-              if (value.getTime() > this.model.resperst.getTime()) {
+              if (new Date(value).getTime() > new Date(this.model.resperst).getTime()) {
                 callback();
               } else {
                 callback(new Error(rule.message = "截止日期不能小于办理日期"));
@@ -1380,7 +1452,7 @@
         } else {
           if (value) {
             if (this.model.resperst) {
-              if (value.getTime() > this.model.resperst.getTime()) {
+              if (new Date(value).getTime() > new Date(this.model.resperst).getTime()) {
                 callback();
               } else {
                 callback(new Error(rule.message = "截止日期不能小于办理日期"));
@@ -1412,7 +1484,7 @@
                   });
 //                  this.workCities = res.result;
                 }
-              })
+              });
             return false;
           }
         });
@@ -1499,24 +1571,6 @@
             console.log(err.status, err.statusText);
           });
       },
-//      queryWorkCities(pid) {
-//        if (!pid) {
-//          this.workCities = null;
-//          this.model.record.workProvince = '';
-//          this.model.record.workCity = '';
-//          return;
-//        }
-//        this.$http.get(`/api/v1.0/common/query/city/${pid}`)
-//          .then(res => {
-//            res = res.body;
-//            if (res.code === 200) {
-//              this.workCities = res.result;
-//            }
-//          })
-//          .catch(err => {
-//            console.log(err.status, err.statusText);
-//          });
-//      },
       makeChildOk(item) {
         return function (res, file) {
           if (res.code === 200) {
@@ -1765,7 +1819,6 @@
         return isDoc && isInSize;
       },
       save() {
-
         let makePost = () => {
           let out = {};
           let record = {};
@@ -1938,34 +1991,11 @@
 //        let flaf = 0;
         let flag = 0;
         this.$refs.personFm.validate(valid => {
-          if (valid) {
-            this.personFlag = false;
-          } else {
-            this.personFlag = true;
+          if (!valid) {
             flag++;
             return false;
           }
         });
-
-//        this.$refs.postFm.validate(valid => {
-//          if (valid) {
-//            this.postFlag = false;
-//          } else {
-//            this.postFlag = true;
-//            flag++;
-//            return false;
-//          }
-//        });
-
-//        this.$refs.optionFm.validate(valid => {
-//          if (valid) {
-//            this.optionFlag = false;
-//          } else {
-//            this.optionFlag = true;
-//            return false;
-//          }
-//        });
-
         if (flag) {
           return;
         }
@@ -1983,77 +2013,12 @@
           })
           .catch(err => console.log(err.status, err.statusText));
       },
-//      reset() {
-//        this.$refs.personFm.resetFields();
-//        this.$refs.postFm.resetFields();
-//        this.$refs.optionFm.resetFields();
-//        this.model.childs = [
-//          {
-//            name: '',
-//            gender: 1,
-//            dateOfBirth: '',
-//            birthCertifUrl: '',
-//            key: Date.now(),
-//            err: false
-//          }
-//        ];
-//        this.model.hasChild = false;
-//
-//        this.model.record.companyAge = '';
-//        this.model.record.workAge = '';
-//
-//        this.personFlag = false;
-//        this.postFlag = false;
-//        this.optionFlag = false;
-//
-//        this.model.idcardPhoUrl = '';
-//        this.idcardPhoUrlErrFlag = false;
-//
-//        this.model.idcardPhoUrlRev = '';
-//        this.idcardPhoUrlRevErrFlag = false;
-//
-//        this.model.passportUrl = '';
-//        this.passportUrlErrFlag = false;
-//
-//        this.model.staffPhoUrl = '';
-//        this.staffPhoUrlErrFlag = false;
-//
-//        this.model.houregPhoUrl = '';
-//        this.houregPhoUrlErrFlag = false;
-//
-//        this.model.houregPerphoUrl = '';
-//        this.houregPerphoUrlErrFlag = false;
-//
-//        this.model.houregPerrevphoUrl = '';
-//        this.houregPerrevphoUrlErrFlag = false;
-//
-//        this.model.diplomaUrl = '';
-//        this.diplomaUrlErrFlag = false;
-//
-//        this.model.greducaCertUrl = '';
-//        this.greducaCertUrlErrFlag = false;
-//
-//        this.model.resumeUrl = '';
-//        this.resumeUrlErrFlag = false;
-//
-//        this.model.emplsepacertUrl = '';
-//        this.emplsepacertUrlErrFlag = false;
-//
-//        this.model.record.contract.contractUrl = '';
-//        this.recordContractUrlErrFlag = false;
-//
-//        this.model.shareOption.contractUrl = '';
-//        this.contractUrlErrFlag = false;
-//
-//      },
       queryConf() {
         this.$http.get('/api/v1.0/client/configuration')
           .then(res => {
             res = res.body;
             if (res.code === 200) {
               this.confList = res.result.sort((a, b) => a.sortnum - b.sortnum);
-              console.log('this.confList', this.confList);
-              console.log('res.result', res.result);
               let d = {};
               res.result.forEach(item => {
                 d[item.remark] = item;
@@ -2076,8 +2041,8 @@
                 }
               });
               if (this.staff || this.staffRecord || this.staffShareOption) {
-                this.status = true;
                 Indicator.close();//关闭加载中
+                this.status = true;
               }
             }
 
@@ -2086,14 +2051,12 @@
 
       },
       queryEmp() {
-
         let makeEmp = emp => {
-
           let numProcess = v => typeof v === 'number' ? v : '';
-          let dateProcess = v => v ? new Date(v) : '';
+          let dateProcess1 = v => v ? moment(new Date(v)).format(df1) : '';
+          let dateProcess2 = v => v ? moment(new Date(v)).format(df2) : '';
           let toNum = v => v ? Number(v) : '';
           let toStr = v => typeof v === 'number' ? v.toString() : '';
-
           this.model.uid = emp.uid;
           this.model.name = emp.name || '';
           this.model.gender = numProcess(emp.gender);
@@ -2107,7 +2070,7 @@
           this.model.idcardPhoUrlRev = emp.idcardPhoUrlRev || '';
           this.model.socsecNum = emp.socsecNum || '';
           this.model.accfuNum = emp.accfuNum || '';
-          this.model.bankName = emp.bankName;
+          this.model.bankName = emp.bankName ? emp.bankName : '';
           this.model.openingBank = emp.openingBank || '';
           this.model.cardNumber = emp.cardNumber || '';
           this.model.staffPhoUrl = emp.staffPhoUrl || '';
@@ -2115,13 +2078,13 @@
           this.model.qq = emp.qq || '';
           this.model.wechart = emp.wechart || '';
           this.model.maritalStatus = toStr(emp.maritalStatus);
-          this.model.nation = emp.nation;
+          this.model.nation = emp.nation ? emp.nation : '';
           this.model.politicsStatus = toStr(emp.politicsStatus);
-          this.model.thePartyTime = dateProcess(emp.thePartyTime);
+          this.model.thePartyTime = dateProcess1(emp.thePartyTime);
           this.model.theArcIns = emp.theArcIns || ''; // 存档机构
-          this.model.dateOfBirth = dateProcess(emp.dateOfBirth); // 生日
-          this.model.podoProvince = emp.podoProvince; // 户口所在省
-          this.model.podoCity = emp.podoCity; // 户口所在城市
+          this.model.dateOfBirth = dateProcess1(emp.dateOfBirth); // 生日
+          this.model.podoProvince = emp.podoProvince ? emp.podoProvince : ''; // 户口所在省
+          this.model.podoCity = emp.podoCity ? emp.podoCity : ''; // 户口所在城市
           this.model.podoAddress = emp.podoAddress || ''; // 户口详细地址
           this.model.typeOfDemicile = toStr(emp.typeOfDemicile); // 户口性质
           this.model.houregPhoUrl = emp.houregPhoUrl || ''; // 户口本首页
@@ -2130,10 +2093,10 @@
           this.model.hasResper = emp.hasResper; // 是否有居中证
           this.model.residenceProvince = emp.residenceProvince; // 居住证省份
           this.model.residenceCity = emp.residenceCity; // 居住证城市
-          this.model.resperst = dateProcess(emp.resperst); // 居住证开始
-          this.model.resperet = dateProcess(emp.resperet); // 居住证结束
-          this.model.poreProvince = emp.poreProvince; // 现居住地省
-          this.model.poreCity = emp.poreCity; // 现居住地城市
+          this.model.resperst = dateProcess1(emp.resperst); // 居住证开始
+          this.model.resperet = dateProcess1(emp.resperet); // 居住证结束
+          this.model.poreProvince = emp.poreProvince ? emp.poreProvince : ''; // 现居住地省
+          this.model.poreCity = emp.poreCity ? emp.poreCity : ''; // 现居住地城市
           this.model.poreAddress = emp.poreAddress || ''; // 现居住地详细地址
           this.model.personalEmail = emp.personalEmail || ''; // 个人邮箱
           this.model.contacts = function (contacts) {
@@ -2179,11 +2142,11 @@
             return arr;
           }(emp.childs);
           this.model.finallyEmpCom = emp.finallyEmpCom || ''; // 上一家受聘公司
-          this.model.maxinumDeucaLevel = emp.maxinumDeucaLevel; // 最高学历
-          this.model.diplomaType = emp.diplomaType; // 学历类型
+          this.model.maxinumDeucaLevel = emp.maxinumDeucaLevel ? emp.maxinumDeucaLevel : ''; // 最高学历
+          this.model.diplomaType = toStr(emp.diplomaType); // 学历类型
           this.model.graduateInst = emp.graduateInst || ''; // 毕业院校
-          this.model.entSchst = dateProcess(emp.entSchst) || ''; // 入学时间
-          this.model.entSchet = dateProcess(emp.entSchet) || ''; // 毕业时间
+          this.model.entSchst = dateProcess2(emp.entSchst) || ''; // 入学时间
+          this.model.entSchet = dateProcess2(emp.entSchet) || ''; // 毕业时间
           this.model.major = emp.major || ''; // 专业
           this.model.diplomaUrl = emp.diplomaUrl || ''; // 学位证书
           this.model.greducaCertUrl = emp.greducaCertUrl || ''; // 毕业证书
@@ -2195,13 +2158,13 @@
           this.model.record.uid = emp.record.uid;
           this.model.record.companyUid = emp.record.companyUid;
           this.model.record.staffUid = emp.record.staffUid;
-          this.model.record.dateOfEntry = dateProcess(emp.record.dateOfEntry); // 入职日期
+          this.model.record.dateOfEntry = dateProcess1(emp.record.dateOfEntry); // 入职日期
           this.model.record.probation = toStr(emp.record.probation); // 试用期
           this.model.record.companyAge = emp.record.companyAge || ''; // 司龄
           this.model.record.position = emp.record.position || ''; // 职位
           this.model.record.jobGrade = emp.record.jobGrade || ''; // 职级
           this.model.record.deptUid = emp.record.deptUid; // 所在部门
-          this.model.record.fristWorkTime = dateProcess(emp.record.fristWorkTime); // 首次参加工作时间
+          this.model.record.fristWorkTime = dateProcess1(emp.record.fristWorkTime); // 首次参加工作时间
           this.model.record.workAge = emp.record.workAge || ''; // 工龄
           this.model.record.workEmail = emp.record.workEmail || '';
           this.model.record.jobNumber = emp.record.jobNumber || ''; // 工号
@@ -2212,23 +2175,18 @@
           this.model.record.baseSalary = toStr(emp.record.baseSalary); // 基础薪资
           this.model.record.trialSalary = toStr(emp.record.trialSalary); // 试用薪资
           this.model.record.sstaffStatus = emp.record.staffStatus; // 员工状态  6-16-16新增
-
-
           this.model.record.contract.uid = emp.record.contract.uid;
           this.model.record.contract.recordUid = emp.record.contract.recordUid;
           this.model.record.contract.contracType = toStr(emp.record.contract.contracType); // 合同类型
-          this.model.record.contract.startTime = dateProcess(emp.record.contract.startTime); // 合同生效日期
+          this.model.record.contract.startTime = dateProcess1(emp.record.contract.startTime); // 合同生效日期
           this.model.record.contract.contractPeriod = emp.record.contract.contractPeriod || ''; // 合同期限
-          this.model.record.contract.endTime = dateProcess(emp.record.contract.endTime); // 合同结束日期
+          this.model.record.contract.endTime = dateProcess1(emp.record.contract.endTime); // 合同结束日期
           this.model.record.contract.contractUrl = emp.record.contract.contractUrl || ''; // 合同附件
           this.model.record.contract.recruitmentChannel = toNum(emp.record.contract.recruitmentChannel); // 候选人来源渠道
-
           this.model.shareOption.uid = this.model.uid;
-
           this.model.shareOption.uid = emp.shareOption.uid;
           this.model.shareOption.recordUid = emp.shareOption.recordUid;
-
-          this.model.shareOption.awardDate = dateProcess(emp.shareOption.awardDate); // 授予日期
+          this.model.shareOption.awardDate = dateProcess1(emp.shareOption.awardDate); // 授予日期
           this.model.shareOption.awardAmount = toStr(emp.shareOption.awardAmount); // 授予总数量
           this.model.shareOption.awardRate = toStr(emp.shareOption.awardRate); // 授予总比例
           this.model.shareOption.awardRound = toStr(emp.shareOption.awardRound); // 授予轮次
@@ -2236,11 +2194,9 @@
           this.model.shareOption.terminallyCount = toStr(emp.shareOption.terminallyCount); // 每期数量
           this.model.shareOption.terminallyRate = toStr(emp.shareOption.terminallyRate); // 每期比例
           this.model.shareOption.contractUrl = emp.shareOption.contractUrl || ''; // 期权合同
-
           if (this.model.podoProvince) this.queryPodoCities(this.model.podoProvince);
           if (this.model.residenceProvince) this.queryResidenceCities(this.model.residenceProvince);
           if (this.model.poreProvince) this.queryPoreCities(this.model.poreProvince);
-//          if (this.model.record.workProvince) this.queryWorkCities(this.model.record.workProvince);
         };
 
         this.$http.post(`/api/v1.0/client/findStaff`)
@@ -2248,7 +2204,6 @@
             res = res.body;
             this.emp = res.result;
             if (res.code === 200) makeEmp(res.result);
-
           })
           .catch(err => console.log(err.status, err.statusText));
       },
@@ -2260,10 +2215,15 @@
       //关闭图片放大
       imageScaleClose(){
         this.imageScale = false;
+      },
+      staffIdcard(data){
+        if (/^\d{17}(?:\d|[Xx])$/g.test(data.toString().trim())) {
+          this.model.dateOfBirth = `${data.substring(6, 10)}-${data.substring(10, 12)}-${data.substring(12, 14)}`;
+          this.model.gender = (+data.toString().trim()[16]) % 2 === 0 ? 0 : 1;
+        }
       }
     },
     mounted: function () {
-
       V.Promise.all([
         this.$http.get('/api/v1.0/common/config/0'),
         this.$http.get('/api/v1.0/common/config/1'),
@@ -2281,23 +2241,23 @@
         this.$http.get('/api/v1.0/common/config/13')
       ]).then((res) => {
         this.publicParams = utils.getConfs(res);
-        console.log('publicParams', this.publicParams);
-        this.typeOfDemiciles = this.publicParams.typeOfDemicile;
-        this.nativePlaces = this.publicParams.nativePlace;
-        console.log('234', this.nativePlaces)
-        this.bankNames = this.publicParams.bankName;
+        this.typeOfDemiciles = this.publicParams.typeOfDemicileOrg;
+        this.nativePlaces = this.publicParams.nativePlaceOrg;
+        this.bankNames = this.publicParams.bankNameOrg;
         this.maritalStatuses = this.publicParams.maritalStatusOrg;
         this.nations = this.publicParams.nationOrg;
-        this.politicsStatuses = this.publicParams.politicsStatus;
-        this.maxinumDeucaLevels = this.publicParams.maxinumDeucaLevel;
+        this.politicsStatuses = this.publicParams.politicsStatusOrg;
+        this.maxinumDeucaLevels = this.publicParams.maxinumDeucaLevelOrg;
         this.diplomaTypes = this.publicParams.diplomaTypeOrg;
         this.probations = this.publicParams.probation;
         this.contractTypes = this.publicParams.contractType;
+
         this.queryEmp();
+        // 省份列表
+        this.queryProvinces();
         this.queryConf();
       });
-      // 省份列表
-      this.queryProvinces();
+
       // 汇报人
       this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人表赋值给汇报上级
         if (response.body.code === 200) {
@@ -2306,11 +2266,13 @@
           } else {
             this.staffRecord.upji = '';
           }
-
         }
       }, response => {
         console.log('error callback');
       });
+    },
+    components: {
+      dateTime
     }
   }
 
@@ -2318,6 +2280,68 @@
 
 <style lang="scss">
   #MyData {
+    background: #ffffff;
+    min-height: 100vh;
+    .pl10 {
+      padding-left: 10px;
+    }
+    .fc-bbb {
+      color: #bbb;
+    }
+    input{
+      background: transparent;
+    }
+    .my-data {
+      padding: 44px 0 70px;
+      text-align: left;
+      background: #ffffff;
+      // 复写mint ui 组件，头部样式
+      .mint-navbar {
+        .mint-tab-item {
+          padding: 17px 0;
+          color: rgba(255, 255, 255, 0.5);
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          span {
+            font-size: 15px;
+          }
+        }
+        .mint-tab-item.is-selected {
+          border-bottom: none !important;
+          margin-bottom: 0 !important;
+          span {
+            display: inline-block;
+            padding-bottom: 9px;
+            border-bottom: 3px solid #ffffff;
+          }
+        }
+      }
+      .dataTitle {
+        height: 44px;
+
+      }
+      select {
+        width: 100%;
+        border: none;
+        outline: none;
+        padding-left: 10px;
+        text-align: left;
+        font-size: 14px;
+        /*很关键：将默认的select选择框样式清除*/
+        appearance: none;
+        /*在选择框的最右侧中间显示小箭头图片*/
+        background: url("../../assets/arrow_2.png") no-repeat scroll right center transparent;
+        background-size: 15px;
+        /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+        padding-right: 20px;
+      }
+      .option-color {
+        color: rgb(151, 168, 190);
+        option {
+          color: #1f2d3d;
+          font-size: 14px;
+        }
+      }
+    }
     .mint-indicator-mask {
       top: 0;
       left: 0;
@@ -2340,12 +2364,6 @@
       box-sizing: border-box;
       text-align: center;
     }
-
-    .my-data .mint-tab-container-item {
-      padding: 64px 0 73px;
-      text-align: left;
-    }
-
     .my-data .save-wrapper {
       display: block;
       width: 100%;
@@ -2370,11 +2388,6 @@
       margin-bottom: 0;
       line-height: 1.3;
     }
-
-    .my-data .pos-rel {
-      position: relative;
-    }
-
     .my-data .add-child,
     .my-data .add-contact {
       margin-bottom: 10px;
@@ -2506,20 +2519,22 @@
       font-size: 15px;
       color: rgba(255, 255, 255, 0.5);
     }
-    .imageScale-wrapper {
-      width: 100%;
-      .imageScale-box {
+    #imageScale-wrapper {
+      .imageScale-wrapper {
         width: 100%;
-        max-height: 100vh;
-        overflow: auto;
-        img {
+        .imageScale-box {
           width: 100%;
+          max-height: 100vh;
+          overflow: auto;
+          img {
+            width: 100%;
+          }
         }
       }
-    }
-    .v-modal {
-      opacity: 1;
-      background-color: #ffffff;
+      .v-modal {
+        opacity: 1;
+        background-color: #ffffff;
+      }
     }
   }
 

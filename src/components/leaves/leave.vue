@@ -17,9 +17,6 @@
               <option v-for="option in applyTypeArray" :value="option.type" v-text="option.name"></option>
             </select>
           </div>
-          <div class="leave-main-box-apply-right">
-            <img :src="imgSrc.selectShow"/>
-          </div>
         </div>
         <div class="leave-main-box-apply" v-if="changeApply">
           <div class="leave-main-box-apply-left">假期分类</div>
@@ -28,9 +25,6 @@
               <option>选择假期类型</option>
               <option v-for="option in holidayTypeArray" :value="option" v-text="option.NAME"></option>
             </select>
-          </div>
-          <div class="leave-main-box-apply-right">
-            <img :src="imgSrc.selectShow"/>
           </div>
         </div>
         <div class="leave-main-box-apply">
@@ -209,7 +203,7 @@
         imgSrc: {
           shenFenIcon: '',
           shenFenIconShowCamera: require('../../assets/camera.png'),
-          selectShow: require('../../assets/arrow_2.png'),
+//          selectShow: require('../../assets/arrow_2.png'),
           ico_success: require('../../assets/ico_success.png'),
           ico_error: require('../../assets/ico_error.png'),
         },
@@ -364,9 +358,11 @@
       },
       // 上传图片成功
       passportUrlOk(res, file) {
-        this.imgSrc.shenFenIconShowCamera = URL.createObjectURL(file.raw);
+        this.imgSrc.shenFenIcon = URL.createObjectURL(file.raw);
+//        this.imgSrc.shenFenIconShowCamera = URL.createObjectURL(file.raw);
         if (res.code === 200) {
-          this.imgSrc.shenFenIconShowCamera = res.result;
+          this.imgSrc.shenFenIcon = res.result;
+//          this.imgSrc.shenFenIconShowCamera = res.result;
         }
       },
       // 上传图片前验证
@@ -443,20 +439,19 @@
               border: none;
               outline: none;
               font-size: 15px;
-              background: transparent;
+              /*background: transparent;*/
+
+              /*很关键：将默认的select选择框样式清除*/
+              appearance: none;
+              /*在选择框的最右侧中间显示小箭头图片*/
+              background: url("../../assets/arrow_2.png") no-repeat scroll right center transparent;
+              background-size: 15px;
+              /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+              padding-right: 20px;
             }
             span {
               padding-left: 4px;
               font-size: 15px;
-            }
-          }
-          .leave-main-box-apply-right {
-            float: right;
-            width: 20px;
-            margin-top: -50px;
-            background-color: #ffffff;
-            img {
-              width: 15px;
             }
           }
         }
