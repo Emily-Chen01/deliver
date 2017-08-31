@@ -81,17 +81,22 @@
       v-model="qulocation"
       class="getLocation-alert-wrapper"
       closeOnClickModal="false">
-      <div class="getLocation-alert-content">
-        <p v-if="searchLocationArray.length && !failModel">HR SAAS系统要使用您的地理位置，是否允许？</p>
-        <p v-if="!searchLocationArray.length && !failModel">您没有考勤地点，请管理员为您添加考勤地点</p>
-        <p v-if="failModel" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
+      <div class="getLocation-alert-content" v-if="">
+        <p v-if="searchLocationArray.length && !failModel && !wifiPopup">HR SAAS系统要使用您的地理位置，是否允许？</p>
+        <p v-if="!searchLocationArray.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
+        <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
+        <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
       </div>
       <div class="getLocation-alert-btnBox">
         <p @click="closeAlert" class="getLocation-alert-btn"
            :class="(searchLocationArray.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
            v-text="(searchLocationArray.length && !failModel) ? '取消' : '确定'">
         </p>
-        <p v-if="searchLocationArray.length && !failModel" @click="okClickEvent"
+        <p v-if="searchLocationArray.length && !failModel && !wifiPopup" @click="okClickEvent"
+           class="getLocation-alert-btn getLocation-alert-btnRight">
+          确定
+        </p>
+        <p v-if="wifiPopup" @click="okClickWifi"
            class="getLocation-alert-btn getLocation-alert-btnRight">
           确定
         </p>
@@ -217,9 +222,13 @@
         hour: 0,// 打卡按钮上的时间
         minute: 0,// 打卡按钮上的时间
         second: 0,// 打卡按钮上的时间
+        wifiPopup: false, // 获取wifi弹框内容
+        isWifi: false, // 是否wifi打卡
+        wifiIP: '',// wifiIP地址
       }
     },
     created: function () {
+      console.log(returnCitySN["cip"]);
       this.doSearch(); //初始化页面查询数据
     },
     methods: {
@@ -231,7 +240,7 @@
         this.objNr = {
           fetchPostion: this.getCookie('infoObjPassPostion'),
           fetchName: this.getCookie('infoObjPassName'),
-        }
+        };
         if (imageString) {
           this.imgSrc.header = imageString;
         }
@@ -240,6 +249,7 @@
             if (response.body.result) {
               //经纬度传值start
               this.searchLocationArray = response.body.result.locations;
+              this.isWifi = response.body.result.isWifi;
               //经纬度传值end
               //进行给地理位置赋值start
               this.twRangeShow = response.body.result.twLocation;
@@ -346,11 +356,19 @@
         return typeof(state) === 'number' && state >= 0;
       },
       handerClickEvent(){  //打卡按钮   上班或下班
+        if (this.isWifi) {
+          this.wifiPopup = true; // 获取wifi弹框内容
+        }
+        this.wifiIP = '';
         this.qulocation = true;
       },
       closeAlert(){ //打卡获取地理位置alert
         this.qulocation = false;
-        this.failModel = false;
+        // 加定时器是因为弹框不能立即消失，状态值改变，里面的内容会乱，加个定时器延迟其他状态值改变
+        setTimeout(() => {
+          this.failModel = false;
+          this.wifiPopup = false;
+        }, 300);
 
       },
       knowFunction(){
@@ -363,7 +381,12 @@
         this.setCookie('leaveType', type, 365);
         this.$router.push({path: '/leave'});
       },
-      //提交申请跳转路由结束
+      //获取wifi地址
+      okClickWifi(){
+        this.wifiIP = returnCitySN["cip"];
+        this.wifiPopup = false;
+        this.qulocation = true;
+      },
       // 获取位置信息
       okClickEvent(){
         let downClickSpan = this.downClickSpan;
@@ -532,17 +555,19 @@
         let updakaObj;
         if (!self.PunchClock(self.toDaKaStatusIsInit)) {
           updakaObj = {
-            "record": {
-              "twOutside": self.outsideObtainValue ? true : 0,
-              "twLocation": twRange,
+            record: {
+              twOutside: self.outsideObtainValue ? true : 0,
+              twLocation: twRange,
+              wifi: self.wifiIP
             }
 
           }
         } else if (self.PunchClock(self.toDaKaStatusIsInit) && !self.PunchClock(self.toDownKaStatusIsInit)) {
           updakaObj = {
-            "record": {
-              "owOutside": self.outsideObtainValue ? true : 0,
-              "owLocation": twRange,
+            record: {
+              owOutside: self.outsideObtainValue ? true : 0,
+              owLocation: twRange,
+              wifi: self.wifiIP
             }
           }
         }
@@ -811,7 +836,7 @@
           font-size: 16px;
           text-align: center;
         }
-        p:nth-child(2){
+        p:nth-child(2) {
           margin-bottom: 40px;
         }
       }

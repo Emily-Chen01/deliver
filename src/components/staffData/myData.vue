@@ -24,29 +24,17 @@
                   <el-form-item v-if="staff.mobile" label="手机号" prop="mobile"
                                 :rules="{required: staff.mobile.isrequired, message: '请输入正确的手机号', trigger: 'change', pattern: /^1\d{10}$/}">
                     <el-input :disabled="!staff.mobile.isedit" placeholder="请输入手机号" v-model="model.mobile"></el-input>
-                    <!--<input type="text"  v-model="model.mobile"  :disabled="!staff.mobile.isedit" placeholder="请输入手机号">-->
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='gender' && staff.gender">
                   <el-form-item v-if="staff.gender" label="性别" prop="gender"
                                 :rules="{required: staff.gender.isrequired,type: 'number', message: '请选择性别', trigger: 'change'}">
-                    <!--<el-radio-group :disabled="!staff.gender.isedit" v-model="model.gender">-->
-                    <!--<el-radio v-for="item in genders" :key="item.id" :label="item.id">{{ item.name }}</el-radio>-->
-                    <!--</el-radio-group>-->
                     <p class="pl10 fc-bbb" v-text="model.gender===0 ? '女':(model.gender===1?'男':'')"></p>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='dateOfBirth' && staff.dateOfBirth">
                   <el-form-item v-if="staff.dateOfBirth" label="出生日期" prop="dateOfBirth"
                                 :rules="{required: staff.dateOfBirth.isrequired, type: 'date', message: '请选择出生日期', trigger: 'change',validator:isDate}">
-                    <!--<el-date-picker-->
-                    <!--:disabled="!staff.dateOfBirth.isedit"-->
-                    <!--v-model="model.dateOfBirth"-->
-                    <!--type="date"-->
-                    <!--placeholder="选择出生日期"-->
-                    <!--:clearable="false"-->
-                    <!--:editable="false">-->
-                    <!--</el-date-picker>-->
                     <p class="pl10" :class="{'fc-bbb':!staff.dateOfBirth.isedit}" v-text="model.dateOfBirth"></p>
                   </el-form-item>
                 </div>
@@ -200,7 +188,7 @@
                 <div v-else-if="confListItem.jname==='accfuNum' && staff.accfuNum">
                   <el-form-item v-if="staff.accfuNum" label="公积金号" prop="accfuNum"
                                 :rules="[{required: staff.accfuNum.isrequired, message: '请填写正确的公积金编号(数字)', trigger: 'blur',pattern: /^\d+$/},
-                        {message: '不能超过12个数字', trigger: 'blur', max:12}]">
+                        {message: '不能超过24个数字', trigger: 'blur', max:24}]">
                     <el-input :disabled="!staff.accfuNum.isedit" placeholder="请输入公积金号"
                               v-model="model.accfuNum"></el-input>
                   </el-form-item>
@@ -308,14 +296,6 @@
                   <el-form-item v-if="model.politicsStatus === '2' && staff.politicsStatus" label="入党时间"
                                 prop="thePartyTime"
                                 :rules="{required: staff.politicsStatus.isrequired,type: 'date',message: '请选择入党时间', trigger: 'change',validator:isDate}">
-                    <!--<el-date-picker-->
-                    <!--:disabled="!staff.politicsStatus.isedit"-->
-                    <!--v-model="model.thePartyTime"-->
-                    <!--type="month"-->
-                    <!--placeholder="选择入党时间"-->
-                    <!--:clearable="false"-->
-                    <!--:editable="false">-->
-                    <!--</el-date-picker>-->
                     <p class="pl10" v-if="staff.politicsStatus.isedit"
                        v-text="model.thePartyTime ? model.thePartyTime:'请选择日期' "
                        @click="openPicker(0,0,0,model.thePartyTime)"></p>
@@ -429,14 +409,6 @@
 
                   <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证办理时间" prop="resperst"
                                 :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证办理时间', trigger: 'change',validator:isDate}">
-                    <!--<el-date-picker-->
-                    <!--:disabled="!staff.ResperMessage.isedit"-->
-                    <!--v-model="model.resperst"-->
-                    <!--type="date"-->
-                    <!--placeholder="选择日期"-->
-                    <!--:clearable="false"-->
-                    <!--:editable="false">-->
-                    <!--</el-date-picker>-->
                     <p class="pl10" v-if="staff.ResperMessage.isedit" v-text="model.resperst ? model.resperst:'请选择日期'"
                        @click="openPicker(0,1,0,model.resperst)"></p>
                     <p class="pl10 fc-bbb" v-else v-text="model.resperst ? model.resperst:'请选择日期'"></p>
@@ -444,14 +416,6 @@
 
                   <el-form-item v-if="model.hasResper && staff.ResperMessage" label="居住证截止日期" prop="resperet"
                                 :rules="{required: staff.ResperMessage.isrequired,type: 'date', message: '请选择居住证截止日期', trigger: 'change',validator:isResperDate}">
-                    <!--<el-date-picker-->
-                    <!--:disabled="!staff.ResperMessage.isedit"-->
-                    <!--v-model="model.resperet"-->
-                    <!--type="date"-->
-                    <!--placeholder="选择日期"-->
-                    <!--:clearable="false"-->
-                    <!--:editable="false">-->
-                    <!--</el-date-picker>-->
                     <p class="pl10" v-if="staff.ResperMessage.isedit" v-text="model.resperet ? model.resperet:'请选择日期' "
                        @click="openPicker(0,2,0,model.resperet)"></p>
                     <p class="pl10 fc-bbb" v-else v-text="model.resperet ? model.resperet:'请选择日期' "></p>
@@ -555,14 +519,6 @@
                         </el-form-item>
                         <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="105px"
                                       :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择出生日期', trigger: 'blur',validator:isDate}">
-                          <!--<el-date-picker-->
-                          <!--:disabled="!staff.hasChilds.isedit"-->
-                          <!--v-model="item.dateOfBirth"-->
-                          <!--type="date"-->
-                          <!--placeholder="选择出生日期"-->
-                          <!--:clearable="false"-->
-                          <!--:editable="false">-->
-                          <!--</el-date-picker>-->
                           <p class="pl10" v-if="staff.hasChilds.isedit"
                              v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期' "
                              @click="openPicker(0,3,idx,item.dateOfBirth)"></p>
@@ -630,14 +586,6 @@
 
                   <el-form-item v-if="staff.eduInfor" label="入学日期" prop="entSchst"
                                 :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change',validator:isDate}">
-                    <!--<el-date-picker-->
-                    <!--:disabled="!staff.eduInfor.isedit"-->
-                    <!--v-model="model.entSchst"-->
-                    <!--type="month"-->
-                    <!--placeholder="选择日期"-->
-                    <!--:clearable="false"-->
-                    <!--:editable="false">-->
-                    <!--</el-date-picker>-->
                     <p class="pl10" v-if="staff.eduInfor.isedit" v-text="model.entSchst ? model.entSchst:'请选择日期' "
                        @click="openPicker(1,4,0,model.entSchst)"></p>
                     <p class="pl10 fc-bbb" v-else v-text="model.entSchst ? model.entSchst:'请选择日期' "></p>
@@ -645,14 +593,6 @@
 
                   <el-form-item v-if="staff.eduInfor" label="毕业日期" prop="entSchet"
                                 :rules="{required: staff.eduInfor.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change',validator:isDates}">
-                    <!--<el-date-picker-->
-                    <!--:disabled="!staff.eduInfor.isedit"-->
-                    <!--v-model="model.entSchet"-->
-                    <!--type="month"-->
-                    <!--placeholder="选择日期"-->
-                    <!--:clearable="false"-->
-                    <!--:editable="false">-->
-                    <!--</el-date-picker>-->
                     <p class="pl10" v-if="staff.eduInfor.isedit" v-text="model.entSchet ? model.entSchet:'请选择日期' "
                        @click="openPicker(1,5,0,model.entSchet)"></p>
                     <p class="pl10 fc-bbb" v-else v-text="model.entSchet ? model.entSchet:'请选择日期' "></p>
@@ -979,17 +919,6 @@
         </div>
       </mt-popup>
     </div>
-    <!--<dateTime ref="dateTime" @selcetDateTime="selcetDateTime"></dateTime>-->
-    <!--<mt-datetime-picker-->
-    <!--:startDate="startDate"-->
-    <!--type="date"-->
-    <!--ref="picker"-->
-    <!--v-model="nowDateTime"-->
-    <!--year-format="{value} 年"-->
-    <!--month-format="{value} 月"-->
-    <!--date-format="{value} 日"-->
-    <!--@confirm="handleConfirm">-->
-    <!--</mt-datetime-picker>-->
     <mt-datetime-picker
       type="date"
       ref="picker"
