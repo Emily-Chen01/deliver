@@ -95,14 +95,15 @@
 
                   <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')"
                                 label="护照编号" prop="passportNum"
-                                :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')),  message: '请填写护照号', trigger: 'change'}">
+                                :rules="[{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')),  message: '请填写护照号', trigger: 'change'},
+                                          {message: '不能超过64个字符', trigger: 'blur', max: 64}]">
                     <el-input :disabled=" !staff.nativePlace.isedit" placeholder="请输入护照编号"
                               v-model="model.passportNum"></el-input>
                   </el-form-item>
 
                   <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')"
                                 label="护照照片" prop="passportUrl"
-                                :rules="{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')), message: '请上传护照照片', trigger: 'blur'}">
+                                :rules="{required: staff.nativePlace.isrequired, message: '请上传护照照片', trigger: 'blur'}">
                     <el-upload
                       v-if="staff.nativePlace.isedit"
                       action="/api/v1.0/client/upload"
@@ -124,7 +125,7 @@
 
                   <el-form-item v-if="staff.nativePlace && model.nativePlace === '2'"
                                 label="护照国家" prop="state"
-                                :rules="{required: (staff.nativePlace.isrequired && (model.nativePlace === '2')), message: '请选择护照国家', trigger: 'change'}">
+                                :rules="{required: staff.nativePlace.isrequired, message: '请选择护照国家', trigger: 'change'}">
                     <select :disabled=" !staff.nativePlace.isedit" v-model="model.state"
                             :class="{'option-color':!model.state}">
                       <option value="" disabled>请选择</option>
