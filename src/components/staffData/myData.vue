@@ -24,14 +24,16 @@
                   <el-form-item v-if="staff.mobile" label="手机号" prop="mobile"
                                 :rules="{required: staff.mobile.isrequired, message: '请输入正确的手机号', trigger: 'change', pattern: /^1\d{10}$/}">
                     <el-input :disabled="!staff.mobile.isedit" placeholder="请输入手机号" v-model="model.mobile"></el-input>
+                    <!--<input type="text"  v-model="model.mobile"  :disabled="!staff.mobile.isedit" placeholder="请输入手机号">-->
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='gender' && staff.gender">
                   <el-form-item v-if="staff.gender" label="性别" prop="gender"
                                 :rules="{required: staff.gender.isrequired,type: 'number', message: '请选择性别', trigger: 'change'}">
-                    <el-radio-group :disabled="!staff.gender.isedit" v-model="model.gender">
-                      <el-radio v-for="item in genders" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
-                    </el-radio-group>
+                    <!--<el-radio-group :disabled="!staff.gender.isedit" v-model="model.gender">-->
+                    <!--<el-radio v-for="item in genders" :key="item.id" :label="item.id">{{ item.name }}</el-radio>-->
+                    <!--</el-radio-group>-->
+                    <p class="pl10 fc-bbb" v-text="model.gender===0 ? '女':(model.gender===1?'男':'')"></p>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='dateOfBirth' && staff.dateOfBirth">
@@ -2262,8 +2264,8 @@
       .el-input__inner {
         background: #ffffff;
       }
-      input{
-        color:black;
+      input {
+        color: black;
       }
     }
 
