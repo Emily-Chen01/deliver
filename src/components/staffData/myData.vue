@@ -116,6 +116,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.nativePlace.isedit"
+                               :disabled="!staff.nativePlace.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.passportUrl" class="upload-img-wrapper">
                       <img :src="model.passportUrl" @click="imageScaleOpen(model.passportUrl)"/>
                     </div>
@@ -148,6 +152,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.idcardPhoUrl.isedit"
+                               :disabled="!staff.idcardPhoUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.idcardPhoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl)"/>
@@ -170,6 +178,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.idcardPhoUrl.isedit"
+                               :disabled="!staff.idcardPhoUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.idcardPhoUrlRev = ''" aria-hidden="true"></i>
                       <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev)"/>
@@ -234,6 +246,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.staffPhoUrl.isedit"
+                               :disabled="!staff.staffPhoUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.staffPhoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl)"/>
@@ -326,6 +342,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.houregPhoUrl.isedit"
+                               :disabled="!staff.houregPhoUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.houregPhoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl)"/>
@@ -348,6 +368,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.houregPhoUrl.isedit"
+                               :disabled="!staff.houregPhoUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.houregPerphoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl)"/>
@@ -370,6 +394,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.houregPhoUrl.isedit"
+                               :disabled="!staff.houregPhoUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.houregPerrevphoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl)"/>
@@ -537,8 +565,12 @@
                             <el-button type="primary" size="small">
                               <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                             </el-button>
-                            <span>如子女不满1周岁需要提供出生证明</span>
                           </el-upload>
+                          <el-button type="primary" size="small" v-if="!staff.hasChilds.isedit"
+                                     :disabled="!staff.hasChilds.isedit">
+                            <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                          </el-button>
+                          <span>如子女不满1周岁需要提供出生证明</span>
                           <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
                                @click="imageScaleOpen(item.birthCertifUrl)"/>
                           <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -619,6 +651,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.eduInfor.isedit"
+                               :disabled="!staff.eduInfor.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.diplomaUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.diplomaUrl = ''" aria-hidden="true"></i>
                       <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl)"/>
@@ -641,6 +677,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.eduInfor.isedit"
+                               :disabled="!staff.eduInfor.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.greducaCertUrl = ''" aria-hidden="true"></i>
                       <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl)"/>
@@ -668,10 +708,14 @@
                       :headers="tokenHeader"
                       :on-success="resumeUrlOk"
                       :before-upload="beforeResumeUrl">
-                      <el-button type="primary" size="small">
+                      <el-button type="primary" size="small" >
                         <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.resumeUrl.isedit"
+                               :disabled="!staff.resumeUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
+                    </el-button>
                     <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"
                                                                              @click.stop="model.resumeUrl = ''"></i>
                     </p>
@@ -709,6 +753,10 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                       </el-button>
                     </el-upload>
+                    <el-button type="primary" size="small" v-if="!staff.emplsepacertUrl.isedit"
+                               :disabled="!staff.emplsepacertUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
                     <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
                       <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''" aria-hidden="true"></i>
                       <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl)"/>

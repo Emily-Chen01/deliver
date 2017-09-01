@@ -23,8 +23,15 @@
           <div class="leave-main-box-apply-center">
             <select v-model="selectedDataHoliday" @change="qingjiaclick(selectedDataHoliday)">
               <option>选择假期类型</option>
-              <option v-for="option in holidayTypeArray" :value="option" v-text="option.NAME"></option>
+              <option v-for="option in holidayTypeArray" :value="option"
+                      v-text="option.NAME"></option>
             </select>
+          </div>
+        </div>
+        <div class="leave-main-box-apply" v-if="changeApply && (selectHoliday.TYPE===0||selectHoliday.TYPE===1)">
+          <div class="leave-main-box-apply-left">剩余假期</div>
+          <div class="leave-main-box-apply-center">
+            <span align="left" class="colorA6" v-text="selectHoliday.DAYS+'天'"></span>
           </div>
         </div>
         <div class="leave-main-box-apply">
@@ -55,7 +62,7 @@
             请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
         </div>
         <div class="leave-main-box-applyText">
-          <div class="leave-main-box-applyText-top">备注</div>
+          <div class="leave-main-box-applyText-top">申请内容</div>
           <textarea placeholder="#请输入文字(不超过50字)" v-model="holidayModel"></textarea>
         </div>
         <div class="leave-main-box-apply" v-if="approvalTypeObj">
@@ -200,6 +207,7 @@
         applyTypeArray: [], //申请分类
         selectedDataHoliday: '选择假期类型', // 选择的假期类型
         holidayTypeArray: [], // 假期类型列表
+        selectHoliday: {},
         imgSrc: {
           shenFenIcon: '',
           shenFenIconShowCamera: require('../../assets/camera.png'),
@@ -333,6 +341,7 @@
       },
       qingjiaclick(value){
         this.qingjiauidParam = value.LEAVE_INFO_UID;
+        this.selectHoliday = value;
       },
       // 打开查看附件弹框
       lookImages(imgSrc){
@@ -453,6 +462,9 @@
               padding-left: 4px;
               font-size: 15px;
             }
+            .colorA6 {
+              color: #8492a6;
+            }
           }
         }
         .leave-main-box-applyImg {
@@ -481,11 +493,13 @@
             color: #8492a6;
           }
           textarea {
+            box-sizing: border-box;
+            padding: 10px;
             outline: none;
             overflow: hidden;
             overflow-y: scroll;
             width: 98%;
-            height: 4rem;
+            height:70px;
             border-radius: 4px;
             resize: none;
           }
