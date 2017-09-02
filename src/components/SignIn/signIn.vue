@@ -228,7 +228,6 @@
       }
     },
     created: function () {
-      console.log(returnCitySN["cip"]);
       this.doSearch(); //初始化页面查询数据
     },
     methods: {
@@ -356,11 +355,25 @@
         return typeof(state) === 'number' && state >= 0;
       },
       handerClickEvent(){  //打卡按钮   上班或下班
+        let self = this;
         if (this.isWifi) {
-          this.wifiPopup = true; // 获取wifi弹框内容
+          wx.getNetworkType({
+            success: function (res) {
+//              var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
+              if (res.networkType === 'none') {
+                MessageBox('提示', '未连接网络');
+                return;
+              } else {
+                self.wifiPopup = true;// 获取wifi弹框内容
+                self.wifiIP = '';
+                self.qulocation = true;
+              }
+            }
+          });
+        } else {
+          this.wifiIP = '';
+          this.qulocation = true;
         }
-        this.wifiIP = '';
-        this.qulocation = true;
       },
       closeAlert(){ //打卡获取地理位置alert
         this.qulocation = false;
@@ -383,7 +396,6 @@
       },
       //获取wifi地址
       okClickWifi(){
-        this.wifiIP = returnCitySN["cip"];
         this.wifiPopup = false;
         this.qulocation = true;
       },
@@ -421,11 +433,15 @@
             resolve();
             BMap = window.BMap;
             map = new BMap.Map();
-//            console.log('bmap', BMap, map);
           };
+          // 获取经纬度
           const $script = document.createElement('script');
           window.document.body.appendChild($script);
-          $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`
+          $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`;
+          // 获取ip
+          const $scripts = document.createElement('script');
+          window.document.body.appendChild($scripts);
+          $scripts.src = "http://pv.sohu.com/cityjson?ie=utf-8";
         }).then(() => {
           this.$http.post('/api/v1.0/wechat/sign', curl).then(response => { //获取签名接口开始
             this.t1 = response.body.result.appid.toString();
@@ -546,12 +562,24 @@
               });
             });
           }, response => {
-//            console.log('error callback');
+            console.log('error callback');
           });
         });
         //点击获取定位结束
       },
+      // 获取ip地址
+      getIP(){
+        if (returnCitySN["cip"]) {
+          this.wifiIP = returnCitySN["cip"];
+        } else {
+          this.getIP();
+        }
+      },
       punchInfo(self, twRange){
+        // 获取到的ip
+        if (this.isWifi) {
+          this.getIP();
+        }
         let updakaObj;
         if (!self.PunchClock(self.toDaKaStatusIsInit)) {
           updakaObj = {
@@ -560,7 +588,6 @@
               twLocation: twRange,
               wifi: self.wifiIP
             }
-
           }
         } else if (self.PunchClock(self.toDaKaStatusIsInit) && !self.PunchClock(self.toDownKaStatusIsInit)) {
           updakaObj = {

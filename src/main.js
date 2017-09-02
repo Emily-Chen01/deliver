@@ -55,7 +55,6 @@ Vue.http.interceptors.push(function (request, next) {
   });
 });
 
-
 //cook开始
 Vue.prototype.setCookie = function (c_name, value, expiredays) {
   let exdate = new Date();
@@ -93,3 +92,5 @@ new Vue({
   template: '<App/>',
   components: {App}
 });
+
+
