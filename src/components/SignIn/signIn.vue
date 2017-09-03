@@ -355,25 +355,11 @@
         return typeof(state) === 'number' && state >= 0;
       },
       handerClickEvent(){  //打卡按钮   上班或下班
-        let self = this;
         if (this.isWifi) {
-          wx.getNetworkType({
-            success: function (res) {
-//              var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
-              if (res.networkType === 'none') {
-                MessageBox('提示', '未连接网络');
-                return;
-              } else {
-                self.wifiPopup = true;// 获取wifi弹框内容
-                self.wifiIP = '';
-                self.qulocation = true;
-              }
-            }
-          });
-        } else {
-          this.wifiIP = '';
-          this.qulocation = true;
+          this.wifiPopup = true;// 获取wifi弹框内容
         }
+        this.wifiIP = '';
+        this.qulocation = true;
       },
       closeAlert(){ //打卡获取地理位置alert
         this.qulocation = false;
