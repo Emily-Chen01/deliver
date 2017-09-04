@@ -1777,7 +1777,7 @@
           let shareOption = {};
           out.uid = this.model.uid;
           out.name = this.model.name;
-          out.gender = this.model.gender;
+//          out.gender = this.model.gender;
           out.mobile = this.model.mobile;
           out.nativePlace = this.model.nativePlace; // 国籍
           out.passportNum = this.model.passportNum; // 护照号
@@ -1800,7 +1800,7 @@
           out.politicsStatus = this.model.politicsStatus; // 政治面貌
           out.thePartyTime = new Date(this.model.thePartyTime).getTime(); // 入党时间
           out.theArcIns = this.model.theArcIns; // 存档机构
-          out.dateOfBirth = new Date(this.model.dateOfBirth).getTime(); // 生日
+//          out.dateOfBirth = new Date(this.model.dateOfBirth).getTime(); // 生日
           out.podoProvince = this.model.podoProvince; // 户口所在省
           out.podoCity = this.model.podoCity; // 户口所在城市
           out.podoAddress = this.model.podoAddress; // 户口详细地址
@@ -2011,13 +2011,14 @@
           let toStr = v => typeof v === 'number' ? v.toString() : '';
           this.model.uid = emp.uid;
           this.model.name = emp.name || '';
-          this.model.gender = numProcess(emp.gender);
+//          this.model.gender = numProcess(emp.gender);
           this.model.mobile = emp.mobile || '';
           this.model.nativePlace = toStr(emp.nativePlace);
           this.model.passportNum = emp.passportNum || '';
           this.model.passportUrl = emp.passportUrl || '';
           this.model.state = emp.state || '';
           this.model.idcard = emp.idcard || '';
+          this.staffIdcard(emp.idcard);//根据身份证号计算出生日期和性别
           this.model.idcardPhoUrl = emp.idcardPhoUrl || '';
           this.model.idcardPhoUrlRev = emp.idcardPhoUrlRev || '';
           this.model.socsecNum = emp.socsecNum || '';
@@ -2034,7 +2035,7 @@
           this.model.politicsStatus = toStr(emp.politicsStatus);
           this.model.thePartyTime = dateProcess1(emp.thePartyTime);
           this.model.theArcIns = emp.theArcIns || ''; // 存档机构
-          this.model.dateOfBirth = dateProcess1(emp.dateOfBirth); // 生日
+//          this.model.dateOfBirth = dateProcess1(emp.dateOfBirth); // 生日
           this.model.podoProvince = emp.podoProvince ? emp.podoProvince : ''; // 户口所在省
           this.model.podoCity = emp.podoCity ? emp.podoCity : ''; // 户口所在城市
           this.model.podoAddress = emp.podoAddress || ''; // 户口详细地址

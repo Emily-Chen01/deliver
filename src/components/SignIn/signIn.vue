@@ -355,11 +355,16 @@
         return typeof(state) === 'number' && state >= 0;
       },
       handerClickEvent(){  //打卡按钮   上班或下班
-        if (this.isWifi) {
-          this.wifiPopup = true;// 获取wifi弹框内容
+        console.log(navigator);
+        if (navigator.onLine) { //正常工作
+          if (this.isWifi) {
+            this.wifiPopup = true;// 获取wifi弹框内容
+          }
+          this.wifiIP = '';
+          this.qulocation = true;
+        } else { //执行离线状态时的任务
+          MessageBox('提示', '未连接网络');
         }
-        this.wifiIP = '';
-        this.qulocation = true;
       },
       closeAlert(){ //打卡获取地理位置alert
         this.qulocation = false;
