@@ -96,6 +96,7 @@
                   <el-form-item v-if="staff.nativePlace && (model.nativePlace === '1'||model.nativePlace === '2')"
                                 label="护照编号" prop="passportNum"
                                 :rules="[{required: (staff.nativePlace.isrequired || (model.nativePlace !== '0')),  message: '请填写护照号', trigger: 'change'},
+                                          {message: '请填写正确的护照号(字母和/或数字)', trigger: 'blur', pattern: /^[A-Za-z0-9]+$/},
                                           {message: '不能超过64个字符', trigger: 'blur', max: 64}]">
                     <el-input :disabled=" !staff.nativePlace.isedit" placeholder="请输入护照编号"
                               v-model="model.passportNum"></el-input>
