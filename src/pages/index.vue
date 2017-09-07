@@ -109,8 +109,8 @@
               //获取验证码倒计时
               let self = this;
               self.YZdisabled = true;
-              self.yanzheng = '重新发送(30)';
-              let countdown = 30;
+              self.yanzheng = '重新发送(60)';
+              let countdown = 60;
               if (timer1) clearInterval(timer1); //开启前清除下已经开的定时器
               function settime() {
                 if (countdown <= 0) {
