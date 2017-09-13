@@ -95,7 +95,8 @@
           <div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
             <div class="leave-main-content-top">
               <h3 class="leave-main-content-title">
-                <span class="leave-main-content-title-left">{{item.name}}申请</span>
+                <span class="leave-main-content-title-left"
+                      v-text="item.name+'申请'+(item.name===item.sname ? '':('('+item.sname+')'))"></span>
                 <span class="leave-main-content-title-right"
                       v-text="item.status===0 ? '审核中' : (item.status===1 ? '已通过' : '未通过')"></span>
               </h3>
@@ -499,7 +500,7 @@
             overflow: hidden;
             overflow-y: scroll;
             width: 98%;
-            height:70px;
+            height: 70px;
             border-radius: 4px;
             resize: none;
           }
