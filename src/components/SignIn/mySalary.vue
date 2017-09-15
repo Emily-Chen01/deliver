@@ -17,24 +17,17 @@
           <img :src="imgSrc.qianIcon">
         </div>
       </div>
-      <hr/>
-      <!--列表-->
-      <div class="maSalary-details">
+    </div>
+    <!--工资明细-->
+    <div class="maSalary-details" v-if="dateGrid.detail.length">
+      <h4 align="left">工资明细</h4>
+      <div class="maSalary-list">
         <table>
-          <thead>
-          <tr>
-            <th>款项</th>
-            <th>扣除金额</th>
-            <th>增加金额</th>
-            <th>小计</th>
-          </tr>
-          </thead>
           <tbody>
           <tr v-for="item in dateGrid.detail">
-            <td class="maSalary-details-td" v-text="item.remark"></td>
-            <td v-text="moneyFormat(item.deduct)"></td>
-            <td v-text="moneyFormat(item.add)"></td>
-            <td v-text="moneyFormat(item.total)"></td>
+            <td class="left-icon"><img :src="iconFormat(item.remark)"></td>
+            <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
+            <td align="right" v-text="item.add ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
           </tr>
           </tbody>
         </table>
@@ -50,6 +43,10 @@
       return {
         imgSrc: {
           qianIcon: require('../../assets/qianIcon.png'),
+          salary: require('../../assets/ico_salary.png'),
+          social: require('../../assets/ico_social.png'),
+          tax: require('../../assets/ico_tax.png'),
+          other: require('../../assets/ico_other.png'),
         },
         initTime: '',
         upTime: new Date().getMonth() + 1,
@@ -60,11 +57,21 @@
           lost: 0,
           detail: [
 //            {
-//              remark: '差旅费',
+//              remark: '差旅费差旅费差旅费差旅费差旅费差旅费差旅费差旅费差旅费',
 //              deduct: 0,
 //              add: 34,
 //              total: 1235
-//            }
+//            }, {
+//              remark: '基本薪资',
+//              deduct: '',
+//              add: 98,
+//              total: 1235
+//            }, {
+//              remark: '绩效',
+//              deduct: -48,
+//              add: '',
+//              total: 1235
+//            },
           ]
         }
       }
@@ -75,6 +82,17 @@
     },
 
     methods: {
+      iconFormat(icon){
+        if (icon === '基本薪资') {
+          return this.imgSrc.salary;
+        } else if (icon === '个人社保缴纳金额' || icon === '个人公积金缴纳金额' || icon === '企业社保缴纳金额' || icon === '企业公积金缴纳金额' || icon === '个人补缴社保缴纳金额' || icon === '个人补缴公积金缴纳金额' || icon === '企业补缴社保缴纳金额' || icon === '企业补缴公积金缴纳金额' || icon === '商业保险') {
+          return this.imgSrc.social;
+        } else if (icon === '扣除个人所得税') {
+          return this.imgSrc.tax;
+        } else {
+          return this.imgSrc.other;
+        }
+      },
       moneyFormat(money){
         let Money = Math.abs(money) ? (money + '元') : '无';
         return Money;
@@ -204,33 +222,47 @@
           }
         }
       }
-      hr {
-        margin: 15px 0 12px;
-        border: none;
-        height: 0;
-        width: 100%;
-        border-top: 1px solid #d2dce6;
+    }
+    .maSalary-details {
+      width: 100%;
+      h4 {
+        padding-left: 15px;
+        height: 26px;
+        line-height: 26px;
+        background: rgb(239, 243, 247);
+        font-size: 14px;
       }
-      .maSalary-details {
-        width: 100%;
+      .maSalary-list {
+        box-sizing: border-box;
+        padding: 0 15px;
         table {
           width: 100%;
           border-collapse: collapse;
-          border: 1px solid #d2dce6;
+          border: none;
           font-size: 14px;
-          th, td {
-            width: 25%;
-            padding: 10px;
-            border: 1px solid #d2dce6;
-            font-size: 13px;
-          }
-          th, .maSalary-details-td {
-            color: #475669;
-            background: #f8fbfb;
-          }
           td {
+            width: 30%;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: bold;
             color: #1f2d3d;
             background: #ffffff;
+            border: none;
+            border-bottom: 1px solid #d2dce6;
+          }
+          .left-icon {
+            width: 50px;
+            padding-left: 0;
+            img {
+              width: 40px;
+              height: 40px;
+            }
+          }
+          .maSalary-details-td {
+            width: 70%;
+            color: #475669;
+            font-weight: inherit;
+            padding-left: 0;
           }
         }
       }
