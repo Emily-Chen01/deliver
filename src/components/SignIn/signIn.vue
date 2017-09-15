@@ -378,7 +378,6 @@
       knowFunction(){
         this.popupVisible = false;
         this.qulocation = false;
-        this.doSearch();
       },
       //提交申请跳转路由开始
       submitApplyRouter(type){
@@ -647,6 +646,7 @@
                 self.absenteeismStatusAlert = true;
               }
             }
+            self.doSearch();
           } else if (response.body.code === 500) {
             MessageBox('提示', response.body.message);
             self.daKaHide = false;
