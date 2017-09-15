@@ -94,7 +94,7 @@
         }
       },
       moneyFormat(money){
-        let Money = Math.abs(money) ? (money + '元') : '无';
+        let Money = money.toFixed(2) + '元';
         return Money;
       },
       // 上一个月
