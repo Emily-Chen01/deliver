@@ -24,7 +24,7 @@
       <div class="maSalary-list">
         <table>
           <tbody>
-          <tr v-for="item in dateGrid.detail">
+          <tr v-for="item in dateGrid.detail" v-if="item.add || item.deduct">
             <td class="left-icon"><img :src="iconFormat(item.remark)"></td>
             <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
             <td align="right" v-text="item.add ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
