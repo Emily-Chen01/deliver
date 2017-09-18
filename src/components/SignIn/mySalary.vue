@@ -21,13 +21,14 @@
     <!--工资明细-->
     <div class="maSalary-details" v-if="dateGrid.detail.length">
       <h4 align="left">工资明细</h4>
+
       <div class="maSalary-list">
         <table>
           <tbody>
-          <tr v-for="item in dateGrid.detail" v-if="item.add || item.deduct">
+          <tr v-for="item in dateGrid.detail" v-if="showFormat(item.add) || showFormat(item.deduct)">
             <td class="left-icon"><img :src="iconFormat(item.remark)"></td>
             <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
-            <td align="right" v-text="item.add ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
+            <td align="right" v-text="showFormat(item.add) ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
           </tr>
           </tbody>
         </table>
@@ -58,13 +59,13 @@
           detail: [
 //            {
 //              remark: '差旅费差旅费差旅费差旅费差旅费差旅费差旅费差旅费差旅费',
-//              deduct: 0,
-//              add: 34,
+//              deduct: '0.00',
+//              add: '0.00',
 //              total: 1235
 //            }, {
 //              remark: '基本薪资',
-//              deduct: '',
-//              add: 98,
+//              deduct: '0.00',
+//              add: '0.00',
 //              total: 1235
 //            }, {
 //              remark: '绩效',
@@ -95,7 +96,7 @@
       },
       moneyFormat(money){
         let Money;
-        if (/^[-0-9]+(\.[0-9]*)?$/.test(money)) {
+        if (/^[-0-9]+(\.[0-9]*)?$/.test(money) && typeof(money) === 'number') {
           Money = money.toFixed(2) + '元';
         } else {
           if (typeof(money) === 'string' && money) {
@@ -103,6 +104,19 @@
           } else {
             let moneyNum = 0;
             Money = moneyNum.toFixed(2) + '元';
+          }
+        }
+        return Money;
+      },
+      showFormat(money){
+        let Money;
+        if (typeof(money) === 'number') {
+          Money = money;
+        } else {
+          if (typeof(money) === 'string' && money) {
+            Money = parseFloat(money);
+          } else {
+            Money = 0;
           }
         }
         return Money;
