@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-  import {Cell} from 'mint-ui';
+  import {Cell, MessageBox} from 'mint-ui';
   export default {
     name: 'manyCompany',
     data() {
@@ -50,9 +50,10 @@
           companyUid: item.companyUid,
         };
         this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => {
-          console.log('选择公司接口');
           if (response.body.code === 200) {
             this.$router.push({path: '/signCard'});
+          } else {
+            MessageBox('提示', response.body.message);
           }
         }, response => {
           console.log('error callback');
