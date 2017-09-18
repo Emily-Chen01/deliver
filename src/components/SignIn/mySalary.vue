@@ -94,7 +94,17 @@
         }
       },
       moneyFormat(money){
-        let Money = money.toFixed(2) + '元';
+        let Money;
+        if (/^[-0-9]+(\.[0-9]*)?$/.test(money)) {
+          Money = money.toFixed(2) + '元';
+        } else {
+          if (typeof(money) === 'string' && money) {
+            Money = parseFloat(money).toFixed(2) + '元';
+          } else {
+            let moneyNum = 0;
+            Money = moneyNum.toFixed(2) + '元';
+          }
+        }
         return Money;
       },
       // 上一个月
@@ -128,8 +138,8 @@
               this.dateGrid = response.body.result;
             } else {
               this.dateGrid = {
-                money: '',
-                lost: '',
+                money: 0,
+                lost: 0,
                 detail: []
               };
             }
@@ -243,7 +253,7 @@
           td {
             width: 30%;
             padding: 10px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             color: #1f2d3d;
             background: #ffffff;
@@ -259,6 +269,7 @@
             }
           }
           .maSalary-details-td {
+            font-size: 14px;
             width: 70%;
             color: #475669;
             font-weight: inherit;
