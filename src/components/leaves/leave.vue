@@ -627,7 +627,7 @@
           max-height: 100vh;
           overflow: auto;
           img {
-            width: 100%;
+            width: 96%;
           }
         }
       }
