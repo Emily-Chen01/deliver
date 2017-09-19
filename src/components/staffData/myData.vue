@@ -158,7 +158,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.idcardPhoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">
@@ -184,7 +183,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.idcardPhoUrlRev = ''" aria-hidden="true"></i>
                       <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">
@@ -252,7 +250,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.staffPhoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">
@@ -348,7 +345,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.houregPhoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">
@@ -374,7 +370,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.houregPerphoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerphoUrlErrFlag">
@@ -400,7 +395,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.houregPerrevphoUrl = ''" aria-hidden="true"></i>
                       <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerrevphoUrlErrFlag">
@@ -488,8 +482,9 @@
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='emergencyContact' && staff.emergencyContact">
-                  <el-form-item v-if="staff.emergencyContact" label="紧急联系人"
-                                :required="staff.emergencyContact.isrequired">
+                  <el-form-item v-if="staff.emergencyContact" label-width="0" class="contact-box">
+                    <!--<label>紧急联系人</label>-->
+                    <h4 class="fs15"><span v-if="staff.emergencyContact.isrequired" class="fsStar">*</span>紧急联系人</h4>
                     <div v-if="staff.emergencyContact" class="contacts-wrapper">
                       <div class="contact" :span="24" v-for="(item, idx) in model.contacts">
                         <el-form-item label="姓名" label-width="4em"
@@ -510,12 +505,16 @@
                                     v-model="item.emergContactPhone"></el-input>
                         </el-form-item>
                       </div>
-                      <el-button :disabled="!staff.emergencyContact.isedit" v-if="model.contacts.length < 3"
-                                 class="add-contact"
-                                 size="small"
-                                 type="primary" @click="addContact">
-                        <span>添加紧急联系人</span>
-                      </el-button>
+                      <el-row>
+                        <el-col align="center" :span="24">
+                          <el-button :disabled="!staff.emergencyContact.isedit" v-if="model.contacts.length < 3"
+                                     class="add-contact"
+                                     size="small"
+                                     type="primary" @click="addContact">
+                            <span>添加紧急联系人</span>
+                          </el-button>
+                        </el-col>
+                      </el-row>
                     </div>
                   </el-form-item>
                 </div>
@@ -527,62 +526,68 @@
                       on-text="有"
                       off-text="无">
                     </el-switch>
-                    <div v-if="staff.hasChilds && model.hasChild">
-                      <div class="child" v-for="(item, idx) in model.childs">
-                        <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'" label-position="top"
-                                      labelWidth="105px"
-                                      :rules="[{required: staff.hasChilds.isrequired, message: '请输入子女姓名', trigger: 'change'},
+                  </el-form-item>
+                  <div class="child-box" v-if="staff.hasChilds && model.hasChild">
+                    <div class="child" v-for="(item, idx) in model.childs">
+                      <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'" label-position="top"
+                                    labelWidth="105px"
+                                    :rules="[{required: staff.hasChilds.isrequired, message: '请输入子女姓名', trigger: 'change'},
                                     {message: ' 长度小于32个字符', trigger: 'blur', max: 32,}]">
-                          <el-input :disabled="!staff.hasChilds.isedit" placeholder="请输入子女姓名" v-model="item.name">
-                            <el-button slot="append" v-if="idx > 0" :disabled="!staff.hasChilds.isedit"
-                                       @click="rmvChild(item)">
-                              <i class="el-icon-delete"></i>
-                            </el-button>
-                          </el-input>
-                        </el-form-item>
-                        <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'" labelWidth="105px"
-                                      :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'blur'}">
-                          <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
-                            <el-radio :label="1">男</el-radio>
-                            <el-radio :label="0">女</el-radio>
-                          </el-radio-group>
-                        </el-form-item>
-                        <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="105px"
-                                      :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择出生日期', trigger: 'blur',validator:isDate}">
-                          <p class="pl10" v-if="staff.hasChilds.isedit"
-                             v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期' "
-                             @click="openPicker(0,3,idx,item.dateOfBirth)"></p>
-                          <p class="pl10 fc-bbb" v-else v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期'"></p>
-                        </el-form-item>
-                        <el-form-item label="子女出生证明" labelWidth="105px">
-                          <el-upload
-                            v-if="staff.hasChilds.isedit"
-                            action="/api/v1.0/client/upload"
-                            name="files"
-                            :show-file-list="false"
-                            :headers="tokenHeader"
-                            :on-success="makeChildOk(item)"
-                            :before-upload="makeChildCheck(item)">
-                            <el-button type="primary" size="small">
-                              <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
-                            </el-button>
-                          </el-upload>
-                          <el-button type="primary" size="small" v-if="!staff.hasChilds.isedit"
-                                     :disabled="!staff.hasChilds.isedit">
+                        <el-input :disabled="!staff.hasChilds.isedit" placeholder="请输入子女姓名" v-model="item.name">
+                          <el-button slot="append" v-if="idx > 0" :disabled="!staff.hasChilds.isedit"
+                                     @click="rmvChild(item)">
+                            <i class="el-icon-delete"></i>
+                          </el-button>
+                        </el-input>
+                      </el-form-item>
+                      <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'" labelWidth="105px"
+                                    :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'blur'}">
+                        <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
+                          <el-radio :label="1">男</el-radio>
+                          <el-radio :label="0">女</el-radio>
+                        </el-radio-group>
+                      </el-form-item>
+                      <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="105px"
+                                    :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择出生日期', trigger: 'blur',validator:isDate}">
+                        <p class="pl10" v-if="staff.hasChilds.isedit"
+                           v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期' "
+                           @click="openPicker(0,3,idx,item.dateOfBirth)"></p>
+                        <p class="pl10 fc-bbb" v-else v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期'"></p>
+                      </el-form-item>
+                      <el-form-item label="子女出生证明" labelWidth="105px">
+                        <el-upload
+                          v-if="staff.hasChilds.isedit"
+                          action="/api/v1.0/client/upload"
+                          name="files"
+                          :show-file-list="false"
+                          :headers="tokenHeader"
+                          :on-success="makeChildOk(item)"
+                          :before-upload="makeChildCheck(item)">
+                          <el-button type="primary" size="small">
                             <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                           </el-button>
-                          <span>如子女不满1周岁需要提供出生证明</span>
-                          <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
-                               @click="imageScaleOpen(item.birthCertifUrl)"/>
-                          <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-                        </el-form-item>
-                      </div>
-                      <el-button class="add-child" type="primary" size="small" :disabled="!staff.hasChilds.isedit"
-                                 @click="addChild">
-                        <span>添加子女</span>
-                      </el-button>
+                        </el-upload>
+                        <el-button type="primary" size="small" v-if="!staff.hasChilds.isedit"
+                                   :disabled="!staff.hasChilds.isedit">
+                          <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        </el-button>
+                        <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
+                             @click="imageScaleOpen(item.birthCertifUrl)"/>
+                        <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+                      </el-form-item>
+                      <p class="p10 fs12">如子女不满1周岁需要提供出生证明</p>
                     </div>
-                  </el-form-item>
+                    <el-row>
+                      <el-col align="center" :span="24">
+                        <el-button class="add-child" type="primary" size="small" :disabled="!staff.hasChilds.isedit"
+                                   @click="addChild">
+                          <span>添加子女</span>
+                        </el-button>
+                      </el-col>
+                    </el-row>
+
+                  </div>
+                  <!--</el-form-item>-->
                 </div>
                 <div v-else-if="confListItem.jname==='finallyEmpCom' && staff.finallyEmpCom">
                   <el-form-item v-if="staff.finallyEmpCom" label="上一家受聘公司" prop="finallyEmpCom"
@@ -657,11 +662,10 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.diplomaUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.diplomaUrl = ''" aria-hidden="true"></i>
                       <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="diplomaUrlErrFlag">
-                      请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 2 兆)</p>
+                      请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                   </el-form-item>
 
                   <el-form-item v-if="staff.eduInfor" label="毕业证书" prop="greducaCertUrl"
@@ -683,7 +687,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.greducaCertUrl = ''" aria-hidden="true"></i>
                       <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">
@@ -709,7 +712,7 @@
                       :headers="tokenHeader"
                       :on-success="resumeUrlOk"
                       :before-upload="beforeResumeUrl">
-                      <el-button type="primary" size="small" >
+                      <el-button type="primary" size="small">
                         <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                       </el-button>
                     </el-upload>
@@ -717,10 +720,14 @@
                                :disabled="!staff.resumeUrl.isedit">
                       <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                     </el-button>
-                    <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功 <i class="fa fa-times"
-                                                                             @click.stop="model.resumeUrl = ''"></i>
+                    <div v-if="model.resumeUrl" class="upload-img-wrapper">
+                      <img :src="model.resumeUrl" @click="imageScaleOpen(model.resumeUrl)"/>
+                    </div>
+                    <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功
+                      <a :href="model.resumeUrl+'&openId='+tokenHeader.openId" download="">下载</a>
                     </p>
-                    <p class="uploadErrorTip" v-show="resumeUrlErrFlag">请上传正确的简历(格式为 doc 或 docx 或 pdf，文件大小不超过 5 兆)</p>
+                    <p class="uploadErrorTip" v-show="resumeUrlErrFlag">
+                      请上传正确的简历(格式为 doc 或 docx 或 pdf 或 jpg 或 jpeg 或 png，文件大小不超过 5 兆)</p>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='hasComres' && staff.hasComres">
@@ -759,7 +766,6 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
-                      <i class="fa fa-times" @click.stop="model.emplsepacertUrl = ''" aria-hidden="true"></i>
                       <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">
@@ -781,7 +787,6 @@
                   <el-form-item v-if="staffRecord.contracMes" label="合同类型">
                     <span>{{contractTypes && contractTypes[model.record.contract.contracType.toString()]}}</span>
                   </el-form-item>
-
                   <!-- 劳动合同 -->
                   <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes"
                                 label="合同生效日期">
@@ -1718,13 +1723,14 @@
       },
       beforeResumeUrl(file) {
         let isDoc = utils.isDoc(file);
+        let isImage = utils.isImage(file);
         let isInSize = utils.isInSize(file, 5);
-        if (isDoc && isInSize) {
+        if ((isDoc || isImage) && isInSize) {
           this.resumeUrlErrFlag = false;
         } else {
           this.resumeUrlErrFlag = true;
         }
-        return isDoc && isInSize;
+        return (isDoc || isImage) && isInSize;
       },
       emplsepacertUrlOk(res, file) {
         if (res.code === 200) {
@@ -2237,6 +2243,23 @@
     .pl10 {
       padding-left: 10px;
     }
+    .p10 {
+      padding: 10px 0;
+    }
+    .fs12 {
+      font-size: 12px;
+      color: #97a8be;
+    }
+    .fs15 {
+      font-size: 15px;
+    }
+    .fsStar {
+      display: inline-block;
+      color: #ff4949;
+      font-size: 18px;
+      font-weight: bold;
+      margin-right: 4px;
+    }
     .fc-bbb {
       color: #bbb;
     }
@@ -2275,7 +2298,9 @@
       }
       .dataTitle {
         height: 44px;
-
+      }
+      .contacts-wrapper {
+        width: 100%;
       }
       select {
         width: 100%;
@@ -2352,19 +2377,36 @@
       margin-top: 20px;
     }
     .my-data .el-form-item__label {
-      font-weight: bold;
+      font-weight: 900;
+      font-size: 15px;
+    }
+    .my-data .contact-box {
+      width: 100%;
     }
     .my-data .child,
     .my-data .contact {
       border: 1px solid #ccc;
       border-radius: 4px;
-      padding: 10px;
+      padding: 0 10px 10px;
       position: relative;
     }
+    .my-data .child {
+      padding: 0 10px;
+      margin-top: 20px;
+    }
+    .child-box {
+      padding-bottom: 10px;
+      border-bottom: 1px solid #d9d9d9;
+    }
 
-    .my-data .child .el-input,
     .my-data .contact .el-input {
       width: 70%;
+    }
+    .my-data .child .el-input {
+      width: 60%;
+      input {
+        padding-left: 0;
+      }
     }
 
     .my-data .child:nth-of-type(n + 2),
@@ -2385,25 +2427,10 @@
       max-width: 100%;
     }
 
-    .my-data .upload-img-wrapper .fa-times {
-      display: none;
-      position: absolute;
-      top: 0;
-      right: 0;
-      font-size: 1.2em;
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 0 0 0 4px;
-      cursor: pointer;
-    }
-
     .my-data .child-img {
       display: block;
       width: 100%;
       max-height: 180px;
-    }
-
-    .my-data .el-form-item .fa-times {
-      display: none;
     }
 
     .my-data .el-form {
@@ -2419,7 +2446,7 @@
     }
 
     .my-data .child div.el-form-item {
-      padding-top: 0;
+      /*padding-top: 0;*/
     }
 
     .my-data .el-upload {
@@ -2443,7 +2470,7 @@
 
     .my-data .el-form-item__error {
       position: static;
-      margin-top: 4px;
+      /*margin-top: 4px;*/
       padding-top: 0;
       line-height: 1.3;
     }
@@ -2485,7 +2512,7 @@
           max-height: 100vh;
           overflow: auto;
           img {
-            width: 100%;
+            width: 96%;
           }
         }
       }
