@@ -25,7 +25,8 @@
       <div class="maSalary-list">
         <table>
           <tbody>
-          <tr v-for="item in dateGrid.detail" v-if="showFormat(item.add) || showFormat(item.deduct)">
+          <tr v-for="item in dateGrid.detail"
+              v-if="(showFormat(item.add) || showFormat(item.deduct)) && payFormat(item.remark)">
             <td class="left-icon"><img :src="iconFormat(item.remark)"></td>
             <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
             <td align="right" v-text="showFormat(item.add) ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
@@ -120,6 +121,14 @@
           }
         }
         return Money;
+      },
+      // 判断是否是企业缴纳的部分
+      payFormat(name){
+        if (name === '企业社保缴纳金额' || name === '企业公积金缴纳金额' || name === '企业补缴社保缴纳金额' || name === '企业补缴公积金缴纳金额') {
+          return false;
+        } else {
+          return true;
+        }
       },
       // 上一个月
       handleClickUp(){
