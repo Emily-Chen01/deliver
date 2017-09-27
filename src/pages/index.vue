@@ -16,9 +16,22 @@
                         auto-complete="off"></el-input>
             </el-col>
             <el-col :span="8" :push="1">
-              <el-button type="primary" :disabled="YZdisabled" @click.native="handerClick" class="index-main-btn fs12">
+              <el-button type="primary" :disabled="YZdisabled || verCodeShow" @click.native="handerClick"
+                         class="index-main-btn fs12">
                 <span>{{yanzheng}}</span></el-button>
             </el-col>
+          </el-form-item>
+          <el-form-item v-if="verCodeShow">
+            <el-col :span="15">
+              <el-input v-model="verCodeNum" class="fs12" placeholder="请输入图形验证码..."
+                        auto-complete="off"></el-input>
+            </el-col>
+            <el-col :span="8" :push="1">
+              <div class="verCode-box" @click="getVerCode">
+                <img :src="'data:image/jpg;base64,'+verCode" width="100%" height="100%" alt="">
+              </div>
+            </el-col>
+            <el-button type="primary" @click.native="submitVerCode" class="index-main-btn mt20 fs12">验证图形验证码</el-button>
           </el-form-item>
           <el-form-item>
             <el-col :span="24">
@@ -28,7 +41,9 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-button type="primary" @click.native="handerSubmit" class="index-main-btn mt20 fs12">确定</el-button>
+      <el-button :disabled="verCodeShow" type="primary" @click.native="handerSubmit" class="index-main-btn mt20 fs12">
+        <span>确定</span>
+      </el-button>
     </el-row>
     <!--弹框-->
     <mt-popup
@@ -65,6 +80,7 @@
         },
         phoneNumber: '',
         phoneNumberValue: '',//验证码值
+        verCodeNum: '',//输入的图形验证码
         sumSearch: '',
         sumSearchUid: [],
         yanzheng: '获取验证码',//验证码
@@ -73,6 +89,8 @@
         noneModel: false, //没有员工
         alertMessage: '', //进行赋值的错误信息
         alertMessageShow: true,
+        verCode: '',//图形验证码
+        verCodeShow: false,//图形验证码是否显示
       }
     },
     created: function () {
@@ -123,6 +141,7 @@
                   self.yanzheng = "重新发送(" + countdown + ")";
                 }
               }
+
               //获取验证码倒计时
               timer1 = setInterval(settime, 1000);
               this.setCookie('iphoneNumber', this.phoneNumber, 365);
@@ -130,6 +149,9 @@
               this.errorModel = true;
               this.noneModel = true;
               this.alertMessageShow = false; //动态赋值信息false
+            } else if (response.body.code === 1000) {
+              this.verCodeShow = true;
+              this.verCode = response.body.result;
             }
           }, response => {
             console.log('error callback');
@@ -176,11 +198,10 @@
         Indicator.close();//关闭加载
         this.$router.push({path: '/ManyCompany'});
       },
-
       findCompany(phone){
         this.$http.get('/api/v1.0/client/findCompanies/' + phone).then(response => {
           if (response.body.code === 200) {
-            if (response.body.result){
+            if (response.body.result) {
               this.sumSearchUid = response.body.result;
               if (response.body.result.length === 1) {
                 //如果等于1就进入 signCard 点击打卡
@@ -214,6 +235,27 @@
         this.noneModel = false; //隐藏没有记录
         this.alertMessage = message;
       },
+      // 验证图形验证码
+      submitVerCode(){
+        this.$http.post('/api/v1.0/client/checkImageCode', {phone: this.phoneNumber, code: this.verCodeNum}
+        ).then(response => {
+          if (response.body.code === 200) {
+            this.verCodeShow = false;
+            this.verCode = '';
+          } else {
+            this.verCode = response.body.result;
+            this.popupBomb(response.body.message);
+          }
+        });
+      },
+      // 获取图形验证码
+      getVerCode(){
+        this.$http.get('/api/v1.0/client/sendvcode/' + this.phoneNumber).then(response => {
+          if (response.body.code === 200) {
+            this.verCode = response.body.result;
+          }
+        });
+      }
     },
     components: {}
   }
@@ -265,6 +307,12 @@
       }
       .index-main-btn {
         width: 100%;
+      }
+      .verCode-box {
+        width: 100%;
+        height: 34px;
+        overflow: hidden;
+        margin-top: 2px;
       }
     }
     .index-Bomb {
