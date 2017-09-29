@@ -21,13 +21,12 @@
     <!--工资明细-->
     <div class="maSalary-details" v-if="dateGrid.detail.length">
       <h4 align="left">工资明细</h4>
-
       <div class="maSalary-list">
         <table>
           <tbody>
           <tr v-for="item in dateGrid.detail"
-              v-if="(showFormat(item.add) || showFormat(item.deduct)) && payFormat(item.remark)">
-            <td class="left-icon"><img :src="iconFormat(item.remark)"></td>
+              v-if="(showFormat(item.add) || showFormat(item.deduct))">
+            <td class="left-icon"><img :src="iconFormat(item.filedType)"></td>
             <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
             <td align="right" v-text="showFormat(item.add) ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
           </tr>
@@ -63,17 +62,7 @@
 //              deduct: '0.00',
 //              add: '0.00',
 //              total: 1235
-//            }, {
-//              remark: '基本薪资',
-//              deduct: '0.00',
-//              add: '0.00',
-//              total: 1235
-//            }, {
-//              remark: '绩效',
-//              deduct: -48,
-//              add: '',
-//              total: 1235
-//            },
+//            }
           ]
         }
       }
@@ -85,11 +74,25 @@
 
     methods: {
       iconFormat(icon){
-        if (icon === '基本薪资') {
+        let count;
+        if (typeof(icon) === 'number') {
+          count = icon;
+        } else {
+          if (typeof(icon) === 'string') {
+            if (parseInt(icon)) {
+              count = parseInt(icon);
+            } else {
+              count = -1;
+            }
+          } else {
+            count = -1;
+          }
+        }
+        if (count === 0) {
           return this.imgSrc.salary;
-        } else if (icon === '个人社保缴纳金额' || icon === '个人公积金缴纳金额' || icon === '企业社保缴纳金额' || icon === '企业公积金缴纳金额' || icon === '个人补缴社保缴纳金额' || icon === '个人补缴公积金缴纳金额' || icon === '企业补缴社保缴纳金额' || icon === '企业补缴公积金缴纳金额' || icon === '商业保险') {
+        } else if (count > 1000 && count < 1012) {
           return this.imgSrc.social;
-        } else if (icon === '扣除个人所得税') {
+        } else if (count === 1016) {
           return this.imgSrc.tax;
         } else {
           return this.imgSrc.other;
@@ -121,14 +124,6 @@
           }
         }
         return Money;
-      },
-      // 判断是否是企业缴纳的部分
-      payFormat(name){
-        if (name === '企业社保缴纳金额' || name === '企业公积金缴纳金额' || name === '企业补缴社保缴纳金额' || name === '企业补缴公积金缴纳金额' || name === '服务费' || name === '残保金' || name === '商业保险') {
-          return false;
-        } else {
-          return true;
-        }
       },
       // 上一个月
       handleClickUp(){
@@ -174,7 +169,6 @@
     },
     components: {}
   }
-
 </script>
 
 <style lang="scss">
