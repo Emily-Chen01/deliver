@@ -108,14 +108,12 @@
         let data = AddZero(d.getDate());
         let Month = AddZero((d.getMonth() + 1));
         var kk = d.getFullYear() + '/' + Month + '/' + data;
-        console.log(12, kk);
         //格式化时间结束
 
         let param = {
           "date": kk
         };
         this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
-//              console.log(response.body.result.duration);
           this.tozhang = '';
           this.downzhang = '';
           this.toSapnTime = '';
@@ -142,7 +140,6 @@
               this.downzhang = '未打卡';
             } else {
               if (response.body.result.twStatus == 0) {
-
                 this.tozhang = '正常打卡';
                 if (response.body.result.twOutside) {
                   this.tozhang = '正常打卡(区域外)';
@@ -150,8 +147,6 @@
                 if (response.body.result.twTime == null) {
                   this.tozhang = '未打卡';
                 }
-
-//                  alert('正常打卡');
               }
               if (response.body.result.twStatus == 1) {
                 this.tozhang = '迟到打卡';
@@ -161,7 +156,6 @@
                 if (response.body.result.twTime == null) {
                   this.tozhang = '未打卡';
                 }
-
               }
               if (response.body.result.twStatus == 2) {
                 this.tozhang = '旷工打卡';
@@ -171,8 +165,6 @@
                 if (response.body.result.twTime == null) {
                   this.tozhang = '未打卡';
                 }
-//                  alert('旷工打卡');
-
               }
               if (response.body.result.owStatus == 0) {
                 this.downzhang = '正常打卡';
@@ -185,8 +177,6 @@
                 if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                   this.downzhang = '';
                 }
-//                    alert('正常打卡');
-
               }
               if (response.body.result.owStatus == 1) {
                 this.downzhang = '早退打卡';
@@ -199,8 +189,6 @@
                 if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                   this.downzhang = '';
                 }
-//                    alert('早退打卡');
-
               }
               if (response.body.result.owStatus == 2) {
                 this.downzhang = '加班打卡';
@@ -213,8 +201,6 @@
                 if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                   this.downzhang = '';
                 }
-//                    alert('加班打卡');
-
               }
               if (response.body.result.owStatus == 3) {
                 this.downzhang = '旷工打卡';
@@ -227,22 +213,12 @@
                 if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                   this.downzhang = '';
                 }
-//                    alert('加班打卡');  //添加6-14-9 新增的下班旷工（修改提交的bug）
-
               }
             }
           }
         }, response => {
           console.log('error callback');
         });
-        //点击当天进行查询打卡状态结束
-
-
-        console.log('当前' + new Date().getTime());
-        console.log('点击时间' + day.getTime());
-        console.log(new Date().getTime());
-
-
       },
 
       'changeMonth' (start, end, currentStart, current) {
@@ -269,10 +245,7 @@
           //测试显示默认当天信息start
           var myDate = new Date();
           var timePass = myDate.getFullYear() + '/' + (myDate.getMonth() + 1) + '/' + myDate.getDate();        //获取当前年份(2位)
-
           var zhuanDate = moment(timePass).format(df2);
-          console.log(timePass, 'timePass');
-          console.log(zhuanDate, 'zhuanDate');
 
           let param = {
             "date": zhuanDate
@@ -316,8 +289,6 @@
                         if (response.body.result.twTime == null) {
                           this.tozhang = '未打卡';
                         }
-
-//                  alert('正常打卡');
                       }
                       if (response.body.result.twStatus == 1) {
                         this.tozhang = '迟到打卡';
@@ -337,8 +308,6 @@
                         if (response.body.result.twTime == null) {
                           this.tozhang = '未打卡';
                         }
-//                  alert('旷工打卡');
-
                       }
                       if (response.body.result.owStatus == 0) {
                         this.downzhang = '正常打卡';
@@ -351,8 +320,6 @@
                         if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                           this.downzhang = '';
                         }
-//                    alert('正常打卡');
-
                       }
                       if (response.body.result.owStatus == 1) {
                         this.downzhang = '早退打卡';
@@ -365,8 +332,6 @@
                         if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                           this.downzhang = '';
                         }
-//                    alert('早退打卡');
-
                       }
                       if (response.body.result.owStatus == 2) {
                         this.downzhang = '加班打卡';
@@ -379,8 +344,6 @@
                         if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                           this.downzhang = '';
                         }
-//                    alert('加班打卡');
-
                       }
                       if (response.body.result.owStatus == 3) {
                         this.downzhang = '旷工打卡';
@@ -393,21 +356,17 @@
                         if (response.body.result.owTime == null && response.body.result.IS_TODAY) {
                           this.downzhang = '';
                         }
-//                    alert('加班打卡');  //添加6-14-9 新增的下班旷工（修改提交的bug）
-
                       }
                     }
                   }
                 });
               }
             });
-
           }, response => {
             console.log('error callback');
           });
+
           //测试显示默认当天信息结束
-
-
           let arrayShow = [
 //               {
 //                  date : '2017-06-5',
@@ -419,12 +378,10 @@
               this.fcEvents.push({
                 title: '假',
                 start: arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
-                // start :arrayShow[i].start,
                 end: arrayShow[i].date.toLocaleString().replace(/-/g, "/"),
               });
             }
           }
-
 
           this.$nextTick(() => {
             //  改变当月工作日的背景颜色
@@ -436,7 +393,6 @@
             this.showDate(response.body.result.attend.wdFri, 5);
             this.showDate(response.body.result.attend.wdSat, 6);
           });
-
 
           if (response.body.result.records) {
             for (let i = 0; i < response.body.result.records.length; i++) { //循环添加给日历表添加日期状态

@@ -287,6 +287,9 @@
         height: 19px;
       }
       /*覆盖组件原有样式*/
+      .mint-cell {
+        border-top: 1px solid #d9d9d9;
+      }
       .mint-cell-text, .mint-cell-value {
         font-size: 14px;
       }
