@@ -571,8 +571,10 @@
                                    :disabled="!staff.hasChilds.isedit">
                           <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                         </el-button>
-                        <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
-                             @click="imageScaleOpen(item.birthCertifUrl)"/>
+                        <div class="child-imgBox">
+                          <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
+                               @click="imageScaleOpen(item.birthCertifUrl)"/>
+                        </div>
                         <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                       </el-form-item>
                       <p class="p10 fs12">如子女不满1周岁需要提供出生证明</p>
@@ -720,14 +722,14 @@
                                :disabled="!staff.resumeUrl.isedit">
                       <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                     </el-button>
-                    <div v-if="model.resumeUrl" class="upload-img-wrapper">
-                      <img :src="model.resumeUrl" @click="imageScaleOpen(model.resumeUrl)"/>
+                    <div v-if="model.resumeUrls.length" class="upload-img-wrapper">
+                      <div v-for="(item, idx) in model.resumeUrls" :class="{'upload-img-box':isFormatImg(item.url)}">
+                        <img v-if="isFormatImg(item.url)" :src="item.url" @click="imageScaleOpen(item.url)"/>
+                        <a v-else :href="item.url + `&openId=${tokenHeader.openId}`">文档上传成功</a>
+                      </div>
                     </div>
-                    <p v-if="model.resumeUrl" class="el-icon-check"> 上传成功
-                      <a :href="model.resumeUrl+'&openId='+tokenHeader.openId" download="">下载</a>
-                    </p>
                     <p class="uploadErrorTip" v-show="resumeUrlErrFlag">
-                      请上传正确的简历(格式为 doc 或 docx 或 pdf 或 jpg 或 jpeg 或 png，文件大小不超过 5 兆)</p>
+                      请上传正确的简历文档或图片(文档格式为 doc 或 docx 或 pdf，图片格式为 jpg 或 jpeg 或 png，单个文档或图片体积小于 5 兆，文档最多一个，图片可以多个)</p>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='hasComres' && staff.hasComres">
@@ -942,6 +944,7 @@
                   <el-form-item v-if="staffShareOption.contractUrl" label="期权合同">
                     <a v-if="model.shareOption.contractUrl"
                        :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`"></a>
+                    <span v-else>未上传</span>
                   </el-form-item>
                 </div>
               </div>
@@ -1195,7 +1198,8 @@
           diplomaUrl: '', // 学位证书
           greducaCertUrl: '', // 毕业证书
           technicalTitle: '', // 职称
-          resumeUrl: '', // 简历
+//          resumeUrl: '', // 简历
+          resumeUrls: [],
           hasComres: false, // 有无竞业协议
           hasComresRmk: '', // 竞业协议备注信息
           emplsepacertUrl: '', // 离职证明
@@ -1221,7 +1225,7 @@
               startTime: '', // 合同生效日期
               contractPeriod: '', // 合同期限
               endTime: '', // 合同结束日期
-              contractUrl: '', // 合同附件
+              contractUrls: [], // 合同附件
               recruitmentChannel: '', // 候选人来源渠道
             }
           },
@@ -1718,19 +1722,53 @@
       },
       resumeUrlOk(res, file) {
         if (res.code === 200) {
-          this.model.resumeUrl = res.result;
+          this.model.resumeUrls.push({
+            uid: null,
+            staffUid: null,
+            url: res.result
+          });
+//          this.model.resumeUrl = res.result;
         }
       },
       beforeResumeUrl(file) {
+//        let isDoc = utils.isDoc(file);
+//        let isImage = utils.isImage(file);
+//        let isInSize = utils.isInSize(file, 5);
+//        if ((isDoc || isImage) && isInSize) {
+//          this.resumeUrlErrFlag = false;
+//        } else {
+//          this.resumeUrlErrFlag = true;
+//        }
+//        return (isDoc || isImage) && isInSize;
+
+        let noMoreDoc = function (file) {
+          let flag = 0;
+          this.model.resumeUrls.forEach(v => {
+            if (utils.isDoc({name: v.url})) flag++;
+          });
+          return !flag;
+        };
+        let hasDoc = function () {
+          let flag = 0;
+          this.model.resumeUrls.forEach(v => {
+            if (utils.isDoc({name: v.url})) flag++;
+          });
+          return flag > 0;
+        }.bind(this)();
         let isDoc = utils.isDoc(file);
         let isImage = utils.isImage(file);
         let isInSize = utils.isInSize(file, 5);
-        if ((isDoc || isImage) && isInSize) {
+
+        if (isInSize && (isImage || (!hasDoc && isDoc))) {
           this.resumeUrlErrFlag = false;
+          return true;
         } else {
           this.resumeUrlErrFlag = true;
+          return false;
         }
-        return (isDoc || isImage) && isInSize;
+      },
+      isFormatImg(url) {
+        return utils.isImage({name: url});
       },
       emplsepacertUrlOk(res, file) {
         if (res.code === 200) {
@@ -1764,7 +1802,7 @@
       },
       recordContractUrlOk(res, file) {
         if (res.code === 200) {
-          this.model.record.contract.contractUrl = res.result;
+          this.model.record.contract.contractUrls = res.result;
         }
       },
       beforeRecordContractUrl(file) {
@@ -1874,7 +1912,8 @@
           out.diplomaUrl = this.model.diplomaUrl; // 学位证书
           out.greducaCertUrl = this.model.greducaCertUrl; // 毕业证书
           out.technicalTitle = this.model.technicalTitle; // 职称
-          out.resumeUrl = this.model.resumeUrl; // 简历
+//          out.resumeUrl = this.model.resumeUrl; // 简历
+          out.resumeUrls = this.model.resumeUrls; // 简历
           out.hasComres = this.model.hasComres; // boolean 有无竞业协议
           out.hasComresRmk = this.model.hasComresRmk; // 竞业协议备注信息
           out.emplsepacertUrl = this.model.emplsepacertUrl; // 离职证明
@@ -1901,20 +1940,20 @@
               o.startTime = new Date(v.startTime).getTime();
               o.contractPeriod = v.contractPeriod;
               o.endTime = Number(moment(this.formalEndTime).format('x'));
-              o.contractUrl = v.contractUrl;
+              o.contractUrls = v.contractUrls;
               o.recruitmentChannel = v.recruitmentChannel;
               record.baseSalary = this.model.record.baseSalary; // 基础薪资
               record.trialSalary = this.model.record.trialSalary; // 试用薪资
             } else if (v.contracType === '1') {
               o.startTime = new Date(v.startTime).getTime();
               o.endTime = new Date(v.endTime).getTime();
-              o.contractUrl = v.contractUrl;
+              o.contractUrls = v.contractUrls;
             } else if (v.contracType === '2') {
-              o.contractUrl = v.contractUrl;
+              o.contractUrls = v.contractUrls;
             } else if (v.contracType === '3') {
               o.startTime = new Date(v.startTime).getTime();
               o.endTime = new Date(v.endTime).getTime();
-              o.contractUrl = v.contractUrl;
+              o.contractUrls = v.contractUrls;
             }
             if (this.model.uid) {
               o.uid = v.uid;
@@ -2111,7 +2150,8 @@
           this.model.diplomaUrl = emp.diplomaUrl || ''; // 学位证书
           this.model.greducaCertUrl = emp.greducaCertUrl || ''; // 毕业证书
           this.model.technicalTitle = emp.technicalTitle || ''; // 职称
-          this.model.resumeUrl = emp.resumeUrl || ''; // 简历
+//          this.model.resumeUrl = emp.resumeUrl || ''; // 简历
+          this.model.resumeUrls = emp.resumeUrls || []; // 简历
           this.model.hasComres = emp.hasComres; // 有无竞业协议
           this.model.hasComresRmk = emp.hasComresRmk || ''; // 竞业协议备注信息
           this.model.emplsepacertUrl = emp.emplsepacertUrl || ''; // 离职证明
@@ -2141,7 +2181,7 @@
           this.model.record.contract.startTime = dateProcess1(emp.record.contract.startTime); // 合同生效日期
           this.model.record.contract.contractPeriod = emp.record.contract.contractPeriod || ''; // 合同期限
           this.model.record.contract.endTime = dateProcess1(emp.record.contract.endTime); // 合同结束日期
-          this.model.record.contract.contractUrl = emp.record.contract.contractUrl || ''; // 合同附件
+          this.model.record.contract.contractUrls = emp.record.contract.contractUrls || ''; // 合同附件
           this.model.record.contract.recruitmentChannel = toNum(emp.record.contract.recruitmentChannel); // 候选人来源渠道
           this.model.shareOption.uid = this.model.uid;
           this.model.shareOption.uid = emp.shareOption.uid;
@@ -2421,12 +2461,19 @@
       display: inline-block;
       position: relative;
     }
-
+    .my-data .upload-img-box {
+      box-sizing: border-box;
+      display: inline-block;
+      padding: 0 5px;
+      width: 33.33%;
+    }
     .my-data .upload-img-wrapper img {
       display: block;
       max-width: 100%;
     }
-
+    .my-data .child-imgBox {
+      padding-left: 105px;
+    }
     .my-data .child-img {
       display: block;
       width: 100%;
