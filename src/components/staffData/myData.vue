@@ -122,7 +122,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.passportUrl" class="upload-img-wrapper">
-                      <img :src="model.passportUrl" @click="imageScaleOpen(model.passportUrl)"/>
+                      <img :src="model.passportUrl" @click="imageScaleOpen(model.passportUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="passportUrlErrFlag">
                       请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -158,7 +158,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
-                      <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl)"/>
+                      <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">
                       请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -183,7 +183,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
-                      <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev)"/>
+                      <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">
                       请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -250,7 +250,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
-                      <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl)"/>
+                      <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">
                       请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -345,7 +345,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
-                      <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl)"/>
+                      <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">
                       请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -370,7 +370,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
-                      <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl)"/>
+                      <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerphoUrlErrFlag">
                       请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -395,7 +395,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
-                      <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl)"/>
+                      <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerrevphoUrlErrFlag">
                       请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -573,7 +573,7 @@
                         </el-button>
                         <div class="child-imgBox">
                           <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
-                               @click="imageScaleOpen(item.birthCertifUrl)"/>
+                               @click="imageScaleOpen(item.birthCertifUrl,true)"/>
                         </div>
                         <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                       </el-form-item>
@@ -664,7 +664,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.diplomaUrl" class="upload-img-wrapper">
-                      <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl)"/>
+                      <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="diplomaUrlErrFlag">
                       请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -689,7 +689,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
-                      <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl)"/>
+                      <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">
                       请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -707,7 +707,7 @@
                   <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrl"
                                 :rules="{required: staff.resumeUrl.isrequired, message: '请上传简历', trigger: 'blur'}">
                     <el-upload
-                      v-if="staff.resumeUrl.isedit"
+                      v-if="staff.resumeUrl.isedit && !resumeEdit"
                       action="/api/v1.0/client/upload"
                       name="files"
                       :show-file-list="false"
@@ -718,14 +718,42 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                       </el-button>
                     </el-upload>
+                    <el-button size="small" v-if="staff.resumeUrl.isedit && !resumeEdit" @click="resumeDel"
+                               class="upload-img-delBtn">
+                      <span><i class="el-icon-delete"></i>删除</span>
+                    </el-button>
+                    <el-button type="danger" size="small" v-if="staff.resumeUrl.isedit && resumeEdit"
+                               @click="resumeConfirm">
+                      <span><i class="el-icon-delete"></i>确定删除</span>
+                    </el-button>
+                    <el-button size="small" v-if="staff.resumeUrl.isedit && resumeEdit" @click="resumeCancel">
+                      <span><i class="el-icon-circle-cross"></i>取消</span>
+                    </el-button>
                     <el-button type="primary" size="small" v-if="!staff.resumeUrl.isedit"
                                :disabled="!staff.resumeUrl.isedit">
                       <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                     </el-button>
+                    <el-button size="small" v-if="!staff.resumeUrl.isedit"
+                               :disabled="!staff.resumeUrl.isedit">
+                      <span><i class="el-icon-delete"></i>删除</span>
+                    </el-button>
                     <div v-if="model.resumeUrls.length" class="upload-img-wrapper">
-                      <div v-for="(item, idx) in model.resumeUrls" :class="{'upload-img-box':isFormatImg(item.url)}">
-                        <img v-if="isFormatImg(item.url)" :src="item.url" @click="imageScaleOpen(item.url)"/>
-                        <a v-else :href="item.url + `&openId=${tokenHeader.openId}`">文档上传成功</a>
+                      <div v-for="(item, idx) in model.resumeUrls" class="upload-img-box"
+                           @click="imageScaleOpen(item.url,idx)" v-if="isFormatImg(item.url)">
+                        <img :src="item.url"/>
+                        <i class="el-icon-circle-check upload-img-icon" v-if="resumeEdit"
+                           :class="{'upload-img-iconColor':model.resumeUrls[idx].state}"></i>
+                      </div>
+                      <div v-for="(item, idx) in model.resumeUrls" class="upload-img-box upload-img-box1"
+                           @click="imageScaleOpen(item.url,idx)" v-if="!(isFormatImg(item.url))">
+                        <div v-if="!(isFormatImg(item.url))" class="upload-document-box">
+                          <div :class="{'upload-document-main':resumeEdit}">
+                            <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
+                            <span>已上传</span>
+                          </div>
+                          <i class="el-icon-circle-check upload-img-icon" v-if="resumeEdit"
+                             :class="{'upload-img-iconColor':model.resumeUrls[idx].state}"></i>
+                        </div>
                       </div>
                     </div>
                     <p class="uploadErrorTip" v-show="resumeUrlErrFlag">
@@ -768,7 +796,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
-                      <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl)"/>
+                      <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl,true)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">
                       请上传正确的离职证明照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -927,12 +955,12 @@
                 </div>
                 <div v-else-if="confListItem.jname==='awardRound' && staffShareOption.awardRound">
                   <el-form-item v-if="staffShareOption.awardRound" label="授予轮次">
-                    <span>{{model.shareOption.awardRound}}轮</span>
+                    <span v-text="model.shareOption.awardRound?(model.shareOption.awardRound+'轮'):''"></span>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='exercSchedule' && staffShareOption.exercSchedule">
                   <el-form-item v-if="staffShareOption.exercSchedule" label="行权期">
-                    <span>{{model.shareOption.exercSchedule}}月</span>
+                    <span v-text="model.shareOption.exercSchedule?(model.shareOption.exercSchedule+'月'):''"></span>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='terminallyCount' && staffShareOption.terminallyCount">
@@ -942,9 +970,11 @@
                 </div>
                 <div v-else-if="confListItem.jname==='contractUrl' && staffShareOption.contractUrl">
                   <el-form-item v-if="staffShareOption.contractUrl" label="期权合同">
-                    <a v-if="model.shareOption.contractUrl"
-                       :href="model.shareOption.contractUrl + `&openId=${tokenHeader.openId}`"></a>
-                    <span v-else>未上传</span>
+                    <div class="shareOption-document-main" v-if="model.shareOption.contractUrl">
+                      <img src="../../assets/ico_document.png" alt="">
+                      <br/>
+                      <span>已上传</span>
+                    </div>
                   </el-form-item>
                 </div>
               </div>
@@ -1018,6 +1048,7 @@
         type: 0,
         pos: 0, // 如果日期是在数组中，判断在数组中的位置
         // =====日历选择器字段结束=====
+        resumeEdit: false,// 简历编辑状态
 
         startTimeValue1: '',
         imageScale: false,// 图片点击全屏显示
@@ -1725,7 +1756,8 @@
           this.model.resumeUrls.push({
             uid: null,
             staffUid: null,
-            url: res.result
+            url: res.result,
+            state: false
           });
 //          this.model.resumeUrl = res.result;
         }
@@ -1914,6 +1946,9 @@
           out.technicalTitle = this.model.technicalTitle; // 职称
 //          out.resumeUrl = this.model.resumeUrl; // 简历
           out.resumeUrls = this.model.resumeUrls; // 简历
+          for (let i = 0; i < out.resumeUrls.length; i++) {
+            delete out.resumeUrls[i].state;
+          }
           out.hasComres = this.model.hasComres; // boolean 有无竞业协议
           out.hasComresRmk = this.model.hasComresRmk; // 竞业协议备注信息
           out.emplsepacertUrl = this.model.emplsepacertUrl; // 离职证明
@@ -2151,7 +2186,14 @@
           this.model.greducaCertUrl = emp.greducaCertUrl || ''; // 毕业证书
           this.model.technicalTitle = emp.technicalTitle || ''; // 职称
 //          this.model.resumeUrl = emp.resumeUrl || ''; // 简历
+//          for (let i = 0; i < this.model.resumeUrls.length; i++) {
+//            this.model.resumeUrls[i].state = false;
+//          }
+          for (let i = 0; i < emp.resumeUrls.length; i++) {
+            emp.resumeUrls[i].state = false;
+          }
           this.model.resumeUrls = emp.resumeUrls || []; // 简历
+
           this.model.hasComres = emp.hasComres; // 有无竞业协议
           this.model.hasComresRmk = emp.hasComresRmk || ''; // 竞业协议备注信息
           this.model.emplsepacertUrl = emp.emplsepacertUrl || ''; // 离职证明
@@ -2207,10 +2249,26 @@
           })
           .catch(err => console.log(err.status, err.statusText));
       },
+      //选择图片
+      imageSelect(data){
+        if (this.model.resumeUrls[data].state) {
+          this.model.resumeUrls[data].state = false;
+        } else {
+          this.model.resumeUrls[data].state = true;
+        }
+        return this.model.resumeUrls[data];
+      },
       // 图片点击全屏放大
-      imageScaleOpen(data){
-        this.imageScale = true;
-        this.imageScaleUrl = data;
+      imageScaleOpen(data, state){
+        if (state === true || ((state !== true) && !this.resumeEdit)) {
+          if (this.isFormatImg(data)) {
+            this.imageScale = true;
+            this.imageScaleUrl = data;
+          }
+        } else {
+          // 监听数组中属性变化不然监听不到
+          this.$set(this.model.resumeUrls, state, this.imageSelect(state));
+        }
       },
       //关闭图片放大
       imageScaleClose(){
@@ -2221,7 +2279,37 @@
           this.model.dateOfBirth = `${data.substring(6, 10)}-${data.substring(10, 12)}-${data.substring(12, 14)}`;
           this.model.gender = (+data.toString().trim()[16]) % 2 === 0 ? 0 : 1;
         }
+      },
+      // 选择删除简历状态
+      resumeDel(){
+        for (let i = 0; i < this.model.resumeUrls.length; i++) {
+          if (this.model.resumeUrls[i].state) {
+            this.model.resumeUrls[i].state = false;
+          }
+        }
+        this.resumeEdit = true;
+      },
+      // 确认删除简历按钮
+      resumeConfirm(){
+        for (let i = 0; i < this.model.resumeUrls.length; i++) {
+          if (this.model.resumeUrls[i].state) {
+            this.model.resumeUrls.splice(i, 1);
+            i--;
+          }
+        }
+        this.resumeEdit = false;
+      },
+      // 删除简历取消按钮
+      resumeCancel(){
+        this.resumeEdit = false;
+      },
+      //判断简历附件是否选中
+      resumeSelect(){
+        if (this.resumeEdit) {
+          return true;
+        }
       }
+
     },
     mounted: function () {
       V.Promise.all([
@@ -2419,6 +2507,7 @@
     .my-data .el-form-item__label {
       font-weight: 900;
       font-size: 15px;
+      color: #457aa3;
     }
     .my-data .contact-box {
       width: 100%;
@@ -2460,18 +2549,75 @@
     .my-data .upload-img-wrapper {
       display: inline-block;
       position: relative;
+      margin-top: 10px;
+    }
+    .my-data .upload-img-delBtn {
+      float: left;
+      margin-top: -31px;
+      margin-left: 95px;
     }
     .my-data .upload-img-box {
       box-sizing: border-box;
       display: inline-block;
-      padding: 0 5px;
+      padding: 0 5px 0 0;
       width: 33.33%;
+      height: 60px;
+    }
+    .my-data .upload-img-box1 {
+      padding: 0;
+      width: 100%;
+      .upload-document-box {
+        box-sizing: border-box;
+        padding: 0 5px 0 0;
+        width: 33.33%;
+        text-align: center;
+        line-height: 1;
+        .upload-document-main {
+          box-sizing: border-box;
+          padding: 5px 0;
+          height: 60px;
+          background: lightgray;
+        }
+        img {
+          margin: 0 auto;
+        }
+        span {
+          font-size: 12px;
+        }
+      }
     }
     .my-data .upload-img-wrapper img {
       display: block;
-      max-width: 100%;
+      width: 100%;
+      height: 100%;
+    }
+    .my-data .shareOption-document-main {
+      padding: 5px 0;
+      height: 50px;
+      line-height: 1;
+    }
+
+    .my-data .upload-img-wrapper .upload-img-document, .my-data .shareOption-document-main img {
+      width: 32px;
+      height: 35px;
+    }
+    .my-data .upload-img-wrapper .upload-img-icon {
+      position: relative;
+      float: right;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #ffffff;
+      border-radius: 50%;
+      margin-top: -20px;
+      margin-right: 4px;
+      background: #ffffff;
+      color: rgb(116, 115, 113);
+    }
+    .my-data .upload-img-wrapper .upload-img-iconColor {
+      color: rgb(33, 161, 252);
     }
     .my-data .child-imgBox {
+      margin-top: 10px;
       padding-left: 105px;
     }
     .my-data .child-img {
@@ -2487,7 +2633,6 @@
     .my-data .el-date-editor.el-input {
       width: 100%;
     }
-
     .my-data .child .el-form-item__content {
       margin-left: 0 !important;
     }
