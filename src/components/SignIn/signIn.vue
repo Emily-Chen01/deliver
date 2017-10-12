@@ -204,6 +204,7 @@
         absenteeismStatus: false, //上班 旷工打卡
         absenteeismStatusAlert: false, //打卡成功弹框中的旷工标签
         lateStatus: false, //迟到状态
+        lateState: false, // 打卡弹框迟到状态
         isYellowAddQ: false,  //打卡成功弹框中的区域外标签
         initDaKaRecord: false, //上班打卡信息是否正常打卡
         leaveEarly: false,  //早退
@@ -285,14 +286,13 @@
                 if (this.toDaKaStatusIsOutsideInit) { //区域外打卡
                   this.toOutArea = true;
                   this.toUpAbsenteeismStatus = true;
-                } else if (this.toDaKaStatusIsInit === 0) {//正常打卡显示
-                  this.initDaKaRecord = true;
                 }
-                if (this.toDaKaStatusIsInit === 1) { //迟到
+                if (this.toDaKaStatusIsInit === 0) {//正常打卡显示
+                  this.initDaKaRecord = true;
+                } else if (this.toDaKaStatusIsInit === 1) { //迟到
                   this.lateStatus = true; //上班的迟到状态
                   this.toUpForgetPunch = true; //忘打卡按钮
-                }
-                if (this.toDaKaStatusIsInit === 2) { //旷工打卡显示
+                } else if (this.toDaKaStatusIsInit === 2) { //旷工打卡显示
                   this.absenteeismStatus = true;
                   this.toUpForgetPunch = true;//忘打卡按钮
                 }
@@ -308,17 +308,16 @@
                 if (this.toDownKaStatusIsOutsideInit) { //区域外打卡显示
                   this.downOutArea = true;
                   this.toDownAbsenteeismStatus = true;
-                } else if (this.toDownKaStatusIsInit === 0) {//正常打卡显示
-                  this.initDownRecord = true;
                 }
-                if (this.toDownKaStatusIsInit === 1) { //早退
+                if (this.toDownKaStatusIsInit === 0 || this.toDownKaStatusIsInit === 2) {//正常打卡显示
+                  if (this.toDownKaStatusIsInit === 2) { //加班打卡显示
+                    this.toDownAddTimeStatus = true;
+                  }
+                  this.initDownRecord = true;
+                } else if (this.toDownKaStatusIsInit === 1) { //早退
                   this.leaveEarly = true; //下班早退
                   this.toDownAbsenteeismStatus = true;
-                }
-                if (this.toDownKaStatusIsInit === 2) { //加班打卡显示
-                  this.toDownAddTimeStatus = true;
-                }
-                if (this.toDownKaStatusIsInit === 3) { //旷工打卡显示
+                }else if (this.toDownKaStatusIsInit === 3) { //旷工打卡显示
                   this.toDownKuang = true;
                   this.toDownAbsenteeismStatus = true;
                 }
@@ -600,7 +599,8 @@
               self.alertToSpan = true;//sapn 上班
               self.alertDownSpan = false; //sapn 下班
               self.absenteeismStatusAlert = false; // 打卡成功弹框中旷工标签
-              self.lateStatus = false;
+//              self.lateStatus = false;
+              self.lateState = false;
               self.isYellowAddQ = false; // 打卡成功弹框中区域外标签
               self.downClickSpan = true; // 打卡按钮 下班打卡
               if (response.body.result.twTime) {
@@ -608,13 +608,12 @@
               }
               if (self.toDaKaStatusIsOutside) { //区域外   条件？？？？？
                 self.isYellowAddQ = true; //alert区域外
-              } else if (self.toDaKaStatusIs === 0) {//正常打卡显示
+              }
+              if (self.toDaKaStatusIs === 0) {//正常打卡显示
                 self.initDownRecord = true;
-              }
-              if (self.toDaKaStatusIs === 1) { //迟到打卡显示
-                self.lateStatus = true;
-              }
-              if (self.toDaKaStatusIs === 2) { //旷工打卡显示
+              } else if (self.toDaKaStatusIs === 1) { //迟到打卡显示
+                self.lateState = true;
+              } else if (self.toDaKaStatusIs === 2) { //旷工打卡显示
                 self.absenteeismStatusAlert = true;
               }
 
@@ -624,7 +623,7 @@
               self.alertDownSpan = true; //sapn 下班
               self.popupVisible = true; //弹出的模态框打卡
               self.absenteeismStatusAlert = false;
-              self.lateStatus = false;
+              self.lateState = false;
               self.toDownAbsenteeismStatus = false;
               self.isYellowAddQ = false; // 打卡成功弹框中区域外标签
               self.leaveEarly = false; // 下班早退
@@ -635,13 +634,12 @@
               if (self.toDownKaStatusIsOutside) { //区域外打卡显示
                 self.isYellowAddQ = true;
                 self.toDownAbsenteeismStatus = true; //提出请假外出申请
-              } else if (self.toDownKaStatusIs === 0) {//正常打卡显示
+              }
+              if (self.toDownKaStatusIs === 0) {//正常打卡显示
                 self.initDownRecord = true;
-              }
-              if (self.toDownKaStatusIs === 1) { //早退打卡显示
+              } else if (self.toDownKaStatusIs === 1) { //早退打卡显示
                 self.leaveEarly = true;
-              }
-              if (self.toDownKaStatusIs === 3) { //旷工打卡显示
+              } else if (self.toDownKaStatusIs === 3) { //旷工打卡显示
                 self.toDownAbsenteeismStatus = true;
                 self.absenteeismStatusAlert = true;
               }

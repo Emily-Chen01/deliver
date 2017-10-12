@@ -29,19 +29,19 @@
       <div id="record-list-wrapper">
         <div @click="changeList(0)">
           <mt-cell title="请假申请" is-link>
-            <span v-text="recordShow.apply ? recordShow.apply : '当前无申请记录'">{{}}</span>
+            <span v-text="recordShow.apply ? recordShow.apply : '当前无申请记录'"></span>
             <img slot="icon" :src="imgSrc.ico_leave" class="ImgIcon">
           </mt-cell>
         </div>
         <div @click="changeList(1)">
           <mt-cell title="我的考勤" is-link>
-            <span v-text="recordShow.punchCard ? recordShow.punchCard : '本月无考勤异常'">{{}}</span>
+            <span v-text="recordShow.punchCard ? recordShow.punchCard : '本月无考勤异常'"></span>
             <img slot="icon" :src="imgSrc.ico_attendance" class="ImgIcon">
           </mt-cell>
         </div>
         <div @click="changeList(2)">
           <mt-cell title="我的工资条" is-link>
-            <span v-text="recordShow.salary ? recordShow.salary : '当前无工资条记录'">{{}}</span>
+            <span v-text="recordShow.salary ? recordShow.salary : '当前无工资条记录'"></span>
             <img slot="icon" :src="imgSrc.ico_wage" class="ImgIcon">
           </mt-cell>
         </div>
@@ -288,7 +288,7 @@
       }
       /*覆盖组件原有样式*/
       .mint-cell {
-        border-top: 1px solid #d9d9d9;
+        /*border-top: 1px solid #d9d9d9;*/
       }
       .mint-cell-text, .mint-cell-value {
         font-size: 14px;
