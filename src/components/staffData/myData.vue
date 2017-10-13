@@ -1311,7 +1311,6 @@
         //国家信息列表
         if (res[1].body.code === 200) {
           this.states = res[1].body.result;
-          console.log(this.states);
         }
       });
     },
@@ -2571,6 +2570,7 @@
       display: inline-block;
       position: relative;
       margin-top: 10px;
+      width: 100%;
     }
     .my-data .upload-img-delBtn {
       float: left;
