@@ -134,7 +134,7 @@
                     <select :disabled=" !staff.nativePlace.isedit" v-model="model.state"
                             :class="{'option-color':!model.state}">
                       <option value="" disabled>请选择</option>
-                      <option v-for="item in states" :key="item.id" :label="item.name" :value="item.id"></option>
+                      <option v-for="item in states" :key="item.id" v-text="item.name" :value="item.id"></option>
                     </select>
                   </el-form-item>
                 </div>
@@ -417,7 +417,7 @@
                             :class="{'option-color':!model.residenceProvince}"
                             @change="queryResidenceCities(model.residenceProvince)">
                       <option value="" disabled>请选择</option>
-                      <option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></option>
+                      <option v-for="p in provinces" :key="p.uid" v-text="p.name" :value="p.uid"></option>
                     </select>
                   </el-form-item>
 
@@ -427,7 +427,7 @@
                     <select :disabled="!staff.ResperMessage.isedit" v-model="model.residenceCity"
                             :class="{'option-color':!model.residenceCity}">
                       <option value="" disabled>请选择</option>
-                      <option v-for="c in residenceCities" :key="c.uid" :label="c.name" :value="c.uid"></option>
+                      <option v-for="c in residenceCities" :key="c.uid" v-text="c.name" :value="c.uid"></option>
                     </select>
                   </el-form-item>
 
@@ -453,7 +453,7 @@
                             :class="{'option-color':!model.poreProvince}"
                             @change="queryPoreCities(model.poreProvince)">
                       <option value="" disabled>请选择</option>
-                      <option v-for="p in provinces" :key="p.uid" :label="p.name" :value="p.uid"></option>
+                      <option v-for="p in provinces" :key="p.uid" v-text="p.name" :value="p.uid"></option>
                     </select>
                   </el-form-item>
 
@@ -463,7 +463,7 @@
                     <select :disabled="!staff.poreLocation.isedit" v-model="model.poreCity"
                             :class="{'option-color':!model.poreCity}">
                       <option value="" disabled>请选择</option>
-                      <option v-for="c in poreCities" :key="c.uid" :label="c.name" :value="c.uid"></option>
+                      <option v-for="c in poreCities" :key="c.uid" v-text="c.name" :value="c.uid"></option>
                     </select>
                   </el-form-item>
 
@@ -1177,7 +1177,7 @@
         depts: null,
         contractTypes: null,
         recruitmentChannels: ['百度', '51job', '智联', '推荐', 'boss 直聘'],
-        states: null,
+        states: [],
         model: {
           uid: '',
           name: '',
@@ -1311,6 +1311,7 @@
         //国家信息列表
         if (res[1].body.code === 200) {
           this.states = res[1].body.result;
+          console.log(this.states);
         }
       });
     },
