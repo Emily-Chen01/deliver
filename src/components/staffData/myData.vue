@@ -718,7 +718,8 @@
                         <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
                       </el-button>
                     </el-upload>
-                    <el-button size="small" v-if="staff.resumeUrl.isedit && !resumeEdit" @click="resumeDel"
+                    <el-button size="small" v-if="staff.resumeUrl.isedit && !resumeEdit && model.resumeUrls.length"
+                               @click="resumeDel"
                                class="upload-img-delBtn">
                       <span><i class="el-icon-delete"></i>删除</span>
                     </el-button>
@@ -836,10 +837,10 @@
                     <span>{{recruitmentChannels[+model.record.contract.recruitmentChannel]}}</span>
                   </el-form-item>
                   <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="基础薪资">
-                    <span>{{model.record.baseSalary}}元</span>
+                    <span v-text="model.record.baseSalary?(model.record.baseSalary+'元'):''"></span>
                   </el-form-item>
                   <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用薪资">
-                    <span>{{model.record.trialSalary}}元</span>
+                    <span v-text="model.record.trialSalary?(model.record.trialSalary+'元'):''"></span>
                   </el-form-item>
                   <el-form-item v-if="model.record.contract.contracType === '0' && staffRecord.contracMes" label="试用期">
                     <span>{{probations && probations[model.record.probation.toString()]}}</span>
@@ -870,6 +871,25 @@
                   <el-form-item label="兼职协议结束日期"
                                 v-if="model.record.contract.contracType === '3' && staffRecord.contracMes">
                     <span>{{datefmt(model.record.contract.endTime)}}</span>
+                  </el-form-item>
+                  <el-form-item label="合同附件">
+                    <div v-if="model.record.contract.contractUrls.length&&model.record.contract.contractUrls[0].url"
+                         class="upload-img-wrapper">
+                      <div v-for="(item, idx) in model.record.contract.contractUrls" class="upload-img-box"
+                           @click="imageScaleOpen(item.url,true)" v-if="isFormatImg(item.url)">
+                        <img :src="item.url"/>
+                      </div>
+                      <div v-for="(item, idx) in model.record.contract.contractUrls"
+                           class="upload-img-box upload-img-box1"
+                           @click="imageScaleOpen(item.url,true)" v-if="!(isFormatImg(item.url))">
+                        <div v-if="!(isFormatImg(item.url))" class="upload-document-box">
+                          <div :class="{'upload-document-main':resumeEdit}">
+                            <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
+                            <span>已上传</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='dateOfEntry' && staffRecord.dateOfEntry">
