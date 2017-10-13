@@ -328,10 +328,16 @@
       shengqingclick(){ //初始是选中一个select然后进行参数选中为了提交用
         this.updateImage = true; //上传图片按钮是否隐藏 true显示false隐藏
         this.changeApply = false; //假期类型隐藏
+        let state = false;
         for (let i = 0; i < this.applyTypeArray.length; i++) {
           if (this.selectedDataApply === this.applyTypeArray[i].type) {
             this.shengqingParam = this.applyTypeArray[i].uid;
+            state = true;
           }
+        }
+        if (!state) {
+          this.selectedDataApply = this.applyTypeArray[0].type;
+          this.shengqingParam = this.applyTypeArray[0].uid;
         }
         if (this.selectedDataApply === 0) { //请假
           this.changeApply = true; //假期类型显示
