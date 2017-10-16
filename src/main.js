@@ -20,14 +20,10 @@ import {
   Indicator,
   Cell
 } from 'mint-ui';
-import Mint from 'mint-ui';
 import VueResource from 'vue-resource'
-import 'mint-ui/lib/style.css'
 
-Vue.use(Mint);
 Vue.use(VueResource);
 Vue.use(Indicator);
-
 Vue.component(Tabbar.name, Tabbar);
 Vue.component(TabItem.name, TabItem);
 Vue.component(Navbar.name, Navbar);

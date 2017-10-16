@@ -530,7 +530,7 @@
                   <div class="child-box" v-if="staff.hasChilds && model.hasChild">
                     <div class="child" v-for="(item, idx) in model.childs">
                       <el-form-item label="子女姓名" :prop="'childs[' + idx + '].name'" label-position="top"
-                                    labelWidth="105px"
+                                    labelWidth="125px"
                                     :rules="[{required: staff.hasChilds.isrequired, message: '请输入子女姓名', trigger: 'change'},
                                     {message: ' 长度小于32个字符', trigger: 'blur', max: 32,}]">
                         <el-input :disabled="!staff.hasChilds.isedit" placeholder="请输入子女姓名" v-model="item.name">
@@ -540,21 +540,21 @@
                           </el-button>
                         </el-input>
                       </el-form-item>
-                      <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'" labelWidth="105px"
+                      <el-form-item label="子女性别" :prop="'childs[' + idx + '].gender'" labelWidth="125px"
                                     :rules="{required: staff.hasChilds.isrequired,type: 'number', message: '请选择子女性别', trigger: 'blur'}">
                         <el-radio-group :disabled="!staff.hasChilds.isedit" v-model="item.gender">
                           <el-radio :label="1">男</el-radio>
                           <el-radio :label="0">女</el-radio>
                         </el-radio-group>
                       </el-form-item>
-                      <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="105px"
+                      <el-form-item label="子女出生日期" :prop="'childs[' + idx + '].dateOfBirth'" labelWidth="125px"
                                     :rules="{required: staff.hasChilds.isrequired,type: 'date', message: '请选择出生日期', trigger: 'blur',validator:isDate}">
                         <p class="pl10" v-if="staff.hasChilds.isedit"
                            v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期' "
                            @click="openPicker(0,3,idx,item.dateOfBirth)"></p>
                         <p class="pl10 fc-bbb" v-else v-text="item.dateOfBirth ? item.dateOfBirth:'请选择日期'"></p>
                       </el-form-item>
-                      <el-form-item label="子女出生证明" labelWidth="105px">
+                      <el-form-item label="子女出生证明" labelWidth="125px">
                         <el-upload
                           v-if="staff.hasChilds.isedit"
                           action="/api/v1.0/client/upload"
@@ -1043,12 +1043,46 @@
 <script>
 
   import moment from 'moment'
-  import ElementUI from 'element-ui'
   import 'element-ui/lib/theme-default/index.css'
-  import V from 'vue'
-  import utils from '@/components/utils'
-  import {Indicator, Switch} from 'mint-ui';
-  V.use(ElementUI);
+  import Vue from 'vue'
+  import {
+    Input,
+    InputNumber,
+    Radio,
+    RadioGroup,
+    RadioButton,
+    Switch,
+    Select,
+    Option,
+    OptionGroup,
+    Button,
+    ButtonGroup,
+    Form,
+    FormItem,
+    Icon,
+    Row,
+    Col,
+    Upload,
+  } from 'element-ui'
+  Vue.use(Input);
+  Vue.use(InputNumber);
+  Vue.use(Radio);
+  Vue.use(RadioGroup);
+  Vue.use(RadioButton);
+  Vue.use(Switch);
+  Vue.use(Select);
+  Vue.use(Option);
+  Vue.use(OptionGroup);
+  Vue.use(Button);
+  Vue.use(ButtonGroup);
+  Vue.use(Form);
+  Vue.use(FormItem);
+  Vue.use(Icon);
+  Vue.use(Row);
+  Vue.use(Col);
+  Vue.use(Upload);
+  import utils from '@/components/utils';
+  import {Indicator} from 'mint-ui';
 
   let df1 = 'YYYY-MM-DD';
   let df2 = 'YYYY-MM';
@@ -1146,7 +1180,7 @@
           contractUrl: ''
         },
         publicParams: null,
-        labelWidth: '125px',
+        labelWidth: '140px',
         passportUrlErrFlag: '',
         idcardPhoUrlErrFlag: '',
         idcardPhoUrlRevErrFlag: '',
@@ -1299,7 +1333,7 @@
       // ====日历组件需求结束====
       this.status = false;
       Indicator.open('正在加载...');
-      V.Promise.all([
+      Vue.Promise.all([
         this.$http.get('/api/v1.0/common/config/6'),
         // 行业规模列表
         this.$http.get('/api/v1.0/common/config/20')
@@ -2332,7 +2366,7 @@
 
     },
     mounted: function () {
-      V.Promise.all([
+      Vue.Promise.all([
         this.$http.get('/api/v1.0/common/config/0'),
         this.$http.get('/api/v1.0/common/config/1'),
         this.$http.get('/api/v1.0/common/config/2'),
@@ -2419,7 +2453,6 @@
         color: black;
       }
     }
-
     .my-data {
       padding: 44px 0 70px;
       text-align: left;
@@ -2552,7 +2585,7 @@
       width: 70%;
     }
     .my-data .child .el-input {
-      width: 60%;
+      width: 50%;
       input {
         padding-left: 0;
       }
@@ -2583,10 +2616,12 @@
       padding: 0 5px 0 0;
       width: 33.33%;
       height: 60px;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
     .my-data .upload-img-box1 {
       padding: 0;
       width: 100%;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       .upload-document-box {
         box-sizing: border-box;
         padding: 0 5px 0 0;
@@ -2734,6 +2769,12 @@
         background-color: #ffffff;
       }
     }
+  }
+
+  // 复写lable原有样式
+  .el-form-item .el-form-item__label:before {
+    content: '';
+    margin-right: 12px;
   }
 
   /*修改tab样式结束*/

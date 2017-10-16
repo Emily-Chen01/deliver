@@ -37,8 +37,6 @@
   </div>
 </template>
 <script>
-  import Header from 'mint-ui';
-
   export default {
     data(){
       return {

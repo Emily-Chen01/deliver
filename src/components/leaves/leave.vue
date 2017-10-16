@@ -11,7 +11,7 @@
     <mt-tab-container v-model="selected" class="leave-main">
       <mt-tab-container-item id="1" class="leave-main-box">
         <div class="leave-main-box-apply">
-          <div class="leave-main-box-apply-left">申请分类</div>
+          <div class="leave-main-box-apply-left icon-stars">申请分类</div>
           <div class="leave-main-box-apply-center">
             <select v-model="selectedDataApply" @change="shengqingclick">
               <option v-for="option in applyTypeArray" :value="option.type" v-text="option.name"></option>
@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="leave-main-box-apply" v-if="changeApply">
-          <div class="leave-main-box-apply-left">假期分类</div>
+          <div class="leave-main-box-apply-left icon-stars">假期分类</div>
           <div class="leave-main-box-apply-center">
             <select v-model="selectedDataHoliday" @change="qingjiaclick(selectedDataHoliday)">
               <option>选择假期类型</option>
@@ -35,13 +35,13 @@
           </div>
         </div>
         <div class="leave-main-box-apply">
-          <div class="leave-main-box-apply-left">开始时间</div>
+          <div class="leave-main-box-apply-left icon-stars">开始时间</div>
           <div class="leave-main-box-apply-center" @click="openPicker(0)">
             <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"></span>
           </div>
         </div>
         <div class="leave-main-box-apply">
-          <div class="leave-main-box-apply-left">结束时间</div>
+          <div class="leave-main-box-apply-left icon-stars">结束时间</div>
           <div class="leave-main-box-apply-center" @click="openPicker(1)">
             <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"></span>
           </div>
@@ -62,7 +62,7 @@
             请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
         </div>
         <div class="leave-main-box-applyText">
-          <div class="leave-main-box-applyText-top">申请内容</div>
+          <div class="leave-main-box-applyText-top icon-stars">申请内容</div>
           <textarea placeholder="#请输入文字(不超过50字)" v-model="holidayModel"></textarea>
         </div>
         <div class="leave-main-box-apply" v-if="approvalTypeObj">
@@ -183,8 +183,7 @@
   </div>
 </template>
 <script>
-  import {DatetimePicker, Radio} from 'mint-ui';
-  import {Navbar, TabItem, Toast, MessageBox, Popup} from 'mint-ui';
+  import {DatetimePicker, Navbar, TabItem, Popup} from 'mint-ui';
   import utils from '@/components/utils'
   import moment from 'moment'
 
@@ -428,6 +427,11 @@
       padding-top: 44px;
       .leave-main-box {
         padding: 0 15px 15px;
+        .icon-stars:before {
+          content: '*';
+          color: #ff4949;
+          margin-right: 4px;
+        }
         .leave-main-box-apply {
           overflow: hidden;
           height: 50px;

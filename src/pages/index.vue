@@ -65,7 +65,7 @@
 </template>
 
 <script>
-  import {Navbar, TabItem, Toast, MessageBox, Popup, Indicator} from 'mint-ui';
+  import {Popup, Indicator} from 'mint-ui';
   import ManyCompany from "@/components/register/manyCompany"
   import Vue from 'vue'
   let timer1 = null;
