@@ -128,7 +128,7 @@
             </mt-button>
             <mt-button type="default"
                        class="punch-success-tabHeight article-tab-cd"
-                       v-if="lateStatus">
+                       v-if="lateState">
               <span>您迟到了</span>
             </mt-button>
             <mt-button type="default"
@@ -157,7 +157,7 @@
 </template>
 <script>
 
-  import {Navbar, TabItem, Toast, MessageBox, Popup, Indicator} from 'mint-ui';
+  import {MessageBox, Popup} from 'mint-ui';
   import moment from 'moment'
 
   let df = 'HH:mm:ss';
@@ -317,7 +317,7 @@
                 } else if (this.toDownKaStatusIsInit === 1) { //早退
                   this.leaveEarly = true; //下班早退
                   this.toDownAbsenteeismStatus = true;
-                }else if (this.toDownKaStatusIsInit === 3) { //旷工打卡显示
+                } else if (this.toDownKaStatusIsInit === 3) { //旷工打卡显示
                   this.toDownKuang = true;
                   this.toDownAbsenteeismStatus = true;
                 }

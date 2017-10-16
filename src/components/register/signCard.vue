@@ -75,8 +75,7 @@
   </div>
 </template>
 <script>
-  import {Indicator, Popup, Cell, MessageBox, Toast} from 'mint-ui';
-
+  import {Indicator, Cell, MessageBox, Toast} from 'mint-ui';
   export default {
     data(){
       return {
