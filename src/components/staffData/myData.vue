@@ -122,7 +122,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.passportUrl" class="upload-img-wrapper">
-                      <img :src="model.passportUrl" @click="imageScaleOpen(model.passportUrl,true)"/>
+                      <img :src="model.passportUrl" @click="imageScaleOpen(model.passportUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="passportUrlErrFlag">
                       请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -158,7 +158,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
-                      <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl,true)"/>
+                      <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlErrFlag">
                       请上传正确的身份证正面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -183,7 +183,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
-                      <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev,true)"/>
+                      <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="idcardPhoUrlRevErrFlag">
                       请上传正确的身份证背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -229,6 +229,52 @@
                     <el-input :disabled="!staff.bankName.isedit" placeholder="请输入银行卡号"
                               v-model="model.cardNumber"></el-input>
                   </el-form-item>
+
+                  <el-form-item v-if="staff.bankName" label="银行卡照片" prop="staffCardUrls"
+                                :rules="{required: staff.bankName.isrequired,type:'array', message: '请上传银行卡照片', trigger: 'blur'}">
+                    <el-upload
+                      v-if="staff.bankName.isedit && !bankCardEdit"
+                      action="/api/v1.0/client/upload"
+                      name="files"
+                      :show-file-list="false"
+                      :headers="tokenHeader"
+                      :on-success="staffCardUrlsOk"
+                      :before-upload="beforeStaffCardUrls">
+                      <el-button type="primary" size="small">
+                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      </el-button>
+                    </el-upload>
+                    <el-button size="small" v-if="staff.bankName.isedit && !bankCardEdit && model.staffCardUrls.length"
+                               @click="resumeDel(2)"
+                               class="upload-img-delBtn">
+                      <span><i class="el-icon-delete"></i>删除</span>
+                    </el-button>
+                    <el-button type="danger" size="small" v-if="staff.bankName.isedit && bankCardEdit"
+                               @click="resumeConfirm(2)">
+                      <span><i class="el-icon-delete"></i>确定删除</span>
+                    </el-button>
+                    <el-button size="small" v-if="staff.bankName.isedit && bankCardEdit" @click="resumeCancel(2)">
+                      <span><i class="el-icon-circle-cross"></i>取消</span>
+                    </el-button>
+                    <el-button type="primary" size="small" v-if="!staff.bankName.isedit"
+                               :disabled="!staff.bankName.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                    </el-button>
+                    <el-button size="small" v-if="!staff.bankName.isedit"
+                               :disabled="!staff.bankName.isedit">
+                      <span><i class="el-icon-delete"></i>删除</span>
+                    </el-button>
+                    <div v-if="model.staffCardUrls.length" class="upload-img-wrapper">
+                      <div v-for="(item, idx) in model.staffCardUrls" class="upload-img-box"
+                           @click="imageScaleOpen(item.url,2,idx)" v-if="isFormatImg(item.url)">
+                        <img :src="item.url"/>
+                        <i class="el-icon-circle-check upload-img-icon" v-if="bankCardEdit"
+                           :class="{'upload-img-iconColor':model.staffCardUrls[idx].state}"></i>
+                      </div>
+                    </div>
+                    <p class="uploadErrorTip" v-show="staffCardUrlsErrFlag">
+                      请上传正确的图片(图片格式为 jpg 或 jpeg 或 png，图片体积小于 5 兆，图片不超过2个)</p>
+                  </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='staffPhoUrl' && staff.staffPhoUrl">
                   <el-form-item v-if="staff.staffPhoUrl" label="员工照片" prop="staffPhoUrl"
@@ -250,7 +296,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
-                      <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl,true)"/>
+                      <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="staffPhoUrlErrFlag">
                       请上传正确的员工照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -345,7 +391,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
-                      <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl,true)"/>
+                      <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPhoUrlErrFlag">
                       请上传正确的户口本首页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -370,7 +416,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
-                      <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl,true)"/>
+                      <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerphoUrlErrFlag">
                       请上传正确的户口本本人页照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -395,7 +441,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
-                      <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl,true)"/>
+                      <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="houregPerrevphoUrlErrFlag">
                       请上传正确的户口本本人页背面照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -573,7 +619,7 @@
                         </el-button>
                         <div class="child-imgBox">
                           <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
-                               @click="imageScaleOpen(item.birthCertifUrl,true)"/>
+                               @click="imageScaleOpen(item.birthCertifUrl,0,0)"/>
                         </div>
                         <p class="uploadErrorTip" v-show="item.err">请上传正确的出生证明(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
                       </el-form-item>
@@ -664,7 +710,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.diplomaUrl" class="upload-img-wrapper">
-                      <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl,true)"/>
+                      <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="diplomaUrlErrFlag">
                       请上传正确的学位证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -689,7 +735,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
-                      <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl,true)"/>
+                      <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="greducaCertUrlErrFlag">
                       请上传正确的毕业证书照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -704,8 +750,8 @@
                   </el-form-item>
                 </div>
                 <div v-else-if="confListItem.jname==='resumeUrl' && staff.resumeUrl">
-                  <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrl"
-                                :rules="{required: staff.resumeUrl.isrequired, message: '请上传简历', trigger: 'blur'}">
+                  <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrls"
+                                :rules="{required: staff.resumeUrl.isrequired,type:'array', message: '请上传简历', trigger: 'blur'}">
                     <el-upload
                       v-if="staff.resumeUrl.isedit && !resumeEdit"
                       action="/api/v1.0/client/upload"
@@ -719,15 +765,15 @@
                       </el-button>
                     </el-upload>
                     <el-button size="small" v-if="staff.resumeUrl.isedit && !resumeEdit && model.resumeUrls.length"
-                               @click="resumeDel"
+                               @click="resumeDel(1)"
                                class="upload-img-delBtn">
                       <span><i class="el-icon-delete"></i>删除</span>
                     </el-button>
                     <el-button type="danger" size="small" v-if="staff.resumeUrl.isedit && resumeEdit"
-                               @click="resumeConfirm">
+                               @click="resumeConfirm(1)">
                       <span><i class="el-icon-delete"></i>确定删除</span>
                     </el-button>
-                    <el-button size="small" v-if="staff.resumeUrl.isedit && resumeEdit" @click="resumeCancel">
+                    <el-button size="small" v-if="staff.resumeUrl.isedit && resumeEdit" @click="resumeCancel(1)">
                       <span><i class="el-icon-circle-cross"></i>取消</span>
                     </el-button>
                     <el-button type="primary" size="small" v-if="!staff.resumeUrl.isedit"
@@ -740,13 +786,13 @@
                     </el-button>
                     <div v-if="model.resumeUrls.length" class="upload-img-wrapper">
                       <div v-for="(item, idx) in model.resumeUrls" class="upload-img-box"
-                           @click="imageScaleOpen(item.url,idx)" v-if="isFormatImg(item.url)">
+                           @click="imageScaleOpen(item.url,1,idx)" v-if="isFormatImg(item.url)">
                         <img :src="item.url"/>
                         <i class="el-icon-circle-check upload-img-icon" v-if="resumeEdit"
                            :class="{'upload-img-iconColor':model.resumeUrls[idx].state}"></i>
                       </div>
                       <div v-for="(item, idx) in model.resumeUrls" class="upload-img-box upload-img-box1"
-                           @click="imageScaleOpen(item.url,idx)" v-if="!(isFormatImg(item.url))">
+                           @click="imageScaleOpen(item.url,1,idx)" v-if="!(isFormatImg(item.url))">
                         <div v-if="!(isFormatImg(item.url))" class="upload-document-box">
                           <div :class="{'upload-document-main':resumeEdit}">
                             <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
@@ -797,7 +843,7 @@
                       <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
-                      <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl,true)"/>
+                      <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl,0,0)"/>
                     </div>
                     <p class="uploadErrorTip" v-show="emplsepacertUrlErrFlag">
                       请上传正确的离职证明照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -876,12 +922,12 @@
                     <div v-if="model.record.contract.contractUrls.length&&model.record.contract.contractUrls[0].url"
                          class="upload-img-wrapper">
                       <div v-for="(item, idx) in model.record.contract.contractUrls" class="upload-img-box"
-                           @click="imageScaleOpen(item.url,true)" v-if="isFormatImg(item.url)">
+                           @click="imageScaleOpen(item.url,0,0)" v-if="isFormatImg(item.url)">
                         <img :src="item.url"/>
                       </div>
                       <div v-for="(item, idx) in model.record.contract.contractUrls"
                            class="upload-img-box upload-img-box1"
-                           @click="imageScaleOpen(item.url,true)" v-if="!(isFormatImg(item.url))">
+                           @click="imageScaleOpen(item.url,0,0)" v-if="!(isFormatImg(item.url))">
                         <div v-if="!(isFormatImg(item.url))" class="upload-document-box">
                           <div :class="{'upload-document-main':resumeEdit}">
                             <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
@@ -1103,7 +1149,7 @@
         pos: 0, // 如果日期是在数组中，判断在数组中的位置
         // =====日历选择器字段结束=====
         resumeEdit: false,// 简历编辑状态
-
+        bankCardEdit: false,//银行卡编辑状态
         startTimeValue1: '',
         imageScale: false,// 图片点击全屏显示
         imageScaleUrl: '', //图片点击全屏显示的图片地址
@@ -1190,7 +1236,8 @@
         houregPerrevphoUrlErrFlag: '',
         diplomaUrlErrFlag: '',
         greducaCertUrlErrFlag: '',
-        resumeUrlErrFlag: '',
+        resumeUrlErrFlag: false,// 上传简历文档照片错误信息
+        staffCardUrlsErrFlag: false, // 上传银行卡照片错误信息
         emplsepacertUrlErrFlag: '',
         contractUrlErrFlag: '',
         recordContractUrlErrFlag: '',
@@ -1229,6 +1276,7 @@
           bankName: '', // 银行名称
           openingBank: '', // 开户行
           cardNumber: '', // 银行卡号
+          staffCardUrls: [], // 员工银行卡照片
           staffPhoUrl: '', // 员工照片
           englishName: '', // 英文名
           qq: '',
@@ -1817,23 +1865,13 @@
         }
       },
       beforeResumeUrl(file) {
-//        let isDoc = utils.isDoc(file);
-//        let isImage = utils.isImage(file);
-//        let isInSize = utils.isInSize(file, 5);
-//        if ((isDoc || isImage) && isInSize) {
-//          this.resumeUrlErrFlag = false;
-//        } else {
-//          this.resumeUrlErrFlag = true;
-//        }
-//        return (isDoc || isImage) && isInSize;
-
-        let noMoreDoc = function (file) {
-          let flag = 0;
-          this.model.resumeUrls.forEach(v => {
-            if (utils.isDoc({name: v.url})) flag++;
-          });
-          return !flag;
-        };
+//        let noMoreDoc = function (file) {
+//          let flag = 0;
+//          this.model.resumeUrls.forEach(v => {
+//            if (utils.isDoc({name: v.url})) flag++;
+//          });
+//          return !flag;
+//        };
         let hasDoc = function () {
           let flag = 0;
           this.model.resumeUrls.forEach(v => {
@@ -1901,6 +1939,44 @@
         }
         return isDoc && isInSize;
       },
+      staffCardUrlsOk(res, file) {
+        if (res.code === 200) {
+          this.model.staffCardUrls.push({
+            uid: null,
+            staffUid: null,
+            url: res.result,
+            state: false
+          });
+//          this.model.resumeUrl = res.result;
+        }
+      },
+      beforeStaffCardUrls(file) {
+//        let noMoreDoc = function (file) {
+//          let flag = 0;
+//          this.model.staffCardUrls.forEach(v => {
+//            if (utils.isDoc({name: v.url})) flag++;
+//          });
+//          return !flag;
+//        };
+        let hasDoc = function () {
+          let flag = 0;
+          this.model.staffCardUrls.forEach(v => {
+            if (utils.isDoc({name: v.url})) flag++;
+          });
+          return flag > 0;
+        }.bind(this)();
+        let isDoc = utils.isDoc(file);
+        let isImage = utils.isImage(file);
+        let isInSize = utils.isInSize(file, 5);
+
+        if (isInSize && (isImage || (!hasDoc && isDoc))) {
+          this.staffCardUrlsErrFlag = false;
+          return true;
+        } else {
+          this.staffCardUrlsErrFlag = true;
+          return false;
+        }
+      },
       save() {
         let makePost = () => {
           let out = {};
@@ -1922,6 +1998,10 @@
           out.bankName = this.model.bankName; // 银行名称
           out.openingBank = this.model.openingBank; // 开户行
           out.cardNumber = this.model.cardNumber; // 银行卡号
+          out.staffCardUrls = this.model.staffCardUrls; // 银行卡照片
+          for (let i = 0; i < out.staffCardUrls.length; i++) {
+            delete out.staffCardUrls[i].state;
+          }
           out.staffPhoUrl = this.model.staffPhoUrl; // 员工照片
           out.englishName = this.model.englishName; // 英文名
           out.qq = this.model.qq;
@@ -2161,6 +2241,10 @@
           this.model.bankName = emp.bankName ? emp.bankName : '';
           this.model.openingBank = emp.openingBank || '';
           this.model.cardNumber = emp.cardNumber || '';
+          for (let i = 0; i < emp.staffCardUrls.length; i++) {
+            emp.staffCardUrls[i].state = false;
+          }
+          this.model.staffCardUrls = emp.staffCardUrls || [];
           this.model.staffPhoUrl = emp.staffPhoUrl || '';
           this.model.englishName = emp.englishName || '';
           this.model.qq = emp.qq || '';
@@ -2304,24 +2388,38 @@
           .catch(err => console.log(err.status, err.statusText));
       },
       //选择图片
-      imageSelect(data){
-        if (this.model.resumeUrls[data].state) {
-          this.model.resumeUrls[data].state = false;
-        } else {
-          this.model.resumeUrls[data].state = true;
+      imageSelect(state, data){
+        if (state === 1) {
+          if (this.model.resumeUrls[data].state) {
+            this.model.resumeUrls[data].state = false;
+          } else {
+            this.model.resumeUrls[data].state = true;
+          }
+          return this.model.resumeUrls[data];
+        } else if (state === 2) {
+          if (this.model.staffCardUrls[data].state) {
+            this.model.staffCardUrls[data].state = false;
+          } else {
+            this.model.staffCardUrls[data].state = true;
+          }
+          return this.model.staffCardUrls[data];
         }
-        return this.model.resumeUrls[data];
+
       },
       // 图片点击全屏放大
-      imageScaleOpen(data, state){
-        if (state === true || ((state !== true) && !this.resumeEdit)) {
+      imageScaleOpen(data, state, index){
+        if (state === 0 || ((state === 1) && !this.resumeEdit) || ((state === 2) && !this.bankCardEdit)) {
           if (this.isFormatImg(data)) {
             this.imageScale = true;
             this.imageScaleUrl = data;
           }
         } else {
           // 监听数组中属性变化不然监听不到
-          this.$set(this.model.resumeUrls, state, this.imageSelect(state));
+          if (state === 1) {
+            this.$set(this.model.resumeUrls, index, this.imageSelect(state, index));
+          } else if (state === 2) {
+            this.$set(this.model.staffCardUrls, index, this.imageSelect(state, index));
+          }
         }
       },
       //关闭图片放大
@@ -2335,32 +2433,51 @@
         }
       },
       // 选择删除简历状态
-      resumeDel(){
-        for (let i = 0; i < this.model.resumeUrls.length; i++) {
-          if (this.model.resumeUrls[i].state) {
-            this.model.resumeUrls[i].state = false;
+      resumeDel(data){
+        if (data === 1) {
+          for (let i = 0; i < this.model.resumeUrls.length; i++) {
+            if (this.model.resumeUrls[i].state) {
+              this.model.resumeUrls[i].state = false;
+            }
           }
+          this.resumeEdit = true;
+        } else if (data === 2) {
+          for (let i = 0; i < this.model.staffCardUrls.length; i++) {
+            if (this.model.staffCardUrls[i].state) {
+              this.model.staffCardUrls[i].state = false;
+            }
+          }
+          this.bankCardEdit = true;
         }
-        this.resumeEdit = true;
+
       },
       // 确认删除简历按钮
-      resumeConfirm(){
-        for (let i = 0; i < this.model.resumeUrls.length; i++) {
-          if (this.model.resumeUrls[i].state) {
-            this.model.resumeUrls.splice(i, 1);
-            i--;
+      resumeConfirm(data){
+        if (data === 1) {
+          for (let i = 0; i < this.model.resumeUrls.length; i++) {
+            if (this.model.resumeUrls[i].state) {
+              this.model.resumeUrls.splice(i, 1);
+              i--;
+            }
           }
+          this.resumeEdit = false;
+        } else if (data === 2) {
+          for (let i = 0; i < this.model.staffCardUrls.length; i++) {
+            if (this.model.staffCardUrls[i].state) {
+              this.model.staffCardUrls.splice(i, 1);
+              i--;
+            }
+          }
+          this.bankCardEdit = false;
         }
-        this.resumeEdit = false;
+
       },
       // 删除简历取消按钮
-      resumeCancel(){
-        this.resumeEdit = false;
-      },
-      //判断简历附件是否选中
-      resumeSelect(){
-        if (this.resumeEdit) {
-          return true;
+      resumeCancel(data){
+        if (data === 1) {
+          this.resumeEdit = false;
+        } else if (data === 2) {
+          this.bankCardEdit = false;
         }
       }
 
