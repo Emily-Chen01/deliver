@@ -13,6 +13,12 @@
           <div v-if="selected==='1'">
             <el-form label-position="left" :model="model" :label-width="labelWidth"
                      style="padding-bottom: 10px" ref="personFm">
+              <!--<div v-for="staffItem in staff" v-if="staffItem">-->
+              <!--<el-form-item :label="staffItem.remark" prop="name"-->
+              <!--:rules="{required: staff.name.isrequired, min: 2, max: 32, message: '请输入员工姓名(最少 2 个字符，最多 32 个字符)', trigger: 'change'}">-->
+              <!--<el-input :disabled="!staff.name.isedit" placeholder="请输入姓名" v-model="model.name"></el-input>-->
+              <!--</el-form-item>-->
+              <!--</div>-->
               <div v-for="confListItem in confList" v-if="confListItem.isdefault===true">
                 <div v-if="confListItem.jname==='name' && staff.name">
                   <el-form-item v-if="staff.name" label="姓名" prop="name"
@@ -1089,7 +1095,6 @@
   </div>
 </template>
 <script>
-
   import moment from 'moment'
   import 'element-ui/lib/theme-default/index.css'
   import Vue from 'vue'
@@ -1131,7 +1136,7 @@
   Vue.use(Upload);
   import utils from '@/components/utils';
   import {Indicator} from 'mint-ui';
-
+  
   let df1 = 'YYYY-MM-DD';
   let df2 = 'YYYY-MM';
   // ====日历组件需求开始====
@@ -1705,13 +1710,11 @@
         return isImage && isInSize;
       },
       idcardPhoUrlOk(res, file) {
-        console.log(res);
         if (res.code === 200) {
           this.model.idcardPhoUrl = res.result;
         }
       },
       beforeIdcardPhoUrl(file) {
-        console.log('file', file);
         let isImage = utils.isImage(file);
         let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
@@ -1947,18 +1950,9 @@
       },
       beforeStaffCardUrls(file) {
         if (this.model.staffCardUrls.length < 2) {
-          let hasDoc = function () {
-            let flag = 0;
-            this.model.staffCardUrls.forEach(v => {
-              if (utils.isDoc({name: v.url})) flag++;
-            });
-            return flag > 0;
-          }.bind(this)();
-          let isDoc = utils.isDoc(file);
           let isImage = utils.isImage(file);
           let isInSize = utils.isInSize(file, 5);
-
-          if (isInSize && (isImage || (!hasDoc && isDoc))) {
+          if (isInSize && isImage) {
             this.staffCardUrlsErrFlag = false;
             return true;
           } else {
@@ -2179,6 +2173,7 @@
             res = res.body;
             if (res.code === 200) {
               this.confList = res.result.sort((a, b) => a.sortnum - b.sortnum);
+              console.log(this.confList);
               let d = {};
               res.result.forEach(item => {
                 d[item.remark] = item;
@@ -2186,6 +2181,7 @@
                   case 'STAFF':
                     if (item.isconfig && item.isvisible) {
                       this.staff[item.jname] = item;
+                      console.log(this.staff)
                     }
                     break;
                   case 'STAFF_RECORD':
