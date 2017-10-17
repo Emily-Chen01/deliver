@@ -245,15 +245,16 @@
                       </el-button>
                     </el-upload>
                     <el-button size="small" v-if="staff.bankName.isedit && !bankCardEdit && model.staffCardUrls.length"
-                               @click="resumeDel(2)"
+                               @click="resumeDel('staffCardUrls','bankCardEdit')"
                                class="upload-img-delBtn">
                       <span><i class="el-icon-delete"></i>删除</span>
                     </el-button>
                     <el-button type="danger" size="small" v-if="staff.bankName.isedit && bankCardEdit"
-                               @click="resumeConfirm(2)">
+                               @click="resumeConfirm('staffCardUrls','bankCardEdit')">
                       <span><i class="el-icon-delete"></i>确定删除</span>
                     </el-button>
-                    <el-button size="small" v-if="staff.bankName.isedit && bankCardEdit" @click="resumeCancel(2)">
+                    <el-button size="small" v-if="staff.bankName.isedit && bankCardEdit"
+                               @click="resumeCancel('bankCardEdit')">
                       <span><i class="el-icon-circle-cross"></i>取消</span>
                     </el-button>
                     <el-button type="primary" size="small" v-if="!staff.bankName.isedit"
@@ -765,15 +766,16 @@
                       </el-button>
                     </el-upload>
                     <el-button size="small" v-if="staff.resumeUrl.isedit && !resumeEdit && model.resumeUrls.length"
-                               @click="resumeDel(1)"
+                               @click="resumeDel('resumeUrls','resumeEdit')"
                                class="upload-img-delBtn">
                       <span><i class="el-icon-delete"></i>删除</span>
                     </el-button>
                     <el-button type="danger" size="small" v-if="staff.resumeUrl.isedit && resumeEdit"
-                               @click="resumeConfirm(1)">
+                               @click="resumeConfirm('resumeUrls','resumeEdit')">
                       <span><i class="el-icon-delete"></i>确定删除</span>
                     </el-button>
-                    <el-button size="small" v-if="staff.resumeUrl.isedit && resumeEdit" @click="resumeCancel(1)">
+                    <el-button size="small" v-if="staff.resumeUrl.isedit && resumeEdit"
+                               @click="resumeCancel('resumeEdit')">
                       <span><i class="el-icon-circle-cross"></i>取消</span>
                     </el-button>
                     <el-button type="primary" size="small" v-if="!staff.resumeUrl.isedit"
@@ -1865,13 +1867,6 @@
         }
       },
       beforeResumeUrl(file) {
-//        let noMoreDoc = function (file) {
-//          let flag = 0;
-//          this.model.resumeUrls.forEach(v => {
-//            if (utils.isDoc({name: v.url})) flag++;
-//          });
-//          return !flag;
-//        };
         let hasDoc = function () {
           let flag = 0;
           this.model.resumeUrls.forEach(v => {
@@ -1951,27 +1946,25 @@
         }
       },
       beforeStaffCardUrls(file) {
-//        let noMoreDoc = function (file) {
-//          let flag = 0;
-//          this.model.staffCardUrls.forEach(v => {
-//            if (utils.isDoc({name: v.url})) flag++;
-//          });
-//          return !flag;
-//        };
-        let hasDoc = function () {
-          let flag = 0;
-          this.model.staffCardUrls.forEach(v => {
-            if (utils.isDoc({name: v.url})) flag++;
-          });
-          return flag > 0;
-        }.bind(this)();
-        let isDoc = utils.isDoc(file);
-        let isImage = utils.isImage(file);
-        let isInSize = utils.isInSize(file, 5);
+        if (this.model.staffCardUrls.length < 2) {
+          let hasDoc = function () {
+            let flag = 0;
+            this.model.staffCardUrls.forEach(v => {
+              if (utils.isDoc({name: v.url})) flag++;
+            });
+            return flag > 0;
+          }.bind(this)();
+          let isDoc = utils.isDoc(file);
+          let isImage = utils.isImage(file);
+          let isInSize = utils.isInSize(file, 5);
 
-        if (isInSize && (isImage || (!hasDoc && isDoc))) {
-          this.staffCardUrlsErrFlag = false;
-          return true;
+          if (isInSize && (isImage || (!hasDoc && isDoc))) {
+            this.staffCardUrlsErrFlag = false;
+            return true;
+          } else {
+            this.staffCardUrlsErrFlag = true;
+            return false;
+          }
         } else {
           this.staffCardUrlsErrFlag = true;
           return false;
@@ -2323,10 +2316,6 @@
           this.model.diplomaUrl = emp.diplomaUrl || ''; // 学位证书
           this.model.greducaCertUrl = emp.greducaCertUrl || ''; // 毕业证书
           this.model.technicalTitle = emp.technicalTitle || ''; // 职称
-//          this.model.resumeUrl = emp.resumeUrl || ''; // 简历
-//          for (let i = 0; i < this.model.resumeUrls.length; i++) {
-//            this.model.resumeUrls[i].state = false;
-//          }
           for (let i = 0; i < emp.resumeUrls.length; i++) {
             emp.resumeUrls[i].state = false;
           }
@@ -2388,23 +2377,13 @@
           .catch(err => console.log(err.status, err.statusText));
       },
       //选择图片
-      imageSelect(state, data){
-        if (state === 1) {
-          if (this.model.resumeUrls[data].state) {
-            this.model.resumeUrls[data].state = false;
-          } else {
-            this.model.resumeUrls[data].state = true;
-          }
-          return this.model.resumeUrls[data];
-        } else if (state === 2) {
-          if (this.model.staffCardUrls[data].state) {
-            this.model.staffCardUrls[data].state = false;
-          } else {
-            this.model.staffCardUrls[data].state = true;
-          }
-          return this.model.staffCardUrls[data];
+      imageSelect(data, name){
+        if (this.model[name][data].state) {
+          this.model[name][data].state = false;
+        } else {
+          this.model[name][data].state = true;
         }
-
+        return this.model[name][data];
       },
       // 图片点击全屏放大
       imageScaleOpen(data, state, index){
@@ -2416,9 +2395,9 @@
         } else {
           // 监听数组中属性变化不然监听不到
           if (state === 1) {
-            this.$set(this.model.resumeUrls, index, this.imageSelect(state, index));
+            this.$set(this.model.resumeUrls, index, this.imageSelect(index, 'resumeUrls'));
           } else if (state === 2) {
-            this.$set(this.model.staffCardUrls, index, this.imageSelect(state, index));
+            this.$set(this.model.staffCardUrls, index, this.imageSelect(index, 'staffCardUrls'));
           }
         }
       },
@@ -2433,52 +2412,28 @@
         }
       },
       // 选择删除简历状态
-      resumeDel(data){
-        if (data === 1) {
-          for (let i = 0; i < this.model.resumeUrls.length; i++) {
-            if (this.model.resumeUrls[i].state) {
-              this.model.resumeUrls[i].state = false;
-            }
+      resumeDel(name, edit){
+        let lengths = this.model[name].length;
+        for (let i = 0; i < lengths; i++) {
+          if (this.model[name][i].state) {
+            this.model[name][i].state = false;
           }
-          this.resumeEdit = true;
-        } else if (data === 2) {
-          for (let i = 0; i < this.model.staffCardUrls.length; i++) {
-            if (this.model.staffCardUrls[i].state) {
-              this.model.staffCardUrls[i].state = false;
-            }
-          }
-          this.bankCardEdit = true;
         }
-
+        this[edit] = true;
       },
       // 确认删除简历按钮
-      resumeConfirm(data){
-        if (data === 1) {
-          for (let i = 0; i < this.model.resumeUrls.length; i++) {
-            if (this.model.resumeUrls[i].state) {
-              this.model.resumeUrls.splice(i, 1);
-              i--;
-            }
+      resumeConfirm(name, edit){
+        for (let i = 0; i < this.model[name].length; i++) {
+          if (this.model[name][i].state) {
+            this.model[name].splice(i, 1);
+            i--;
           }
-          this.resumeEdit = false;
-        } else if (data === 2) {
-          for (let i = 0; i < this.model.staffCardUrls.length; i++) {
-            if (this.model.staffCardUrls[i].state) {
-              this.model.staffCardUrls.splice(i, 1);
-              i--;
-            }
-          }
-          this.bankCardEdit = false;
         }
-
+        this[edit] = false;
       },
       // 删除简历取消按钮
-      resumeCancel(data){
-        if (data === 1) {
-          this.resumeEdit = false;
-        } else if (data === 2) {
-          this.bankCardEdit = false;
-        }
+      resumeCancel(edit){
+        this[edit] = false;
       }
 
     },

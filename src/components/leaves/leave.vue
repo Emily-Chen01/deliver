@@ -427,6 +427,10 @@
       padding-top: 44px;
       .leave-main-box {
         padding: 0 15px 15px;
+        .leave-main-box-apply-left:before {
+          content: '';
+          margin-right: 10px;
+        }
         .icon-stars:before {
           content: '*';
           color: #ff4949;
