@@ -110,9 +110,7 @@
     created: function () {
       this.state = false;
       Indicator.open('正在加载...');
-
       this.$http.get('/api/v1.0/client/status').then(response => {
-        console.log('1', response.body.result);
         this.recordShow = response.body.result;
       }, response => {
         console.log('error callback');
@@ -164,7 +162,6 @@
         } else if (indexX === 2) {
           this.$router.push({path: '/mySalary'});
         }
-
       },
       routerMyData(){
         this.$router.push({path: '/MyData'});
