@@ -329,7 +329,6 @@
             if (response.body.message === '当前考勤不需要打卡') {
               this.$router.push({path: '/signCard'});
             }
-            return;
           }
         }, response => {
 //          console.log('error callback');
@@ -513,16 +512,25 @@
                                 if (self.PunchClock(self.toDaKaStatusIsInit)) {
                                   self.daKaHide = false;
                                 }
+                              } else {
+                                self.downClickSpan = downClickSpan;
+                                self.toClickSpan = toClickSpan;
+                                self.getLocations = false;
+                                MessageBox('提示', '获取地理位置失败');
                               }
                             });
                           } else if (response.body.code === 500) {
                             MessageBox('提示', response.body.message);
                             self.daKaHide = false;
-                            return;
                           }
                         }, response => {
 //                        console.log('error callback');
                         });
+                      } else {
+                        self.downClickSpan = downClickSpan;
+                        self.toClickSpan = toClickSpan;
+                        self.getLocations = false;
+                        MessageBox('提示', '获取地理位置失败');
                       }
                     });
                   },
@@ -531,11 +539,14 @@
                     let u = navigator.userAgent;
                     let isAndroid = '0';
                     isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                    self.downClickSpan = downClickSpan;
+                    self.toClickSpan = toClickSpan;
+                    self.getLocations = false;
                     if (isAndroid) {
-                      alert('您拒绝了获取定位请求，只有允许才能进行打卡');
+                      MessageBox('提示', '您拒绝了获取定位请求，只有允许才能进行打卡');
                     }
                     if (!isAndroid) {
-                      alert('请开启微信定位服务');
+                      MessageBox('提示', '请开启微信定位服务');
                     }
                     //判断结束
                   },
@@ -654,7 +665,6 @@
           } else if (response.body.code === 500) {
             MessageBox('提示', response.body.message);
             self.daKaHide = false;
-            return;
           }
         }, response => {
         });
