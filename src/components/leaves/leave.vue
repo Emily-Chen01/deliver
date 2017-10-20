@@ -138,7 +138,7 @@
       <mt-popup
         v-model="popupVisible"
         class="imageScale-wrapper"
-        closeOnClickModal="true">
+        :closeOnClickModal="true">
         <div class="imageScale-box">
           <img :src="popImgSrc" @click="closeImage"/>
         </div>
@@ -147,7 +147,7 @@
     <mt-popup
       v-model="leaveSuccess"
       class="image-Success"
-      closeOnClickModal="false">
+      :closeOnClickModal="false">
       <div class="image-box">
         <img :src="alertSuccessImage ? imgSrc.ico_success : imgSrc.ico_error"/>
       </div>
@@ -183,7 +183,7 @@
   </div>
 </template>
 <script>
-  import {DatetimePicker, Navbar, TabItem, Popup} from 'mint-ui';
+  import {DatetimePicker, Navbar, TabItem, Popup, Indicator} from 'mint-ui';
   import utils from '@/components/utils'
   import moment from 'moment'
 
@@ -299,6 +299,7 @@
 
       },
       handerDataSubmit(){
+        Indicator.open('正在提交申请...');
         let params = {
           approvalConfigUid: this.shengqingParam,//申请分类
           currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
@@ -309,6 +310,7 @@
           remarks: this.textareaString
         };
         this.$http.post('/api/v1.0/client/apply', params).then(response => { //提交请假申请
+          Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
           this.leaveSuccess = true;
           if (response.body.code === 200) {
@@ -373,18 +375,17 @@
       },
       // 上传图片成功
       passportUrlOk(res, file) {
-        this.imgSrc.shenFenIcon = URL.createObjectURL(file.raw);
-//        this.imgSrc.shenFenIconShowCamera = URL.createObjectURL(file.raw);
         if (res.code === 200) {
           this.imgSrc.shenFenIcon = res.result;
-//          this.imgSrc.shenFenIconShowCamera = res.result;
         }
+//        Indicator.close();//图片上传成功
       },
       // 上传图片前验证
       beforePassportUrl(file) {
         let isImage = utils.isImage(file);
         let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
+//          Indicator.open('图片上传中...');
           this.passportUrlErrFlag = false;
         } else {
           this.passportUrlErrFlag = true;
