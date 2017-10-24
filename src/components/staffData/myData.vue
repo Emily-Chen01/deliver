@@ -809,6 +809,65 @@
                       请上传正确的简历文档或图片(文档格式为 doc 或 docx 或 pdf，图片格式为 jpg 或 jpeg 或 png，单个文档或图片体积小于 5 兆，文档最多一个，图片可以多个)</p>
                   </el-form-item>
                 </div>
+                <div v-else-if="confListItem.jname==='informUrl' && staff.informUrl">
+                  <el-form-item v-if="staff.informUrl" label="知情书" prop="informUrls"
+                                :rules="{required: staff.informUrl.isrequired,type:'array', message: '请上传知情书', trigger: 'blur'}">
+                    <el-upload
+                      v-if="staff.informUrl.isedit && !informEdit"
+                      action="/api/v1.0/client/upload"
+                      name="files"
+                      :show-file-list="false"
+                      :headers="tokenHeader"
+                      :on-success="informUrlOk"
+                      :before-upload="beforeInformUrl">
+                      <el-button type="primary" size="small">
+                        <span><i class="el-icon-upload el-icon--right"></i>上传文件</span>
+                      </el-button>
+                    </el-upload>
+                    <el-button size="small" v-if="staff.informUrl.isedit && !informEdit && model.informUrls.length"
+                               @click="resumeDel('informUrls','informEdit')"
+                               class="upload-img-delBtn">
+                      <span><i class="el-icon-delete"></i>删除</span>
+                    </el-button>
+                    <el-button type="danger" size="small" v-if="staff.informUrl.isedit && informEdit"
+                               @click="resumeConfirm('informUrls','informEdit')">
+                      <span><i class="el-icon-delete"></i>确定删除</span>
+                    </el-button>
+                    <el-button size="small" v-if="staff.informUrl.isedit && informEdit"
+                               @click="resumeCancel('informEdit')">
+                      <span><i class="el-icon-circle-cross"></i>取消</span>
+                    </el-button>
+                    <el-button type="primary" size="small" v-if="!staff.informUrl.isedit"
+                               :disabled="!staff.informUrl.isedit">
+                      <span><i class="el-icon-upload el-icon--right"></i>上传文件</span>
+                    </el-button>
+                    <el-button size="small" v-if="!staff.informUrl.isedit"
+                               :disabled="!staff.informUrl.isedit">
+                      <span><i class="el-icon-delete"></i>删除</span>
+                    </el-button>
+                    <div v-if="model.informUrls.length" class="upload-img-wrapper">
+                      <div v-for="(item, idx) in model.informUrls" class="upload-img-box"
+                           @click="imageScaleOpen(item.url,3,idx)" v-if="isFormatImg(item.url)">
+                        <img :src="item.url"/>
+                        <i class="el-icon-circle-check upload-img-icon" v-if="informEdit"
+                           :class="{'upload-img-iconColor':model.informUrls[idx].state}"></i>
+                      </div>
+                      <div v-for="(item, idx) in model.informUrls" class="upload-img-box upload-img-box1"
+                           @click="imageScaleOpen(item.url,3,idx)" v-if="!(isFormatImg(item.url))">
+                        <div v-if="!(isFormatImg(item.url))" class="upload-document-box">
+                          <div :class="{'upload-document-main':informEdit}">
+                            <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
+                            <span>已上传</span>
+                          </div>
+                          <i class="el-icon-circle-check upload-img-icon" v-if="informEdit"
+                             :class="{'upload-img-iconColor':model.informUrls[idx].state}"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="uploadErrorTip" v-show="informUrlErrFlag">
+                      请上传正确的知情书文档或图片(文档格式为 doc 或 docx 或 pdf，图片格式为 jpg 或 jpeg 或 png，单个文档或图片体积小于 5 兆，文档最多一个，图片可以多个)</p>
+                  </el-form-item>
+                </div>
                 <div v-else-if="confListItem.jname==='hasComres' && staff.hasComres">
                   <el-form-item v-if="staff.hasComres" label="是否有竞业协议">
                     <el-switch
@@ -931,7 +990,7 @@
                            class="upload-img-box upload-img-box1"
                            @click="imageScaleOpen(item.url,0,0)" v-if="!(isFormatImg(item.url))">
                         <div v-if="!(isFormatImg(item.url))" class="upload-document-box">
-                          <div :class="{'upload-document-main':resumeEdit}">
+                          <div class="upload-document-main">
                             <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
                             <span>已上传</span>
                           </div>
@@ -1151,6 +1210,7 @@
         // =====日历选择器字段结束=====
         resumeEdit: false,// 简历编辑状态
         bankCardEdit: false,//银行卡编辑状态
+        informEdit: false,// 知情书编辑状态
         startTimeValue1: '',
         imageScale: false,// 图片点击全屏显示
         imageScaleUrl: '', //图片点击全屏显示的图片地址
@@ -1239,6 +1299,7 @@
         greducaCertUrlErrFlag: '',
         resumeUrlErrFlag: false,// 上传简历文档照片错误信息
         staffCardUrlsErrFlag: false, // 上传银行卡照片错误信息
+        informUrlErrFlag: false,// 上传知情书错误信息
         emplsepacertUrlErrFlag: '',
         contractUrlErrFlag: '',
         recordContractUrlErrFlag: '',
@@ -1334,6 +1395,7 @@
           technicalTitle: '', // 职称
 //          resumeUrl: '', // 简历
           resumeUrls: [],
+          informUrls: [],
           hasComres: false, // 有无竞业协议
           hasComresRmk: '', // 竞业协议备注信息
           emplsepacertUrl: '', // 离职证明
@@ -1688,7 +1750,8 @@
         }
       },
       passportUrlOk(res, file) {
-        this.model.passportUrl = URL.createObjectURL(file.raw);
+//        作用：预览
+//        this.model.passportUrl = URL.createObjectURL(file.raw);
         if (res.code === 200) {
           this.model.passportUrl = res.result;
         }
@@ -1860,7 +1923,6 @@
             url: res.result,
             state: false
           });
-//          this.model.resumeUrl = res.result;
         }
       },
       beforeResumeUrl(file) {
@@ -1880,6 +1942,36 @@
           return true;
         } else {
           this.resumeUrlErrFlag = true;
+          return false;
+        }
+      },
+      informUrlOk(res, file) {
+        if (res.code === 200) {
+          this.model.informUrls.push({
+            uid: null,
+            staffUid: null,
+            url: res.result,
+            state: false
+          });
+        }
+      },
+      beforeInformUrl(file) {
+        let hasDoc = function () {
+          let flag = 0;
+          this.model.informUrls.forEach(v => {
+            if (utils.isDoc({name: v.url})) flag++;
+          });
+          return flag > 0;
+        }.bind(this)();
+        let isDoc = utils.isDoc(file);
+        let isImage = utils.isImage(file);
+        let isInSize = utils.isInSize(file, 5);
+
+        if (isInSize && (isImage || (!hasDoc && isDoc))) {
+          this.informUrlErrFlag = false;
+          return true;
+        } else {
+          this.informUrlErrFlag = true;
           return false;
         }
       },
@@ -1939,7 +2031,6 @@
             url: res.result,
             state: false
           });
-//          this.model.resumeUrl = res.result;
         }
       },
       beforeStaffCardUrls(file) {
@@ -2063,6 +2154,10 @@
           out.resumeUrls = this.model.resumeUrls; // 简历
           for (let i = 0; i < out.resumeUrls.length; i++) {
             delete out.resumeUrls[i].state;
+          }
+          out.informUrls = this.model.informUrls; // 知情书
+          for (let i = 0; i < out.informUrls.length; i++) {
+            delete out.informUrls[i].state;
           }
           out.hasComres = this.model.hasComres; // boolean 有无竞业协议
           out.hasComresRmk = this.model.hasComresRmk; // 竞业协议备注信息
@@ -2308,7 +2403,10 @@
             emp.resumeUrls[i].state = false;
           }
           this.model.resumeUrls = emp.resumeUrls || []; // 简历
-
+          for (let i = 0; i < emp.informUrls.length; i++) {
+            emp.informUrls[i].state = false;
+          }
+          this.model.informUrls = emp.informUrls || [];//知情书
           this.model.hasComres = emp.hasComres; // 有无竞业协议
           this.model.hasComresRmk = emp.hasComresRmk || ''; // 竞业协议备注信息
           this.model.emplsepacertUrl = emp.emplsepacertUrl || ''; // 离职证明
@@ -2375,7 +2473,7 @@
       },
       // 图片点击全屏放大
       imageScaleOpen(data, state, index){
-        if (state === 0 || ((state === 1) && !this.resumeEdit) || ((state === 2) && !this.bankCardEdit)) {
+        if (state === 0 || ((state === 1) && !this.resumeEdit) || ((state === 2) && !this.bankCardEdit) || ((state === 3) && !this.informEdit)) {
           if (this.isFormatImg(data)) {
             this.imageScale = true;
             this.imageScaleUrl = data;
@@ -2386,6 +2484,8 @@
             this.$set(this.model.resumeUrls, index, this.imageSelect(index, 'resumeUrls'));
           } else if (state === 2) {
             this.$set(this.model.staffCardUrls, index, this.imageSelect(index, 'staffCardUrls'));
+          } else if (state === 3) {
+            this.$set(this.model.informUrls, index, this.imageSelect(index, 'informUrls'));
           }
         }
       },
