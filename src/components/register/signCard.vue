@@ -14,8 +14,8 @@
             <p v-text="arryOneself.record.companyName"></p>
           </div>
           <div class="header-top-right" @click="routerMyData">
-            <img :src="imgSrc.shezhiBackground"/>
-            <span>设置</span>
+            <img :src="imgSrc.ico_info"/>
+            <span>员工信息</span>
           </div>
         </div>
         <div class="header-bottom" v-if="arryOneself.punchCard">
@@ -69,7 +69,7 @@
       <mt-tab-item id="2">
         <img slot="icon" :src="imgSrc.setIconBlue" v-if="!toolState">
         <img slot="icon" :src="imgSrc.setIcon" v-if="toolState">
-        <span>设置</span>
+        <span>解绑</span>
       </mt-tab-item>
     </mt-tabbar>
   </div>
@@ -85,7 +85,6 @@
         arryOneself: {},
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
-          shezhiBackground: require('../../assets/ico_setting.png'),
           ico_leave: require('../../assets/ico_leave.png'),
           ico_attendance: require('../../assets/ico_attendance.png'),
           ico_wage: require('../../assets/ico_wage.png'),
@@ -94,6 +93,7 @@
           setIconBlue: require('../../assets/ico_setting_1.png'),
           setIcon: require('../../assets/ico_setting_2.png'),
           ico_pencil: require('../../assets/ico_pencil.png'),
+          ico_info:require('../../assets/ico_info.png')
         },
         recordShow: {},
       }
@@ -230,30 +230,28 @@
             line-height: 24px;
           }
           p:first-child {
-            padding-right: 50px;
+            padding-right: 90px;
           }
         }
         .header-top-right {
           position: absolute;
           right: 0;
           margin-top: -5px;
-          width: 58px;
-          height: 25px;
-          border-bottom-left-radius: 10px;
-          border-top-left-radius: 10px;
+          width: 104px;
+          height: 30px;
+          border-bottom-left-radius: 15px;
+          border-top-left-radius: 15px;
           background-color: rgba(26, 128, 204, 0.4);
           font-size: 0;
           img {
-            height: 13px;
-            vertical-align: top;
-            padding: 5px 0 0 7px;
+            height: 14px;
+            padding: 8px 0 0 13px;
           }
           span {
             display: inline-block;
-            font-size: 11px;
-            height: 11px;
-            line-height: 11px;
-            padding: 7px 0 0 5px;
+            font-size: 14px;
+            line-height: 14px;
+            padding: 8px 0 0 8px;
             vertical-align: top;
           }
         }
