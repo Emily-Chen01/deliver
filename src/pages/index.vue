@@ -97,7 +97,6 @@
       Indicator.open('加载中...');
       //====获取openidstart  6-2早注释为了本地测试 提交需解除注释---------此处电脑端调试要注释掉
       let _href = window.location.href;
-      console.log(window.location.href);
       function getUrlParam(url, name) { //获取地址栏的参数
         let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         let r = url.substring(url.indexOf('?') + 1).match(reg);
