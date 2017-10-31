@@ -78,10 +78,7 @@
     },
     methods: {
       emitChangeMonth (start, end, currentStart, current) {
-        console.log('currentDate 2', this.convertTime(this.currentDate));
-        console.log('currentDate 2current', current);
         this.currentDate = current;
-        console.log('currentDate 3', this.currentDate)
         this.$emit('changeMonth', start, end, currentStart, current)
       },
       convertTime(data){
@@ -115,10 +112,7 @@
 </script>
 <style lang="scss">
   .comp-full-calendar {
-    // font-family: "elvetica neue", tahoma, "hiragino sans gb";
-    /*padding:20px;*/
     background: #fff;
-    /*max-width: 960px;*/
     width: 100%;
     margin: 0 auto;
     ul, p {

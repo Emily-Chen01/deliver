@@ -42,8 +42,6 @@
       currentDate (val) {
         if (!val) return
         this.headDate = val
-        console.log('currentDate', val)
-        // this.headDate = JSON.parse(JSON.stringify(val))
       }
     },
     methods: {
@@ -56,12 +54,11 @@
         this.dispatchEvent()
       },
       changeMonth (date, num) {
-        let dt = new Date(date)
+        let dt =new Date(dateFunc.format(new Date(date), 'yyyy-MM'))
         return new Date(dt.setMonth(dt.getMonth() + num))
       },
       dispatchEvent() {
         this.title = dateFunc.format(this.headDate, this.titleFormat, this.monthNames)
-        console.log(123,this.title, this.titleFormat, this.monthNames)
         let startDate = dateFunc.getStartDate(this.headDate)
         let curWeekDay = startDate.getDay()
 

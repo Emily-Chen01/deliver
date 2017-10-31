@@ -90,7 +90,6 @@
 
     methods: {
       dayClick (day, jsEvent) {
-        console.log('dar123', this);
         //  点击日历，获取日期
         //  转换日期格式
         //  检测假日里是否已经含有点击的这一天
@@ -119,7 +118,6 @@
           this.toSapnTime = '';
           this.downSapnTime = '';
           this.connectTime.totalTime = '';
-          console.log('response.body.result', response.body.result)
           if (response.body.result) {
             this.connectTime.totalTime = response.body.result.duration;
             if (response.body.result.twTime) {
@@ -217,19 +215,14 @@
             }
           }
         }, response => {
-          console.log('error callback');
         });
       },
 
       'changeMonth' (start, end, currentStart, current) {
-        console.log('start' + start)
-        console.log('end' + end)
-        console.log('currentStart' + currentStart)
         let zhuan = currentStart.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
         let currentDate = current.toLocaleString().replace(/-/g, "/").replace(/日/g, " ");
         let td = currentDate.substring(0, 10);
         let tt = zhuan.substring(0, 7);
-        console.log(12, tt, td);
         let param = {
           date: tt
         };
@@ -405,16 +398,10 @@
               this.fcEvents.push(connectDate);
             }
           }
-
           this.connectTime.chidao = response.body.result.belateTimes;   //赋值给查询出来的月总数
           this.connectTime.zaotui = response.body.result.leaveearlyTimes;
           this.connectTime.kuanggong = response.body.result.absentTimes;
           this.connectTime.waichu = response.body.result.outsideTimes;
-          console.log('this.connectTime', this.connectTime);
-
-          console.log(this.fcEvents);
-
-
         }, response => {
           console.log('error callback');
         });
