@@ -21,7 +21,8 @@
         <div class="leave-main-box-apply" v-if="changeApply">
           <div class="leave-main-box-apply-left icon-stars">假期分类</div>
           <div class="leave-main-box-apply-center">
-            <select v-model="selectedDataHoliday" @change="qingjiaclick(selectedDataHoliday)">
+            <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday==='选择假期类型'}"
+                    @change="qingjiaclick(selectedDataHoliday)">
               <option>选择假期类型</option>
               <option v-for="option in holidayTypeArray" :value="option"
                       v-text="option.NAME"></option>
@@ -37,13 +38,13 @@
         <div class="leave-main-box-apply">
           <div class="leave-main-box-apply-left icon-stars">开始时间</div>
           <div class="leave-main-box-apply-center" @click="openPicker(0)">
-            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"></span>
+            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'" :class="{'colorA6':!startTimeValue}"></span>
           </div>
         </div>
         <div class="leave-main-box-apply">
           <div class="leave-main-box-apply-left icon-stars">结束时间</div>
           <div class="leave-main-box-apply-center" @click="openPicker(1)">
-            <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"></span>
+            <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'" :class="{'colorA6':!endTimeValue}"></span>
           </div>
         </div>
         <div class="leave-main-box-applyImg" v-if="updateImage">
@@ -413,14 +414,41 @@
       }
     }
     // 复写mint ui 组件，头部样式
+    .mint-tab-container-item {
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
     .mint-navbar {
+      background-color: #26a2ff;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      text-align: center;
+      .mint-tab-item {
+        color: rgba(255, 255, 255, 0.5);
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        padding: 0 !important;
+        .mint-tab-item-label {
+          font-size: 15px;
+          height: 44px;
+          span {
+            height: 44px;
+            line-height: 44px;
+          }
+        }
+      }
       .mint-tab-item.is-selected {
         border-bottom: none !important;
         margin-bottom: 0 !important;
+        color: #ffffff;
         span {
           display: inline-block;
-          padding-bottom: 10px;
-          border-bottom: 3px solid #ffffff;
+        }
+        span:after {
+          display: block;
+          margin-top: -3px;
+          content: '';
+          border-top: 3px solid #ffffff;
         }
       }
     }
@@ -438,27 +466,28 @@
           margin-right: 4px;
         }
         .leave-main-box-apply {
+          position: relative;
           overflow: hidden;
           height: 50px;
           line-height: 50px;
           font-size: 15px;
           border-bottom: 1px solid #d2dce6;
           .leave-main-box-apply-left {
-            float: left;
-            width: 100px;
-            color: #8492a6;
+            width: 120px;
+            font-weight: bold;
+            color: #457aa3;
             text-align: left;
           }
           .leave-main-box-apply-center {
-            float: left;
+            position: absolute;
+            top: 0;
             box-sizing: border-box;
-            padding-left: 100px;
-            /*padding-right: 30px;*/
-            margin-top: -50px;
+            padding-left: 120px;
             color: #1f2d3d;
             text-align: left;
             width: 100%;
             select {
+              padding-left: 4px;
               width: 100%;
               overflow: hidden;
               border: none;
@@ -473,13 +502,16 @@
               background-size: 15px;
               /*为下拉小箭头留出一点位置，避免被文字覆盖*/
               padding-right: 20px;
+              option{
+                color: black;
+              }
             }
             span {
               padding-left: 4px;
               font-size: 15px;
             }
             .colorA6 {
-              color: #8492a6;
+              color: #97a8be;
             }
           }
         }
@@ -506,7 +538,8 @@
           .leave-main-box-applyText-top {
             text-align: left;
             padding: 10px 0;
-            color: #8492a6;
+            color: #457aa3;
+            font-weight: bold;
           }
           textarea {
             box-sizing: border-box;
@@ -682,30 +715,6 @@
         font-size: 14px;
         border-radius: 4px;
       }
-    }
-    /*修改tab样式*/
-    .mint-navbar {
-      background-color: #26a2ff;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      text-align: center;
-    }
-    .mint-tab-container-item {
-      box-sizing: border-box;
-      padding: 0 10px;
-    }
-    .mint-navbar .mint-tab-item.is-selected {
-      border-bottom: 3px solid #ffffff;
-      color: #ffffff;
-      margin-bottom: -1px;
-    }
-
-    .mint-navbar .mint-tab-item {
-      padding: 17px 0;
-      font-size: 15px;
-      color: rgba(255, 255, 255, 0.5);
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
   }
 </style>

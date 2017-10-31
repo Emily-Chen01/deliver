@@ -237,7 +237,7 @@
           position: absolute;
           right: 0;
           margin-top: -5px;
-          width: 104px;
+          padding-right: 15px;
           height: 30px;
           border-bottom-left-radius: 15px;
           border-top-left-radius: 15px;
@@ -245,7 +245,7 @@
           font-size: 0;
           img {
             height: 14px;
-            padding: 8px 0 0 13px;
+            padding: 8px 0 0 15px;
           }
           span {
             display: inline-block;

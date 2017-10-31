@@ -1,13 +1,10 @@
 <template>
   <div id="MyData" v-if="status">
     <div class="my-data">
-
       <mt-navbar fixed v-model="selected" class="dataTitle">
         <mt-tab-item id="1"><span>个人资料</span></mt-tab-item>
         <mt-tab-item id="2"><span>岗位信息</span></mt-tab-item>
       </mt-navbar>
-
-      <!-- tab-container -->
       <mt-tab-container v-model="selected">
         <mt-tab-container-item id="1">
           <div v-if="selected==='1'">
@@ -114,12 +111,12 @@
                       :on-success="passportUrlOk"
                       :before-upload="beforePassportUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.nativePlace.isedit"
                                :disabled="!staff.nativePlace.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.passportUrl" class="upload-img-wrapper">
                       <img :src="model.passportUrl" @click="imageScaleOpen(model.passportUrl,0,0)"/>
@@ -150,12 +147,12 @@
                       :on-success="idcardPhoUrlOk"
                       :before-upload="beforeIdcardPhoUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.idcardPhoUrl.isedit"
                                :disabled="!staff.idcardPhoUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrl" class="upload-img-wrapper">
                       <img :src="model.idcardPhoUrl" @click="imageScaleOpen(model.idcardPhoUrl,0,0)"/>
@@ -175,12 +172,12 @@
                       :on-success="idcardPhoUrlRevOk"
                       :before-upload="beforeIdcardPhoUrlRev">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.idcardPhoUrl.isedit"
                                :disabled="!staff.idcardPhoUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.idcardPhoUrlRev" class="upload-img-wrapper">
                       <img :src="model.idcardPhoUrlRev" @click="imageScaleOpen(model.idcardPhoUrlRev,0,0)"/>
@@ -232,18 +229,20 @@
 
                   <el-form-item v-if="staff.bankName" label="银行卡照片" prop="staffCardUrls"
                                 :rules="{required: staff.bankName.isrequired,type:'array', message: '请上传银行卡照片', trigger: 'blur'}">
-                    <el-upload
-                      v-if="staff.bankName.isedit && !bankCardEdit"
-                      action="/api/v1.0/client/upload"
-                      name="files"
-                      :show-file-list="false"
-                      :headers="tokenHeader"
-                      :on-success="staffCardUrlsOk"
-                      :before-upload="beforeStaffCardUrls">
-                      <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
-                      </el-button>
-                    </el-upload>
+                    <div class="upload-btn" v-if="staff.bankName.isedit && !bankCardEdit">
+                      <el-upload
+                        action="/api/v1.0/client/upload"
+                        name="files"
+                        :show-file-list="false"
+                        :headers="tokenHeader"
+                        :on-success="staffCardUrlsOk"
+                        :before-upload="beforeStaffCardUrls">
+                        <el-button type="primary" size="small">
+                          <span><i class="el-icon-upload"></i>上传照片</span>
+                        </el-button>
+                      </el-upload>
+                    </div>
+
                     <el-button size="small" v-if="staff.bankName.isedit && !bankCardEdit && model.staffCardUrls.length"
                                @click="resumeDel('staffCardUrls','bankCardEdit')"
                                class="upload-img-delBtn">
@@ -259,7 +258,7 @@
                     </el-button>
                     <el-button type="primary" size="small" v-if="!staff.bankName.isedit"
                                :disabled="!staff.bankName.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <el-button size="small" v-if="!staff.bankName.isedit"
                                :disabled="!staff.bankName.isedit">
@@ -289,12 +288,12 @@
                       :on-success="staffPhoUrlOk"
                       :before-upload="beforeStaffPhoUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.staffPhoUrl.isedit"
                                :disabled="!staff.staffPhoUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.staffPhoUrl" class="upload-img-wrapper">
                       <img :src="model.staffPhoUrl" @click="imageScaleOpen(model.staffPhoUrl,0,0)"/>
@@ -384,12 +383,12 @@
                       :on-success="houregPhoUrlOk"
                       :before-upload="beforeHouregPhoUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.houregPhoUrl.isedit"
                                :disabled="!staff.houregPhoUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPhoUrl" class="upload-img-wrapper">
                       <img :src="model.houregPhoUrl" @click="imageScaleOpen(model.houregPhoUrl,0,0)"/>
@@ -409,12 +408,12 @@
                       :on-success="houregPerphoUrlOk"
                       :before-upload="beforeHouregPerphoUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.houregPhoUrl.isedit"
                                :disabled="!staff.houregPhoUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerphoUrl" class="upload-img-wrapper">
                       <img :src="model.houregPerphoUrl" @click="imageScaleOpen(model.houregPerphoUrl,0,0)"/>
@@ -434,12 +433,12 @@
                       :on-success="houregPerrevphoUrlOk"
                       :before-upload="beforeHouregPerrevphoUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.houregPhoUrl.isedit"
                                :disabled="!staff.houregPhoUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.houregPerrevphoUrl" class="upload-img-wrapper">
                       <img :src="model.houregPerrevphoUrl" @click="imageScaleOpen(model.houregPerrevphoUrl,0,0)"/>
@@ -611,12 +610,12 @@
                           :on-success="makeChildOk(item)"
                           :before-upload="makeChildCheck(item)">
                           <el-button type="primary" size="small">
-                            <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                            <span><i class="el-icon-upload"></i>上传照片</span>
                           </el-button>
                         </el-upload>
                         <el-button type="primary" size="small" v-if="!staff.hasChilds.isedit"
                                    :disabled="!staff.hasChilds.isedit">
-                          <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                          <span><i class="el-icon-upload"></i>上传照片</span>
                         </el-button>
                         <div class="child-imgBox">
                           <img class="child-img" v-if="item.birthCertifUrl" :src="item.birthCertifUrl"
@@ -703,12 +702,12 @@
                       :on-success="diplomaUrlOk"
                       :before-upload="beforeDiplomaUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.eduInfor.isedit"
                                :disabled="!staff.eduInfor.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.diplomaUrl" class="upload-img-wrapper">
                       <img :src="model.diplomaUrl" @click="imageScaleOpen(model.diplomaUrl,0,0)"/>
@@ -728,12 +727,12 @@
                       :on-success="greducaCertUrlOk"
                       :before-upload="beforeGreducaCertUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.eduInfor.isedit"
                                :disabled="!staff.eduInfor.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.greducaCertUrl" class="upload-img-wrapper">
                       <img :src="model.greducaCertUrl" @click="imageScaleOpen(model.greducaCertUrl,0,0)"/>
@@ -753,18 +752,19 @@
                 <div v-else-if="confListItem.jname==='resumeUrl' && staff.resumeUrl">
                   <el-form-item v-if="staff.resumeUrl" label="简历" prop="resumeUrls"
                                 :rules="{required: staff.resumeUrl.isrequired,type:'array', message: '请上传简历', trigger: 'blur'}">
-                    <el-upload
-                      v-if="staff.resumeUrl.isedit && !resumeEdit"
-                      action="/api/v1.0/client/upload"
-                      name="files"
-                      :show-file-list="false"
-                      :headers="tokenHeader"
-                      :on-success="resumeUrlOk"
-                      :before-upload="beforeResumeUrl">
-                      <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
-                      </el-button>
-                    </el-upload>
+                    <div class="upload-btn" v-if="staff.resumeUrl.isedit && !resumeEdit">
+                      <el-upload
+                        action="/api/v1.0/client/upload"
+                        name="files"
+                        :show-file-list="false"
+                        :headers="tokenHeader"
+                        :on-success="resumeUrlOk"
+                        :before-upload="beforeResumeUrl">
+                        <el-button type="primary" size="small">
+                          <span><i class="el-icon-upload"></i>上传简历</span>
+                        </el-button>
+                      </el-upload>
+                    </div>
                     <el-button size="small" v-if="staff.resumeUrl.isedit && !resumeEdit && model.resumeUrls.length"
                                @click="resumeDel('resumeUrls','resumeEdit')"
                                class="upload-img-delBtn">
@@ -780,7 +780,7 @@
                     </el-button>
                     <el-button type="primary" size="small" v-if="!staff.resumeUrl.isedit"
                                :disabled="!staff.resumeUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传简历</span>
+                      <span><i class="el-icon-upload"></i>上传简历</span>
                     </el-button>
                     <el-button size="small" v-if="!staff.resumeUrl.isedit"
                                :disabled="!staff.resumeUrl.isedit">
@@ -812,18 +812,19 @@
                 <div v-else-if="confListItem.jname==='informUrl' && staff.informUrl">
                   <el-form-item v-if="staff.informUrl" label="知情书" prop="informUrls"
                                 :rules="{required: staff.informUrl.isrequired,type:'array', message: '请上传知情书', trigger: 'blur'}">
-                    <el-upload
-                      v-if="staff.informUrl.isedit && !informEdit"
-                      action="/api/v1.0/client/upload"
-                      name="files"
-                      :show-file-list="false"
-                      :headers="tokenHeader"
-                      :on-success="informUrlOk"
-                      :before-upload="beforeInformUrl">
-                      <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传文件</span>
-                      </el-button>
-                    </el-upload>
+                    <div class="upload-btn" v-if="staff.informUrl.isedit && !informEdit">
+                      <el-upload
+                        action="/api/v1.0/client/upload"
+                        name="files"
+                        :show-file-list="false"
+                        :headers="tokenHeader"
+                        :on-success="informUrlOk"
+                        :before-upload="beforeInformUrl">
+                        <el-button type="primary" size="small">
+                          <span><i class="el-icon-upload"></i>上传文件</span>
+                        </el-button>
+                      </el-upload>
+                    </div>
                     <el-button size="small" v-if="staff.informUrl.isedit && !informEdit && model.informUrls.length"
                                @click="resumeDel('informUrls','informEdit')"
                                class="upload-img-delBtn">
@@ -839,7 +840,7 @@
                     </el-button>
                     <el-button type="primary" size="small" v-if="!staff.informUrl.isedit"
                                :disabled="!staff.informUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传文件</span>
+                      <span><i class="el-icon-upload"></i>上传文件</span>
                     </el-button>
                     <el-button size="small" v-if="!staff.informUrl.isedit"
                                :disabled="!staff.informUrl.isedit">
@@ -896,12 +897,12 @@
                       :on-success="emplsepacertUrlOk"
                       :before-upload="beforeEmplsepacertUrl">
                       <el-button type="primary" size="small">
-                        <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                        <span><i class="el-icon-upload"></i>上传照片</span>
                       </el-button>
                     </el-upload>
                     <el-button type="primary" size="small" v-if="!staff.emplsepacertUrl.isedit"
                                :disabled="!staff.emplsepacertUrl.isedit">
-                      <span><i class="el-icon-upload el-icon--right"></i>上传照片</span>
+                      <span><i class="el-icon-upload"></i>上传照片</span>
                     </el-button>
                     <div v-if="model.emplsepacertUrl" class="upload-img-wrapper">
                       <img :src="model.emplsepacertUrl" @click="imageScaleOpen(model.emplsepacertUrl,0,0)"/>
@@ -2618,22 +2619,41 @@
       text-align: left;
       background: #ffffff;
       // 复写mint ui 组件，头部样式
+      /*修改tab样式*/
       .mint-navbar {
+
+      }
+      .mint-navbar {
+        background-color: #26a2ff;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        text-align: center;
         .mint-tab-item {
-          padding: 17px 0;
+          padding: 0 !important;
           color: rgba(255, 255, 255, 0.5);
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-          span {
+          .mint-tab-item-label {
+            height: 44px;
             font-size: 15px;
+            span {
+              height: 44px;
+              line-height: 44px;
+            }
           }
         }
         .mint-tab-item.is-selected {
           border-bottom: none !important;
           margin-bottom: 0 !important;
+          color: #ffffff;
           span {
             display: inline-block;
-            padding-bottom: 9px;
-            border-bottom: 3px solid #ffffff;
+          }
+          span:after {
+            display: block;
+            margin-top: -3px;
+            content: '';
+            border-top: 3px solid #ffffff;
           }
         }
       }
@@ -2717,10 +2737,12 @@
       margin-bottom: 10px;
       margin-top: 20px;
     }
+    // 复写lable原有样式
     .my-data .el-form-item__label {
       font-weight: 900;
       font-size: 15px;
       color: #457aa3;
+      padding-left: 12px;
     }
     .my-data .contact-box {
       width: 100%;
@@ -2765,10 +2787,11 @@
       margin-top: 10px;
       width: 100%;
     }
+    .my-data .upload-btn {
+      display: inline-block;
+    }
     .my-data .upload-img-delBtn {
-      float: left;
-      margin-top: -31px;
-      margin-left: 95px;
+      margin-left: 10px;
     }
     .my-data .upload-img-box {
       box-sizing: border-box;
@@ -2878,7 +2901,6 @@
 
     .my-data .el-form-item__error {
       position: static;
-      /*margin-top: 4px;*/
       padding-top: 0;
       line-height: 1.3;
     }
@@ -2890,27 +2912,6 @@
     .my-data a {
       color: #26a2ff;
       text-decoration: none;
-    }
-
-    /*修改tab样式*/
-    .mint-navbar {
-      background-color: #26a2ff;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      text-align: center;
-    }
-
-    .mint-navbar .mint-tab-item.is-selected {
-      border-bottom: 3px solid #ffffff;
-      color: #ffffff;
-      margin-bottom: -1px;
-    }
-
-    .mint-navbar .mint-tab-item {
-      padding: 17px 0;
-      font-size: 15px;
-      color: rgba(255, 255, 255, 0.5);
     }
     #imageScale-wrapper {
       .imageScale-wrapper {
@@ -2931,11 +2932,9 @@
     }
   }
 
-  // 复写lable原有样式
   .el-form-item .el-form-item__label:before {
     content: '';
-    margin-right: 12px;
+    float: left;
+    margin-left: -12px;
   }
-
-  /*修改tab样式结束*/
 </style>

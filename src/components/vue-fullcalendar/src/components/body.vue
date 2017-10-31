@@ -73,8 +73,7 @@
       <!-- full events when click show more -->
       <div class="more-events" v-show="showMore"
            :style="{left: morePos.left + 'px', top: morePos.top + 'px'}">
-        <div cl
-             ss="more-header">
+        <div class="more-header">
           <span class="title">{{moreTitle(selectDay.date)}}</span>
           <span class="close" @click.stop="showMore = false">x</span>
         </div>
@@ -88,11 +87,7 @@
           </ul>
         </div>
       </div>
-
-      <slot name="body-card">
-
-      </slot>
-
+      <slot name="body-card"></slot>
     </div>
   </div>
 </template>
@@ -312,14 +307,13 @@
     border-bottom: 1px solid rgb(233, 235, 240);
     .pos-fixed {
       position: relative;
-      height: 43px;
+      overflow: hidden;
       z-index: 1;
       border-bottom: 1px solid rgb(233, 235, 240);
       .spanStatus {
         float: left;
         box-sizing: border-box;
         width: 25%;
-        height: 44px;
         display: inline-block;
         padding: 5px;
         color: rgb(132, 146, 166);

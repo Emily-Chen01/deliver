@@ -17,8 +17,8 @@
       <div class="signIn-article-left">
         <div v-if="showtwStstus" class="signIn-article-line"></div>
         <!--<div class="signIn-article-line"></div>-->
-        <p class="article-icon-up">上</p>
-        <p v-if="showtwStstus" class="article-icon-down">下</p>
+        <p class="article-icon-up"></p>
+        <p v-if="showtwStstus" class="article-icon-down"></p>
         <!--<p class="article-icon-down">下</p>-->
       </div>
       <div class="signIn-article-right" v-if="showtwStstus">
@@ -680,6 +680,19 @@
     width: 100%;
     height: 100%;
     background-color: #ffffff;
+    .clearFix {
+      &:before {
+        content: "";
+        display: table
+      }
+      &:after {
+        content: "";
+        display: table;
+        clear: both;
+        overflow: hidden;
+        *zoom: 1
+      }
+    }
     p {
       margin: 0;
     }
@@ -710,7 +723,7 @@
         box-sizing: border-box;
         margin-top: 15px;
         padding-left: 10px;
-        padding-right: 140px;
+        padding-right: 170px;
         width: 100%;
         line-height: 20px;
         text-align: left;
@@ -719,7 +732,7 @@
         position: absolute;
         top: 16px;
         right: 15px;
-        width: 125px;
+        padding: 0 10px;
         height: 30px;
         line-height: 30px;
         text-align: center;
@@ -736,29 +749,29 @@
       .signIn-article-left {
         position: relative;
         width: 22px;
-        height: 114px;
+        height: 144px;
         p {
           position: absolute;
-          box-sizing: border-box;
           width: 22px;
           height: 22px;
-          border: 1px solid #98abbf;
-          color: #98abbf;
-          background-color: rgb(239, 242, 247);
           border-radius: 50%;
-          z-index: 10;
+
         }
         .article-icon-up {
           top: 0;
+          background: url("../../assets/ico_to.png");
+          background-size: 22px 22px;
         }
         .article-icon-down {
           bottom: 0;
+          background: url("../../assets/ico_off.png");
+          background-size: 22px 22px;
         }
         .signIn-article-line {
           position: absolute;
-          top: 0;
+          top: 1px;
           left: 10px;
-          height: 114px;
+          height: 142px;
           border-left: 1px solid #98abbf;
         }
       }
@@ -773,25 +786,25 @@
           box-sizing: border-box;
           padding-left: 10px;
           font-size: 0;
-          line-height: 22px;
           p {
             box-sizing: border-box;
             width: 100%;
-            height: 22px;
+            min-height: 22px;
             margin-bottom: 4px;
             span {
               box-sizing: border-box;
               display: inline-block;
-              height: 22px;
-              line-height: 22px;
+              min-height: 22px;
               font-size: 14px;
               margin-right: 5px;
               text-align: center;
               border-radius: 4px;
             }
             .article-tab {
-              font-size: 12px;
-              width: 70px;
+              font-size: 14px;
+              padding: 3px 0;
+              min-height: 22px;
+              min-width: 70px;
               color: #ffffff;
             }
             .article-tab-kg, .article-tab-zt {
@@ -810,10 +823,12 @@
               background-color: #20a2ff;
             }
             .article-tab-sq {
-              width: 120px;
+              min-width: 120px;
+              padding: 3px 10px;
             }
             .article-tab-jbsq {
-              width: 90px;
+              min-width: 90px;
+              padding: 3px 10px;
             }
           }
           p:nth-child(1) {
@@ -830,7 +845,7 @@
         }
         .signIn-article-bottom {
           position: absolute;
-          top: 92px;
+          top: 122px;
         }
       }
     }
@@ -1011,7 +1026,6 @@
           border-radius: 4px;
           color: #ffffff;
           background-color: #20a2ff;
-
         }
       }
     }
