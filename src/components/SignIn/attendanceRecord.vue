@@ -25,8 +25,8 @@
         <div class="punchInfo">
           <div class="punchInfoLeft">
             <div class="punchInfoLine"></div>
-            <p class="punchInfoUp">上</p>
-            <p class="punchInfoDown">下</p>
+            <p class="punchInfoUp"></p>
+            <p class="punchInfoDown"></p>
           </div>
           <div class="punchInfoRight">
             <p v-text="(toSapnTime ? (toSapnTime+' ') : '')+tozhang"></p>
@@ -552,23 +552,19 @@
         }
         p {
           position: absolute;
-          margin: 0;
-          box-sizing: border-box;
           width: 22px;
           height: 22px;
-          line-height: 22px;
-          text-align: center;
           border-radius: 50%;
-          border: 1px solid #9aaabf;
-          color: #9aaabf;
-          background-color: #eff3f7;
-          font-size: 12px;
         }
         .punchInfoUp {
           top: 0;
+          background: url("../../assets/ico_to.png");
+          background-size: 22px 22px;
         }
         .punchInfoDown {
           bottom: 0;
+          background: url("../../assets/ico_off.png");
+          background-size: 22px 22px;
         }
       }
       .punchInfoRight {

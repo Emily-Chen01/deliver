@@ -61,7 +61,7 @@
       },
       dispatchEvent() {
         this.title = dateFunc.format(this.headDate, this.titleFormat, this.monthNames)
-
+        console.log(123,this.title, this.titleFormat, this.monthNames)
         let startDate = dateFunc.getStartDate(this.headDate)
         let curWeekDay = startDate.getDay()
 
