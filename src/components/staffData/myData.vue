@@ -268,8 +268,10 @@
                       <div v-for="(item, idx) in model.staffCardUrls" class="upload-img-box"
                            @click="imageScaleOpen(item.url,2,idx)" v-if="isFormatImg(item.url)">
                         <img :src="item.url"/>
-                        <i class="el-icon-circle-check upload-img-icon" v-if="bankCardEdit"
-                           :class="{'upload-img-iconColor':model.staffCardUrls[idx].state}"></i>
+                        <img src="../../assets/ico_select_1.png"
+                             class="upload-img-icon" v-if="bankCardEdit && !model.staffCardUrls[idx].state" alt="">
+                        <img src="../../assets/ico_select_2.png"
+                             class="upload-img-icon" v-if="bankCardEdit && model.staffCardUrls[idx].state" alt="">
                       </div>
                     </div>
                     <p class="uploadErrorTip" v-show="staffCardUrlsErrFlag">
@@ -790,8 +792,10 @@
                       <div v-for="(item, idx) in model.resumeUrls" class="upload-img-box"
                            @click="imageScaleOpen(item.url,1,idx)" v-if="isFormatImg(item.url)">
                         <img :src="item.url"/>
-                        <i class="el-icon-circle-check upload-img-icon" v-if="resumeEdit"
-                           :class="{'upload-img-iconColor':model.resumeUrls[idx].state}"></i>
+                        <img src="../../assets/ico_select_1.png"
+                             class="upload-img-icon" v-if="resumeEdit && !model.resumeUrls[idx].state" alt="">
+                        <img src="../../assets/ico_select_2.png"
+                             class="upload-img-icon" v-if="resumeEdit && model.resumeUrls[idx].state" alt="">
                       </div>
                       <div v-for="(item, idx) in model.resumeUrls" class="upload-img-box upload-img-box1"
                            @click="imageScaleOpen(item.url,1,idx)" v-if="!(isFormatImg(item.url))">
@@ -800,8 +804,10 @@
                             <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
                             <span>已上传</span>
                           </div>
-                          <i class="el-icon-circle-check upload-img-icon" v-if="resumeEdit"
-                             :class="{'upload-img-iconColor':model.resumeUrls[idx].state}"></i>
+                          <img src="../../assets/ico_select_1.png"
+                               class="upload-img-icon" v-if="resumeEdit && !model.resumeUrls[idx].state" alt="">
+                          <img src="../../assets/ico_select_2.png"
+                               class="upload-img-icon" v-if="resumeEdit && model.resumeUrls[idx].state" alt="">
                         </div>
                       </div>
                     </div>
@@ -850,8 +856,10 @@
                       <div v-for="(item, idx) in model.informUrls" class="upload-img-box"
                            @click="imageScaleOpen(item.url,3,idx)" v-if="isFormatImg(item.url)">
                         <img :src="item.url"/>
-                        <i class="el-icon-circle-check upload-img-icon" v-if="informEdit"
-                           :class="{'upload-img-iconColor':model.informUrls[idx].state}"></i>
+                        <img src="../../assets/ico_select_1.png"
+                             class="upload-img-icon" v-if="informEdit && !model.informUrls[idx].state" alt="">
+                        <img src="../../assets/ico_select_2.png"
+                             class="upload-img-icon" v-if="informEdit && model.informUrls[idx].state" alt="">
                       </div>
                       <div v-for="(item, idx) in model.informUrls" class="upload-img-box upload-img-box1"
                            @click="imageScaleOpen(item.url,3,idx)" v-if="!(isFormatImg(item.url))">
@@ -860,8 +868,10 @@
                             <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
                             <span>已上传</span>
                           </div>
-                          <i class="el-icon-circle-check upload-img-icon" v-if="informEdit"
-                             :class="{'upload-img-iconColor':model.informUrls[idx].state}"></i>
+                          <img src="../../assets/ico_select_1.png"
+                               class="upload-img-icon" v-if="informEdit && !model.informUrls[idx].state" alt="">
+                          <img src="../../assets/ico_select_2.png"
+                               class="upload-img-icon" v-if="informEdit && model.informUrls[idx].state" alt="">
                         </div>
                       </div>
                     </div>
@@ -1201,6 +1211,10 @@
   export default {
     data() {
       return {
+        imgObj: {
+          ico_select_1: '../../assets/ico_select_1.png',
+          ico_select_2: '../../assets/ico_select_2.png',
+        },
         // =====日历选择器字段开始=====
         startDate: '',
         nowDateTime: new Date(),
@@ -1512,9 +1526,16 @@
           this.nowDateTime = new Date();
         }
         if (this.dateType === 0) {
-          pickerslot[2].style.display = 'block';
+          pickerslot[2].style.display = 'inline-block';
         } else if (this.dateType === 1) {
           pickerslot[2].style.display = 'none';
+        }
+        for (let i = 0; i < 3; i++) {
+          if (this.dateType === 0) {
+            pickerslot[i].style.width = '33.33%';
+          } else if (this.dateType === 1) {
+            pickerslot[i].style.width = '50%';
+          }
         }
         this.$refs.picker.open();
       },
@@ -2614,6 +2635,15 @@
         color: black;
       }
     }
+    // 选择日期覆盖样式
+    .picker-items {
+      display: block;
+      width: 100%;
+      .picker-slot {
+        flex: none !important;
+        display: inline-block;
+      }
+    }
     .my-data {
       padding: 44px 0 70px;
       text-align: left;
@@ -2643,6 +2673,7 @@
           }
         }
         .mint-tab-item.is-selected {
+          position: relative;
           border-bottom: none !important;
           margin-bottom: 0 !important;
           color: #ffffff;
@@ -2840,20 +2871,14 @@
       width: 32px;
       height: 35px;
     }
-    .my-data .upload-img-wrapper .upload-img-icon {
+    .my-data .upload-img-wrapper .upload-img-box .upload-img-icon {
       position: relative;
       float: right;
-      width: 14px;
-      height: 14px;
-      border: 1px solid #ffffff;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       margin-top: -20px;
       margin-right: 4px;
-      background: #ffffff;
-      color: rgb(116, 115, 113);
-    }
-    .my-data .upload-img-wrapper .upload-img-iconColor {
-      color: rgb(33, 161, 252);
     }
     .my-data .child-imgBox {
       margin-top: 10px;

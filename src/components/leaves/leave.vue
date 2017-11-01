@@ -38,7 +38,8 @@
         <div class="leave-main-box-apply">
           <div class="leave-main-box-apply-left icon-stars">开始时间</div>
           <div class="leave-main-box-apply-center" @click="openPicker(0)">
-            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'" :class="{'colorA6':!startTimeValue}"></span>
+            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"
+                  :class="{'colorA6':!startTimeValue}"></span>
           </div>
         </div>
         <div class="leave-main-box-apply">
@@ -418,6 +419,15 @@
       box-sizing: border-box;
       padding: 0 10px;
     }
+    .picker-items {
+      display: block;
+      width: 100%;
+      .picker-slot {
+        flex: none !important;
+        display: inline-block;
+        width: 25%;
+      }
+    }
     .mint-navbar {
       background-color: #26a2ff;
       display: -webkit-box;
@@ -502,7 +512,7 @@
               background-size: 15px;
               /*为下拉小箭头留出一点位置，避免被文字覆盖*/
               padding-right: 20px;
-              option{
+              option {
                 color: black;
               }
             }

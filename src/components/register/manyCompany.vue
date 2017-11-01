@@ -77,10 +77,19 @@
         text-align: left;
         background-position: top;
         .mint-cell-title {
-
-          padding: 0 10px;
-          span {
-            margin-left: 10px;
+          box-sizing: border-box;
+          padding: 0 10px 0 26px;
+          width: 100%;
+          font-size: 0;
+          img {
+            margin-left: -16px;
+          }
+          .mint-cell-text {
+            box-sizing: border-box;
+            padding-left: 10px;
+            display: inline-block;
+            width: 100%;
+            font-size: 16px;
             color: #1f2d3d;
           }
         }
