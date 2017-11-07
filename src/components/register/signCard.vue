@@ -56,7 +56,7 @@
           </div>
         </div>
         <mt-button type="primary" size="large" class="Binding-btn" @click.native="handerUnbundling">解除绑定</mt-button>
-        <div class="Binding-hotLine">客服热线 ：0512-88998989</div>
+        <div class="Binding-hotLine">客服热线 ：010-59271343</div>
       </div>
     </div>
     <!--底部工具-->
