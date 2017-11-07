@@ -43,27 +43,12 @@
             <p class="day-number">{{day.monthDay}}</p>
             <div class="event-box">
               <div class="event-box-div">
-                <p class="event-item" v-for="event in day.events"
-                   v-show="event.cellIndex <= eventLimit"
-                   :class="[classNames(event.cssClass), {
-                  'is-start'   : isStart(event.start, day.date,day) && event.title,
-                  'is-end'     : isEnd(event.end,day.date),
-                  'event-item-Lefts':event.title&& day.events.length>1,
-                  'event-item-left':!event.title&& day.events.length>1,
-                  'is-opacity' : !event.isShow,
-                  'normalStyle':event.cssClass==='normal',
-                  'abnormalStyle':event.cssClass==='abnormal',
-                  'leaveStyle':event.cssClass==='leave'
-                 }]"
-                   @click="eventClick(event,$event)">
-                  <span class="holidayStyle" v-if="event.title && day.events.length>1">假</span>
-                  <span class="holidayStyle" v-if="event.title && day.events.length<=1">假</span>
-                  <!--{{isBegin(event, day.date, day.weekDay)}}-->
+                <p class="event-item" v-show="event.cellIndex <= eventLimit" v-for="event in day.events">
+                  <span class="dotStyle"
+                        :class="{'normalStyle':event.cssClass==='normal','abnormalStyle':event.cssClass==='abnormal','leaveStyle':event.cssClass==='leave'}"
+                        v-if="event.cssClass"></span>
+                  <img src="../../../../assets/ico_holiday.png" class="ico_holiday" v-if="event.title" alt=""/>
                 </p>
-                <p v-if="day.events.length > eventLimit"
-                   class="more-link" @click.stop="selectThisDay(day, $event)">
-                  + {{day.events[day.events.length - 1].cellIndex - eventLimit}} more
-              </p>
               </div>
             </div>
           </div>
@@ -168,10 +153,10 @@
       getCalendar () {
         // calculate 2d-array of each month
         // first day of this month
-        let now = new Date() ;// today
+        let now = new Date();// today
         let current = new Date(this.currentDate);
 
-        let startDate = dateFunc.getStartDate(current) ;// 1st day of this month
+        let startDate = dateFunc.getStartDate(current);// 1st day of this month
 
         let curWeekDay = startDate.getDay();
 
@@ -413,63 +398,38 @@
               z-index: -1;
               .event-box-div {
                 box-sizing: border-box;
+                overflow: hidden;
+                height: 44px;
                 padding-top: 24px;
               }
-              .holidayStyle {
-                display: inline-block;
-                transform: scale(0.5);
-                font-size: 16px;
-                color: rgb(247, 79, 78);
-                font-weight: bold;
-
-              }
               .event-item {
+                margin-top: 8px;
                 display: inline-block;
-                margin: 0 auto;
-                margin-top: 14px;
-                font-size: 12px;
-                color: rgba(0, 0, 0, .87);
-                height: 4px;
-                line-height: 4px;
-                border-radius: 2px;
-                width: 4px;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                &.is-start {
-                  margin-left: -10px;
+                line-height: 1;
+                .dotStyle {
+                  display: inline-block;
+                  margin: 0 2px;
+                  width: 4px;
+                  height: 4px;
+                  border-radius: 50%;
+                  vertical-align: middle;
                 }
-                &.is-end {
-                  margin-right: 0;
+                .ico_holiday{
+                  width: 8px;
+                  height: 8px;
+                  margin: 0 2px;
                 }
-                &.event-item-Lefts {
-                  position: absolute;
-                  margin-left: -3px;
-
-                }
-                &.event-item-left {
-                  margin-right: 1px;
-                  margin-left: -6px;
-                }
-                &.normalStyle {
+                .normalStyle {
                   background: rgb(32, 161, 255);
                 }
 
-                &.abnormalStyle {
+                .abnormalStyle {
                   background: rgb(255, 204, 0);
                 }
 
-                &.leaveStyle {
+                .leaveStyle {
                   background: rgb(102, 204, 0);
                 }
-                &.is-opacity {
-                  opacity: 0;
-                }
-              }
-              .more-link {
-                padding-left: 8px;
-                padding-right: 2px;
-                color: rgba(0, 0, 0, .38);
-                font-size: 14px;
               }
             }
           }
