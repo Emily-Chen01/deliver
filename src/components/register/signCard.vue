@@ -45,6 +45,12 @@
             <img slot="icon" :src="imgSrc.ico_wage" class="ImgIcon">
           </mt-cell>
         </div>
+        <div @click="changeList(3)">
+          <mt-cell title="公司公告" is-link>
+            <span v-text="recordShow.notice ? recordShow.notice : '当前无未读公告'"></span>
+            <img slot="icon" :src="imgSrc.ico_wage" class="ImgIcon">
+          </mt-cell>
+        </div>
       </div>
     </div>
     <!--解除绑定-->
@@ -161,6 +167,8 @@
 
         } else if (indexX === 2) {
           this.$router.push({path: '/mySalary'});
+        }else if(indexX === 3){
+          this.$router.push({path: '/notice'});
         }
       },
       routerMyData(){

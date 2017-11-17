@@ -1,0 +1,167 @@
+<template>
+  <div id="detailsBox" v-if="state">
+    <div class="detailsContent">
+      <div class="detailsMain">
+        <h4 class="detailsMain-title" v-text="noticeData.title">全体公告</h4>
+        <p class="detailsMain-content" v-text="noticeData.content"></p>
+        <ul class="detailsFile">
+          <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
+            <a :href="itemUrl.url" v-text="itemUrl.ctime" download=""></a>
+          </li>
+        </ul>
+        <table class="detailsMain-tableBottom">
+          <tr>
+            <td v-text="'发布时间：'+noticeData.publishTime"></td>
+            <!--<td v-text="noticeData.accessoriesUrlCount"></td>-->
+            <!--<td v-text="noticeData.noticeCommentCount"></td>-->
+          </tr>
+        </table>
+      </div>
+    </div>
+    <ul class="detailsList">
+      <li class="detailsMain" v-for="item in commentData">
+        <table class="detailsMain-tableTop">
+          <tr>
+            <td><h4 v-text="item.name"></h4></td>
+            <td v-text="item.ctime"></td>
+          </tr>
+        </table>
+        <p class="detailsMain-content" v-text="item.content"></p>
+      </li>
+    </ul>
+    <div class="commentBox">
+      <textarea class="commentText" placeholder="#请输入" v-model.trim="commentContent"></textarea>
+      <mt-button type="primary" class="commentBtn" @click="comment">
+        <span>评论</span>
+      </mt-button>
+    </div>
+  </div>
+</template>
+<script>
+  import Vue from 'vue';
+  import {Indicator, Toast} from 'mint-ui';
+  export default {
+    data(){
+      return {
+        state: false,
+        noticeData: {},
+        commentData: [],
+        commentContent: '',
+        userName: '',
+      }
+    },
+    created(){
+      this.state = false;
+      Indicator.open('正在加载...');
+      let noticeUid = this.getCookie('noticeUid');
+      this.userName = this.getCookie('infoObjPassName');
+      Vue.Promise.all([
+        this.$http.get('/api/v1.0/client/findCompanyNotice/' + noticeUid),
+        this.$http.get('/api/v1.0/client/noticeComment/' + noticeUid)
+      ]).then(res => {
+        if (res[0].body.code === 200) {
+          this.noticeData = res[0].body.result.notice;
+        }
+        if (res[1].body.code === 200) {
+          this.commentData = res[1].body.result.noticeComent;
+        }
+        this.state = true;
+        Indicator.close();//关闭加载中
+      })
+    },
+    methods: {
+      comment(){
+        this.$http.post('/api/v1.0/client/noticeComment/Save', {
+          noticeuid: this.noticeData.uid,
+          content: this.commentContent,
+          name: this.userName
+        }).then(res => {
+          if (res.body.code === 200) {
+            Toast({
+              message: res.body.message,
+              iconClass: 'ico_workbench_2'
+            });
+            this.$router.push({path: '/notice'});
+          }
+        })
+      }
+    }
+  }
+</script>
+<style lang="scss">
+  #detailsBox {
+    padding: 0 15px;
+    min-height: 100%;
+    background-color: #ffffff;
+    text-align: left;
+    .detailsList, .detailsContent {
+      .detailsMain {
+        padding: 15px 0;
+        border-bottom: 1px solid #d2dce6;
+        .detailsMain-title {
+          padding-bottom: 5px;
+          line-height: 15px;
+          font-size: 15px;
+          color: #1f2d3d;
+        }
+        .detailsMain-content {
+          padding-bottom: 5px;
+          line-height: 20px;
+          font-size: 14px;
+          color: #1f2d3d;
+        }
+        .detailsFile {
+          padding-bottom: 10px;
+          width: 100%;
+          font-size: 0;
+          .detailsFile-item {
+            box-sizing: border-box;
+            display: inline-block;
+            width: 25%;
+            padding: 0 10px;
+            font-size: 14px;
+          }
+        }
+        .detailsMain-tableTop {
+          width: 100%;
+          padding-bottom: 5px;
+          td {
+            font-size: 14px;
+            color: #1f2d3d;
+          }
+          td:last-child {
+            font-size: 12px;
+            color: #99a9bf;
+            text-align: right;
+          }
+        }
+        .detailsMain-tableBottom {
+          width: 100%;
+          font-size: 12px;
+          color: #99a9bf;
+          td {
+            width: 30px;
+          }
+          td:first-child {
+            width: auto;
+          }
+        }
+      }
+    }
+    .commentBox {
+      margin-top: 10px;
+      text-align: center;
+      .commentText {
+        width: 100%;
+        min-height: 100px;
+        border-radius: 4px;
+      }
+      .commentBtn {
+        margin-top: 10px;
+        width: 100px;
+        font-size: 14px;
+      }
+    }
+  }
+</style>
+
