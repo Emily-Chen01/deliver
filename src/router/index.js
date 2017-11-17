@@ -7,6 +7,8 @@ import signIn from "@/components/SignIn/signIn"
 import quick from "@/components/register/quick"
 import myData from "@/components/staffData/myData"
 import leave from "@/components/leaves/leave"
+import notice from "@/components/notice/notice"
+import noticeDetails from "@/components/notice/details"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import mySalary from "@/components/SignIn/mySalary"
 
@@ -51,6 +53,14 @@ export default new Router({
     {
       path: '/mySalary',  //我的工资条
       component: mySalary
+    },
+    {
+      path: '/notice',  //我的工资条
+      component: notice
+    },
+    {
+      path: '/notice_details',  //我的工资条
+      component: noticeDetails
     }
   ]
 })
