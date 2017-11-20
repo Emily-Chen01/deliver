@@ -51,6 +51,7 @@
             <img slot="icon" :src="imgSrc.ico_wage" class="ImgIcon">
           </mt-cell>
         </div>
+        <!--<i class="bg-icon bg-ico_announcement"></i>-->
       </div>
     </div>
     <!--解除绑定-->

@@ -11,7 +11,7 @@
         </ul>
         <table class="detailsMain-tableBottom">
           <tr>
-            <td v-text="'发布时间：'+noticeData.publishTime"></td>
+            <td v-text="'发布时间：'+dateFormat(noticeData.publishTime)"></td>
             <!--<td v-text="noticeData.accessoriesUrlCount"></td>-->
             <!--<td v-text="noticeData.noticeCommentCount"></td>-->
           </tr>
@@ -23,7 +23,7 @@
         <table class="detailsMain-tableTop">
           <tr>
             <td><h4 v-text="item.name"></h4></td>
-            <td v-text="item.ctime"></td>
+            <td v-text="dateFormat(item.ctime)"></td>
           </tr>
         </table>
         <p class="detailsMain-content" v-text="item.content"></p>
@@ -40,6 +40,8 @@
 <script>
   import Vue from 'vue';
   import {Indicator, Toast} from 'mint-ui';
+  import moment from 'moment'
+  let df = 'YYYY-MM-DD HH:mm:ss';
   export default {
     data(){
       return {
@@ -84,6 +86,10 @@
             this.$router.push({path: '/notice'});
           }
         })
+      },
+      //格式化时间
+      dateFormat(data){
+        return moment(data).format(df);
       }
     }
   }

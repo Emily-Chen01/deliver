@@ -6,7 +6,7 @@
         <p class="noticeMain-content" v-text="item.content"></p>
         <table class="noticeMain-InfoTable">
           <tr>
-            <td v-text="item.publishTime"></td>
+            <td v-text="dateFormat(item.publishTime)"></td>
             <td v-text="item.accessoriesUrlCount"></td>
             <td v-text="item.noticeCommentCount"></td>
           </tr>
@@ -18,6 +18,8 @@
 
 <script>
   import {Indicator,} from 'mint-ui';
+  import moment from 'moment'
+  let df = 'YYYY-MM-DD HH:mm:ss';
   export default {
     data(){
       return {
@@ -44,6 +46,10 @@
       details(data){
         this.setCookie('noticeUid', data.uid, 365);
         this.$router.push({path: '/notice_details'});
+      },
+      //格式化时间
+      dateFormat(data){
+        return moment(data).format(df);
       }
     }
   }
