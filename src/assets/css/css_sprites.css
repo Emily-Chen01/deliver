@@ -1,221 +1,37 @@
-.bg-icon {
-  display: inline-block;
-  transform: scale(0.5);
-  background-size: 435px 428px;
-}
-
-.bg-arrow_1 {
-  width: 14px;
-  height: 23px;
-  background: url('../css_sprites.png') -146px -395px;
-}
-
-.bg-arrow_2 {
-  width: 23px;
-  height: 14px;
-  background: url('../css_sprites.png') -50px -356px;
-}
-
-.bg-arrow_3 {
-  width: 14px;
-  height: 23px;
-  background: url('../css_sprites.png') -112px -395px;
-}
-
-.bg-arrow_3_disabled {
-  width: 14px;
-  height: 23px;
-  background: url('../css_sprites.png') -78px -395px;
-}
-
-.bg-arrow_4 {
-  width: 14px;
-  height: 23px;
-  background: url('../css_sprites.png') -44px -395px;
-}
-
-.bg-arrow_4_disabled {
-  width: 14px;
-  height: 23px;
-  background: url('../css_sprites.png') -10px -395px;
-}
-
-.bg-ico_announcement {
-  width: 38px;
-  height: 38px;
-  background: url('../css_sprites.png') -10px -298px;
-}
-
-.bg-ico_attendance {
-  width: 38px;
-  height: 38px;
-  background: url('../css_sprites.png') -126px -298px;
-}
-
-.bg-ico_comment {
-  width: 20px;
-  height: 19px;
-  background: url('../css_sprites.png') -10px -356px;
-}
-
-.bg-ico_company {
-  width: 32px;
-  height: 32px;
-  background: url('../css_sprites.png') -242px -298px;
-}
-
-.bg-ico_document {
-  width: 64px;
-  height: 69px;
-  background: url('../css_sprites.png') -309px -10px;
-}
-
-.bg-ico_error {
-  width: 68px;
-  height: 68px;
-  background: url('../css_sprites.png') -10px -210px;
-}
-
-.bg-ico_holiday {
-  width: 18px;
-  height: 16px;
-  background: url('../css_sprites.png') -180px -395px;
-}
-
-.bg-ico_info {
-  width: 26px;
-  height: 30px;
-  background: url('../css_sprites.png') -393px -114px;
-}
-
-.bg-ico_leave {
-  width: 38px;
-  height: 38px;
-  background: url('../css_sprites.png') -184px -298px;
-}
-
-.bg-ico_link {
-  width: 22px;
-  height: 21px;
-  background: url('../css_sprites.png') -393px -306px;
-}
-
-.bg-ico_location_1 {
-  width: 24px;
-  height: 32px;
-  background: url('../css_sprites.png') -393px -164px;
-}
-
-.bg-ico_off {
-  width: 44px;
-  height: 44px;
-  background: url('../css_sprites.png') -309px -163px;
-}
-
-.bg-ico_other {
-  width: 80px;
-  height: 80px;
-  background: url('../css_sprites.png') -10px -10px;
-}
-
-.bg-ico_pencil {
-  width: 24px;
-  height: 24px;
-  background: url('../css_sprites.png') -393px -262px;
-}
-
-.bg-ico_salary {
-  width: 80px;
-  height: 80px;
-  background: url('../css_sprites.png') -10px -110px;
-}
-
-.bg-ico_select_1 {
-  width: 32px;
-  height: 32px;
-  background: url('../css_sprites.png') -294px -298px;
-}
-
-.bg-ico_select_2 {
-  width: 32px;
-  height: 32px;
-  background: url('../css_sprites.png') -393px -10px;
-}
-
-.bg-ico_setting {
-  width: 26px;
-  height: 26px;
-  background: url('../css_sprites.png') -393px -216px;
-}
-
-.bg-ico_setting_1 {
-  width: 40px;
-  height: 40px;
-  background: url('../css_sprites.png') -158px -210px;
-}
-
-.bg-ico_setting_2 {
-  width: 40px;
-  height: 40px;
-  background: url('../css_sprites.png') -98px -210px;
-}
-
-.bg-ico_social {
-  width: 80px;
-  height: 80px;
-  background: url('../css_sprites.png') -110px -10px;
-}
-
-.bg-ico_success {
-  width: 68px;
-  height: 68px;
-  background: url('../css_sprites.png') -210px -95px;
-}
-
-.bg-ico_tax {
-  width: 80px;
-  height: 80px;
-  background: url('../css_sprites.png') -110px -110px;
-}
-
-.bg-ico_to {
-  width: 44px;
-  height: 44px;
-  background: url('../css_sprites.png') -309px -99px;
-}
-
-.bg-ico_wage {
-  width: 38px;
-  height: 38px;
-  background: url('../css_sprites.png') -68px -298px;
-}
-
-.bg-ico_workbench_1 {
-  width: 40px;
-  height: 40px;
-  background: url('../css_sprites.png') -218px -210px;
-}
-
-.bg-ico_workbench_2 {
-  width: 40px;
-  height: 40px;
-  background: url('../css_sprites.png') -309px -227px;
-}
-
-.bg-qianIcon {
-  width: 79px;
-  height: 65px;
-  background: url('../css_sprites.png') -210px -10px;
-}
-
-.bg-time {
-  width: 32px;
-  height: 32px;
-  background: url('../css_sprites.png') -393px -62px;
-}
-
-.bg-time_1 {
-  width: 20px;
-  height: 20px;
-  background: url('../css_sprites.png') -346px -298px;
-}
+.bg-img{display: inline-block;vertical-align:middle;background:url(../css_sprites.png)  no-repeat;background-size:168px 157px;}
+.arrow_3_disabled{height:11px;width:7px;background-position:0 0;}
+.arrow_4{height:11px;width:7px;background-position:-10px 0;}
+.arrow_4_disabled{height:11px;width:7px;background-position:-20px 0;}
+.arrow_1{height:11px;width:7px;background-position:-31px 0;}
+.arrow_3{height:11px;width:7px;background-position:-41px 0;}
+.ico_holiday{height:8px;width:9px;background-position:-52px 0;}
+.ico_comment{height:9px;width:12px;background-position:-110px 0;}
+.time_1{height:10px;width:12px;background-position:-96px 0;}
+.ico_link{height:11px;width:12px;background-position:-80px 0;}
+.arrow_2{height:7px;width:11px;background-position:-65px 0;}
+.ico_location_1{height:16px;width:12px;background-position:-64px -14px;}
+.ico_pencil{height:12px;width:13px;background-position:-49px -15px;}
+.ico_info{height:15px;width:13px;background-position:-34px -14px;}
+.ico_setting{height:13px;width:13px;background-position:-18px -15px;}
+.ico_company{height:16px;width:17px;background-position:-91px -15px;}
+.ico_select_1{height:16px;width:16px;background-position:-127px -34px;}
+.time{height:16px;width:16px;background-position:-108px -34px;}
+.ico_select_2{height:16px;width:16px;background-position:-89px -34px;}
+.ico_wage{height:20px;width:20px;background-position:-67px -32px;}
+.ico_attendance{height:20px;width:20px;background-position:-45px -32px;}
+.ico_leave{height:20px;width:20px;background-position:-23px -32px;}
+.ico_announcement{height:20px;width:20px;background-position:0 -32px;}
+.ico_setting_2{height:20px;width:20px;background-position:-119px -56px;}
+.ico_workbench_2{height:20px;width:20px;background-position:-97px -56px;}
+.ico_workbench_1{height:20px;width:20px;background-position:-74px -56px;}
+.ico_setting_1{height:20px;width:20px;background-position:-50px -55px;}
+.ico_to{height:22px;width:22px;background-position:-25px -53px;}
+.ico_off{height:22px;width:22px;background-position:0 -53px;}
+.ico_document{height:34px;width:32px;background-position:0 -78px;}
+.ico_error{height:34px;width:34px;background-position:-36px -78px;}
+.ico_success{height:34px;width:34px;background-position:-73px -79px;}
+.qianIcon{height:32px;width:39px;background-position:-110px -79px;}
+.ico_salary{height:40px;width:40px;background-position:0 -116px;}
+.ico_other{height:40px;width:40px;background-position:-42px -117px;}
+.ico_tax{height:40px;width:40px;background-position:-127px -117px;}
+.ico_social{height:40px;width:40px;background-position:-84px -117px;}

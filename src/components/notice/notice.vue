@@ -6,9 +6,18 @@
         <p class="noticeMain-content" v-text="item.content"></p>
         <table class="noticeMain-InfoTable">
           <tr>
-            <td v-text="dateFormat(item.publishTime)"></td>
-            <td v-text="item.accessoriesUrlCount"></td>
-            <td v-text="item.noticeCommentCount"></td>
+            <td>
+              <i class="bg-img time_1"></i>
+              <span v-text="dateFormat(item.publishTime)"></span>
+            </td>
+            <td>
+              <i class="bg-img ico_link"></i>
+              <span v-text="item.accessoriesUrlCount"></span>
+            </td>
+            <td>
+              <i class="bg-img ico_comment"></i>
+              <span v-text="item.noticeCommentCount"></span>
+            </td>
           </tr>
         </table>
       </li>
@@ -88,6 +97,9 @@
           color: #99a9bf;
           td {
             width: 30px;
+            span {
+              vertical-align: middle;
+            }
           }
           td:first-child {
             width: auto;
