@@ -213,7 +213,6 @@
         imgSrc: {
           shenFenIcon: '',
           shenFenIconShowCamera: require('../../assets/camera.png'),
-//          selectShow: require('../../assets/arrow_2.png'),
           ico_success: require('../../assets/ico_success.png'),
           ico_error: require('../../assets/ico_error.png'),
         },

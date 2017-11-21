@@ -3,7 +3,7 @@
     <div class="manyCompanyTitle">{{ msg }}</div>
     <div class="manyCompanyList" v-for="item in arryName" @click="handerComeCompany(item)">
       <mt-cell :title="item.compName" is-link>
-        <img slot="icon" :src="imgSrc.ico_company" width="16" height="16">
+        <i slot="icon" class="bg-img ico_company"></i>
       </mt-cell>
     </div>
   </div>
@@ -19,9 +19,6 @@
           name: '',
           url: ''
         }],
-        imgSrc: {
-          ico_company: require('../../assets/ico_company.png'),
-        },
       }
     },
     created: function () {
@@ -81,8 +78,8 @@
           padding: 0 10px 0 26px;
           width: 100%;
           font-size: 0;
-          img {
-            margin-left: -16px;
+          i {
+            margin-left: -17px;
           }
           .mint-cell-text {
             box-sizing: border-box;

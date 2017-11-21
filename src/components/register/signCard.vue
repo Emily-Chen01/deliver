@@ -14,13 +14,13 @@
             <p v-text="arryOneself.record.companyName"></p>
           </div>
           <div class="header-top-right" @click="routerMyData">
-            <img :src="imgSrc.ico_info"/>
+            <i class="bg-img ico_info"></i>
             <span>员工信息</span>
           </div>
         </div>
         <div class="header-bottom" v-if="arryOneself.punchCard">
           <mt-button class="hand-btn" @click="handerSign">
-            <img :src="imgSrc.ico_pencil">
+            <i class="bg-img ico_pencil"></i>
             <span>签到打卡</span>
           </mt-button>
         </div>
@@ -30,28 +30,29 @@
         <div @click="changeList(0)">
           <mt-cell title="请假申请" is-link>
             <span v-text="recordShow.apply ? recordShow.apply : '当前无申请记录'"></span>
-            <img slot="icon" :src="imgSrc.ico_leave" class="ImgIcon">
+            <i slot="icon" class="bg-img ico_leave"></i>
           </mt-cell>
         </div>
         <div @click="changeList(1)">
           <mt-cell title="我的考勤" is-link>
             <span v-text="recordShow.punchCard ? recordShow.punchCard : '本月无考勤异常'"></span>
-            <img slot="icon" :src="imgSrc.ico_attendance" class="ImgIcon">
+            <i slot="icon" class="bg-img ico_attendance"></i>
           </mt-cell>
         </div>
         <div @click="changeList(2)">
           <mt-cell title="我的工资条" is-link>
             <span v-text="recordShow.salary ? recordShow.salary : '当前无工资条记录'"></span>
-            <img slot="icon" :src="imgSrc.ico_wage" class="ImgIcon">
+            <i slot="icon" class="bg-img ico_wage"></i>
           </mt-cell>
         </div>
         <div @click="changeList(3)">
           <mt-cell title="公司公告" is-link>
             <span v-text="recordShow.notice ? recordShow.notice : '当前无未读公告'"></span>
-            <img slot="icon" :src="imgSrc.ico_wage" class="ImgIcon">
+            <i slot="icon" class="bg-img ico_announcement"></i>
           </mt-cell>
+
         </div>
-        <!--<i class="bg-icon bg-ico_announcement"></i>-->
+
       </div>
     </div>
     <!--解除绑定-->
@@ -69,13 +70,13 @@
     <!--底部工具-->
     <mt-tabbar id="tab-bottom" v-model="select">
       <mt-tab-item id="1">
-        <img slot="icon" :src="imgSrc.doIconBlue" v-if="toolState">
-        <img slot="icon" :src="imgSrc.doIcon" v-if="!toolState">
+        <i slot="icon" class="bg-img ico_workbench_1" v-if="toolState"></i>
+        <i slot="icon" class="bg-img ico_workbench_2"  v-if="!toolState"></i>
         <span>工作台</span>
       </mt-tab-item>
       <mt-tab-item id="2">
-        <img slot="icon" :src="imgSrc.setIconBlue" v-if="!toolState">
-        <img slot="icon" :src="imgSrc.setIcon" v-if="toolState">
+        <i slot="icon" class="bg-img ico_setting_1" v-if="!toolState"></i>
+        <i slot="icon" class="bg-img ico_setting_2" v-if="toolState"></i>
         <span>解绑</span>
       </mt-tab-item>
     </mt-tabbar>
@@ -92,13 +93,6 @@
         arryOneself: {},
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
-          ico_leave: require('../../assets/ico_leave.png'),
-          ico_attendance: require('../../assets/ico_attendance.png'),
-          ico_wage: require('../../assets/ico_wage.png'),
-          doIcon: require('../../assets/ico_workbench_2.png'),
-          doIconBlue: require('../../assets/ico_workbench_1.png'),
-          setIconBlue: require('../../assets/ico_setting_1.png'),
-          setIcon: require('../../assets/ico_setting_2.png'),
           ico_pencil: require('../../assets/ico_pencil.png'),
           ico_info:require('../../assets/ico_info.png')
         },
@@ -252,16 +246,15 @@
           border-top-left-radius: 15px;
           background-color: rgba(26, 128, 204, 0.4);
           font-size: 0;
-          img {
-            height: 14px;
-            padding: 8px 0 0 15px;
+          i{
+            margin: 7px 0 0 15px;
           }
           span {
             display: inline-block;
             font-size: 14px;
             line-height: 14px;
             padding: 8px 0 0 8px;
-            vertical-align: top;
+            vertical-align: middle;
           }
         }
       }
@@ -273,10 +266,9 @@
           font-size: 14px;
           color: #ffffff;
           background-color: rgba(88, 184, 255, 0.8);
-        }
-        img {
-          width: 12px;
-          height: 12px;
+          span{
+            vertical-align: middle;
+          }
         }
       }
     }
