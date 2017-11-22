@@ -161,6 +161,9 @@
         }
       }
     }
+    .detailsList{
+      margin-bottom: 70px;
+    }
     .detailsContent {
       .detailsMain {
         border-bottom: none;
