@@ -1,6 +1,6 @@
 <template>
   <div id="commentBox">
-    <textarea class="commentText" placeholder="#请输入" v-model.trim="commentContent"></textarea>
+    <textarea class="commentText" maxlength="200" placeholder="#请输入评论（不超过200字）" v-model.trim="commentContent"></textarea>
     <mt-button type="primary" class="commentBtn" @click="comment">
       <span>提交评论</span>
     </mt-button>

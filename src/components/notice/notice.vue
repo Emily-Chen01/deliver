@@ -1,7 +1,8 @@
 <template>
   <div id="noticeBox">
     <ul class="noticeList">
-      <li class="noticeMain" @click="details(item)" v-for="item in noticeObj.list">
+      <li class="noticeMain" :class="{'noticeIsRead':!item.noticeStaffreadRefs}" @click="details(item)"
+          v-for="item in noticeObj.list">
         <h4 class="noticeMain-title" v-text="item.title"></h4>
         <!--<p class="noticeMain-content" v-html="item.content"></p>-->
         <table class="noticeMain-InfoTable">
@@ -66,11 +67,10 @@
 <style lang="scss">
   #noticeBox {
     .noticeList {
-      padding: 0 15px;
       text-align: left;
       background-color: #ffffff;
       .noticeMain {
-        padding: 15px 0;
+        padding: 15px 15px;
         border-bottom: 1px solid #d2dce6;
         &:last-child {
           border: none;
@@ -90,7 +90,7 @@
           line-height: 20px;
           font-size: 14px;
           color: #1f2d3d;
-          img{
+          img {
             width: 30px;
           }
         }
@@ -107,6 +107,21 @@
           td:first-child {
             width: auto;
           }
+        }
+      }
+      .noticeIsRead {
+        background-color: #fffbec;
+        .noticeMain-title:before {
+
+          display: inline-block;
+          margin-right: 4px;
+          width: 6px;
+          height: 6px;
+          border-radius: 3px;
+          content: '';
+          vertical-align: middle;
+          background-color: red;
+
         }
       }
     }
