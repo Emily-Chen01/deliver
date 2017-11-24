@@ -3,7 +3,7 @@
     <ul class="noticeList">
       <li class="noticeMain" @click="details(item)" v-for="item in noticeObj.list">
         <h4 class="noticeMain-title" v-text="item.title"></h4>
-        <p class="noticeMain-content" v-text="item.content"></p>
+        <!--<p class="noticeMain-content" v-html="item.content"></p>-->
         <table class="noticeMain-InfoTable">
           <tr>
             <td>
@@ -90,6 +90,9 @@
           line-height: 20px;
           font-size: 14px;
           color: #1f2d3d;
+          img{
+            width: 30px;
+          }
         }
         .noticeMain-InfoTable {
           width: 100%;
