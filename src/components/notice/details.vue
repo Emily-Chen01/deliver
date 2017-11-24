@@ -13,9 +13,9 @@
         </table>
         <p class="detailsMain-content" v-html="noticeData.content"></p>
         <ul class="detailsFile">
-          <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
+          <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl" @click="dl(itemUrl.url)">
             <i class="bg-img ico_document"></i>
-            <a :href="itemUrl.url + '?openid='+tokenHeader.openId" v-text="itemUrl.name" download=""></a>
+            <span v-text="itemUrl.name"></span>
           </li>
         </ul>
       </div>
@@ -40,11 +40,18 @@
         <span>评论</span>
       </mt-button>
     </div>
+    <!--<mt-popup-->
+    <!--:visible.sync="popupVisible"-->
+    <!--popup-transition="popup-fade">-->
+    <!--...-->
+
+
+    <!--</mt-popup>-->
   </div>
 </template>
 <script>
   import Vue from 'vue';
-  import {Indicator, Toast} from 'mint-ui';
+  import {Indicator, Toast, Popup} from 'mint-ui';
   import moment from 'moment'
   let df = 'YYYY-MM-DD HH:mm:ss';
   export default {
@@ -84,6 +91,38 @@
       //格式化时间
       dateFormat(data){
         return moment(data).format(df);
+      },
+      //文件类型
+      fileType(data){
+        let arr = data.split('.');
+        let ft = arr[arr.length - 1].toLowerCase();
+        if (ft === 'jpg' || ft === 'jpeg' || ft === 'png') {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      //文件路径转化
+      fileUrl(data){
+        return data.replace('common', 'client')
+      },
+      //下载
+      dl(url){
+        console.log(12,url)
+        console.log(23,this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId)
+        let down=this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
+
+
+        this.$http.get(down)
+          .then(res => {
+            if (!res.body.code || (res.body.code && res.body.code === 200)) {
+//              location.href = this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
+              location.href = down;
+//              console.log(location.href);
+            }
+          })
+          .catch(err => {
+          });
       }
     }
   }
@@ -119,7 +158,7 @@
           line-height: 20px;
           font-size: 14px;
           color: #1f2d3d;
-          img{
+          img {
             max-width: 100%;
           }
         }
@@ -134,7 +173,7 @@
             padding: 0 5px;
             font-size: 14px;
             text-align: center;
-            a {
+            span {
               margin-top: 5px;
               display: block;
               overflow: hidden;
