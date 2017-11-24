@@ -11,11 +11,11 @@
             </td>
           </tr>
         </table>
-        <p class="detailsMain-content" v-text="noticeData.content"></p>
+        <p class="detailsMain-content" v-html="noticeData.content"></p>
         <ul class="detailsFile">
           <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
             <i class="bg-img ico_document"></i>
-            <a :href="itemUrl.url" v-text="itemUrl.name" download=""></a>
+            <a :href="itemUrl.url + '?openid='+tokenHeader.openId" v-text="itemUrl.name" download=""></a>
           </li>
         </ul>
       </div>
@@ -53,6 +53,10 @@
         state: false,
         noticeData: {},
         commentData: [],
+        tokenHeader: {
+          charset: 'utf-8',
+          openId: this.getCookie('openId')
+        },
       }
     },
     created(){
@@ -115,6 +119,9 @@
           line-height: 20px;
           font-size: 14px;
           color: #1f2d3d;
+          img{
+            max-width: 100%;
+          }
         }
         .detailsFile {
           padding-bottom: 10px;
@@ -161,7 +168,7 @@
         }
       }
     }
-    .detailsList{
+    .detailsList {
       margin-bottom: 70px;
     }
     .detailsContent {
