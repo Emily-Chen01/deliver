@@ -13,9 +13,11 @@
         </table>
         <p class="detailsMain-content" v-html="noticeData.content"></p>
         <ul class="detailsFile">
-          <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl" @click="dl(itemUrl.url)">
+          <!--<li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl" @click="dl(itemUrl.url)">-->
+          <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
             <i class="bg-img ico_document"></i>
-            <span v-text="itemUrl.name"></span>
+            <!--<span v-text="itemUrl.name"></span>-->
+            <a v-text="itemUrl.name" :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId" download></a>
           </li>
         </ul>
       </div>
@@ -111,18 +113,22 @@
         console.log(12,url)
         console.log(23,this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId)
         let down=this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
+        console.log('plus',plus);
+//        location.href = down;
+//        plus.downloader.createDownload(down,{},function () {
+//          alert(12345);
+//        }).start()
 
-
-        this.$http.get(down)
-          .then(res => {
-            if (!res.body.code || (res.body.code && res.body.code === 200)) {
-//              location.href = this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
-              location.href = down;
-//              console.log(location.href);
-            }
-          })
-          .catch(err => {
-          });
+//        this.$http.get(down)
+//          .then(res => {
+//            if (!res.body.code || (res.body.code && res.body.code === 200)) {
+////              location.href = this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
+//              location.href = down;
+////              console.log(location.href);
+//            }
+//          })
+//          .catch(err => {
+//          });
       }
     }
   }
@@ -173,7 +179,7 @@
             padding: 0 5px;
             font-size: 14px;
             text-align: center;
-            span {
+            a {
               margin-top: 5px;
               display: block;
               overflow: hidden;
