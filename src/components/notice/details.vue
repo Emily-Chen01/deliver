@@ -107,28 +107,6 @@
       //文件路径转化
       fileUrl(data){
         return data.replace('common', 'client')
-      },
-      //下载
-      dl(url){
-        console.log(12, url)
-        console.log(23, this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId)
-        let down = this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
-        console.log('plus', plus);
-//        location.href = down;
-//        plus.downloader.createDownload(down,{},function () {
-//          alert(12345);
-//        }).start()
-
-//        this.$http.get(down)
-//          .then(res => {
-//            if (!res.body.code || (res.body.code && res.body.code === 200)) {
-////              location.href = this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
-//              location.href = down;
-////              console.log(location.href);
-//            }
-//          })
-//          .catch(err => {
-//          });
       }
     }
   }
@@ -220,7 +198,7 @@
       }
     }
     .detailsList {
-      margin-bottom: 70px;
+      padding-bottom: 70px;
       list-style-type: none;
     }
     .detailsContent {
