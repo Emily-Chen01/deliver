@@ -69,6 +69,7 @@
     .noticeList {
       text-align: left;
       background-color: #ffffff;
+      list-style-type: none;
       .noticeMain {
         padding: 15px 15px;
         border-bottom: 1px solid #d2dce6;
