@@ -17,7 +17,15 @@
           <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
             <i class="bg-img ico_document"></i>
             <!--<span v-text="itemUrl.name"></span>-->
-            <a v-text="itemUrl.name" :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId" download></a>
+            <a v-text="itemUrl.name"
+               :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId"
+               download></a>
+          </li>
+          <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
+            <i class="bg-img ico_document"></i>
+            <!--<span v-text="itemUrl.name"></span>-->
+            <a v-text="123456+itemUrl.name"
+               :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId"></a>
           </li>
         </ul>
       </div>
@@ -110,10 +118,10 @@
       },
       //下载
       dl(url){
-        console.log(12,url)
-        console.log(23,this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId)
-        let down=this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
-        console.log('plus',plus);
+        console.log(12, url)
+        console.log(23, this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId)
+        let down = this.fileUrl(url) + (this.fileType(url) ? '?' : '&') + 'openid=' + this.tokenHeader.openId;
+        console.log('plus', plus);
 //        location.href = down;
 //        plus.downloader.createDownload(down,{},function () {
 //          alert(12345);
@@ -140,6 +148,9 @@
     min-height: 100%;
     background-color: #ffffff;
     text-align: left;
+    h1, h2, h3, h4, h5, h6 {
+      line-height: 1.5;
+    }
     .detailComment {
       padding-left: 10px;
       height: 30px;
@@ -169,7 +180,7 @@
           }
         }
         .detailsFile {
-          padding-bottom: 10px;
+          padding-bottom: 30px;
           width: 100%;
           font-size: 0;
           .detailsFile-item {
