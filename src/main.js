@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import './assets/css/css_sprites.css'
+import './assets/css/quill_editor.css'
 import {
   DatetimePicker,
   Button,

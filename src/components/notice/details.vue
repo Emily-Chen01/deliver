@@ -13,28 +13,20 @@
         </table>
         <p class="detailsMain-content" v-html="noticeData.content"></p>
         <ul class="detailsFile">
-          <!--<li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl" @click="dl(itemUrl.url)">-->
           <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
-            <i class="bg-img ico_document"></i>
-            <!--<span v-text="itemUrl.name"></span>-->
-            <a v-text="itemUrl.name"
-               :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId"
-               download></a>
-          </li>
-          <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
-            <i class="bg-img ico_document"></i>
-            <!--<span v-text="itemUrl.name"></span>-->
-            <a v-text="123456+itemUrl.name"
-               :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId"></a>
+            <a :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId">
+              <i class="bg-img ico_document"></i>
+              <span v-text="itemUrl.name"></span>
+            </a>
           </li>
         </ul>
       </div>
     </div>
-    <h4 class="detailComment" v-if="!noticeData.comment">
+    <h4 class="detailComment" v-if="!noticeData.comment && commentData.length">
       <i class="bg-img ico_comment"></i>
       <span>评论</span>
     </h4>
-    <ul class="detailsList" v-if="!noticeData.comment">
+    <ul class="detailsList" v-if="!noticeData.comment && commentData.length">
       <li class="detailsMain" v-for="item in commentData">
         <table class="detailsMain-tableTop">
           <tr>
@@ -158,7 +150,6 @@
       font-size: 14px;
       color: #1f2d3d;
       background-color: #e1f2ff;
-
     }
     .detailsList, .detailsContent {
       .detailsMain {
@@ -193,9 +184,13 @@
             a {
               margin-top: 5px;
               display: block;
-              overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
+              text-decoration: none;
+              span {
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
             }
           }
         }
@@ -226,6 +221,7 @@
     }
     .detailsList {
       margin-bottom: 70px;
+      list-style-type: none;
     }
     .detailsContent {
       .detailsMain {
