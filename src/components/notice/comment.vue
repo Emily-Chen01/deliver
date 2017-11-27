@@ -1,6 +1,7 @@
 <template>
   <div id="commentBox">
-    <textarea class="commentText" maxlength="200" placeholder="#请输入评论（不超过200字）" v-model.trim="commentContent"></textarea>
+    <textarea class="commentText" maxlength="200" placeholder="#请输入评论（不超过200字）"
+              v-model.trim="commentContent"></textarea>
     <mt-button type="primary" class="commentBtn" @click="comment">
       <span>提交评论</span>
     </mt-button>
@@ -12,8 +13,6 @@
 <script>
   import Vue from 'vue';
   import {Toast, MessageBox} from 'mint-ui';
-  import moment from 'moment'
-  let df = 'YYYY-MM-DD HH:mm:ss';
   export default {
     data(){
       return {
@@ -23,7 +22,6 @@
       }
     },
     created(){
-
     },
     methods: {
       comment(){
