@@ -14,7 +14,7 @@
         <p class="detailsMain-content" v-html="noticeData.content"></p>
         <ul class="detailsFile">
           <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
-            <a :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId">
+            <a :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId+'&uid='+noticeData.uid">
               <i class="bg-img ico_document"></i>
               <span v-text="itemUrl.name"></span>
             </a>
@@ -106,7 +106,7 @@
       },
       //文件路径转化
       fileUrl(data){
-        return data.replace('common', 'client')
+        return data.replace('common', 'client');
       }
     }
   }
