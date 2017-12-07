@@ -4,7 +4,7 @@ function getDE(result) {
   let arr = [];
   let run = (result) => {
     // console.log(result.children)
-    if(result.children && result.children.length) {
+    if (result.children && result.children.length) {
       idx++;
       result.children.forEach(v => {
         let r = {};
@@ -25,7 +25,7 @@ function getDE(result) {
 function getConfs(res) {
   let arr = [];
   let out = {};
-  let arr2Obj = function(arr) {
+  let arr2Obj = function (arr) {
     let out = {};
     arr.forEach(v => {
       out[v.id] = v.name;
@@ -92,24 +92,38 @@ function getConfs(res) {
   out.salaryModes = arr2Obj(arr[13]);
   out.salaryModesOrg = arr[13];
 
+  // 国家信息
+  out.states = arr2Obj(arr[14]);
+  out.statesOrg = arr[14];
+
   return out;
 };
 
 let getFileExt = file => {
   let arr = file.name.split('.');
-  if(arr.length < 2) {
+  if (arr.length < 2) {
     return '';
   }
   return arr[arr.length - 1].toLowerCase();
 };
 
 let isImage = file => {
-  // console.log('t', ext, '-jpg-jpeg-png-'.indexOf('-' + ext + '-') > -1);
   return '-jpg-jpeg-png-'.indexOf('-' + getFileExt(file) + '-') > -1;
 };
-
+let isJpg = file => {
+  return '-jpg-jpeg-'.indexOf('-' + getFileExt(file) + '-') > -1;
+};
+let isPng = file => {
+  return '-png-'.indexOf('-' + getFileExt(file) + '-') > -1;
+};
 let isDoc = file => {
   return '-doc-docx-pdf-'.indexOf('-' + getFileExt(file) + '-') > -1;
+};
+let isDocx = file => {
+  return '-doc-docx-'.indexOf('-' + getFileExt(file) + '-') > -1;
+};
+let isPdf = file => {
+  return '-pdf-'.indexOf('-' + getFileExt(file) + '-') > -1;
 };
 
 let isExcel = file => {
@@ -117,7 +131,7 @@ let isExcel = file => {
 }
 
 let isInSize = (file, size) => {
-  if(!size) size = 2;
+  if (!size) size = 2;
   // console.log('t', file.size / 1024 / 1024 < size);
   return file.size / 1024 / 1024 < size;
 };
@@ -136,7 +150,7 @@ let getCities = () => {
 let getProvinceName = (ps, p) => {
   let out = '';
   ps.forEach(v => {
-    if(v.uid === p) {
+    if (v.uid === p) {
       out = v.name;
       return false;
     }
@@ -148,7 +162,7 @@ let getProvinceName = (ps, p) => {
 let getCityName = (cs, c) => {
   let out = '';
   cs.forEach(v => {
-    if(v.uid === c) {
+    if (v.uid === c) {
       out = v.name;
       return false;
     }
@@ -157,7 +171,7 @@ let getCityName = (cs, c) => {
 };
 
 // 参数 array to object
-let arr2Obj = function(arr) {
+let arr2Obj = function (arr) {
   let out = {};
   arr.forEach(v => {
     out[v.id] = v.name;
@@ -169,7 +183,11 @@ export default {
   getDE,
   getConfs,
   isImage,
+  isJpg,
+  isPng,
   isDoc,
+  isDocx,
+  isPdf,
   isInSize,
   isExcel,
   getProvinceName,
