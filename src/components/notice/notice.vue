@@ -1,10 +1,9 @@
 <template>
   <div id="noticeBox">
-    <ul class="noticeList">
+    <ul class="noticeList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadState">
       <li class="noticeMain" :class="{'noticeIsRead':!item.noticeStaffreadRefs}" @click="details(item)"
           v-for="item in noticeObj.list">
         <h4 class="noticeMain-title" v-text="item.title"></h4>
-        <!--<p class="noticeMain-content" v-html="item.content"></p>-->
         <table class="noticeMain-InfoTable">
           <tr>
             <td>
@@ -27,30 +26,20 @@
 </template>
 
 <script>
-  import {Indicator,} from 'mint-ui';
+  import Vue from 'vue'
+  import {Indicator, InfiniteScroll} from 'mint-ui';
+  Vue.use(InfiniteScroll);
   import moment from 'moment'
   let df = 'YYYY-MM-DD HH:mm:ss';
   export default {
     data(){
       return {
-        noticeObj: {}
+        loadState: false,
+        noticeObj: {total: null, currentPage: 10, list: []},
+        id: 1,
       }
     },
     created(){
-      Indicator.open('正在加载...');
-      this.$http.post('/api/v1.0/client/companyNotice', {
-        pageSize: 10,
-        pageNumber: 1
-      }).then(response => {
-        if (response.body.code === 200) {
-          this.noticeObj = response.body.result;
-          Indicator.close();//关闭加载中
-        } else {
-          Indicator.close();//关闭加载中
-        }
-      }, response => {
-        console.log('error callback');
-      });
     },
     methods: {
       details(data){
@@ -60,6 +49,32 @@
       //格式化时间
       dateFormat(data){
         return moment(data).format(df);
+      },
+      // 上拉刷新
+      loadMore(){
+        if (this.lateState) {
+          Indicator.close();//关闭加载中
+          return
+        } else {
+          this.lateState = !this.lateState;
+        }
+        if (this.noticeObj.total === null || this.id <= Math.ceil(this.noticeObj.total / this.noticeObj.currentPage)) {
+          this.$http.post('/api/v1.0/client/companyNotice', {
+            pageSize: 10,
+            pageNumber: this.id
+          }).then(response => {
+            if (response.body.code === 200) {
+              this.noticeObj.list = this.noticeObj.list.concat(response.body.result.list);
+              this.noticeObj.currentPage = response.body.result.currentPage;
+              this.noticeObj.total = response.body.result.total;
+              this.lateState = !this.lateState;
+              this.id++;
+            }
+          }, response => {
+            console.log('error callback');
+          });
+
+        }
       }
     }
   }
@@ -113,7 +128,6 @@
       .noticeIsRead {
         background-color: #fffbec;
         .noticeMain-title:before {
-
           display: inline-block;
           margin-right: 4px;
           width: 6px;
@@ -122,7 +136,6 @@
           content: '';
           vertical-align: middle;
           background-color: red;
-
         }
       }
     }

@@ -1152,28 +1152,27 @@
                     this.staffShareOptionInfo.push(item);
                     break;
                 }
-              });
-              this.staffInfoName['podoMessage'].typeOfDemicile = this.staffInfoName.podoMessage.typeOfDemicile + '';
-              this.staffInfoName['nativePlace'].nativePlace = this.staffInfoName.nativePlace.nativePlace + '';
-              this.staffInfoName['politicsStatus'].politicsStatus = this.staffInfoName.politicsStatus.politicsStatus + '';
-              this.staffInfoName['maritalStatus'] = this.staffInfoName.maritalStatus + '';
-              this.staffInfoName['eduInfor'].diplomaType = this.staffInfoName['eduInfor'].diplomaType + '';
-              this.staffInfoName['informUrl'].forEach(item => {
+              })
+              if (this.staffInfoName['podoMessage']) this.staffInfoName['podoMessage'].typeOfDemicile = this.staffInfoName.podoMessage.typeOfDemicile + '';
+              if (this.staffInfoName['nativePlace']) this.staffInfoName['nativePlace'].nativePlace = this.staffInfoName.nativePlace.nativePlace + '';
+              if (this.staffInfoName['politicsStatus']) this.staffInfoName['politicsStatus'].politicsStatus = this.staffInfoName.politicsStatus.politicsStatus + '';
+              if (this.staffInfoName['maritalStatus']) this.staffInfoName['maritalStatus'] = this.staffInfoName.maritalStatus + '';
+              if (this.staffInfoName['eduInfor']) this.staffInfoName['eduInfor'].diplomaType = this.staffInfoName['eduInfor'].diplomaType + '';
+              if (this.staffInfoName['informUrl']) this.staffInfoName['informUrl'].forEach(item => {
                 item.state = false;
               });
-              this.staffInfoName['resumeUrl'].forEach(item => {
+              if (this.staffInfoName['resumeUrl']) this.staffInfoName['resumeUrl'].forEach(item => {
                 item.state = false;
               });
-              this.staffInfoName.bankName.staffCardUrls.forEach(item => {
+              if (this.staffInfoName.bankName) this.staffInfoName.bankName.staffCardUrls.forEach(item => {
                 item.state = false;
               });
-              if (this.staffInfoName['podoMessage'].podoProvince) this.queryCities(this.staffInfoName['podoMessage'].podoProvince, 'podoMessage');
-              if (this.staffInfoName['ResperMessage'].residenceProvince) this.queryCities(this.staffInfoName['ResperMessage'].residenceProvince, 'ResperMessage');
-              if (this.staffInfoName['poreLocation'].poreProvince) this.queryCities(this.staffInfoName['poreLocation'].poreProvince, 'poreLocation');
+              if (this.staffInfoName['podoMessage'] && this.staffInfoName['podoMessage'].podoProvince) this.queryCities(this.staffInfoName['podoMessage'].podoProvince, 'podoMessage');
+              if (this.staffInfoName['ResperMessage'] && this.staffInfoName['ResperMessage'].residenceProvince) this.queryCities(this.staffInfoName['ResperMessage'].residenceProvince, 'ResperMessage');
+              if (this.staffInfoName['poreLocation'] && this.staffInfoName['poreLocation'].poreProvince) this.queryCities(this.staffInfoName['poreLocation'].poreProvince, 'poreLocation');
               if (this.staffInfoName['idcard']) this.staffIdcard(this.staffInfoName['idcard'], false);
               Indicator.close();//关闭加载中
               this.status = true;
-              console.log('sbbb', this.staffInfo, this.staffInfoName)
             }
           })
           .catch(err => console.log(err.status, err.statusText));

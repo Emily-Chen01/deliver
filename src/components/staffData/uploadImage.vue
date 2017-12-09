@@ -39,8 +39,6 @@
     },
     methods: {
       staffPhoUrlOk(res, file) {
-        console.log(this.child)
-        console.log(123, res, file)
         if (res.code === 200) {
           this.$emit('update', {url: res.result, info: this.child});
         }
