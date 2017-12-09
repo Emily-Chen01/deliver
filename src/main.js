@@ -8,6 +8,7 @@ import './assets/css/quill_editor.css'
 import {
   DatetimePicker,
   Button,
+  InfiniteScroll,
   Toast,
   Tabbar,
   TabItem,
@@ -34,6 +35,7 @@ Vue.component(Progress.name, Progress);
 Vue.component(Popup.name, Popup);
 Vue.component(Field.name, Field);
 Vue.component(DatetimePicker.name, DatetimePicker);
+Vue.component(InfiniteScroll);
 Vue.component(Header.name, Header);
 Vue.component(TabContainer.name, TabContainer);
 Vue.component(TabContainerItem.name, TabContainerItem);
