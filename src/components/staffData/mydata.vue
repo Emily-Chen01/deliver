@@ -16,7 +16,7 @@
                   <!--文本-->
                   <el-form-item v-if="item.fieldType===1" :label="item.remark" :prop="item.uid+'[0].value'"
                                 :rules=" [{message: '请输入正确的'+item.remark+'('+textType[item.javaValidexp]+')', pattern: patt[item.javaValidexp], trigger: 'blur'},
-            {message: `最多${item.characterLimit}个字符`,max:item.characterLimit, validator: isLength, trigger: 'blur'}
+            {message: `最多${item.characterLimit}个字`,max:item.characterLimit, trigger: 'blur'}
           ]">
                     <el-input :disabled="!item.isedit" :placeholder="item.defaultTips"
                               v-model="staffInfoName[item.uid][0].value"></el-input>
@@ -377,7 +377,7 @@
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].poreProvince"
                               :class="{'option-color':!staffInfoName[item.jname].poreProvince}"
                               @change="queryCities(staffInfoName[item.jname].poreProvince,'poreLocation')">
-                        <option value="" disabled>请选择现居住地省份</option>
+                        <option :value="null" disabled>请选择现居住地省份</option>
                         <option v-for="p in provinces" :key="p.uid" v-text="p.name" :value="p.uid"></option>
                       </select>
                     </el-form-item>
@@ -385,7 +385,7 @@
                                   :rules="{required: item.isrequired,message: '请选择现居住地所在城市', trigger: 'change'}">
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].poreCity"
                               :class="{'option-color':!staffInfoName[item.jname].poreCity}">
-                        <option value="" disabled>请选择现居住地城市</option>
+                        <option :value="null" disabled>请选择现居住地城市</option>
                         <option v-for="c in poreCities" :key="c.uid" v-text="c.name" :value="c.uid"></option>
                       </select>
                     </el-form-item>
@@ -557,7 +557,7 @@
                                   :rules="{required: item.isrequired, message: '请选择银行', trigger: 'blur'}">
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].bankName"
                               :class="{'option-color':!staffInfoName[item.jname].bankName}">
-                        <option value="" disabled>请选择银行名称</option>
+                        <option :value="''||null" disabled>请选择银行名称</option>
                         <option v-for="(v, k) in bankNames" :key="k" v-text="v.name" :value="v.id"></option>
                       </select>
                     </el-form-item>
@@ -790,7 +790,7 @@
                       <select v-else-if="item.jname==='nation'" :disabled="!item.isedit"
                               v-model="staffInfoName[item.jname]"
                               :class="{'option-color':!staffInfoName[item.jname]}">
-                        <option value="" disabled>请选择{{item.remark}}</option>
+                        <option :value="''||null" disabled>请选择{{item.remark}}</option>
                         <option v-for="(v, k) in nations" :key="k" v-text="v.name" :value="v.id"></option>
                       </select>
                       <select v-else-if="item.jname==='maritalStatus'" :disabled="!item.isedit"
@@ -1153,18 +1153,18 @@
                     break;
                 }
               })
-              if (this.staffInfoName['podoMessage']) this.staffInfoName['podoMessage'].typeOfDemicile = this.staffInfoName.podoMessage.typeOfDemicile + '';
-              if (this.staffInfoName['nativePlace']) this.staffInfoName['nativePlace'].nativePlace = this.staffInfoName.nativePlace.nativePlace + '';
-              if (this.staffInfoName['politicsStatus']) this.staffInfoName['politicsStatus'].politicsStatus = this.staffInfoName.politicsStatus.politicsStatus + '';
-              if (this.staffInfoName['maritalStatus']) this.staffInfoName['maritalStatus'] = this.staffInfoName.maritalStatus + '';
-              if (this.staffInfoName['eduInfor']) this.staffInfoName['eduInfor'].diplomaType = this.staffInfoName['eduInfor'].diplomaType + '';
+              if (this.staffInfoName['podoMessage'] && (typeof (this.staffInfoName['podoMessage'].typeOfDemicile) === 'number')) this.staffInfoName['podoMessage'].typeOfDemicile = this.staffInfoName.podoMessage.typeOfDemicile + '';
+              if (this.staffInfoName['nativePlace'] && (typeof (this.staffInfoName['nativePlace'].nativePlace) === 'number')) this.staffInfoName['nativePlace'].nativePlace = this.staffInfoName.nativePlace.nativePlace + '';
+              if (this.staffInfoName['politicsStatus'] && (typeof (this.staffInfoName['politicsStatus'].politicsStatus) === 'number')) this.staffInfoName['politicsStatus'].politicsStatus = this.staffInfoName.politicsStatus.politicsStatus + '';
+              if (typeof (this.staffInfoName['maritalStatus']) === 'number') this.staffInfoName['maritalStatus'] = this.staffInfoName.maritalStatus + '';
+              if (this.staffInfoName['eduInfor'] && (typeof (this.staffInfoName['eduInfor'].diplomaType) === 'number')) this.staffInfoName['eduInfor'].diplomaType = this.staffInfoName['eduInfor'].diplomaType + '';
               if (this.staffInfoName['informUrl']) this.staffInfoName['informUrl'].forEach(item => {
                 item.state = false;
               });
               if (this.staffInfoName['resumeUrl']) this.staffInfoName['resumeUrl'].forEach(item => {
                 item.state = false;
               });
-              if (this.staffInfoName.bankName) this.staffInfoName.bankName.staffCardUrls.forEach(item => {
+              if (this.staffInfoName.bankName && this.staffInfoName.bankName.staffCardUrls) this.staffInfoName.bankName.staffCardUrls.forEach(item => {
                 item.state = false;
               });
               if (this.staffInfoName['podoMessage'] && this.staffInfoName['podoMessage'].podoProvince) this.queryCities(this.staffInfoName['podoMessage'].podoProvince, 'podoMessage');
@@ -1175,7 +1175,7 @@
               this.status = true;
             }
           })
-          .catch(err => console.log(err.status, err.statusText));
+          .catch(err => console.log(err));
       },
       // 工龄
       workAge(data){
@@ -1239,7 +1239,7 @@
             }
           })
           .catch(err => {
-            console.log(err.status, err.statusText);
+            console.log(err);
           });
       },
       // 岗位信息，获取工作地址的省市名称
@@ -1516,7 +1516,7 @@
             }
           })
           .catch(err => {
-            console.log(err.status, err.statusText);
+            console.log(err);
           });
       },
       //判断是否是图片
@@ -1530,14 +1530,6 @@
           else callback(new Error(rule.message));
         } else {
           callback();
-        }
-      },
-      // 判断字符串长度
-      isLength(rule, value, callback, source, options){
-        if ((value || '').length <= rule.max) {
-          callback();
-        } else {
-          callback(new Error(rule.message));
         }
       },
       // 判断数字大小
@@ -1574,16 +1566,16 @@
           return;
         }
         Indicator.open('正在保存...');
-        this.staffInfoName['informUrl'].forEach(item => {
+        if (this.staffInfoName['informUrl']) this.staffInfoName['informUrl'].forEach(item => {
           delete item.state;
         });
-        this.staffInfoName['resumeUrl'].forEach(item => {
+        if (this.staffInfoName['resumeUrl']) this.staffInfoName['resumeUrl'].forEach(item => {
           delete item.state;
         });
-        this.staffInfoName.bankName.staffCardUrls.forEach(item => {
+        if (this.staffInfoName.bankName && this.staffInfoName.bankName.staffCardUrls) this.staffInfoName.bankName.staffCardUrls.forEach(item => {
           delete item.state;
         });
-        this.staffInfo.forEach(item => {
+        if (this.staffInfo) this.staffInfo.forEach(item => {
           if (item.isDefined) {
             if (item.fieldType === 6) {
               let values = [];
@@ -1613,6 +1605,7 @@
             item.value = parseInt(item.value);
           }
         });
+        console.log(this.staffInfo);
         this.$http.post('/api/v1.0/client/updateStaffInfo', this.staffInfo).then(res => {
           res = res.body;
           if (res.code === 200) {
@@ -1623,7 +1616,7 @@
             Indicator.close();
           }
         })
-          .catch(err => console.log(err.status, err.statusText));
+          .catch(err => console.log(err));
       },
       // 选择日期组件
       // openPicker(date,type,pos)中有三个参数
