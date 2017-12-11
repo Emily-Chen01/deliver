@@ -14,7 +14,8 @@
         <p class="detailsMain-content" v-html="noticeData.content"></p>
         <ul class="detailsFile">
           <li class="detailsFile-item" v-for="itemUrl in noticeData.accessoriesUrl">
-            <a :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId+'&uid='+noticeData.uid">
+            <a
+              :href="fileUrl(itemUrl.url) + (fileType(itemUrl.url) ? '?' : '&') + 'openid=' + tokenHeader.openId+'&uid='+noticeData.uid">
               <i class="bg-img ico_document"></i>
               <span v-text="itemUrl.name"></span>
             </a>
@@ -203,6 +204,7 @@
     }
     .detailsContent {
       .detailsMain {
+        padding-bottom: 40px;
         border-bottom: none;
       }
     }
