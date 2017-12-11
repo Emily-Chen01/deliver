@@ -34,6 +34,7 @@
   export default {
     data(){
       return {
+        loadAll: false,
         loadState: false,
         noticeObj: {total: null, currentPage: 10, list: []},
         id: 1,
@@ -53,7 +54,6 @@
       // 上拉刷新
       loadMore(){
         if (this.lateState) {
-          Indicator.close();//关闭加载中
           return
         } else {
           this.lateState = !this.lateState;
