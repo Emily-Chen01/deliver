@@ -19,7 +19,7 @@
       </div>
     </div>
     <!--工资明细-->
-    <div class="maSalary-details" v-if="dateGrid.detail.length">
+    <div class="maSalary-details" v-if="dateGrid.detail&&dateGrid.detail.length">
       <h4 align="left">工资明细</h4>
       <div class="maSalary-list">
         <table>
@@ -48,9 +48,10 @@
           other: require('../../assets/ico_other.png'),
         },
         initTime: '',
-        upTime: new Date().getMonth() + 1,
-        downTime: '',
-        year: new Date().getFullYear(),
+//        upTime: new Date().getMonth() + 1,
+        upTime: null,
+//        year: new Date().getFullYear(),
+        year: null,
         dateGrid: {
           money: 0,
           lost: 0,
@@ -67,6 +68,9 @@
     },
 
     created: function () {
+      let arr = this.getCookie('mySalaryDate').split('/');
+      this.year = parseInt(arr[0]);
+      this.upTime = parseInt(arr[1]);
       this.initDate();
     },
 
@@ -161,7 +165,7 @@
             }
           }
         }, response => {
-//          console.log('查询当月工资 error callback');
+//          console.log(response);
         });
       }
     },
