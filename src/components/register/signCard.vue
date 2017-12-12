@@ -50,9 +50,7 @@
             <span v-text="recordShow.notice ? recordShow.notice : '当前无未读公告'"></span>
             <i slot="icon" class="bg-img ico_announcement"></i>
           </mt-cell>
-
         </div>
-
       </div>
     </div>
     <!--解除绑定-->
@@ -71,7 +69,7 @@
     <mt-tabbar id="tab-bottom" v-model="select">
       <mt-tab-item id="1">
         <i slot="icon" class="bg-img ico_workbench_1" v-if="toolState"></i>
-        <i slot="icon" class="bg-img ico_workbench_2"  v-if="!toolState"></i>
+        <i slot="icon" class="bg-img ico_workbench_2" v-if="!toolState"></i>
         <span>工作台</span>
       </mt-tab-item>
       <mt-tab-item id="2">
@@ -94,7 +92,7 @@
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
           ico_pencil: require('../../assets/ico_pencil.png'),
-          ico_info:require('../../assets/ico_info.png')
+          ico_info: require('../../assets/ico_info.png')
         },
         recordShow: {},
       }
@@ -159,10 +157,10 @@
           });
         } else if (indexX === 1) {
           this.$router.push({path: '/attendanceRecord'});
-
         } else if (indexX === 2) {
+          this.setCookie('mySalaryDate', this.recordShow.date, 365);
           this.$router.push({path: '/mySalary'});
-        }else if(indexX === 3){
+        } else if (indexX === 3) {
           this.$router.push({path: '/notice'});
         }
       },
@@ -246,7 +244,7 @@
           border-top-left-radius: 15px;
           background-color: rgba(26, 128, 204, 0.4);
           font-size: 0;
-          i{
+          i {
             margin: 7px 0 0 15px;
           }
           span {
@@ -266,7 +264,7 @@
           font-size: 14px;
           color: #ffffff;
           background-color: rgba(88, 184, 255, 0.8);
-          span{
+          span {
             vertical-align: middle;
           }
         }

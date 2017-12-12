@@ -18,23 +18,23 @@
                                 :rules=" [{message: '请输入正确的'+item.remark+'('+textType[item.javaValidexp]+')', pattern: patt[item.javaValidexp], trigger: 'blur'},
             {message: `最多${item.characterLimit}个字`,max:item.characterLimit, trigger: 'blur'}
           ]">
-                    <el-input :disabled="!item.isedit" :placeholder="item.defaultTips"
+                    <el-input :disabled="!item.isedit" :placeholder="'请输入'+item.remark"
                               v-model="staffInfoName[item.uid][0].value"></el-input>
                   </el-form-item>
                   <!--日期-->
                   <el-form-item v-if="item.fieldType===2" :label="item.remark">
                     <p class="pl10" v-if="item.isedit"
-                       v-text="staffInfoName[item.uid][0].value ? datefmt(parseInt(staffInfoName[item.uid][0].value)):item.defaultTips "
+                       v-text="staffInfoName[item.uid][0].value ? datefmt(parseInt(staffInfoName[item.uid][0].value)):('请输入'+item.remark) "
                        @click="openPicker(0,item.uid,0,parseInt(staffInfoName[item.uid][0].value))"></p>
                     <p class="pl10 fc-bbb" v-else
-                       v-text="staffInfoName[item.uid][0].value ? datefmt(staffInfoName[item.uid][0].value):item.defaultTips "></p>
+                       v-text="staffInfoName[item.uid][0].value ? datefmt(staffInfoName[item.uid][0].value):('请输入'+item.remark)"></p>
                   </el-form-item>
                   <!--纯数字-->
                   <el-form-item v-if="item.fieldType===3" :label="item.remark" :prop="item.uid+'[0].value'"
                                 :rules=" [{message: `请输入正确的${item.remark}(只能输入数字)`, pattern: patt['type3'], trigger: 'blur'},
             {message: `必须是大于0，小于或等于${Math.pow(10, item.characterLimit) - 1}的数字`,max:item.characterLimit, validator: isSize, trigger: 'blur'}
           ]">
-                    <el-input :disabled="!item.isedit" :placeholder="item.defaultTips"
+                    <el-input :disabled="!item.isedit" :placeholder="'请输入'+item.remark"
                               v-model="staffInfoName[item.uid][0].value"></el-input>
                   </el-form-item>
                   <!--列表-->
@@ -42,7 +42,7 @@
                     <select :disabled="!item.isedit"
                             v-model="staffInfoName[item.uid][0].value"
                             :class="{'option-color':!staffInfoName[item.uid][0].value}">
-                      <option :value="''||null" disabled>{{item.defaultTips}}</option>
+                      <option :value="''||null" disabled>请选择{{item.remark}}</option>
                       <option v-for="(v, k) in item.optionConfigs" :key="k" v-text="v.name" :value="v.uid"></option>
                     </select>
                   </el-form-item>
@@ -1605,14 +1605,13 @@
             item.value = parseInt(item.value);
           }
         });
-        console.log(this.staffInfo);
         this.$http.post('/api/v1.0/client/updateStaffInfo', this.staffInfo).then(res => {
           res = res.body;
           if (res.code === 200) {
             Indicator.close();
             this.$router.push({path: '/signCard'});
           } else {
-            MessageBox('提示', '个人资料更新失败');
+            MessageBox('提示', res.message);
             Indicator.close();
           }
         })
