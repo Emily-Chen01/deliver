@@ -39,17 +39,27 @@
       </li>
     </ul>
     <div class="commentBox" v-if="!noticeData.comment">
-      <mt-button type="primary" class="commentBtn" @click="comment">
+      <mt-button type="primary" class="commentBtn" @click="commentBtn">
         <span>评论</span>
       </mt-button>
     </div>
-    <!--<mt-popup-->
-    <!--:visible.sync="popupVisible"-->
-    <!--popup-transition="popup-fade">-->
-    <!--...-->
-
-
-    <!--</mt-popup>-->
+    <mt-popup
+      id="commentMain-wrapper"
+      v-model="popupVisible"
+      position="right"
+    >
+      <div id="commentBox">
+          <textarea class="commentText" maxlength="200" placeholder="#请输入评论（不超过200字）"
+                    v-model.trim="commentContent" @blur="blur"></textarea>
+        <p v-if="commentErrState">评论不能为空！只能输入中文、英文、数字或标点符号！</p>
+        <mt-button type="primary" class="commentBtn" @click="comment">
+          <span>提交评论</span>
+        </mt-button>
+        <mt-button class="commentBtn" @click="cancel">
+          <span>取消</span>
+        </mt-button>
+      </div>
+    </mt-popup>
   </div>
 </template>
 <script>
@@ -67,29 +77,24 @@
           charset: 'utf-8',
           openId: this.getCookie('openId')
         },
+        popupVisible: false,//评论界面弹框
+        commentContent: '',//评论内容
+        userName: '',// 评论内容
+        noticeUid: '',//公告uid
+        reg: /^[\u4e00-\u9fa5A-Za-z\d|\[\],.?'"\(\)+\-_*\/\\&\$#^@!%~`<>:;=\{\}\s：；？，。·！￥……（）｛｝【】、《》‘’“”『』——]+$/,
+        commentErrState: false,
       }
     },
     created(){
       this.state = false;
       Indicator.open('正在加载...');
-      let noticeUid = this.getCookie('noticeUid');
-      Vue.Promise.all([
-        this.$http.get('/api/v1.0/client/findCompanyNotice/' + noticeUid),
-        this.$http.get('/api/v1.0/client/noticeComment/' + noticeUid)
-      ]).then(res => {
-        if (res[0].body.code === 200) {
-          this.noticeData = res[0].body.result.notice;
-        }
-        if (res[1].body.code === 200) {
-          this.commentData = res[1].body.result.noticeComent;
-        }
-        this.state = true;
-        Indicator.close();//关闭加载中
-      })
+      this.noticeUid = this.getCookie('noticeUid');
+      this.userName = this.getCookie('infoObjPassName');
+      this._loading();
     },
     methods: {
-      comment(){
-        this.$router.push({path: '/comment'});
+      commentBtn(){
+        this.popupVisible = true;
       },
       //格式化时间
       dateFormat(data){
@@ -108,6 +113,58 @@
       //文件路径转化
       fileUrl(data){
         return data.replace('common', 'client');
+      },
+      //失去焦点验证内容
+      blur(){
+        if (this.reg.test(this.commentContent)) {
+          this.commentErrState = false;
+        } else {
+          this.commentErrState = true;
+        }
+      },
+      //评论
+      comment(){
+        if (this.reg.test(this.commentContent)) {
+          this.$http.post('/api/v1.0/client/noticeComment/Save', {
+            noticeuid: this.noticeUid,
+            content: this.commentContent,
+            name: this.userName
+          }).then(res => {
+            if (res.body.code === 200) {
+              Toast({
+                message: res.body.message,
+                iconClass: 'bg-img ico_success'
+              });
+              this._loading();
+              this.popupVisible = false;
+              this.commentContent = '';
+            }
+          })
+        } else {
+          this.commentErrState = true;
+        }
+      },
+      cancel(){
+        this.commentContent = '';
+        this.popupVisible = false;
+        this.commentErrState = false;
+      },
+      _loading(){
+        Vue.Promise.all([
+          this.$http.get('/api/v1.0/client/findCompanyNotice/' + this.noticeUid),
+          this.$http.get('/api/v1.0/client/noticeComment/' + this.noticeUid)
+        ]).then(res => {
+          if (res[0].body.code === 200) {
+            this.noticeData = res[0].body.result.notice;
+          }
+          if (res[1].body.code === 200) {
+            this.commentData = res[1].body.result.noticeComent;
+          }
+          if (!this.state) {
+            this.state = true;
+            Indicator.close();//关闭加载中
+          }
+        })
       }
     }
   }
@@ -221,6 +278,32 @@
         margin-left: 5%;
         width: 90%;
         font-size: 14px;
+      }
+    }
+    #commentMain-wrapper {
+      width: 100%;
+      height: 100%;
+      #commentBox {
+        box-sizing: border-box;
+        padding: 0 15px;
+        min-height: 100%;
+        width: 100%;
+        background-color: #ffffff;
+        textarea {
+          margin-top: 15px;
+          width: 100%;
+          min-height: 100px;
+          resize: none;
+          border-radius: 4px;
+        }
+        p {
+          color: #ff4949;
+          font-size: 12px;
+        }
+        .commentBtn {
+          margin-top: 30px;
+          width: 100%;
+        }
       }
     }
   }
