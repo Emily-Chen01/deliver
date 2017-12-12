@@ -27,7 +27,7 @@
                        v-text="staffInfoName[item.uid][0].value ? datefmt(parseInt(staffInfoName[item.uid][0].value)):('请输入'+item.remark) "
                        @click="openPicker(0,item.uid,0,parseInt(staffInfoName[item.uid][0].value))"></p>
                     <p class="pl10 fc-bbb" v-else
-                       v-text="staffInfoName[item.uid][0].value ? datefmt(staffInfoName[item.uid][0].value):('请输入'+item.remark)"></p>
+                       v-text="staffInfoName[item.uid][0].value ? datefmt(parseInt(staffInfoName[item.uid][0].value)):('请输入'+item.remark)"></p>
                   </el-form-item>
                   <!--纯数字-->
                   <el-form-item v-if="item.fieldType===3" :label="item.remark" :prop="item.uid+'[0].value'"
@@ -49,13 +49,13 @@
                   <!--单选框-->
                   <el-form-item v-if="item.fieldType===5" :label="item.remark">
                     <el-radio-group v-model="staffInfoName[item.uid][0].value">
-                      <el-radio v-for="(v, k) in item.optionConfigs" :label="v.uid" :key="v">{{v.name}}</el-radio>
+                      <el-radio v-for="(v, k) in item.optionConfigs" :disabled="!item.isedit" :label="v.uid" :key="v">{{v.name}}</el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <!--多选框-->
                   <el-form-item v-if="item.fieldType===6" :label="item.remark">
                     <el-checkbox-group v-model="staffInfoName[item.uid].arr" @change="checkList(item.uid)">
-                      <el-checkbox v-for="(v, k) in item.optionConfigs" :label="v.uid" :key="k">
+                      <el-checkbox v-for="(v, k) in item.optionConfigs" :disabled="!item.isedit" :label="v.uid" :key="k">
                         <span>{{v.name}}</span>
                       </el-checkbox>
                     </el-checkbox-group>
@@ -67,7 +67,7 @@
                                    :child="{name:item.uid,type:item.fieldType,value:staffInfoName[item.uid].info}"></uploadImage>
                     </div>
                     <el-button size="small"
-                               v-if="item.isedit && !staffInfoName[item.uid].edit && staffInfoName[item.uid].info.value.length"
+                               v-if="item.isedit && !staffInfoName[item.uid].edit && staffInfoName[item.uid].info.value.length&&staffInfoName[item.uid].info.value[0].value"
                                @click="resumeDel(item.uid,staffInfoName[item.uid].edit)"
                                class="upload-img-delBtn">
                       <span><i class="el-icon-delete"></i>删除</span>
@@ -1592,8 +1592,11 @@
               item.value = values;
             } else if (item.fieldType === 7 || item.fieldType === 8) {
               item.value = this.staffInfoName[item.uid].info.value;
-              item.value.forEach(item => {
-                delete item.state;
+              item.value.forEach((ite, ind) => {
+                delete ite.state;
+                if (!ite.value) {
+                  item.value.splice(ind, 1);
+                }
               });
             } else {
               item.value = this.staffInfoName[item.uid];

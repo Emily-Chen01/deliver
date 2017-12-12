@@ -8,7 +8,10 @@
       :on-success="staffPhoUrlOk"
       :before-upload="beforeStaffPhoUrl">
       <el-button type="primary" size="small">
-        <span><i class="el-icon-upload"></i>上传照片</span>
+        <span>
+          <i class="el-icon-upload"></i>
+          <span v-text="'上传'+((child.type===1)?'附件':((child.type===8)?'文件':'照片'))"></span>
+        </span>
       </el-button>
     </el-upload>
     <p class="uploadErrorTip" v-if="uploadErrFlag && child.type===0">
@@ -18,9 +21,9 @@
     <p class="uploadErrorTip" v-if="uploadErrFlag && child.type===2">
       请上传正确的照片(格式为 jpg 、jpeg 或 png，体积小于 5 兆，图片不超过2个)</p>
     <p class="uploadErrorTip" v-if="uploadErrFlag && child.type===7">
-      请上传正确的照片(格式为{{child.value.pictureType === '1' ? 'jpg 、jpeg' : (child.value.pictureType === '2' ? 'png' : 'jpg 、jpeg 或 png')}}，体积小于 {{child.value.sizeLimit/1000}} 兆，图片不超过{{child.value.numberLimit}}个)</p>
+      请上传正确的照片(格式为{{child.value.pictureType === '1' ? 'jpg 、jpeg' : (child.value.pictureType === '2' ? 'png' : 'jpg 、jpeg 或 png')}}，体积小于 {{child.value.sizeLimit / 1000}} 兆，图片不超过{{child.value.numberLimit}}个)</p>
     <p class="uploadErrorTip" v-if="uploadErrFlag && child.type===8">
-      请上传正确的文件(格式为{{child.value.pictureType === '1' ? 'doc、docx' : (child.value.pictureType === '2' ? 'pdf' : 'doc、docx 或 pdf')}}，体积小于 {{child.value.sizeLimit/1000}} 兆，文件不超过{{child.value.numberLimit}}个)</p>
+      请上传正确的文件(格式为{{child.value.pictureType === '1' ? 'doc、docx' : (child.value.pictureType === '2' ? 'pdf' : 'doc、docx 或 pdf')}}，体积小于 {{child.value.sizeLimit / 1000}} 兆，文件不超过{{child.value.numberLimit}}个)</p>
   </div>
 </template>
 
@@ -72,8 +75,7 @@
         } else if (this.child.type === 7 || this.child.type === 8) {
           if (this.child.value.isDefined) {
             isInSize = utils.isInSize(file, this.child.value.sizeLimit / 1000);
-
-            if (this.child.value.value.length < this.child.value.numberLimit) {
+            if ((this.child.value.value.length < this.child.value.numberLimit) || (this.child.value.value.length === 1 && !this.child.value.value[0].value)) {
               if (this.child.value.fieldType === 7) {
                 if (this.child.value.pictureType === '1') {
                   backValue = isJpg && isInSize;
