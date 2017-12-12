@@ -15,14 +15,15 @@
                 <div v-if="item.isDefined">
                   <!--文本-->
                   <el-form-item v-if="item.fieldType===1" :label="item.remark" :prop="item.uid+'[0].value'"
-                                :rules=" [{message: '请输入正确的'+item.remark+'('+textType[item.javaValidexp]+')', pattern: patt[item.javaValidexp], trigger: 'blur'},
+                                :rules=" [{required: item.isrequired,message: '请输入正确的'+item.remark+'('+textType[item.javaValidexp]+')', pattern: patt[item.javaValidexp], trigger: 'blur'},
             {message: `最多${item.characterLimit}个字`,max:item.characterLimit, trigger: 'blur'}
           ]">
                     <el-input :disabled="!item.isedit" :placeholder="'请输入'+item.remark"
                               v-model="staffInfoName[item.uid][0].value"></el-input>
                   </el-form-item>
                   <!--日期-->
-                  <el-form-item v-if="item.fieldType===2" :label="item.remark">
+                  <el-form-item v-if="item.fieldType===2" :label="item.remark" :prop="item.uid+'[0].value'"
+                                :rules="{required: item.isrequired,type: 'date', message: '请选择'+'item.remark', trigger: 'blur',validator:isDate}">
                     <p class="pl10" v-if="item.isedit"
                        v-text="staffInfoName[item.uid][0].value ? datefmt(parseInt(staffInfoName[item.uid][0].value)):('请输入'+item.remark) "
                        @click="openPicker(0,item.uid,0,parseInt(staffInfoName[item.uid][0].value))"></p>
@@ -31,14 +32,15 @@
                   </el-form-item>
                   <!--纯数字-->
                   <el-form-item v-if="item.fieldType===3" :label="item.remark" :prop="item.uid+'[0].value'"
-                                :rules=" [{message: `请输入正确的${item.remark}(只能输入数字)`, pattern: patt['type3'], trigger: 'blur'},
+                                :rules=" [{required: item.isrequired,message: `请输入正确的${item.remark}(只能输入数字)`, pattern: patt['type3'], trigger: 'blur'},
             {message: `必须是大于0，小于或等于${Math.pow(10, item.characterLimit) - 1}的数字`,max:item.characterLimit, validator: isSize, trigger: 'blur'}
           ]">
                     <el-input :disabled="!item.isedit" :placeholder="'请输入'+item.remark"
                               v-model="staffInfoName[item.uid][0].value"></el-input>
                   </el-form-item>
                   <!--列表-->
-                  <el-form-item v-if="item.fieldType===4" :label="item.remark">
+                  <el-form-item v-if="item.fieldType===4" :label="item.remark" :prop="item.uid+'[0].value'"
+                                :rules="{required: item.isrequired, message: '请选择'+item.remark, trigger: 'blur,change'}">
                     <select :disabled="!item.isedit"
                             v-model="staffInfoName[item.uid][0].value"
                             :class="{'option-color':!staffInfoName[item.uid][0].value}">
@@ -47,21 +49,28 @@
                     </select>
                   </el-form-item>
                   <!--单选框-->
-                  <el-form-item v-if="item.fieldType===5" :label="item.remark">
+                  <el-form-item v-if="item.fieldType===5" :label="item.remark" :prop="item.uid+'[0].value'"
+                                :rules="{required: item.isrequired, message: '请选择'+item.remark, trigger: 'blur,change'}">
                     <el-radio-group v-model="staffInfoName[item.uid][0].value">
-                      <el-radio v-for="(v, k) in item.optionConfigs" :disabled="!item.isedit" :label="v.uid" :key="v">{{v.name}}</el-radio>
+                      <el-radio v-for="(v, k) in item.optionConfigs" :disabled="!item.isedit" :label="v.uid" :key="v">
+                        <span>{{v.name}}</span>
+                      </el-radio>
                     </el-radio-group>
                   </el-form-item>
                   <!--多选框-->
-                  <el-form-item v-if="item.fieldType===6" :label="item.remark">
+                  <el-form-item v-if="item.fieldType===6" :label="item.remark" :prop="item.uid+'.arr'"
+                                :rules="{required: item.isrequired,type:'array', message: '请选择'+item.remark, trigger: 'blur,change'}">
                     <el-checkbox-group v-model="staffInfoName[item.uid].arr" @change="checkList(item.uid)">
-                      <el-checkbox v-for="(v, k) in item.optionConfigs" :disabled="!item.isedit" :label="v.uid" :key="k">
+                      <el-checkbox v-for="(v, k) in item.optionConfigs" :disabled="!item.isedit" :label="v.uid"
+                                   :key="k">
                         <span>{{v.name}}</span>
                       </el-checkbox>
                     </el-checkbox-group>
                   </el-form-item>
                   <!--图片上传、文件上传-->
-                  <el-form-item v-if="item.fieldType===7||item.fieldType===8" :label="item.remark">
+                  <el-form-item v-if="item.fieldType===7||item.fieldType===8" :label="item.remark"
+                                :prop="item.uid+'.info.value[0].value'"
+                                :rules="{required: item.isrequired, message: '请上传'+item.remark, trigger: 'blur'}">
                     <div class="upload-btn" v-if="item.isedit && !staffInfoName[item.uid].edit">
                       <uploadImage @update="_upload"
                                    :child="{name:item.uid,type:item.fieldType,value:staffInfoName[item.uid].info}"></uploadImage>
@@ -1131,7 +1140,7 @@
                       if (item.fieldType === 6) {
                         this.staffInfoName[item.uid] = {value: item.value, arr: []};
                         item.value.forEach(v => {
-                          this.staffInfoName[item.uid].arr.push(v.value);
+                          if (v.value) this.staffInfoName[item.uid].arr.push(v.value);
                         })
                       } else if (item.fieldType === 7 || item.fieldType === 8) {
                         this.staffInfoName[item.uid] = {info: item, edit: false};
