@@ -69,8 +69,8 @@
                   </el-form-item>
                   <!--图片上传、文件上传-->
                   <el-form-item v-if="item.fieldType===7||item.fieldType===8" :label="item.remark"
-                                :prop="item.uid+'.info.value[0].value'"
-                                :rules="{required: item.isrequired, message: '请上传'+item.remark, trigger: 'blur'}">
+                                :prop="staffInfoName[item.uid].info.value.length ? (item.uid+'.info.value[0].value'):(item.uid+'.info.value')"
+                                :rules="{required: item.isrequired,type:staffInfoName[item.uid].info.value.length?'string':'array', message: '请上传'+item.remark, trigger: 'blur'}">
                     <div class="upload-btn" v-if="item.isedit && !staffInfoName[item.uid].edit">
                       <uploadImage @update="_upload"
                                    :child="{name:item.uid,type:item.fieldType,value:staffInfoName[item.uid].info}"></uploadImage>
@@ -1409,7 +1409,6 @@
       },
       // 选择删除图片状态
       resumeDel(name, edit){
-        console.log('rel', name, edit, typeof (edit))
         let arr = name.split('.');
         let obj;
         if (arr.length === 1) {
@@ -1797,6 +1796,10 @@
       input {
         color: black;
       }
+    }
+    .el-checkbox, .el-radio {
+      margin-left: 0;
+      margin-right: 15px;
     }
     // 选择日期覆盖样式
     .picker-items {

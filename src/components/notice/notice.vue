@@ -1,6 +1,6 @@
 <template>
   <div id="noticeBox">
-    <ul class="noticeList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadState">
+    <ul class="noticeList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadState" v-if="noticeObj.list.length">
       <li class="noticeMain" :class="{'noticeIsRead':!item.noticeStaffreadRefs}" @click="details(item)"
           v-for="item in noticeObj.list">
         <h4 class="noticeMain-title" v-text="item.title"></h4>
@@ -22,6 +22,7 @@
         </table>
       </li>
     </ul>
+    <h2 class="noComment" v-else>暂无公告</h2>
   </div>
 </template>
 
@@ -53,6 +54,9 @@
       },
       // 上拉刷新
       loadMore(){
+        if(this.noticeObj.total === null){
+          Indicator.open('加载中...');
+        }
         if (this.lateState) {
           return
         } else {
@@ -64,6 +68,9 @@
             pageNumber: this.id
           }).then(response => {
             if (response.body.code === 200) {
+              if(this.noticeObj.total === null){
+                Indicator.close();
+              }
               this.noticeObj.list = this.noticeObj.list.concat(response.body.result.list);
               this.noticeObj.currentPage = response.body.result.currentPage;
               this.noticeObj.total = response.body.result.total;
@@ -73,7 +80,6 @@
           }, response => {
             console.log('error callback');
           });
-
         }
       }
     }
@@ -138,6 +144,11 @@
           background-color: red;
         }
       }
+    }
+    .noComment{
+      padding-top: 100px;
+      color: #1f2d3d;
+      font-size: 16px;
     }
   }
 </style>
