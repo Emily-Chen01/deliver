@@ -1,6 +1,6 @@
 <template>
   <div id="noticeBox">
-    <ul class="noticeList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadState" v-if="noticeObj.list.length">
+    <ul class="noticeList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadState" v-if="noticeObj.list.length>0">
       <li class="noticeMain" :class="{'noticeIsRead':!item.noticeStaffreadRefs}" @click="details(item)"
           v-for="item in noticeObj.list">
         <h4 class="noticeMain-title" v-text="item.title"></h4>
@@ -22,7 +22,7 @@
         </table>
       </li>
     </ul>
-    <h2 class="noComment" v-else>暂无公告</h2>
+    <h2 v-else class="noComment">暂无公告</h2>
   </div>
 </template>
 
@@ -42,6 +42,7 @@
       }
     },
     created(){
+      this.loadMore();
     },
     methods: {
       details(data){
