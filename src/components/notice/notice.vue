@@ -1,6 +1,6 @@
 <template>
   <div id="noticeBox">
-    <ul class="noticeList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadState" v-if="noticeObj.list.length>0">
+    <ul class="noticeList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loadState" v-if="haveNotice">
       <li class="noticeMain" :class="{'noticeIsRead':!item.noticeStaffreadRefs}" @click="details(item)"
           v-for="item in noticeObj.list">
         <h4 class="noticeMain-title" v-text="item.title"></h4>
@@ -37,6 +37,7 @@
       return {
         loadAll: false,
         loadState: false,
+        haveNotice: true,
         noticeObj: {total: null, currentPage: 10, list: []},
         id: 1,
       }
@@ -55,7 +56,7 @@
       },
       // 上拉刷新
       loadMore(){
-        if(this.noticeObj.total === null){
+        if (this.noticeObj.total === null) {
           Indicator.open('加载中...');
         }
         if (this.lateState) {
@@ -69,10 +70,15 @@
             pageNumber: this.id
           }).then(response => {
             if (response.body.code === 200) {
-              if(this.noticeObj.total === null){
+              this.noticeObj.list = this.noticeObj.list.concat(response.body.result.list);
+              if (this.noticeObj.total === null) {
+                if (this.noticeObj.list.length) {
+                  this.haveNotice = true;
+                } else {
+                  this.haveNotice = false;
+                }
                 Indicator.close();
               }
-              this.noticeObj.list = this.noticeObj.list.concat(response.body.result.list);
               this.noticeObj.currentPage = response.body.result.currentPage;
               this.noticeObj.total = response.body.result.total;
               this.lateState = !this.lateState;
@@ -146,7 +152,7 @@
         }
       }
     }
-    .noComment{
+    .noComment {
       padding-top: 100px;
       color: #1f2d3d;
       font-size: 16px;
