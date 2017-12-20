@@ -210,7 +210,11 @@
                 this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
                   Indicator.close();
                   if (response.body.code === 200) {
-                    this.$router.push({path: '/signCard'});
+                    if(response.body.result === '-1' || response.body.result === '-2') {
+                      this.$router.push({path: '/myData'});
+                    }else {
+                      this.$router.push({path: '/signCard'});
+                    }
                   } else {
                     this.popupBomb(response.body.message);
                   }
