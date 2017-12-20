@@ -1,9 +1,10 @@
 <template>
   <div id="MyData" v-if="status">
     <div class="my-data">
+      <!-- <pre>{{ staffRecordInfo }}</pre> -->
       <mt-navbar fixed v-model="selected" class="dataTitle">
-        <mt-tab-item id="1"><span>个人资料</span></mt-tab-item>
-        <mt-tab-item id="2"><span>岗位信息</span></mt-tab-item>
+        <mt-tab-item id="1"><span :class="isLowEntry ? 'low-entry' : ''">个人资料</span></mt-tab-item>
+        <mt-tab-item v-if="!isLowEntry" id="2"><span>岗位信息</span></mt-tab-item>
       </mt-navbar>
       <mt-tab-container v-model="selected">
         <mt-tab-container-item id="1">
@@ -898,10 +899,10 @@
                   </el-form-item>
                 </div>
                 <div v-else>
+                  <!-- {{ 'item.remark' + item.remark }} -->
                   <el-form-item :label="item.remark">
                     <span v-if="item.jname==='dateOfEntry'" v-text="datefmt(item.value)"></span>
-                    <span v-else-if="item.jname==='StaffStatus'"
-                          v-text="staffStatus && staffStatus[item.value].name"></span>
+                    <span v-else-if="item.jname==='StaffStatus'" v-text="(staffStatus && item.value > -1) ? staffStatus[item.value].name : '待入职'"></span>
                     <span v-else-if="item.jname==='reporterJobNumber'" v-text="reportPerson"></span>
                     <span v-else v-text="item.value"></span>
                   </el-form-item>
@@ -909,7 +910,7 @@
               </div>
             </el-form>
             <!--期权信息-->
-            <el-form label-position="left" :label-width="labelWidth">
+            <!-- <el-form label-position="left" :label-width="labelWidth">
               <div v-for="item in staffShareOptionInfo">
                 <div>
                   <el-form-item :label="item.remark">
@@ -927,7 +928,7 @@
                   </el-form-item>
                 </div>
               </div>
-            </el-form>
+            </el-form> -->
           </div>
         </mt-tab-container-item>
       </mt-tab-container>
@@ -1066,6 +1067,7 @@
         imageScaleUrl: '', //图片点击全屏显示的图片地址
         selected: '1',
         status: false,
+        isLowEntry: false,
         staticWorkCity: '',
         publicParams: null,
         labelWidth: '140px',
@@ -1132,6 +1134,11 @@
           .then(res => {
             res = res.body;
             if (res.code === 200) {
+              if(res.result.staffStaus === -2) {
+                this.isLowEntry = true;
+              }else {
+                this.isLowEntry = false;
+              }
               res.result.staffs.forEach(item => {
                 switch (item.tname) {
                   case 'STAFF':
@@ -1729,6 +1736,7 @@
         this.maxinumDeucaLevels = this.publicParams.maxinumDeucaLevelOrg;
         this.diplomaTypes = this.publicParams.diplomaTypeOrg;
         this.staffStatus = this.publicParams.staffStatusOrg;
+        // console.log(this.staffStatus);
         this.states = this.publicParams.statesOrg;
         this.probations = this.publicParams.probation;
         this.contractTypes = this.publicParams.contractType;
@@ -1849,6 +1857,9 @@
             content: '';
             border-top: 3px solid #ffffff;
           }
+          span.low-entry:after {
+            display: none;
+          }
         }
       }
       .dataTitle {
@@ -1924,7 +1935,7 @@
     // 复写lable原有样式
     .my-data .el-form-item__label {
       font-weight: 900;
-      font-size: 15px;
+      font-size: 14px;
       color: #457aa3;
       padding-left: 12px;
     }
