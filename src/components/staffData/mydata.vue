@@ -1068,6 +1068,7 @@
         selected: '1',
         status: false,
         isLowEntry: false,
+        isEntry: false,
         staticWorkCity: '',
         publicParams: null,
         labelWidth: '140px',
@@ -1091,7 +1092,7 @@
         staffInfo: [], // 员工个人信息列表
         staffInfoName: {},// 员工个人信息对象
         staffRecordInfo: [],//员工岗位信息
-        staffShareOptionInfo: [],// 员工期权信息
+        // staffShareOptionInfo: [],// 员工期权信息
         reportPerson: '',//汇报人
         rulesStaffInfoName: {
           accfuNum: [{message: '请填写正确的公积金编号(数字)', trigger: 'blur', pattern: /^\d+$/},
@@ -1139,34 +1140,51 @@
               }else {
                 this.isLowEntry = false;
               }
+
+              if(res.result.staffStaus === -1 || res.result.staffStaus === -2) {
+                this.isEntry = true;
+              }else {
+                this.isEntry = false;
+              }
+
+              let configured = this.isEntry ? 'noentIsconfig' : 'isconfig';
+
               res.result.staffs.forEach(item => {
                 switch (item.tname) {
                   case 'STAFF':
-                    this.staffInfo.push(item);
-                    if (item.isDefined) {
-                      if (item.fieldType === 6) {
-                        this.staffInfoName[item.uid] = {value: item.value, arr: []};
-                        item.value.forEach(v => {
-                          if (v.value) this.staffInfoName[item.uid].arr.push(v.value);
-                        })
-                      } else if (item.fieldType === 7 || item.fieldType === 8) {
-                        this.staffInfoName[item.uid] = {info: item, edit: false};
-                        this.staffInfoName[item.uid].info.value.forEach(v => {
-                          v.state = false;
-                        })
+                    // console.log({
+                    //   jname: item.jname,
+                    //   remark: item.remark,
+                    //   isconfig: item.isconfig,
+                    //   noentIsconfig: item.noentIsconfig
+                    // });
+                    if(item[configured]) {
+                      this.staffInfo.push(item);
+                      if (item.isDefined) {
+                        if (item.fieldType === 6) {
+                          this.staffInfoName[item.uid] = {value: item.value, arr: []};
+                          item.value.forEach(v => {
+                            if (v.value) this.staffInfoName[item.uid].arr.push(v.value);
+                          })
+                        } else if (item.fieldType === 7 || item.fieldType === 8) {
+                          this.staffInfoName[item.uid] = {info: item, edit: false};
+                          this.staffInfoName[item.uid].info.value.forEach(v => {
+                            v.state = false;
+                          })
+                        } else {
+                          this.staffInfoName[item.uid] = item.value;
+                        }
                       } else {
-                        this.staffInfoName[item.uid] = item.value;
+                        this.staffInfoName[item.jname] = item.value;
                       }
-                    } else {
-                      this.staffInfoName[item.jname] = item.value;
                     }
                     break;
                   case 'STAFF_RECORD':
                     this.staffRecordInfo.push(item);
                     break;
-                  case 'STAFF_SHARE_OPTION':
-                    this.staffShareOptionInfo.push(item);
-                    break;
+                  // case 'STAFF_SHARE_OPTION':
+                  //   this.staffShareOptionInfo.push(item);
+                  //   break;
                 }
               })
               if (this.staffInfoName['podoMessage'] && (typeof (this.staffInfoName['podoMessage'].typeOfDemicile) === 'number')) this.staffInfoName['podoMessage'].typeOfDemicile = this.staffInfoName.podoMessage.typeOfDemicile + '';
@@ -1627,7 +1645,11 @@
           res = res.body;
           if (res.code === 200) {
             Indicator.close();
-            this.$router.push({path: '/signCard'});
+            if(this.isEntry) {
+              MessageBox('提示', res.message);
+            }else {
+              this.$router.push({path: '/signCard'});
+            }
           } else {
             MessageBox('提示', res.message);
             Indicator.close();
