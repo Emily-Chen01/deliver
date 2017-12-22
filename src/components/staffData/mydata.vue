@@ -1688,11 +1688,13 @@
         this.$refs.picker.open();
       },
       handleConfirm(data){
+        // console.log(data);
         if (data) {
           if (this.dateType === 0) {
             this.selectDateTime = moment(data).format(df1);
           } else if (this.dateType === 1) {
-            this.selectDateTime = moment(data).format(df2);
+            this.selectDateTime = moment(data).format(df1);
+            // console.log(this.selectDateTime);
           }
           this.selcetDateTime({time: this.selectDateTime, type: this.type, pos: this.pos});
         }
