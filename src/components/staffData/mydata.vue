@@ -268,7 +268,7 @@
                     </el-form-item>
 
                     <el-form-item label="入学日期" :prop="item.jname+'.entSchst'"
-                                  :rules="{required: item.isrequired,type: 'string', message: '请选择入学日期', trigger: 'change',validator:isDate}">
+                                  :rules="{required: item.isrequired,type: 'date', message: '请选择入学日期', trigger: 'change',validator:isDate}">
                       <p class="pl10" v-if="item.isedit"
                          v-text="staffInfoName[item.jname].entSchst ? datefmt1(staffInfoName[item.jname].entSchst):'请选择日期' "
                          @click="openPicker(1,4,0,staffInfoName[item.jname].entSchst)"></p>
@@ -277,7 +277,7 @@
                     </el-form-item>
 
                     <el-form-item label="毕业日期" :prop="item.jname+'.entSchet'"
-                                  :rules="{required: item.isrequired,type: 'string', message: '请选择毕业日期', trigger: 'change',validator:isDates}">
+                                  :rules="{required: item.isrequired,type: 'date', message: '请选择毕业日期', trigger: 'change',validator:isDates}">
                       <p class="pl10" v-if="item.isedit"
                          v-text="staffInfoName[item.jname].entSchet ? datefmt1(staffInfoName[item.jname].entSchet):'请选择日期' "
                          @click="openPicker(1,5,0,staffInfoName[item.jname].entSchet)"></p>
@@ -1688,11 +1688,13 @@
         this.$refs.picker.open();
       },
       handleConfirm(data){
+        // console.log(data);
         if (data) {
           if (this.dateType === 0) {
             this.selectDateTime = moment(data).format(df1);
           } else if (this.dateType === 1) {
-            this.selectDateTime = moment(data).format(df2);
+            this.selectDateTime = moment(data).format(df1);
+            // console.log(this.selectDateTime);
           }
           this.selcetDateTime({time: this.selectDateTime, type: this.type, pos: this.pos});
         }
