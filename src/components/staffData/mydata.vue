@@ -12,7 +12,7 @@
             <el-form label-position="left" :model="staffInfoName" :rules="rulesStaffInfoName" :label-width="labelWidth"
                      style="padding-bottom: 10px"
                      ref="personFm">
-              <div v-for="(item,index) in staffInfo" v-if="item.isvisible">
+              <div v-for="(item,index) in staffInfo" v-if="item.isvisible" :key="index">
                 <div v-if="item.isDefined">
                   <!--文本-->
                   <el-form-item v-if="item.fieldType===1" :label="item.remark" :prop="item.uid+'[0].value'"
@@ -100,7 +100,7 @@
                     </el-button>
                     <div v-if="staffInfoName[item.uid].info.value.length && staffInfoName[item.uid].info.value[0].value"
                          class="upload-img-wrapper">
-                      <div v-if="item.fieldType===7" v-for="(ite, idx) in staffInfoName[item.uid].info.value"
+                      <div v-if="item.fieldType===7" v-for="(ite, idx) in staffInfoName[item.uid].info.value" :key="idx"
                            class="upload-img-box"
                            @click="imageScaleOpen(ite.value,4,idx,item.uid)">
                         <img :src="ite.value"/>
@@ -113,7 +113,7 @@
                              v-if="staffInfoName[item.uid].edit && staffInfoName[item.uid].info.value[idx].state"
                              alt="">
                       </div>
-                      <div v-if="item.fieldType===8" v-for="(ite, idx) in staffInfoName[item.uid].info.value"
+                      <div v-if="item.fieldType===8" v-for="(ite, idx) in staffInfoName[item.uid].info.value" :key="idx"
                            class="upload-img-box"
                            @click="imageScaleOpen(ite.value,5,idx,item.uid)">
                         <div class="upload-document-box">
@@ -330,7 +330,7 @@
                       </el-switch>
                     </el-form-item>
                     <div class="child-box" v-if="staffInfoName[item.jname].hasChild">
-                      <div class="child" v-for="(ite, idx) in staffInfoName[item.jname].childs">
+                      <div class="child" v-for="(ite, idx) in staffInfoName[item.jname].childs" :key="idx">
                         <el-form-item label="子女姓名" :prop="item.jname+'.childs['+idx+'].name'" label-position="top"
                                       labelWidth="125px"
                                       :rules="[{required: item.isrequired, message: '请输入子女姓名', trigger: 'change'},
@@ -449,9 +449,9 @@
                   </div>
                   <div v-else-if="item.jname==='emergencyContact'">
                     <el-form-item label-width="0" class="contact-box">
-                      <h4 class="fs15"><span v-if="item.isrequired" class="fsStar">*</span>紧急联系人</h4>
+                      <h4 :class="{'contact-title1':!item.isrequired,'contact-title2':item.isrequired}" ><span v-if="item.isrequired" class="fsStar">*</span>紧急联系人</h4>
                       <div class="contacts-wrapper">
-                        <div class="contact" :span="24" v-for="(ite, idx) in staffInfoName[item.jname]">
+                        <div class="contact" :span="24" v-for="(ite, idx) in staffInfoName[item.jname]" :key="idx">
                           <el-form-item label="姓名" label-width="4em"
                                         :prop="item.jname+'[' + idx + '].emergContact'"
                                         :rules="[{required:item.isrequired, message: '请输入姓名', trigger: 'blur'},
@@ -614,7 +614,7 @@
                       </el-button>
                       <div v-if="staffInfoName[item.jname].staffCardUrls.length" class="upload-img-wrapper">
                         <div v-for="(ite, idx) in staffInfoName[item.jname].staffCardUrls" class="upload-img-box"
-                             @click="imageScaleOpen(ite.url,2,idx)" v-if="isFormatImg(ite.url)">
+                             @click="imageScaleOpen(ite.url,2,idx)" v-if="isFormatImg(ite.url)" :key="idx">
                           <img :src="ite.url"/>
                           <img src="../../assets/ico_select_1.png"
                                class="upload-img-icon"
@@ -672,7 +672,7 @@
                       </el-button>
                       <div v-if="staffInfoName[item.jname].length" class="upload-img-wrapper">
                         <div v-for="(ite, idx) in staffInfoName[item.jname]" class="upload-img-box"
-                             @click="imageScaleOpen(ite.url,3,idx)" v-if="isFormatImg(ite.url)">
+                             @click="imageScaleOpen(ite.url,3,idx)" v-if="isFormatImg(ite.url)" :key="idx">
                           <img :src="ite.url"/>
                           <img src="../../assets/ico_select_1.png"
                                class="upload-img-icon" v-if="informEdit && !staffInfoName[item.jname][idx].state"
@@ -681,7 +681,7 @@
                                class="upload-img-icon" v-if="informEdit && staffInfoName[item.jname][idx].state" alt="">
                         </div>
                         <div v-for="(ite, idx) in staffInfoName[item.jname]" class="upload-img-box upload-img-box1"
-                             @click="imageScaleOpen(ite.url,3,idx)" v-if="!(isFormatImg(ite.url))">
+                             @click="imageScaleOpen(ite.url,3,idx)" v-if="!(isFormatImg(ite.url))" :key="idx">
                           <div v-if="!(isFormatImg(ite.url))" class="upload-document-box">
                             <div v-if="informEdit" :class="{'upload-document-main':informEdit}">
                               <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
@@ -733,7 +733,7 @@
                       </el-button>
                       <div v-if="staffInfoName[item.jname].length" class="upload-img-wrapper">
                         <div v-for="(ite, idx) in staffInfoName[item.jname]" class="upload-img-box"
-                             @click="imageScaleOpen(ite.url,1,idx)" v-if="isFormatImg(ite.url)">
+                             @click="imageScaleOpen(ite.url,1,idx)" v-if="isFormatImg(ite.url)"  :key="idx">
                           <img :src="ite.url"/>
                           <img src="../../assets/ico_select_1.png"
                                class="upload-img-icon" v-if="resumeEdit && !staffInfoName[item.jname][idx].state"
@@ -742,7 +742,7 @@
                                class="upload-img-icon" v-if="resumeEdit && staffInfoName[item.jname][idx].state" alt="">
                         </div>
                         <div v-for="(ite, idx) in staffInfoName[item.jname]" class="upload-img-box upload-img-box1"
-                             @click="imageScaleOpen(ite.url,1,idx)" v-if="!(isFormatImg(ite.url))">
+                             @click="imageScaleOpen(ite.url,1,idx)" v-if="!(isFormatImg(ite.url))"  :key="idx">
                           <div v-if="!(isFormatImg(ite.url))" class="upload-document-box">
                             <div v-if="resumeEdit" :class="{'upload-document-main':resumeEdit}">
                               <img class="upload-img-document" src="../../assets/ico_document.png" alt="">
@@ -829,7 +829,7 @@
           <div v-if="selected==='2'">
             <!--岗位信息-->
             <el-form label-position="left" :label-width="labelWidth">
-              <div v-for="item in staffRecordInfo">
+              <div v-for="(item,index) in staffRecordInfo"  :key="index">
                 <div v-if="item.jname==='workAge'">
                   <el-form-item label="首次工作时间">
                     <span v-text="datefmt(item.value)"></span>
@@ -868,11 +868,11 @@
                   <el-form-item label="合同附件">
                     <div v-if="item.value.contractUrls.length&&item.value.contractUrls[0].url"
                          class="upload-img-wrapper">
-                      <div v-for="(ite, idx) in item.value.contractUrls" class="upload-img-box"
+                      <div v-for="(ite, idx) in item.value.contractUrls" :key="idx" class="upload-img-box"
                            @click="imageScaleOpen(ite.url,0,0)" v-if="isFormatImg(ite.url)">
                         <img :src="ite.url"/>
                       </div>
-                      <div v-for="(ite, idx) in item.value.contractUrls"
+                      <div v-for="(ite, idx) in item.value.contractUrls" :key="idx"
                            class="upload-img-box upload-img-box1"
                            @click="imageScaleOpen(ite.url,0,0)" v-if="!(isFormatImg(ite.url))">
                         <div v-if="!(isFormatImg(ite.url))" class="upload-document-box">
@@ -1808,15 +1808,13 @@
       font-size: 12px;
       color: #97a8be;
     }
-    .fs15 {
-      font-size: 15px;
-    }
     .fsStar {
       display: inline-block;
       color: #ff4949;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       margin-right: 4px;
+      vertical-align: middle;
     }
     .fc-bbb {
       color: #bbb;
@@ -1968,6 +1966,15 @@
     }
     .my-data .contact-box {
       width: 100%;
+      .contact-title1{
+        padding-left: 12px;
+        font-size: 14px;
+        color: #457aa3;
+      }
+      .contact-title2{
+        font-size: 14px;
+        color: #457aa3;
+      }
     }
     .my-data .child,
     .my-data .contact {
