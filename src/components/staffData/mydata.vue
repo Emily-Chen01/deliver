@@ -292,12 +292,7 @@
                         <option v-for="c in poreCities" :key="c.uid" v-text="c.name" :value="c.uid"></option>
                       </select>
                     </el-form-item>
-<<<<<<< HEAD
-                    <el-form-item label="现居住地址" :prop="item.jname+'.poreAddress'"
-                                  :rules="[{required: item.isrequired,message: '请输入正确的现居住地详细地址', trigger: 'change'},
-=======
                     <el-form-item label="现居住地址" :prop="item.jname+'.poreAddress'" :rules="[{required: item.isrequired,message: '请输入正确的现居住地详细地址', trigger: 'change'},
->>>>>>> 7061a5a9ad9a6d0ca2b84c52f4692e20be62b603
                         {message: '不能超过 256 个字符', trigger: 'blur', max: 256}]">
                       <el-input :disabled="!item.isedit" placeholder="请输入现居住地址" v-model="staffInfoName[item.jname].poreAddress"></el-input>
                     </el-form-item>
