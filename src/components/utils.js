@@ -2,7 +2,7 @@
 function getDE(result) {
   let idx = 0;
   let arr = [];
-  let run = (result) => {
+  let run = result => {
     // console.log(result.children)
     if (result.children && result.children.length) {
       idx++;
@@ -25,7 +25,7 @@ function getDE(result) {
 function getConfs(res) {
   let arr = [];
   let out = {};
-  let arr2Obj = function (arr) {
+  let arr2Obj = function(arr) {
     let out = {};
     arr.forEach(v => {
       out[v.id] = v.name;
@@ -97,58 +97,89 @@ function getConfs(res) {
   out.statesOrg = arr[14];
 
   return out;
-};
+}
 
 let getFileExt = file => {
-  let arr = file.name.split('.');
+  let arr = file.name.split(".");
   if (arr.length < 2) {
-    return '';
+    return "";
   }
   return arr[arr.length - 1].toLowerCase();
 };
 
 let isImage = file => {
-  return '-jpg-jpeg-png-'.indexOf('-' + getFileExt(file) + '-') > -1;
-};
-let isJpg = file => {
-  return '-jpg-jpeg-'.indexOf('-' + getFileExt(file) + '-') > -1;
-};
-let isPng = file => {
-  return '-png-'.indexOf('-' + getFileExt(file) + '-') > -1;
+  return "-jpg-jpeg-png-".indexOf("-" + getFileExt(file) + "-") > -1;
 };
 let isDoc = file => {
-  return '-doc-docx-pdf-'.indexOf('-' + getFileExt(file) + '-') > -1;
+  return "-doc-docx-pdf-".indexOf("-" + getFileExt(file) + "-") > -1;
 };
-let isDocx = file => {
-  return '-doc-docx-'.indexOf('-' + getFileExt(file) + '-') > -1;
-};
-let isPdf = file => {
-  return '-pdf-'.indexOf('-' + getFileExt(file) + '-') > -1;
-};
-
 let isExcel = file => {
-  return '-xls-xlsx-'.indexOf('-' + getFileExt(file) + '-') > -1;
-}
-
+  return "-xls-xlsx-".indexOf("-" + getFileExt(file) + "-") > -1;
+};
 let isInSize = (file, size) => {
   if (!size) size = 2;
-  // console.log('t', file.size / 1024 / 1024 < size);
   return file.size / 1024 / 1024 < size;
 };
+let isImages = (file, item) => {
+  return item.indexOf("-" + getFileExt(file) + "-") > -1;
+};
+let isDocs = (file, item) => {
+  return item.indexOf("-" + getFileExt(file) + "-") > -1;
+};
+let picFormats = [
+  { uid: 1, name: "jpg(jpeg)" },
+  { uid: 2, name: "png" },
+  { uid: 3, name: "gif" }
+];
 
-// 数据结构很清晰简单，暂不实现
-let getProvinces = () => {
+let picFormatsMap = {
+  "1": "jpg(jpeg)",
+  "2": "png",
+  "3": "gif"
+};
 
+let picPatt = {
+  "1": "jpg-jpeg",
+  "2": "png",
+  "3": "gif"
+};
+
+let docFormats = [
+  { uid: 1, name: "doc(docx)" },
+  { uid: 2, name: "pdf" },
+  { uid: 3, name: "txt" },
+  { uid: 4, name: "xls(xlsx)" },
+  { uid: 5, name: "ppt(pptx)" },
+  { uid: 6, name: "zip(rar)" }
+];
+
+let docFormatsMap = {
+  "1": "doc(docx)",
+  "2": "pdf",
+  "3": "txt",
+  "4": "xls(xlsx)",
+  "5": "ppt(pptx)",
+  "6": "zip(rar)"
+};
+
+let docPatt = {
+  "1": "doc-docx",
+  "2": "pdf",
+  "3": "txt",
+  "4": "xls-xlsx",
+  "5": "ppt-pptx",
+  "6": "zip-rar"
 };
 
 // 数据结构很清晰简单，暂不实现
-let getCities = () => {
+let getProvinces = () => {};
 
-};
+// 数据结构很清晰简单，暂不实现
+let getCities = () => {};
 
 // ps 为所有省，p 为省 uid
 let getProvinceName = (ps, p) => {
-  let out = '';
+  let out = "";
   ps.forEach(v => {
     if (v.uid === p) {
       out = v.name;
@@ -160,7 +191,7 @@ let getProvinceName = (ps, p) => {
 
 // cs 为所有省，c 为市 uid
 let getCityName = (cs, c) => {
-  let out = '';
+  let out = "";
   cs.forEach(v => {
     if (v.uid === c) {
       out = v.name;
@@ -171,7 +202,7 @@ let getCityName = (cs, c) => {
 };
 
 // 参数 array to object
-let arr2Obj = function (arr) {
+let arr2Obj = function(arr) {
   let out = {};
   arr.forEach(v => {
     out[v.id] = v.name;
@@ -183,14 +214,12 @@ export default {
   getDE,
   getConfs,
   isImage,
-  isJpg,
-  isPng,
   isDoc,
-  isDocx,
-  isPdf,
   isInSize,
   isExcel,
   getProvinceName,
   getCityName,
-  arr2Obj
-}
+  arr2Obj,
+  isImages,
+  isDocs
+};
