@@ -695,7 +695,7 @@
             </el-form>
             <!--期权信息-->
             <el-form label-position="left" :label-width="labelWidth" v-if="!isEntry">
-              <div v-for="item in staffShareOptionInfo">
+              <div v-for="(item,index) in staffShareOptionInfo" :key="index">
                 <div>
                   <el-form-item :label="item.remark">
                     <span v-if="item.jname==='awardRound'" v-text="item.value?item.value+'轮':''"></span>
