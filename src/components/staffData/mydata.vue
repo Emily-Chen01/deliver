@@ -703,9 +703,11 @@
                     <span v-else-if="item.jname==='awardDate'" v-text="datefmt(item.value)"></span>
                     <span v-else-if="item.jname==='awardRate'|| item.jname==='terminallyRate'" v-text="item.value?item.value+'%':''"></span>
                     <div v-else-if="item.jname==='contractUrl' && item.value" class="shareOption-document-main">
-                      <img src="../../assets/ico_document.png" alt="">
-                      <br/>
-                      <span>已上传</span>
+                      <a :href="(fileUrl(item.value)+  '&openid=' + tokenHeader.openId)">
+                        <img src="../../assets/ico_document.png" alt="">
+                        <br/>
+                        <span>已上传</span>
+                      </a>
                     </div>
                     <span v-else v-text="item.value"></span>
                   </el-form-item>
