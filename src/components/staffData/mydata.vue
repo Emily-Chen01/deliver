@@ -910,7 +910,7 @@
               </div>
             </el-form>
             <!--期权信息-->
-            <!-- <el-form label-position="left" :label-width="labelWidth">
+            <el-form label-position="left" :label-width="labelWidth">
               <div v-for="item in staffShareOptionInfo">
                 <div>
                   <el-form-item :label="item.remark">
@@ -928,7 +928,7 @@
                   </el-form-item>
                 </div>
               </div>
-            </el-form> -->
+            </el-form>
           </div>
         </mt-tab-container-item>
       </mt-tab-container>
@@ -1092,7 +1092,7 @@
         staffInfo: [], // 员工个人信息列表
         staffInfoName: {},// 员工个人信息对象
         staffRecordInfo: [],//员工岗位信息
-        // staffShareOptionInfo: [],// 员工期权信息
+        staffShareOptionInfo: [],// 员工期权信息
         reportPerson: '',//汇报人
         rulesStaffInfoName: {
           accfuNum: [{message: '请填写正确的公积金编号(数字)', trigger: 'blur', pattern: /^\d+$/},
@@ -1182,9 +1182,9 @@
                   case 'STAFF_RECORD':
                     this.staffRecordInfo.push(item);
                     break;
-                  // case 'STAFF_SHARE_OPTION':
-                  //   this.staffShareOptionInfo.push(item);
-                  //   break;
+                  case 'STAFF_SHARE_OPTION':
+                    this.staffShareOptionInfo.push(item);
+                    break;
                 }
               })
               if (this.staffInfoName['podoMessage'] && (typeof (this.staffInfoName['podoMessage'].typeOfDemicile) === 'number')) this.staffInfoName['podoMessage'].typeOfDemicile = this.staffInfoName.podoMessage.typeOfDemicile + '';
