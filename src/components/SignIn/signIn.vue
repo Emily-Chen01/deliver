@@ -428,7 +428,7 @@
           // 获取ip
           const $scripts = document.createElement('script');
           window.document.body.appendChild($scripts);
-          $scripts.src = "http://pv.sohu.com/cityjson?ie=utf-8";
+          $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
         }).then(() => {
           this.$http.post('/api/v1.0/wechat/sign', curl).then(response => { //获取签名接口开始
             if (response.body.code === 200) {
