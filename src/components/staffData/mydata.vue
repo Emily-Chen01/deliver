@@ -343,8 +343,11 @@
                               </el-button>
                             </el-input>
                           </el-form-item>
-                          <el-form-item label="电话" label-width="4em" :prop="item.jname+'[' + idx + '].emergContactPhone'" :rules="{required:item.isrequired,message: '请输入紧急联系人电话', trigger: 'blur', pattern: /^1\d{10}$/}">
+                          <el-form-item label="电话" label-width="4em" :prop="item.jname+'[' + idx + '].emergContactPhone'" :rules="{required:item.isrequired,message: '请输入紧急联系人电话', trigger: 'blur'}">
                             <el-input :disabled="!item.isedit" placeholder="请输入联系电话" v-model="ite.emergContactPhone"></el-input>
+                          </el-form-item>
+                          <el-form-item label="关系" label-width="4em" :prop="item.jname+'[' + idx + '].emergContactRelation'" :rules="{required:item.isrequired,message: '请输入紧急联系人电话', trigger: 'blur'}">
+                            <el-input :disabled="!item.isedit" placeholder="请输入关系" v-model="ite.emergContactRelation"></el-input>
                           </el-form-item>
                         </div>
                         <el-row>
