@@ -715,6 +715,7 @@
     .Punch-btn-wrapper {
       /*position: absolute;*/
       /*top: 300px;*/
+      position: relative;
       box-sizing: border-box;
       width: 100%;
       .Punch-btn-bg {

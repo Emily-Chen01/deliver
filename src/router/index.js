@@ -11,6 +11,7 @@ import notice from "@/components/notice/notice"
 import noticeDetails from "@/components/notice/details"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import mySalary from "@/components/SignIn/mySalary"
+import binding from "@/components/binding/binding"
 
 
 Vue.use(Router);
@@ -25,6 +26,10 @@ export default new Router({
       path: '/index',
       name: 'Index',
       component: Index,
+    },
+    {
+      path: '/binding',  //多家公司选择
+      component: binding
     },
     {
       path: '/ManyCompany',  //多家公司选择

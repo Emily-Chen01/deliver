@@ -176,7 +176,7 @@
                 message: '操作成功',
                 iconClass: 'ico_workbench_2'
               });
-              this.$router.push({path: '/index'});
+              this.$router.push({path: '/binding'});
             }
           }, response => {
             console.log('error callback');
