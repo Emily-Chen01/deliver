@@ -10,6 +10,7 @@
       <div class="egClass"><span class="publicStyle normalStyle"></span>正常出勤</div>
       <div class="egClass"><span class="publicStyle abnormalStyle"></span>考勤异常</div>
       <div class="egClass"><span class="publicStyle leaveStyle"></span>请假</div>
+      <div class="egClass"><span class="publicStyle holidayStyle"></span>假期</div>
     </div>
     <div style="background:rgb(239,241,247);">
       <div class="timeTitle">
@@ -18,7 +19,7 @@
             <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
           <div class="timeSpanClass">
-            <span>今日工时共计：{{connectTime.totalTime}}小时</span>
+            <span>今日工时共计：{{duration ? duration : ''}}小时</span>
           </div>
         </div>
         <div class="punchInfo">
@@ -27,9 +28,11 @@
             <p class="punchInfoUp"></p>
             <p class="punchInfoDown"></p>
           </div>
-          <div class="punchInfoRight">
-            <p v-text="(toSapnTime ? (toSapnTime+' ') : '')+tozhang"></p>
-            <p v-text="(downSapnTime ? (downSapnTime+' ') : '')+downzhang"></p>
+          <div class="punchInfoRight" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">
+            <p
+              v-text="(punchItem.twTime ? (formatTime(punchItem.twTime)+' ') : '') + formatPunchState(punchItem.twStatus,punchItem.twOutside,punchItem.twTime,punchState.IS_TODAY,true)"></p>
+            <p
+              v-text="(punchItem.owTime ? (formatTime(punchItem.owTime)+' ') : '') + formatPunchState(punchItem.owStatus,punchItem.owOutside,punchItem.owTime,punchState.IS_TODAY,false)"></p>
           </div>
         </div>
       </div>
@@ -56,6 +59,8 @@
 //                  YOUR_DATA  : {}
 //                }
         ],
+        punchState: [],//选中日期打卡信息展示
+        duration: null,//选中日期当日工时
         tozhang: '', //上班打卡状态
         downzhang: '',  //下班打卡状态
         connectTime: {
@@ -87,70 +92,16 @@
           date: moment(day).format(df2)
         };
         this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
-          this.tozhang = '';
-          this.downzhang = '';
-          this.toSapnTime = '';
-          this.downSapnTime = '';
-          this.connectTime.totalTime = '';
           if (response.body.code === 200) {
-            if (response.body.result) {
-              this.connectTime.totalTime = response.body.result.duration;
-              if (response.body.result.twTime) {
-                this.toSapnTime = moment(new Date(response.body.result.twTime)).format(df);
-              }
-              if (response.body.result.owTime) {
-                this.downSapnTime = moment(new Date(response.body.result.owTime)).format(df);
-              }
-              if (response.body.result.status === '未打卡') {//判断状态转换文字上班
-                this.tozhang = '未打卡';
-                this.downzhang = '未打卡';
-              } else {
-                if (response.body.result.twTime) {
-                  if (response.body.result.twStatus === 0) {
-                    this.tozhang = '正常打卡';
-                  } else if (response.body.result.twStatus === 1) {
-                    this.tozhang = '迟到打卡';
-                  } else if (response.body.result.twStatus === 2) {
-                    this.tozhang = '旷工打卡';
-                  }
-                  if (response.body.result.twOutside) {
-                    this.tozhang = this.tozhang + '(区域外)';
-                  }
-                } else {
-                  this.tozhang = '未打卡';
-                }
-                if (response.body.result.owTime) {
-                  if (response.body.result.owStatus === 0) {
-                    this.downzhang = '正常打卡';
-                  } else if (response.body.result.owStatus === 1) {
-                    this.downzhang = '早退打卡';
-                  } else if (response.body.result.owStatus === 2) {
-                    this.downzhang = '加班打卡';
-                  } else if (response.body.result.owStatus === 3) {
-                    this.downzhang = '旷工打卡';
-                  }
-                  //判断是否区域外
-                  if (response.body.result.owOutside) {
-                    this.downzhang = this.downzhang + '(区域外)'
-                  }
-                } else {
-                  //判断是否是今天
-                  if (response.body.result.IS_TODAY) {
-                    this.downzhang = '';
-                  } else {
-                    this.downzhang = '未打卡';
-                  }
-                }
-              }
-            } else {
-              this.connectTime.totalTime = 0;
+            this.punchState = response.body.result;
+            for (let i = 0; i < this.punchState.data.length; i++) {
+              this.duration += this.punchState.data[i].duration;
             }
           }
         }, response => {
         });
       },
-
-      'changeMonth' (start, end, currentStart, current) {
+      changeMonth (start, end, currentStart, current) {
         let param = {
           date: moment(new Date(currentStart)).format(df1)
         };
@@ -163,11 +114,13 @@
             let arrayShow = response.body.result.attend.holidays;
             if (arrayShow.length) {
               for (let i = 0; i < arrayShow.length; i++) {    //此处循环一个数组进行填充假期显示
-                this.fcEvents.push({
-                  title: '假',
-                  start: arrayShow[i].date,
-                  end: arrayShow[i].date,
-                });
+                if (arrayShow[i].rightType === '1' || arrayShow[i].rightType === '2') {
+                  this.fcEvents.push({
+                    isHoliday: true,
+                    start: arrayShow[i].date,
+                    end: arrayShow[i].date,
+                  });
+                }
               }
             }
             //  改变当月工作日的背景颜色
@@ -181,10 +134,9 @@
             if (response.body.result.records.length) {
               for (let i = 0; i < response.body.result.records.length; i++) { //循环添加给日历表添加日期状态
                 let connectDate = {};
-                connectDate.start = response.body.result.records[i].punchYear + '/' + response.body.result.records[i].punchMonth + '/' + response.body.result.records[i].punchDate;
-                connectDate.end = response.body.result.records[i].punchYear + '/' + response.body.result.records[i].punchMonth + '/' + response.body.result.records[i].punchDate;
+                connectDate.start = response.body.result.records[i].date;
+                connectDate.end = response.body.result.records[i].date;
                 connectDate.cssClass = response.body.result.records[i].desc;
-                connectDate.totalTime = response.body.result.records[i].duration ? response.body.result.records[i].duration : 0;
                 this.fcEvents.push(connectDate);
               }
             }
@@ -220,6 +172,45 @@
           }
         }
       },
+      // 格式化时间
+      formatTime(time){
+        return moment(new Date(time)).format(df)
+      },
+      // 格式化打卡状态
+      formatPunchState(state, area, time, isToday, type){
+        let show = '';
+        if (time) {
+          if (type) {
+            if (state === 0) {
+              show = '正常打卡';
+            } else if (state === 1) {
+              show = '迟到打卡';
+            } else if (state === 2) {
+              show = '旷工打卡';
+            }
+          } else {
+            if (state === 0) {
+              show = '正常打卡';
+            } else if (state === 1) {
+              show = '早退打卡';
+            } else if (state === 2) {
+              show = '加班打卡';
+            } else if (state === 3) {
+              show = '旷工打卡';
+            }
+          }
+          if (area) {
+            show = show + '(区域外)';
+          }
+        } else {
+          if (isToday) {
+            show = '';
+          } else {
+            show = '未打卡';
+          }
+        }
+        return show;
+      }
     },
     components: {
       fullCalendar
@@ -234,7 +225,7 @@
     font-size: 0;
     .egClass {
       box-sizing: border-box;
-      width: 33.33%;
+      width: 25%;
       height: 43px;
       line-height: 43px;
       display: inline-block;
@@ -255,6 +246,9 @@
       }
       .leaveStyle {
         background: rgb(102, 204, 0);
+      }
+      .holidayStyle {
+        background-color: #ff4949;
       }
     }
     .egClass:nth-child(1) {

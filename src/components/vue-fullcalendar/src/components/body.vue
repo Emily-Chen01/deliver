@@ -47,7 +47,8 @@
                   <span class="dotStyle"
                         :class="{'normalStyle':event.cssClass==='normal','abnormalStyle':event.cssClass==='abnormal','leaveStyle':event.cssClass==='leave'}"
                         v-if="event.cssClass"></span>
-                  <img src="../../../../assets/ico_holiday.png" class="ico_holiday" v-if="event.title" alt=""/>
+                  <span class="dotStyle holidayStyle" v-else-if="!event.cssClass && event.isHoliday"></span>
+                  <!--<img src="../../../../assets/ico_holiday.png" class="ico_holiday" v-if="event.isHoliday" alt=""/>-->
                 </p>
               </div>
             </div>
@@ -414,7 +415,7 @@
                   border-radius: 50%;
                   vertical-align: middle;
                 }
-                .ico_holiday{
+                .ico_holiday {
                   width: 8px;
                   height: 8px;
                   margin: 0 2px;
@@ -429,6 +430,9 @@
 
                 .leaveStyle {
                   background: rgb(102, 204, 0);
+                }
+                .holidayStyle {
+                  background-color: #ff4949;
                 }
               }
             }
