@@ -36,7 +36,7 @@
             </p>
             <p>
               <img :src="imgSrc.PostionIcon">
-              <span v-text="'地理位置: '+ ((!punch.twOutside) ? '区域内' : (punch.twLocation+'附近'))"></span>
+              <span v-text="'地理位置: '+ ((!punch.twOutside) ? '区域内' : (punch.twLocation ? (punch.twLocation+'附近') : ''))"></span>
             </p>
             <p>
             <span class="article-tab article-tab-sq" v-if="punch.twOutside"
@@ -56,7 +56,7 @@
             </p>
             <p>
               <img :src="imgSrc.PostionIcon">
-              <span v-text="'地理位置: '+((!punch.owOutside) ? '区域内' : (punch.owLocation+'附近'))"></span>
+              <span v-text="'地理位置: '+((!punch.owOutside) ? '区域内' : (punch.owLocation ? (punch.owLocation+'附近') : ''))"></span>
             </p>
             <p>
             <span class="article-tab article-tab-sq" v-if="punch.owOutside || punch.owStatus===1 || punch.owStatus===3"
@@ -312,164 +312,165 @@
       },
       // 获取位置信息
       okClickEvent(){
-        this.showBtnContent = true;
-        this.qulocation = false;
-        let BMap = null;
-        let map = null;
-        let self = this;
-        let curl;
-        //判断是不是安卓苹果
-        let u = navigator.userAgent;
-        let isAndroid = '0';
-        isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-        if (isAndroid) {
-          curl = {
-            location: location.href //安卓的参数
-          };
-        }
-        if (!isAndroid) {
-          curl = {
-            location: location.href.toString().split('#')[0] //苹果的参数
-          };
-        }
-        //判断结束
-        new Promise((resolve, reject) => {
-          window._initBaiduMap = function () {
-            window.document.body.removeChild($script);
-            window._initBaiduMap = null;
-            resolve();
-            BMap = window.BMap;
-            map = new BMap.Map();
-          };
-          // 获取经纬度
-          const $script = document.createElement('script');
-          window.document.body.appendChild($script);
-          $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`;
-          // 获取ip
-          const $scripts = document.createElement('script');
-          window.document.body.appendChild($scripts);
-          $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
-        }).then(() => {
-          this.$http.post('/api/v1.0/wechat/sign', curl).then(response => { //获取签名接口开始
-            if (response.body.code === 200) {
-              this.t1 = response.body.result.appid.toString();
-              this.t2 = response.body.result.timestamp.toString();
-              this.t3 = response.body.result.nonceStr.toString();
-              this.t4 = response.body.result.signature.toString();
-              this.yyy = true;
-              let cvt = new BMap.Convertor();
-              wx.config({
-                debug: false,
-                appId: this.t1,
-                timestamp: this.t2,
-                nonceStr: this.t3,
-                signature: this.t4,
-                jsApiList: [
-                  'getLocation'
-                ]
-              });
-              wx.error(function (res) {
-                // 微信获取经纬度失败
-                self.failModelErr = true;
-                self.failModel = true;
-                self.qulocation = true;
-                self.showBtnContent = false;
-              });
-              wx.ready(function () {
-                wx.getLocation({
-                  type: 'wgs84',
-                  success: function (res) {
-                    self.getLocations = false;
-                    self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                    self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;  //这个是原有
-                    let speed = res.speed; // 速度，以米/每秒计
-                    let accuracy = res.accuracy; // 位置精度
-                    cvt.translate([new BMap.Point(res.longitude, res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {   //原有
-                      if (data.status === 0) {
-                        let myPosition = data.points[0]; // 转换后的微信坐标
-                        self.MyPosition = myPosition;
-//                        self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
-//                          if (response.body.code === 200) {
-                        //经纬度传值start
-                        let scopes = [];
-                        self.searchLocationArray = (rt => {
-                          if (!rt) return false;
-                          let out = [];
-                          rt.forEach(item => {
-                            out.push(new BMap.Point(item.LONGITUDE, item.LATITUDE));
-                            scopes.push(item.SCOPE);
-                          });
-                          return out;
-                        })(self.punchCardInfo.locations);
-
-                        let arrayLonglat = self.searchLocationArray;
-                        cvt.translate(arrayLonglat/* 可打卡坐标 */, 3, 5, (data) => {
-                          if (data.status === 0) {
-                            // 转换后的可打卡坐标
-                            let distance;
-                            self.twRange = '';
-                            self.outsideObtainValue = true;// 初始值为true
-                            for (let i = 0; i < data.points.length; i++) {
-                              distance = map.getDistance(data.points[i], myPosition);
-                              if (distance < scopes[i]) {
-                                self.outsideObtainValue = false;
-                                break;
-                              }
-                            }
-                            if (self.outsideObtainValue) {
-                              new BMap.Geocoder().getLocation(myPosition, function (res) { //进行给传值参数位置
-                                self.twRange = res.addressComponents.district + res.addressComponents.street;
-                                if (!self.twRange) {
-                                  self.twRange = '未获取到位置信息';
-                                }
-                                self.punchInfo(self, self.twRange);
-                              });
-                            } else {
-                              self.punchInfo(self, self.twRange);
-                            }
-                          } else {
-                            this.showBtnContent = false;
-                            MessageBox('提示', '获取地理位置失败');
-                          }
-                        });
-                      } else {
-                        this.showBtnContent = false;
-                        MessageBox('提示', '获取地理位置失败');
-                      }
-                    });
-                  },
-                  cancel: function (res) {
-                    //判断是不是安卓苹果
-                    let u = navigator.userAgent;
-                    let isAndroid = '0';
-                    isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-                    self.showBtnContent = false;
-                    if (isAndroid) {
-                      MessageBox('提示', '您拒绝了获取定位请求，只有允许才能进行打卡');
-                    }
-                    if (!isAndroid) {
-                      MessageBox('提示', '请开启微信定位服务');
-                    }
-                    //判断结束
-                  },
-                  fail: function (res) {
-                    // 微信定位未开启
-                    self.failModelErr = false;
-                    self.failModel = true;
-                    self.qulocation = true;
-                    self.showBtnContent = false;
-                  }
-                });
-              });
-            } else {
-              this.showBtnContent = false;
-              MessageBox('提示', response.body.message);
-            }
-          }, response => {
-            console.log('error callback');
-          });
-        });
-        //点击获取定位结束
+        this.punchInfo(this, this.twRange);
+//        this.showBtnContent = true;
+//        this.qulocation = false;
+//        let BMap = null;
+//        let map = null;
+//        let self = this;
+//        let curl;
+//        //判断是不是安卓苹果
+//        let u = navigator.userAgent;
+//        let isAndroid = '0';
+//        isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+//        if (isAndroid) {
+//          curl = {
+//            location: location.href //安卓的参数
+//          };
+//        }
+//        if (!isAndroid) {
+//          curl = {
+//            location: location.href.toString().split('#')[0] //苹果的参数
+//          };
+//        }
+//        //判断结束
+//        new Promise((resolve, reject) => {
+//          window._initBaiduMap = function () {
+//            window.document.body.removeChild($script);
+//            window._initBaiduMap = null;
+//            resolve();
+//            BMap = window.BMap;
+//            map = new BMap.Map();
+//          };
+//          // 获取经纬度
+//          const $script = document.createElement('script');
+//          window.document.body.appendChild($script);
+//          $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`;
+//          // 获取ip
+//          const $scripts = document.createElement('script');
+//          window.document.body.appendChild($scripts);
+//          $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
+//        }).then(() => {
+//          this.$http.post('/api/v1.0/wechat/sign', curl).then(response => { //获取签名接口开始
+//            if (response.body.code === 200) {
+//              this.t1 = response.body.result.appid.toString();
+//              this.t2 = response.body.result.timestamp.toString();
+//              this.t3 = response.body.result.nonceStr.toString();
+//              this.t4 = response.body.result.signature.toString();
+//              this.yyy = true;
+//              let cvt = new BMap.Convertor();
+//              wx.config({
+//                debug: false,
+//                appId: this.t1,
+//                timestamp: this.t2,
+//                nonceStr: this.t3,
+//                signature: this.t4,
+//                jsApiList: [
+//                  'getLocation'
+//                ]
+//              });
+//              wx.error(function (res) {
+//                // 微信获取经纬度失败
+//                self.failModelErr = true;
+//                self.failModel = true;
+//                self.qulocation = true;
+//                self.showBtnContent = false;
+//              });
+//              wx.ready(function () {
+//                wx.getLocation({
+//                  type: 'wgs84',
+//                  success: function (res) {
+//                    self.getLocations = false;
+//                    self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+//                    self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;  //这个是原有
+//                    let speed = res.speed; // 速度，以米/每秒计
+//                    let accuracy = res.accuracy; // 位置精度
+//                    cvt.translate([new BMap.Point(res.longitude, res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {   //原有
+//                      if (data.status === 0) {
+//                        let myPosition = data.points[0]; // 转换后的微信坐标
+//                        self.MyPosition = myPosition;
+////                        self.$http.post('/api/v1.0/client/findPunchCardLog').then(response => { //查询经纬度赋值
+////                          if (response.body.code === 200) {
+//                        //经纬度传值start
+//                        let scopes = [];
+//                        self.searchLocationArray = (rt => {
+//                          if (!rt) return false;
+//                          let out = [];
+//                          rt.forEach(item => {
+//                            out.push(new BMap.Point(item.LONGITUDE, item.LATITUDE));
+//                            scopes.push(item.SCOPE);
+//                          });
+//                          return out;
+//                        })(self.punchCardInfo.locations);
+//
+//                        let arrayLonglat = self.searchLocationArray;
+//                        cvt.translate(arrayLonglat/* 可打卡坐标 */, 3, 5, (data) => {
+//                          if (data.status === 0) {
+//                            // 转换后的可打卡坐标
+//                            let distance;
+//                            self.twRange = '';
+//                            self.outsideObtainValue = true;// 初始值为true
+//                            for (let i = 0; i < data.points.length; i++) {
+//                              distance = map.getDistance(data.points[i], myPosition);
+//                              if (distance < scopes[i]) {
+//                                self.outsideObtainValue = false;
+//                                break;
+//                              }
+//                            }
+//                            if (self.outsideObtainValue) {
+//                              new BMap.Geocoder().getLocation(myPosition, function (res) { //进行给传值参数位置
+//                                self.twRange = res.addressComponents.district + res.addressComponents.street;
+//                                if (!self.twRange) {
+//                                  self.twRange = '未获取到位置信息';
+//                                }
+//                                self.punchInfo(self, self.twRange);
+//                              });
+//                            } else {
+//                              self.punchInfo(self, self.twRange);
+//                            }
+//                          } else {
+//                            this.showBtnContent = false;
+//                            MessageBox('提示', '获取地理位置失败');
+//                          }
+//                        });
+//                      } else {
+//                        this.showBtnContent = false;
+//                        MessageBox('提示', '获取地理位置失败');
+//                      }
+//                    });
+//                  },
+//                  cancel: function (res) {
+//                    //判断是不是安卓苹果
+//                    let u = navigator.userAgent;
+//                    let isAndroid = '0';
+//                    isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+//                    self.showBtnContent = false;
+//                    if (isAndroid) {
+//                      MessageBox('提示', '您拒绝了获取定位请求，只有允许才能进行打卡');
+//                    }
+//                    if (!isAndroid) {
+//                      MessageBox('提示', '请开启微信定位服务');
+//                    }
+//                    //判断结束
+//                  },
+//                  fail: function (res) {
+//                    // 微信定位未开启
+//                    self.failModelErr = false;
+//                    self.failModel = true;
+//                    self.qulocation = true;
+//                    self.showBtnContent = false;
+//                  }
+//                });
+//              });
+//            } else {
+//              this.showBtnContent = false;
+//              MessageBox('提示', response.body.message);
+//            }
+//          }, response => {
+//            console.log('error callback');
+//          });
+//        });
+//        //点击获取定位结束
       },
       // 获取ip地址
       getIP(){
