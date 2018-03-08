@@ -19,16 +19,16 @@
             <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
           <div class="timeSpanClass">
-            <span>今日工时共计：{{duration ? duration : ''}}小时</span>
+            <span>今日工时共计:{{(duration !== null) ? duration : ''}}小时</span>
           </div>
         </div>
-        <div class="punchInfo">
+        <div class="punchInfo" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">
           <div class="punchInfoLeft">
             <div class="punchInfoLine"></div>
             <p class="punchInfoUp"></p>
             <p class="punchInfoDown"></p>
           </div>
-          <div class="punchInfoRight" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">
+          <div class="punchInfoRight">
             <p
               v-text="(punchItem.twTime ? (formatTime(punchItem.twTime)+' ') : '') + formatPunchState(punchItem.twStatus,punchItem.twOutside,punchItem.twTime,punchState.IS_TODAY,true)"></p>
             <p
@@ -110,40 +110,42 @@
           if (response.body.code === 200) {
             //显示默认当天考勤信息
             this.dayClick(new Date());
-            //显示假期信息
-            let arrayShow = response.body.result.attend.holidays;
-            if (arrayShow.length) {
-              for (let i = 0; i < arrayShow.length; i++) {    //此处循环一个数组进行填充假期显示
-                if (arrayShow[i].rightType === '1' || arrayShow[i].rightType === '2') {
-                  this.fcEvents.push({
-                    isHoliday: true,
-                    start: arrayShow[i].date,
-                    end: arrayShow[i].date,
-                  });
+            if (response.body.result) {
+              //显示假期信息
+              let arrayShow = response.body.result.attend.holidays;
+              if (arrayShow.length) {
+                for (let i = 0; i < arrayShow.length; i++) {    //此处循环一个数组进行填充假期显示
+                  if (arrayShow[i].rightType === '1' || arrayShow[i].rightType === '2') {
+                    this.fcEvents.push({
+                      isHoliday: true,
+                      start: arrayShow[i].date,
+                      end: arrayShow[i].date,
+                    });
+                  }
                 }
               }
-            }
-            //  改变当月工作日的背景颜色
-            this.showDate(response.body.result.attend.wdSun, 0);
-            this.showDate(response.body.result.attend.wdMon, 1);
-            this.showDate(response.body.result.attend.wdTue, 2);
-            this.showDate(response.body.result.attend.wdWed, 3);
-            this.showDate(response.body.result.attend.wdThu, 4);
-            this.showDate(response.body.result.attend.wdFri, 5);
-            this.showDate(response.body.result.attend.wdSat, 6);
-            if (response.body.result.records.length) {
-              for (let i = 0; i < response.body.result.records.length; i++) { //循环添加给日历表添加日期状态
-                let connectDate = {};
-                connectDate.start = response.body.result.records[i].date;
-                connectDate.end = response.body.result.records[i].date;
-                connectDate.cssClass = response.body.result.records[i].desc;
-                this.fcEvents.push(connectDate);
+              //  改变当月工作日的背景颜色
+              this.showDate(response.body.result.attend.wdSun, 0);
+              this.showDate(response.body.result.attend.wdMon, 1);
+              this.showDate(response.body.result.attend.wdTue, 2);
+              this.showDate(response.body.result.attend.wdWed, 3);
+              this.showDate(response.body.result.attend.wdThu, 4);
+              this.showDate(response.body.result.attend.wdFri, 5);
+              this.showDate(response.body.result.attend.wdSat, 6);
+              if (response.body.result.records.length) {
+                for (let i = 0; i < response.body.result.records.length; i++) { //循环添加给日历表添加日期状态
+                  let connectDate = {};
+                  connectDate.start = response.body.result.records[i].date;
+                  connectDate.end = response.body.result.records[i].date;
+                  connectDate.cssClass = response.body.result.records[i].desc;
+                  this.fcEvents.push(connectDate);
+                }
               }
+              this.connectTime.chidao = response.body.result.belateTimes;   //赋值给查询出来的月总数
+              this.connectTime.zaotui = response.body.result.leaveearlyTimes;
+              this.connectTime.kuanggong = response.body.result.absentTimes;
+              this.connectTime.waichu = response.body.result.outsideTimes;
             }
-            this.connectTime.chidao = response.body.result.belateTimes;   //赋值给查询出来的月总数
-            this.connectTime.zaotui = response.body.result.leaveearlyTimes;
-            this.connectTime.kuanggong = response.body.result.absentTimes;
-            this.connectTime.waichu = response.body.result.outsideTimes;
           }
         }, response => {
         });
