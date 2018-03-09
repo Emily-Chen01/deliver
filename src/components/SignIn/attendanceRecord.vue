@@ -60,6 +60,7 @@
 //                }
         ],
         punchState: [],//选中日期打卡信息展示
+        oldDayClick: '',//已经选中的日期
         duration: null,//选中日期当日工时
         tozhang: '', //上班打卡状态
         downzhang: '',  //下班打卡状态
@@ -88,18 +89,22 @@
         //再此处调用每一次日期的接口 进行传值
         //点击当天进行查询打卡状态开始
         //格式化时间开始
-        let param = {
-          date: moment(day).format(df2)
-        };
-        this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
-          if (response.body.code === 200) {
-            this.punchState = response.body.result;
-            for (let i = 0; i < this.punchState.data.length; i++) {
-              this.duration += this.punchState.data[i].duration;
+        if (this.oldDayClick !== moment(day).format(df2)) {
+          this.oldDayClick = moment(day).format(df2);
+          let param = {
+            date: moment(day).format(df2)
+          };
+          this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
+            if (response.body.code === 200) {
+              this.punchState = response.body.result;
+              this.duration = null;
+              for (let i = 0; i < this.punchState.data.length; i++) {
+                this.duration += this.punchState.data[i].duration;
+              }
             }
-          }
-        }, response => {
-        });
+          }, response => {
+          });
+        }
       },
       changeMonth (start, end, currentStart, current) {
         let param = {
