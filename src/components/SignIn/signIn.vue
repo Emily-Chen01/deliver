@@ -71,7 +71,8 @@
       </div>
       <div class="signIn_mask" v-if="punchCardInfo.isNeed&&!showHide"></div>
     </div>
-    <div class="signIn_hide" :class="{'signIn_hide1':showHide}" v-if="punchCardInfo.isNeed">
+    <div class="signIn_hide" :class="{'signIn_hide1':showHide}"
+         v-if="punchCardInfo.isNeed && punchCardInfo.punchCardLogs.length">
       <mt-button type="default" @click="showHides" size="small">
         <img v-if="showHide" src="../../assets/ico_arrow_02.png" width="12" slot="icon">
         <img v-if="!showHide" src="../../assets/ico_arrow_01.png" width="12" slot="icon">
@@ -95,7 +96,7 @@
       v-model="qulocation"
       class="getLocation-alert-wrapper"
       closeOnClickModal="false">
-      <div class="getLocation-alert-content" v-if="">
+      <div class="getLocation-alert-content">
         <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">HR SAAS系统要使用您的地理位置，是否允许？</p>
         <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
         <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
@@ -739,7 +740,7 @@
           color: #26a2ff;
         }
         .mint-button-icon {
-          vertical-align:inherit;
+          vertical-align: inherit;
         }
       }
     }
@@ -760,7 +761,7 @@
           color: #ffffff;
         }
         .mint-button-icon {
-          vertical-align:inherit;
+          vertical-align: inherit;
         }
       }
     }
