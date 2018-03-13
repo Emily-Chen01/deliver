@@ -1,3 +1,13 @@
+.icon_bg_homeImg{display: inline-block;vertical-align:middle;background:url(../images/home/icon_bg_homeImg.png)  no-repeat;background-size:87px 58px;}
+.bg-ico_announcement {  width:20px; height:20px;  background-position:-5px -5px;  }
+.bg-ico_attendance {  width:20px; height:20px;  background-position:-34px -5px;  }
+.bg-ico_leave {  width:20px; height:20px;  background-position:-5px -34px;  }
+.bg-ico_task {  width:20px; height:20px;  background-position:-34px -34px;  }
+.bg-ico_wage {  width:20px; height:20px;  background-position:-63px -5px;  }
+
+
+
+
 .bg-img{display: inline-block;vertical-align:middle;background:url(../css_sprites.png)  no-repeat;background-size:168px 157px;}
 .arrow_3_disabled{height:11px;width:7px;background-position:0 0;}
 .arrow_4{height:11px;width:7px;background-position:-10px 0;}
