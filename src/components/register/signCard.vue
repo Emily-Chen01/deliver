@@ -30,25 +30,32 @@
         <div @click="changeList(0)">
           <mt-cell title="请假申请" is-link>
             <span v-text="recordShow.apply ? recordShow.apply : '当前无申请记录'"></span>
-            <i slot="icon" class="bg-img ico_leave"></i>
+            <!--<i slot="icon" class="bg-img ico_leave"></i>-->
+            <i slot="icon" class="icon_bg_homeImg bg-ico_leave"></i>
           </mt-cell>
         </div>
         <div @click="changeList(1)">
           <mt-cell title="我的考勤" is-link>
             <span v-text="recordShow.punchCard ? recordShow.punchCard : '本月无考勤异常'"></span>
-            <i slot="icon" class="bg-img ico_attendance"></i>
+            <i slot="icon" class="icon_bg_homeImg bg-ico_attendance"></i>
           </mt-cell>
         </div>
         <div @click="changeList(2)">
           <mt-cell title="我的工资条" is-link>
             <span v-text="recordShow.salary ? recordShow.salary : '当前无工资条记录'"></span>
-            <i slot="icon" class="bg-img ico_wage"></i>
+            <i slot="icon" class="icon_bg_homeImg bg-ico_wage"></i>
           </mt-cell>
         </div>
         <div @click="changeList(3)">
           <mt-cell title="公司公告" is-link>
             <span v-text="recordShow.notice ? recordShow.notice : '当前无未读公告'"></span>
-            <i slot="icon" class="bg-img ico_announcement"></i>
+            <i slot="icon" class="icon_bg_homeImg bg-ico_announcement"></i>
+          </mt-cell>
+        </div>
+        <div @click="changeList(4)">
+          <mt-cell title="我的任务" is-link>
+            <span v-text="'当前无完成任务'"></span>
+            <i slot="icon" class="icon_bg_homeImg bg-ico_task"></i>
           </mt-cell>
         </div>
       </div>

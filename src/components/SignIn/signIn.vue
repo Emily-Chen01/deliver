@@ -507,15 +507,15 @@
         let position = this.punchCardInfo.punchCardLogs.length - 1;
         if (!this.punchClock(this.punchCardInfo.punchCardLogs[position].twStatus)) {
           updakaObj = {
-            isRange: this.outsideObtainValue ? true : 0,
+            isRange: this.outsideObtainValue,
             location: twRange,
             longitude: this.MyPosition.lng,
             latitude: this.MyPosition.lat,
             wifi: this.wifiIP
           }
-        } else if (this.punchClock(this.punchCardInfo.punchCardLogs[position].owStatus) && !this.punchClock(this.punchCardInfo.punchCardLogs[position].twStatus)) {
+        } else {
           updakaObj = {
-            isRange: this.outsideObtainValue ? true : 0,
+            isRange: this.outsideObtainValue,
             location: twRange,
             longitude: this.MyPosition.lng,
             latitude: this.MyPosition.lat,
@@ -530,6 +530,7 @@
           }
         }, response => {
         });
+        console.log('updakaObj', updakaObj);
       }
     },
   }
