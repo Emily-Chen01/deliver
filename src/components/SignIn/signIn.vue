@@ -402,9 +402,11 @@
                     self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;  //这个是原有
                     let speed = res.speed; // 速度，以米/每秒计
                     let accuracy = res.accuracy; // 位置精度
+//                    console.log('tencent', res.longitude, res.latitude)
                     cvt.translate([new BMap.Point(res.longitude, res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {   //原有
                       if (data.status === 0) {
                         let myPosition = data.points[0]; // 转换后的微信坐标
+//                        console.log('转换后', myPosition);
                         self.MyPosition = myPosition;
                         //经纬度传值start
                         let scopes = [];
@@ -479,7 +481,7 @@
               MessageBox('提示', response.body.message);
             }
           }, response => {
-            console.log('error callback');
+//            console.log('error callback');
           });
         });
         //点击获取定位结束
@@ -530,7 +532,7 @@
           }
         }, response => {
         });
-        console.log('updakaObj', updakaObj);
+//        console.log('updakaObj', updakaObj);
       }
     },
   }
