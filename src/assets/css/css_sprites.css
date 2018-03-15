@@ -1,3 +1,4 @@
+/*首页列表图标*/
 .icon_bg_homeImg{display: inline-block;vertical-align:middle;background:url(../images/home/icon_bg_homeImg.png)  no-repeat;background-size:87px 58px;}
 .bg-ico_announcement {  width:20px; height:20px;  background-position:-5px -5px;  }
 .bg-ico_attendance {  width:20px; height:20px;  background-position:-34px -5px;  }
@@ -5,7 +6,16 @@
 .bg-ico_task {  width:20px; height:20px;  background-position:-34px -34px;  }
 .bg-ico_wage {  width:20px; height:20px;  background-position:-63px -5px;  }
 
-
+/*我的任务模块图标*/
+.icon_bg_taskImg{display: inline-block;vertical-align:middle;background:url(../images/task/icon_bg_taskImg.png)  no-repeat;background-size:25px 198px;}
+.bg-ico_date {  width: 15px; height: 16px;  background-position: -5px -151px;  }
+.bg-ico_file {  width: 15px; height: 16px;  background-position: -5px -177px;  }
+.bg-ico_files {  width: 15px; height: 14px;  background-position: -5px -28px;  }
+.bg-ico_head {  width: 14px; height: 15px;  background-position: -5px -51px;  }
+.bg-ico_location {  width: 12px; height: 15px;  background-position: -5px -76px;  }
+.bg-ico_pencil1 {  width: 15px; height: 15px;  background-position: -5px -101px;  }
+.bg-ico_title {  width: 16px; height: 13px;  background-position: -5px -5px;  }
+.bg-ico_type {  width: 15px; height: 15px;  background-position: -5px -126px; }
 
 
 .bg-img{display: inline-block;vertical-align:middle;background:url(../css_sprites.png)  no-repeat;background-size:168px 157px;}

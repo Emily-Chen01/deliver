@@ -13,6 +13,7 @@ import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import mySalary from "@/components/SignIn/mySalary"
 import binding from "@/components/binding/binding"
 import task from "@/components/task/task"
+import taskDetails from "@/components/task/details"
 
 
 Vue.use(Router);
@@ -35,6 +36,10 @@ export default new Router({
     {
       path: '/task',  //我的任务
       component: task
+    },
+    {
+      path: '/task_details',  //我的任务
+      component: taskDetails
     },
     {
       path: '/ManyCompany',  //多家公司选择

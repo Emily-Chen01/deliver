@@ -1,5 +1,5 @@
 <template>
-  <div id="detailsBox" v-if="state">
+  <div id="notice_detailsBox" v-if="state">
     <div class="detailsContent">
       <div class="detailsMain">
         <h4 class="detailsMain-title" v-text="noticeData.title"></h4>
@@ -170,7 +170,7 @@
   }
 </script>
 <style lang="scss">
-  #detailsBox {
+  #notice_detailsBox {
     box-sizing: border-box;
     padding: 0 15px;
     min-height: 100%;

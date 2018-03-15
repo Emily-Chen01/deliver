@@ -1,12 +1,31 @@
 <template>
-  <div>
+  <div id="task_wrapper">
     <full-calendar
       :connectTime="connectTime"
       :events="fcEvents" lang="zh"
       @dayClick="dayClick"
       @changeMonth="changeMonth"
     ></full-calendar>
-我的任务
+    <div class="task_moduleBox">
+      <div class="task_moduleTitle">2018-3-15 到期任务</div>
+      <ul class="task_moduleList">
+        <li class="task_moduleList_item" @click="queryTask" v-for="n in 3">
+          <div class="task_moduleList_top">
+            <span class="task_moduleList_topLeft">日常任务</span>
+            <span class="task_moduleList_topRight">朝外大街巡逻</span>
+          </div>
+          <div class="task_moduleList_bottom">
+            <i class="icon_bg_taskImg bg-ico_date"></i>
+            <span class="task_moduleList_bottomRight">今日到期</span>
+          </div>
+        </li>
+      </ul>
+      <div class="task_noModuleList">暂无已完成任务</div>
+    </div>
+    <div class="task_addBtn">
+      <mt-button type="primary" size="large">添加任务</mt-button>
+    </div>
+
   </div>
 </template>
 
@@ -44,7 +63,7 @@
 //        },
       }
     },
-    methods:{
+    methods: {
       dayClick (day) {
         //  点击日历，获取日期
         //  转换日期格式
@@ -118,9 +137,78 @@
 //        }, response => {
 //        });
       },
+      // 查看任务详情
+      queryTask(){
+        this.$router.push({path: '/task_details'});
+      }
     },
     components: {
       fullCalendar
     }
   }
 </script>
+<style lang="scss">
+  #task_wrapper {
+    padding-bottom: 65px;
+    .task_moduleBox {
+      .task_moduleTitle {
+        padding: 0 15px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 15px;
+        color: #666666;
+        text-align: left;
+      }
+      .task_moduleList {
+        list-style-type: none;
+        padding: 0 15px;
+        text-align: left;
+        background-color: #ffffff;
+        .task_moduleList_item {
+          padding: 15px 0 10px;
+          border-bottom: 1px solid rgb(204, 204, 204);
+          &:last-child {
+            border: none;
+          }
+          .task_moduleList_top {
+            .task_moduleList_topLeft {
+              display: inline-block;
+              padding: 3px;
+              border-radius: 3px;
+              font-size: 13px;
+              color: #ffffff;
+              background-color: #ff9f4a;
+            }
+            .task_moduleList_topRight {
+              font-size: 15px;
+              color: #333333;
+            }
+          }
+          .task_moduleList_bottom {
+            margin-top: 10px;
+            .task_moduleList_bottomRight {
+              color: #333333;
+              font-size: 13px;
+              vertical-align: middle;
+            }
+          }
+        }
+      }
+      .task_noModuleList {
+        height: 40px;
+        line-height: 40px;
+        font-size: 15px;
+        color: #999999;
+        background-color: #eff3f7;
+      }
+    }
+    .task_addBtn {
+      position: fixed;
+      box-sizing: border-box;
+      padding: 10px 15px 20px;
+      bottom: 0;
+      width: 100%;
+      background-color: #eff3f7;
+    }
+  }
+</style>
