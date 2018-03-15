@@ -1,6 +1,6 @@
 <template>
   <div class="full-calendar-body">
-    <div class="pos-fixed">
+    <div class="pos-fixed" v-if="connectTime.state">
       <div class="spanStatus">
         <div class="spanStatusCount">{{connectTime.chidao}}</div>
         <div class="">迟到</div>

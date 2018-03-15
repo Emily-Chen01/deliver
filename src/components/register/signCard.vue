@@ -169,6 +169,8 @@
           this.$router.push({path: '/mySalary'});
         } else if (indexX === 3) {
           this.$router.push({path: '/notice'});
+        }else if (indexX === 4) {
+          this.$router.push({path: '/task'});
         }
       },
       routerMyData(){

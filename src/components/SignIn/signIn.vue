@@ -133,7 +133,7 @@
             <img :src="imgSrc.alertHeader">
           </div>
           <p class="punch-success-time"
-             v-text="(punchCardInfo.status===false)?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
+             v-text="(punchCardInfo.status===false || punchCardInfo.attendRuleUid === '3')?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
           <div class="punch-success-tab" v-if="punchCardInfo.status===false">
             <mt-button type="default"
                        class="punch-success-tabHeight article-tab-zc"
@@ -260,7 +260,7 @@
             }
           } else if (response.body.code === 500) { //不能显示打卡功能
             MessageBox('提示', response.body.message);
-            if (response.body.message === '当前考勤不需要打卡') {
+            if (response.body.message === '当前考勤无需打卡') {
               this.$router.push({path: '/signCard'});
             }
           }

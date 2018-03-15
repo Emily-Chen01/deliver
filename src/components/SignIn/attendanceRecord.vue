@@ -69,7 +69,8 @@
           zaotui: '',//早退数量
           kuanggong: '',//旷工数量
           waichu: '',//外出数量
-          totalTime: ''//今日工时数量
+          totalTime: '',//今日工时数量
+          state: true,//判断是否显示这些数量值
         },
         toSapnTime: '', // 上班时间
         downSapnTime: '', // 下班时间
