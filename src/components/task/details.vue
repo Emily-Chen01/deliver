@@ -12,8 +12,6 @@
       <div class="detail_complete">
         <mt-button type="primary" size="large">点击完成任务</mt-button>
       </div>
-    </div>
-    <div class="detail_main">
       <div class="detail_content">
         <div class="detail_contentTitle">
           <mt-cell title="李晓岚">
@@ -34,16 +32,23 @@
           </mt-cell>
         </div>
       </div>
-      <div class="detail_comment">
-        <div class="detail_commentList">
-          <p>2018-3-15 08:30:00</p>
-          <mt-cell>
-            <span class="detail_commentListText">设置到期时间设置到期时间设置到期时间设置到期时间设置到期时间</span>
-            <img slot="icon" src="../../assets/tx.png" width="25" height="25">
-          </mt-cell>
-        </div>
-
+    </div>
+    <div class="detail_comment">
+      <div class="detail_commentList" v-for=" n in 6">
+        <p>2018-3-15 08:30:00</p>
+        <mt-cell>
+            <span class="detail_commentListText">
+              <b class="detail_commentNameColor">张明 </b>
+              <span>给</span>
+              <b class="detail_commentNameColor">刘佳</b>
+              <span>只指派了任务</span>
+            </span>
+          <img slot="icon" src="../../assets/tx.png" width="25" height="25">
+        </mt-cell>
       </div>
+    </div>
+    <div class="detail_addCommentBtn">
+      <mt-button size="large">填写任务反馈</mt-button>
     </div>
   </div>
 </template>
@@ -55,10 +60,13 @@
   #task_details_wrapper {
     text-align: left;
     .detail_header {
-      padding: 0 15px;
+      position: fixed;
+      z-index: 10;
+      width: 100%;
+      box-sizing: border-box;
       background-color: #ffffff;
       .detail_title {
-        padding: 15px 0;
+        padding: 15px 15px;
         .detail_titleText {
           padding-left: 5px;
           font-size: 15px;
@@ -67,6 +75,7 @@
         }
       }
       .detail_name {
+        padding: 0 15px;
         .detail_nameLeft {
           display: inline-block;
           padding: 3px;
@@ -82,12 +91,11 @@
         }
       }
       .detail_complete {
-        padding: 30px 5px;
+        padding: 30px 15px;
       }
-    }
-    .detail_main {
-      margin-top: 10px;
       .detail_content {
+        box-sizing: border-box;
+        border-top: 10px solid #eff3f7;
         padding: 10px 15px;
         background-color: #ffffff;
         .detail_contentTitle {
@@ -124,33 +132,55 @@
           }
         }
       }
-      .detail_comment {
-        padding: 0 15px;
-        .detail_commentList {
-          margin: 10px 0;
-          p {
-            text-align: center;
+    }
+    .detail_comment {
+      padding: 420px 15px 60px;
+      overflow: auto;
+      background-color: #eff3f7;
+      .detail_commentList {
+        margin: 10px 0 15px;
+        p {
+          font-size: 12px;
+          color: #666666;
+          text-align: center;
+        }
+        .mint-cell {
+          min-height: 0;
+          background-color: transparent;
+          .mint-cell-left, .mint-cell-right {
+            height: auto;
           }
-          .mint-cell {
-            /*height: auto;*/
-            min-height: 0;
-            background-color: transparent;
-            .mint-cell-left,.mint-cell-right{
-              height: auto;
+          .mint-cell-wrapper {
+            height: auto;
+            font-size: 14px;
+            padding: 0;
+            align-items: inherit;
+            .mint-cell-title {
+              flex: 0;
             }
-            .mint-cell-wrapper {
-              height: auto;
-              font-size: 14px;
-              padding: 0;
+            .mint-cell-value {
+              margin-top: 5px;
+              .detail_commentListText {
+                padding-left: 5px;
+                line-height: 20px;
+                color: #666666;
+                .detail_commentNameColor {
+                  color: #333333;
+                }
+              }
             }
-          }
-          .detail_commentListText{
-            padding-left: 5px;
-            /*padding-top: 15px;*/
-            /*margin-top: 5px;*/
           }
         }
       }
+    }
+    .detail_addCommentBtn {
+      position: fixed;
+      bottom: 0;
+      padding: 10px 20px;
+      width: 100%;
+      box-sizing: border-box;
+      background-color: #f9f9f9;
+
     }
   }
 </style>
