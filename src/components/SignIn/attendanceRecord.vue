@@ -103,7 +103,7 @@
                 this.duration += this.punchState.data[i].duration;
               }
               if (typeof(this.duration) === 'number') {
-                this.duration = this.duration.toFixed(2);
+                this.duration = parseFloat(this.duration.toFixed(2));
               }
             }
           }, response => {
