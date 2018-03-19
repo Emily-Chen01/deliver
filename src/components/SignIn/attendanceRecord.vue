@@ -102,6 +102,9 @@
               for (let i = 0; i < this.punchState.data.length; i++) {
                 this.duration += this.punchState.data[i].duration;
               }
+              if (typeof(this.duration) === 'number') {
+                this.duration = this.duration.toFixed(2);
+              }
             }
           }, response => {
           });
