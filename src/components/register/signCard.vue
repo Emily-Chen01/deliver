@@ -52,12 +52,12 @@
             <i slot="icon" class="icon_bg_homeImg bg-ico_announcement"></i>
           </mt-cell>
         </div>
-        <div @click="changeList(4)">
-          <mt-cell title="我的任务" is-link>
-            <span v-text="'当前无完成任务'"></span>
-            <i slot="icon" class="icon_bg_homeImg bg-ico_task"></i>
-          </mt-cell>
-        </div>
+        <!--<div @click="changeList(4)">-->
+          <!--<mt-cell title="我的任务" is-link>-->
+            <!--<span v-text="'当前无完成任务'"></span>-->
+            <!--<i slot="icon" class="icon_bg_homeImg bg-ico_task"></i>-->
+          <!--</mt-cell>-->
+        <!--</div>-->
       </div>
     </div>
     <!--解除绑定-->
