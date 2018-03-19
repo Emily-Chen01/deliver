@@ -47,14 +47,39 @@
         </mt-cell>
       </div>
     </div>
+    <mt-popup
+      v-model="popupVisible"
+      popup-transition="popup-fade">
+      <div class="feedback_wrapper">
+        <h3 class="feedback_title">反馈内容</h3>
+        <mt-field placeholder="请填写反馈内容(不超过256个字)" type="textarea" :attr="{ maxlength: 256 }" v-model="feedbackContent" rows="5"></mt-field>
+        <mt-button type="primary" size="large" @click="submitFeedback">提交任务反馈</mt-button>
+      </div>
+    </mt-popup>
     <div class="detail_addCommentBtn">
-      <mt-button size="large">填写任务反馈</mt-button>
+      <mt-button size="large" @click="addComment">填写任务反馈</mt-button>
     </div>
   </div>
 </template>
 
 <script>
-  export default {}
+  export default {
+    data(){
+      return {
+        popupVisible: false,//判断弹框是否打开
+        feedbackContent:''//反馈内容
+      };
+    },
+    methods: {
+      addComment(){
+        this.popupVisible = true;
+      },
+      submitFeedback(){
+        this.popupVisible = false;
+      }
+    }
+
+  }
 </script>
 <style lang="scss">
   #task_details_wrapper {
@@ -173,6 +198,34 @@
         }
       }
     }
+    .mint-popup {
+      width: 80vw;
+      .feedback_wrapper{
+        padding: 15px;
+        .feedback_title{
+          margin-bottom: 20px;
+          font-size: 15px;
+          text-align: center;
+        }
+        .mint-field{
+          margin-bottom: 20px;
+          .mint-cell-wrapper{
+            padding: 0;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+          }
+          .mint-field-core{
+            font-size: 14px;
+          }
+          textarea{
+            resize: none;
+          }
+        }
+        .mint-button{
+          font-size: 14px;
+        }
+      }
+    }
     .detail_addCommentBtn {
       position: fixed;
       bottom: 0;
@@ -180,7 +233,6 @@
       width: 100%;
       box-sizing: border-box;
       background-color: #f9f9f9;
-
     }
   }
 </style>

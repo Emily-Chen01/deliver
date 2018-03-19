@@ -22,10 +22,17 @@
       </ul>
       <div class="task_noModuleList">暂无已完成任务</div>
     </div>
+    <mt-popup
+      v-model="popupVisible"
+      position="right">
+      <div class="addTask_Wrapper">
+        <h3 class="feedback_title">反馈内容</h3>
+        <mt-button type="primary" size="large" @click="submitTask">发布任务</mt-button>
+      </div>
+    </mt-popup>
     <div class="task_addBtn">
-      <mt-button type="primary" size="large">添加任务</mt-button>
+      <mt-button type="primary" size="large" @click="addTask">添加任务</mt-button>
     </div>
-
   </div>
 </template>
 
@@ -34,6 +41,7 @@
   export default {
     data(){
       return {
+        popupVisible: false,//判断添加任务弹框是否显示
         fcEvents: [
 //                {
 //                  title : '',
@@ -140,6 +148,14 @@
       // 查看任务详情
       queryTask(){
         this.$router.push({path: '/task_details'});
+      },
+      // 添加任务
+      addTask(){
+        this.popupVisible = true;
+      },
+      // 发布任务
+      submitTask(){
+        this.popupVisible = false;
       }
     },
     components: {
@@ -201,6 +217,10 @@
         color: #999999;
         background-color: #eff3f7;
       }
+    }
+    .mint-popup {
+      width: 100vw;
+      height: 100vh;
     }
     .task_addBtn {
       position: fixed;
