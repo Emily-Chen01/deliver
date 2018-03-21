@@ -143,9 +143,9 @@
                     <el-form-item label="户口省份" :prop="item.jname+'.podoProvince'"
                                   :rules="{required: item.isrequired, message: '请选择户口所在省份', trigger: 'change'}">
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].podoProvince"
-                              @change="queryCities(item.value.podoProvince,'podoMessage')"
+                              @change="queryCities(item.value.podoProvince,'podoMessage','podoCity')"
                               :class="{'option-color':!staffInfoName[item.jname].podoProvince}">
-                        <option value="" disabled>请选择户口省份</option>
+                        <option :value="''||null" disabled>请选择户口省份</option>
                         <option v-for="p in provinces" :key="p.uid" v-text="p.name" :value="p.uid"></option>
                       </select>
                     </el-form-item>
@@ -154,7 +154,7 @@
                                   :rules="{required: item.isrequired, message: '请选择户口所在城市', trigger: 'change'}">
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].podoCity"
                               :class="{'option-color':!staffInfoName[item.jname].podoCity}">
-                        <option value="" disabled>请选择户口城市</option>
+                        <option :value="''||null" disabled>请选择户口城市</option>
                         <option v-for="c in podoCities" :key="c.uid" v-text="c.name" :value="c.uid"></option>
                       </select>
                     </el-form-item>
@@ -241,7 +241,7 @@
                                   :rules="{required: item.isrequired, message: '请选择最高学历', trigger: 'blur'}">
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].maxinumDeucaLevel"
                               :class="{'option-color':!staffInfoName[item.jname].maxinumDeucaLevel}">
-                        <option value="" disabled>请选择最高学历</option>
+                        <option :value="''||null" disabled>请选择最高学历</option>
                         <option v-for="(v, k) in maxinumDeucaLevels" :key="k" v-text="v.name" :value="v.id"></option>
                       </select>
                     </el-form-item>
@@ -374,7 +374,7 @@
                                   :rules="{required:item.isrequired, message: '请选择现居住地所在省份', trigger: 'change'}">
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].poreProvince"
                               :class="{'option-color':!staffInfoName[item.jname].poreProvince}"
-                              @change="queryCities(staffInfoName[item.jname].poreProvince,'poreLocation')">
+                              @change="queryCities(staffInfoName[item.jname].poreProvince,'poreLocation','poreCity')">
                         <option :value="null" disabled>请选择现居住地省份</option>
                         <option v-for="p in provinces" :key="p.uid" v-text="p.name" :value="p.uid"></option>
                       </select>
@@ -512,7 +512,7 @@
                                   :rules="{required: item.isrequired,message: '请选择居住证所在省份', trigger: 'change'}">
                       <select :disabled="!item.isedit" v-model="staffInfoName[item.jname].residenceProvince"
                               :class="{'option-color':!staffInfoName[item.jname].residenceProvince}"
-                              @change="queryCities(staffInfoName[item.jname].residenceProvince,'ResperMessage')">
+                              @change="queryCities(staffInfoName[item.jname].residenceProvince,'ResperMessage','residenceCity')">
                         <option :value="''||null" disabled>请选择居住证省份</option>
                         <option v-for="p in provinces" :key="p.uid" v-text="p.name" :value="p.uid"></option>
                       </select>
@@ -625,7 +625,8 @@
                     </el-form-item>
                   </div>
                   <div v-else-if="item.jname==='informUrl'">
-                    <el-form-item :label="item.remark" prop="informUrl" :required="item.isrequired">
+                    <el-form-item :label="item.remark" prop="informUrl"
+                                  :rules="validateRlues(item.jname,item.isrequired)">
                       <div class="upload-btn" v-if="item.isedit && !informEdit">
                         <uploadImage @update="_upload"
                                      :child="{name:'informUrl',type:1,value:staffInfoName[item.jname]}"></uploadImage>
@@ -773,7 +774,8 @@
                     </el-form-item>
                   </div>
                   <div v-else>
-                    <el-form-item :label="item.remark" :prop="item.jname" :required="item.isrequired">
+                    <el-form-item :label="item.remark" :prop="item.jname"
+                                  :rules="validateRlues(item.jname,item.isrequired)">
                       <p v-if="item.jname==='gender'" class="pl10 fc-bbb"
                          v-text="staffInfoName[item.jname]===0 ? '女':(staffInfoName[item.jname]===1?'男':'')"></p>
                       <p v-else-if="item.jname==='dateOfBirth'" class="pl10" :class="{'fc-bbb':!item.isedit}"
@@ -1144,6 +1146,10 @@
     },
     computed: {},
     methods: {
+      validateRlues(name, isrequired){
+        this.rulesStaffInfoName[name][0].required = isrequired;
+        return this.rulesStaffInfoName[name];
+      },
       queryStaffInfo() {
         this.$http
           .get("/api/v1.0/client/selectStaff")
@@ -1261,7 +1267,7 @@
               )
                 this.queryCities(
                   this.staffInfoName["ResperMessage"].residenceProvince,
-                  "ResperMessage"
+                  "ResperMessage", 'residenceCity'
                 );
               if (
                 this.staffInfoName["poreLocation"] &&
@@ -1269,7 +1275,7 @@
               )
                 this.queryCities(
                   this.staffInfoName["poreLocation"].poreProvince,
-                  "poreLocation"
+                  "poreLocation", 'poreCity'
                 );
               if (this.staffInfoName["idcard"])
                 this.staffIdcard(this.staffInfoName["idcard"], false);
@@ -1330,7 +1336,7 @@
         }
       },
       //根据省份查城市
-      queryCities(pid, type) {
+      queryCities(pid, type, city) {
         if (!pid) {
           return;
         }
@@ -1346,6 +1352,7 @@
               } else if (type === "poreLocation") {
                 this.poreCities = res.result;
               }
+              this.staffInfoName[type][city] = res.result[0].uid;
             }
           })
           .catch(err => {
