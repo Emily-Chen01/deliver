@@ -19,7 +19,7 @@
             <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
           <div class="timeSpanClass">
-            <span>今日工时共计:{{(duration !== null) ? duration : ''}}小时</span>
+            <span>今日工时共计:{{punchItem.attendRuleUid !== '4' ? ((duration !== null) ? duration : '') : ''}}小时</span>
           </div>
         </div>
         <div class="punchInfo" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">

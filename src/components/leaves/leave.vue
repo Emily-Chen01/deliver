@@ -29,10 +29,10 @@
             </select>
           </div>
         </div>
-        <div class="leave-main-box-apply" v-if="changeApply && (selectHoliday.TYPE===0||selectHoliday.TYPE===1)">
+        <div class="leave-main-box-apply" v-if="changeApply && (selectHoliday.TYPE===0||selectHoliday.TYPE===13)">
           <div class="leave-main-box-apply-left">剩余假期</div>
           <div class="leave-main-box-apply-center">
-            <span align="left" class="colorA6" v-text="selectHoliday.DAYS+'天'"></span>
+            <span align="left" class="colorA6" v-text="selectHoliday.DAYS+(selectHoliday.TYPE===0?' 天':' 小时')"></span>
           </div>
         </div>
         <div class="leave-main-box-apply">

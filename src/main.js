@@ -21,6 +21,7 @@ import {
   TabContainerItem,
   Radio,
   Indicator,
+  Search,
   Cell
 } from 'mint-ui';
 import VueResource from 'vue-resource'
@@ -41,6 +42,7 @@ Vue.component(TabContainer.name, TabContainer);
 Vue.component(TabContainerItem.name, TabContainerItem);
 Vue.component(Radio.name, Radio);
 Vue.component(Cell.name, Cell);
+Vue.component(Search.name, Search);
 
 Vue.http.interceptors.push(function (request, next) {
   // Vue.http.headers.common['token'] = sessionStorage.getItem('token');
