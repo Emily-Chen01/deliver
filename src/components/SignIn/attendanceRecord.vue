@@ -19,7 +19,7 @@
             <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
           <div class="timeSpanClass">
-            <span>今日工时共计:{{punchItem.attendRuleUid !== '4' ? ((duration !== null) ? duration : '') : ''}}小时</span>
+            <span>今日工时共计:{{punchState.attendRuleUid !== '4' ? ((duration !== null) ? duration : '') : ''}}小时</span>
           </div>
         </div>
         <div class="punchInfo" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">
@@ -59,7 +59,7 @@
 //                  YOUR_DATA  : {}
 //                }
         ],
-        punchState: [],//选中日期打卡信息展示
+        punchState: {},//选中日期打卡信息展示
         oldDayClick: '',//已经选中的日期
         duration: null,//选中日期当日工时
         tozhang: '', //上班打卡状态
