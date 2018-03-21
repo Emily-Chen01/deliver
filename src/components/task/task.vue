@@ -26,7 +26,33 @@
       v-model="popupVisible"
       position="right">
       <div class="addTask_Wrapper">
-        <h3 class="feedback_title">反馈内容</h3>
+        <!--<h3 class="feedback_title">反馈内容</h3>-->
+        <mt-cell title="类别">
+          <i slot="icon" class="icon_bg_taskImg bg-ico_type"></i>
+          <!--<mt-field placeholder="编辑任务名称" :disableClear="true" type="text"></mt-field>-->
+          <input placeholder="请输入" type="text">
+        </mt-cell>
+        <mt-cell title="标题">
+          <i slot="icon" class="icon_bg_taskImg bg-ico_title"></i>
+          <input placeholder="请输入" type="text">
+        </mt-cell>
+        <mt-cell title="项目">
+          <i slot="icon" class="icon_bg_taskImg bg-ico_files"></i>
+          <p class="align_right">请选择</p>
+        </mt-cell>
+        <mt-cell title="负责人">
+          <i slot="icon" class="icon_bg_taskImg bg-ico_head"></i>
+          <p class="align_right">请选择</p>
+        </mt-cell>
+        <mt-cell title="地点">
+          <i slot="icon" class="icon_bg_taskImg bg-ico_location"></i>
+          <p class="align_right">请选择</p>
+        </mt-cell>
+        <mt-cell title="截止日期">
+          <i slot="icon" class="icon_bg_taskImg bg-ico_date"></i>
+          <p class="align_right">请选择</p>
+        </mt-cell>
+        <mt-field placeholder="请输入任务描述(不超过256个字)" type="textarea" :attr="{ maxlength: 256 }" rows="5"></mt-field>
         <mt-button type="primary" size="large" @click="submitTask">发布任务</mt-button>
       </div>
     </mt-popup>
@@ -221,6 +247,51 @@
     .mint-popup {
       width: 100vw;
       height: 100vh;
+      text-align: left;
+      .addTask_Wrapper {
+        padding: 15px;
+        .mint-cell {
+          .mint-cell-wrapper {
+            font-size: 14px;
+            padding: 0;
+            .mint-cell-title{
+              width: 100px;
+              flex:inherit;
+            }
+            .mint-cell-value{
+              width: 100%;
+            }
+            .align_right{
+              width: 100%;
+              padding-right: 3px;
+              text-align: right;
+            }
+            input {
+              text-align: right;
+              padding: 3px;
+              width: 100%;
+              border: none;
+              border-radius: 3px;
+              resize: none;
+              outline: none;
+            }
+          }
+        }
+        .mint-field {
+          margin-bottom: 20px;
+          .mint-cell-wrapper {
+            padding: 0;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+          }
+          .mint-field-core {
+            font-size: 14px;
+          }
+          textarea {
+            resize: none;
+          }
+        }
+      }
     }
     .task_addBtn {
       position: fixed;
