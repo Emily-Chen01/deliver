@@ -33,14 +33,14 @@ export default new Router({
       path: '/binding',  //多家公司选择
       component: binding
     },
-    {
-      path: '/task',  //我的任务
-      component: task
-    },
-    {
-      path: '/task_details',  //我的任务
-      component: taskDetails
-    },
+    // {
+    //   path: '/task',  //我的任务 暂时注销
+    //   component: task
+    // },
+    // {
+    //   path: '/task_details',  //我的任务 暂时注销
+    //   component: taskDetails
+    // },
     {
       path: '/ManyCompany',  //多家公司选择
       component: ManyCompany

@@ -46,21 +46,17 @@
     <!--</el-button>-->
     <!--</el-row>-->
     <!--&lt;!&ndash;弹框&ndash;&gt;-->
-    <!--<mt-popup-->
-    <!--v-model="errorModel"-->
-    <!--class="index-Bomb"-->
-    <!--closeOnClickModal="true">-->
-    <!--<div class="index-Bomb-imgBox">-->
-    <!--<img :src="imgSrc.bg2" class="alertImages"/>-->
-    <!--</div>-->
-    <!--<div v-if="noneModel" class="index-Bomb-main">-->
-    <!--<p class="fs13">抱歉!</p>-->
-    <!--<p class="fs12">没有找到您的员工记录,请联系您的HR</p>-->
-    <!--</div>-->
-    <!--<div v-if="alertMessageShow" class="index-Bomb-main">-->
-    <!--<p class="fs12" v-text="alertMessage"></p>-->
-    <!--</div>-->
-    <!--</mt-popup>-->
+    <mt-popup
+      v-model="errorModel"
+      class="index-Bomb"
+      closeOnClickModal="true">
+      <div class="index-Bomb-imgBox">
+        <img :src="imgSrc.bg2" class="alertImages"/>
+      </div>
+      <div class="index-Bomb-main">
+        <p class="fs12" v-text="alertMessage"></p>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -86,9 +82,7 @@
         yanzheng: '获取验证码',//验证码
         YZdisabled: false,
         errorModel: false, //错误弹框
-        noneModel: false, //没有员工
         alertMessage: '', //进行赋值的错误信息
-        alertMessageShow: true,
         verCode: '',//图形验证码
         verCodeShow: false,//图形验证码是否显示
       }
@@ -147,7 +141,7 @@
               if (response.body.result.length === 1) {
                 //如果等于1就进入 signCard 点击打卡
                 let param = {
-                  companyUid: this.sumSearchUid[0].uid,
+                  companyUid: this.sumSearchUid[0].companyUid,
                 };
                 this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
 //                  Indicator.close();
@@ -161,12 +155,14 @@
                     }, 2000);
                   }
                 }, response => {
-                  console.log('error callback');
+//                  console.log('error callback');
                 });
               } else {
                 setTimeout(this.handerCome(), 2000); //如果不是只有一个公司进行选择公司
               }
             }
+          } else if (response.body.code === 500) {
+            this.$router.push({path: '/binding'});
           }
         }, response => {
           console.log('error callback');
