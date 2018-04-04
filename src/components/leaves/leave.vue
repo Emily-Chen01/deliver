@@ -68,7 +68,8 @@
           <textarea placeholder="#请输入文字(不超过50字)" v-model="holidayModel"></textarea>
         </div>
         <div class="leave-main-box-apply" v-if="approvalTypeObj">
-          <div class="leave-main-box-apply-left">审批人</div>
+          <div class="leave-main-box-apply-left"
+               v-text="approvalTypeObj.WAY==='1'?'审批人':(approvalTypeObj.WAY==='2'?'审批邮箱':'')"></div>
           <div class="leave-main-box-apply-center" v-text="approvalTypeObj.NAME"></div>
         </div>
         <div class="leave-main-box-applyBtn">
@@ -303,13 +304,24 @@
         Indicator.open('正在提交申请...');
         let params = {
           approvalConfigUid: this.shengqingParam,//申请分类
-          currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
+//          category: '',
+//          currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
+//          email: '',
           leaveUid: this.qingjiauidParam,
           startTime: new Date(this.startTimeValue).getTime(),
           endTime: new Date(this.endTimeValue).getTime(),
           image: this.imgSrc.shenFenIcon,
           remarks: this.textareaString
         };
+        if (this.approvalTypeObj) {
+          if (this.approvalTypeObj.WAY === '1') {
+            params.category = '1';
+            params.currentApprover = this.approvalTypeObj.UID
+          } else if (this.approvalTypeObj.WAY === '2') {
+            params.category = '2';
+            params.email = this.approvalTypeObj.NAME
+          }
+        }
         this.$http.post('/api/v1.0/client/apply', params).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;

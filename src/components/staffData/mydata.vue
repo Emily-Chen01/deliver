@@ -883,7 +883,12 @@
                     <span v-if="item.jname==='dateOfEntry'" v-text="datefmt(item.value)"></span>
                     <span v-else-if="item.jname==='StaffStatus'"
                           v-text="(staffStatus && item.value > -1) ? staffStatus[item.value].name : '待入职'"></span>
-                    <span v-else-if="item.jname==='reporterJobNumber'" v-text="reportPerson"></span>
+                    <span v-else-if="item.jname==='reporterJobNumber'">
+                      <p v-if="!item.value.isEmail" v-text="reportPerson"></p>
+                      <ul v-if="item.value.isEmail&&item.value.reporterJobNumber&&item.value.reporterJobNumber.length" style="list-style-type: none">
+                        <li v-for="(email,eIndex) in item.value.reporterJobNumber" v-text="'第'+ (eIndex+1) +'级：'+ email.mail"></li>
+                      </ul>
+                    </span>
                     <span v-else v-text="item.value"></span>
                   </el-form-item>
                 </div>
@@ -1209,6 +1214,7 @@
                     break;
                 }
               });
+              console.log('this.staffRecordInfo', this.staffRecordInfo)
               if (
                 this.staffInfoName["podoMessage"] &&
                 typeof this.staffInfoName["podoMessage"].typeOfDemicile ===
