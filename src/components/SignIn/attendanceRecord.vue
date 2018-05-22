@@ -124,7 +124,7 @@
               let arrayShow = response.body.result.attend.holidays;
               if (arrayShow.length) {
                 for (let i = 0; i < arrayShow.length; i++) {    //此处循环一个数组进行填充假期显示
-                  if (arrayShow[i].rightType === '1' || arrayShow[i].rightType === '2') {
+                  if (arrayShow[i].rightType === '0' || arrayShow[i].rightType === '1' || arrayShow[i].rightType === '2') {
                     this.fcEvents.push({
                       isHoliday: true,
                       start: arrayShow[i].date,
