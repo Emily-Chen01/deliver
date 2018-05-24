@@ -56,9 +56,8 @@
             :headers="tokenHeader"
             :on-success="passportUrlOk"
             :before-upload="beforePassportUrl">
-            <div class="leave-main-box-apply-upload">
-              <img :src="imgSrc.shenFenIcon ? imgSrc.shenFenIcon : imgSrc.shenFenIconShowCamera"/>
-            </div>
+            <div class="leave-main-box-apply-upload"
+                 :style="{'background-image': 'url('+(imgSrc.shenFenIcon ? imgSrc.shenFenIcon : imgSrc.shenFenIconShowCamera)+')'}"></div>
           </el-upload>
           <p v-show="passportUrlErrFlag">
             请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -540,12 +539,10 @@
           padding: 10px 0 5px;
           border-bottom: 1px solid #d2dce6;
           .leave-main-box-apply-upload {
-            width: 100%;
-            img {
-              display: block;
-              width: 180px;
-              height: 120px;
-            }
+            width: 180px;
+            height: 120px;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
           }
           p {
             font-size: 15px;
