@@ -9,7 +9,7 @@
         <p v-text="objNr.fetchPostion+' '+objNr.fetchName"></p>
       </div>
       <div class="signIn-header-right">
-        <p v-text="year+'年'+month+'月'+date+'日'"></p>
+        <p v-text="date"></p>
       </div>
     </div>
     <!--打卡情况信息-->
@@ -80,6 +80,7 @@
         <span v-else>查看全部</span>
       </mt-button>
     </div>
+    <div id="toImage" style="position: absolute;z-index: 1000;"></div>
     <!--打卡区域-->
     <div class="Punch-btn-wrapper" v-if="punchCardInfo.isNeed && !showHide">
       <div class="Punch-btn-bg">
@@ -88,7 +89,7 @@
       <mt-button class="Punch-btn-btn" type="primary" :disabled="showBtnContent"
                  @click="handerClickEvent">
         <p v-text="showBtnContent ? '正在获取' : (punchCardInfo.status ? '上班打卡' : '下班打卡')"></p>
-        <p v-text="showBtnContent ?'当前位置' : (hour + ':'+ minute + ':'+second)"></p>
+        <p v-text="showBtnContent ?'当前位置' : time"></p>
       </mt-button>
     </div>
     <!--是否允许获取定位弹窗-->
@@ -96,20 +97,28 @@
       v-model="qulocation"
       class="getLocation-alert-wrapper"
       closeOnClickModal="false">
+
       <div class="getLocation-alert-content">
-        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">HR SAAS系统要使用您的地理位置，是否允许？</p>
+        <!--<p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">HR SAAS系统要使用您的地理位置，是否允许？</p>-->
+        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"><span v-text="punDate"></span><br/><span
+          v-text="punTime"></span></p>
         <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
         <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
         <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
+      </div>
+      <div id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+        <div id="amapContainer"></div>
+        <p v-text="twRange"></p>
+        <p v-text="outsideObtainValue?'区域外':'区域内'"></p>
       </div>
       <div class="getLocation-alert-btnBox">
         <p @click="closeAlert" class="getLocation-alert-btn"
            :class="(punchCardInfo.locations.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
            v-text="(punchCardInfo.locations.length && !failModel) ? '取消' : '确定'">
         </p>
-        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup" @click="okClickEvent"
+        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup" @click="toImage"
            class="getLocation-alert-btn getLocation-alert-btnRight">
-          确定
+          确定打卡
         </p>
         <p v-if="wifiPopup" @click="okClickWifi"
            class="getLocation-alert-btn getLocation-alert-btnRight">
@@ -190,11 +199,15 @@
 
   import {MessageBox, Popup} from 'mint-ui';
   import moment from 'moment'
+  import html2canvas from 'html2canvas';
   import MtButton from "../../../node_modules/mint-ui/packages/button/src/button";
 
   let df = 'HH:mm:ss';
+  let df1 = 'YYYY年MM月DD日';
+  let df2 = 'YYYY-MM-DD';
   export default {
-    components: {MtButton}, data(){
+    components: {MtButton},
+    data(){
       return {
         punchCardInfo: {//获取打卡信息记录
           locations: [],
@@ -208,14 +221,12 @@
         wifiPopup: false, // 获取wifi弹框内容
         popupVisible: false,//打卡成功弹出的模态框显示状态
         wifiIP: '',// wifiIP地址
-        MyPosition: {},//当前位置
         objNr: {},// 员工姓名和所在部门
-        year: new Date().getFullYear(), //右上角年
-        month: new Date().getMonth() + 1, //右上角月
-        date: new Date().getDate(), //右上角日
-        hour: 0,// 打卡按钮上的时间
-        minute: 0,// 打卡按钮上的时间
-        second: 0,// 打卡按钮上的时间
+        date: moment(new Date()).format(df1), //右上角日期
+        time: '00:00:00',// 打卡按钮上的时间
+        punchDateTime: new Date(),//打卡时间
+        punDate: moment(new Date()).format(df2),//地图弹框中的日期
+        punTime: moment(new Date()).format(df),//地图弹框中的时间
         imgSrc: {
           header: require('../../assets/tx.png'), // 员工头像
           PostionIcon: require('../../assets/ico_location_1.png'), // 位置图标
@@ -224,9 +235,10 @@
           alertHeader: require('../../assets/pic_check in.png'), // 打卡成功弹框中的图标
         },
         outsideObtainValue: true, //获取的经纬度，判断是否区域内，true是区域外，false区域内
-        searchLocationArray: [],  //查询出来的locations经纬度，来判断是否有考勤地点
-        twRange: '', //记录打卡在区域外时，所在的地址
+        searchLocationArray: [],  //查询出来的locations经纬度，来判断是否在考勤地点区域内
+        twRange: '', //记录打卡时，所在的地址
         showHide: false,//是否显示全部打卡信息
+        amapImg: '',//地图截图
       }
     },
     created(){
@@ -272,15 +284,7 @@
       // 格式化日期
       handerSign(){
         let oDate = new Date();
-        this.hour = AddZero(oDate.getHours());
-        this.minute = AddZero(oDate.getMinutes());
-        this.second = AddZero(oDate.getSeconds());
-        function AddZero(n) {
-          if (n < 10) {
-            return '0' + n;
-          }
-          return '' + n;
-        }
+        this.time = moment(oDate).format(df);
       },
       // 判断上下班状态
       punchClock(state){
@@ -294,18 +298,48 @@
       showHides(){
         this.showHide = !this.showHide;
       },
+      // 地图转换成图片
+      toImage(){
+        let disTime = new Date().getTime() - this.punchDateTime.getTime();
+        if (disTime < 5 * 60 * 1000) {
+          let self = this;
+          self.qulocation = false;
+          html2canvas(document.getElementById('amapContainer'), {
+            useCORS: true,
+            foreignObjectRendering: false,
+            allowTaint: false
+          }).then(function (canvas) {
+            self.amapImg = canvas.toDataURL('image/png');
+            self.punchInfo();
+          });
+        } else {
+          this.showBtnContent = false;
+          this.qulocation = false;
+          MessageBox('提示', '打卡信息已失效，请重新打卡');
+        }
+      },
       handerClickEvent(){  //打卡按钮   上班或下班
         if (navigator.onLine) { //正常工作
+          this.wifiPopup = false;
           if (this.punchCardInfo.isWifi) {
+            const $scripts = document.createElement('script');
+            window.document.body.appendChild($scripts);
+            $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
             this.wifiPopup = true;// 获取wifi弹框内容
+            this.wifiIP = '';
+            this.qulocation = true;
+          } else {
+            this.okClickEvent();
           }
-          this.wifiIP = '';
-          this.qulocation = true;
+          this.punchDateTime = new Date();
+          this.punDate = moment(this.punchDateTime).format(df2);//地图弹框中的日期
+          this.punTime = moment(this.punchDateTime).format(df);//地图弹框中的时间
         } else { //执行离线状态时的任务
           MessageBox('提示', '未连接网络');
         }
       },
       closeAlert(){ //打卡获取地理位置alert
+        this.showBtnContent = false;
         this.qulocation = false;
         // 加定时器是因为弹框不能立即消失，状态值改变，里面的内容会乱，加个定时器延迟其他状态值改变
         setTimeout(() => {
@@ -324,16 +358,20 @@
       },
       //获取wifi地址
       okClickWifi(){
-        this.wifiPopup = false;
-        this.qulocation = true;
+        this.wifiPopup = true;
+        if (returnCitySN["cip"]) {
+          this.wifiIP = returnCitySN["cip"];
+          this.qulocation = false;
+          console.log(this.wifiIP)
+          this.okClickEvent();
+        } else {
+          this.qulocation = false;
+          MessageBox('提示', '获取IP地址失败');
+        }
       },
       // 获取位置信息
       okClickEvent(){
-//        this.punchInfo(this.twRange);
         this.showBtnContent = true;
-        this.qulocation = false;
-        let BMap = null;
-        let map = null;
         let self = this;
         let curl;
         //判断是不是安卓苹果
@@ -350,180 +388,149 @@
             location: location.href.toString().split('#')[0] //苹果的参数
           };
         }
-        //判断结束
-        new Promise((resolve, reject) => {
-          window._initBaiduMap = function () {
-            window.document.body.removeChild($script);
-            window._initBaiduMap = null;
-            resolve();
-            BMap = window.BMap;
-            map = new BMap.Map();
-          };
-          // 获取经纬度
-          const $script = document.createElement('script');
-          window.document.body.appendChild($script);
-          $script.src = `//api.map.baidu.com/api?v=2.0&ak=FRMO4GzB3wRlgFrAURcQSKWdZmzHuuD4&callback=_initBaiduMap`;
-          // 获取ip
-          const $scripts = document.createElement('script');
-          window.document.body.appendChild($scripts);
-          $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
-        }).then(() => {
-          this.$http.post('/api/v1.0/wechat/sign', curl).then(response => { //获取签名接口开始
-            if (response.body.code === 200) {
-              this.t1 = response.body.result.appid.toString();
-              this.t2 = response.body.result.timestamp.toString();
-              this.t3 = response.body.result.nonceStr.toString();
-              this.t4 = response.body.result.signature.toString();
-              this.yyy = true;
-              let cvt = new BMap.Convertor();
-              wx.config({
-                debug: false,
-                appId: this.t1,
-                timestamp: this.t2,
-                nonceStr: this.t3,
-                signature: this.t4,
-                jsApiList: [
-                  'getLocation'
-                ]
-              });
-              wx.error(function (res) {
-                // 微信获取经纬度失败
-                self.failModelErr = true;
-                self.failModel = true;
-                self.qulocation = true;
-                self.showBtnContent = false;
-              });
-              wx.ready(function () {
-                wx.getLocation({
-                  type: 'wgs84',
-                  success: function (res) {
-                    self.getLocations = false;
-                    self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
-                    self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;  //这个是原有
-                    let speed = res.speed; // 速度，以米/每秒计
-                    let accuracy = res.accuracy; // 位置精度
-//                    console.log('tencent', res.longitude, res.latitude)
-                    cvt.translate([new BMap.Point(res.longitude, res.latitude)]/* 微信坐标 wx */, 1, 5, (data) => {   //原有
-                      if (data.status === 0) {
-                        let myPosition = data.points[0]; // 转换后的微信坐标
-//                        console.log('转换后', myPosition);
-                        self.MyPosition = myPosition;
-                        //经纬度传值start
-                        let scopes = [];
-                        self.searchLocationArray = (rt => {
-                          if (!rt) return false;
-                          let out = [];
-                          rt.forEach(item => {
-                            out.push(new BMap.Point(item.LONGITUDE, item.LATITUDE));
-                            scopes.push(item.SCOPE);
-                          });
-                          return out;
-                        })(self.punchCardInfo.locations);
 
-                        let arrayLonglat = self.searchLocationArray;
-                        cvt.translate(arrayLonglat/* 可打卡坐标 */, 3, 5, (data) => {
-                          //status === 0 百度地图服务状态码，0是正常
-                          if (data.status === 0) {
-                            // 转换后的可打卡坐标
-                            let distance;
-                            self.twRange = '';
-                            self.outsideObtainValue = true;// 初始值为true
-                            for (let i = 0; i < data.points.length; i++) {
-                              distance = map.getDistance(data.points[i], myPosition);
-                              if (distance < scopes[i]) {
-                                self.outsideObtainValue = false;
-                                break;
-                              }
-                            }
-                            new BMap.Geocoder().getLocation(myPosition, function (res) { //进行给传值参数位置
-                              self.twRange = res.addressComponents.district + res.addressComponents.street;
-                              if (!self.twRange) {
-                                self.twRange = '未获取到位置信息';
-                              }
-                              self.punchInfo(self.twRange);
-                            });
-                          } else {
-                            this.showBtnContent = false;
-                            MessageBox('提示', '获取地理位置失败');
-                          }
-                        });
+        //判断结束
+        this.$http.post('/api/v1.0/wechat/sign', curl).then(response => { //获取签名接口开始
+          if (response.body.code === 200) {
+            this.t1 = response.body.result.appid.toString();
+            this.t2 = response.body.result.timestamp.toString();
+            this.t3 = response.body.result.nonceStr.toString();
+            this.t4 = response.body.result.signature.toString();
+            wx.config({
+              debug: false,
+              appId: this.t1,
+              timestamp: this.t2,
+              nonceStr: this.t3,
+              signature: this.t4,
+              jsApiList: [
+                'getLocation'
+              ]
+            });
+            wx.error(function (res) {
+              // 微信获取经纬度失败
+              self.failModelErr = true;
+              self.failModel = true;
+              self.qulocation = true;
+              self.showBtnContent = false;
+            });
+            wx.ready(function () {
+              wx.getLocation({
+                type: 'gcj02',
+                success: function (res) {
+                  self.getLocations = false;
+                  self.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90           res.latitude;
+                  self.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。     res.longitude;  //这个是原有
+                  let lnglat = [res.longitude, res.latitude];//当前位置经纬度
+                  // 获取当前地理位置详情
+                  let geocoder = new AMap.Geocoder();
+                  geocoder.getAddress(lnglat, function (status, result) {
+                    if (status === 'complete' && result.info === 'OK') {
+                      self.twRange = result.regeocode.formattedAddress;
+                      if (self.twRange) {
+                        self.qulocation = true;
                       } else {
-                        this.showBtnContent = false;
+                        self.showBtnContent = false;
                         MessageBox('提示', '获取地理位置失败');
                       }
+                    } else {
+                      self.twRange = '';
+                      self.showBtnContent = false;
+                      MessageBox('提示', '获取地理位置失败');
+                    }
+                  });
+                  // 创建地图
+                  let map = new AMap.Map('amapContainer', {
+                    zoom: 16,//级别
+                    center: lnglat,//中心点坐标
+                    dragEnable: false, //是否可拖拽
+                    doubleClickZoom: false,//是否双击放大
+                    touchZoom: false,//移动端多指触控放大缩小
+                  });
+                  // 标记当前位置
+                  let marker = new AMap.Marker({
+                    map: map,
+                    position: lnglat
+                  });
+                  let scopes = [];//考勤地点区域内半径
+                  // 获取考勤地点经纬度集合
+                  self.searchLocationArray = (rt => {
+                    if (!rt) return false;
+                    let out = [];
+                    rt.forEach(item => {
+                      out.push([item.LONGITUDE, item.LATITUDE]);
+                      scopes.push(item.SCOPE);
                     });
-                  },
-                  cancel: function (res) {
-                    //判断是不是安卓苹果
-                    let u = navigator.userAgent;
-                    let isAndroid = '0';
-                    isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-                    self.showBtnContent = false;
-                    if (isAndroid) {
-                      MessageBox('提示', '您拒绝了获取定位请求，只有允许才能进行打卡');
+                    return out;
+                  })(self.punchCardInfo.locations);
+                  self.outsideObtainValue = true;// 初始值为true,区域外
+                  // 判断是否在区域内
+                  for (let i = 0; i < self.searchLocationArray.length; i++) {
+                    let dis = AMap.GeometryUtil.distance(lnglat, self.searchLocationArray[i]);
+                    if (dis < scopes[i]) {
+                      self.outsideObtainValue = false;
+                      break;
                     }
-                    if (!isAndroid) {
-                      MessageBox('提示', '请开启微信定位服务');
-                    }
-                    //判断结束
-                  },
-                  fail: function (res) {
-                    // 微信定位未开启
-                    self.failModelErr = false;
-                    self.failModel = true;
-                    self.qulocation = true;
-                    self.showBtnContent = false;
                   }
-                });
+                },
+                cancel: function (res) {
+                  //判断是不是安卓苹果
+                  let u = navigator.userAgent;
+                  let isAndroid = '0';
+                  isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                  self.showBtnContent = false;
+                  if (isAndroid) {
+                    MessageBox('提示', '您拒绝了获取定位请求，只有允许才能进行打卡');
+                  }
+                  if (!isAndroid) {
+                    MessageBox('提示', '请开启微信定位服务');
+                  }
+                  //判断结束
+                },
+                fail: function (res) {
+                  // 微信定位未开启
+                  self.failModelErr = false;
+                  self.failModel = true;
+                  self.qulocation = true;
+                  self.showBtnContent = false;
+                }
               });
-            } else {
-              this.showBtnContent = false;
-              MessageBox('提示', response.body.message);
-            }
-          }, response => {
+            });
+          } else {
+            this.showBtnContent = false;
+            MessageBox('提示', response.body.message);
+          }
+        }, response => {
 //            console.log('error callback');
-          });
         });
         //点击获取定位结束
       },
       // 获取ip地址
-      getIP(){
-        if (returnCitySN["cip"]) {
-          this.wifiIP = returnCitySN["cip"];
-        } else {
-          this.getIP();
-        }
-      },
-      punchInfo(twRange){
-        // 获取到的ip
-        if (this.punchCardInfo.isWifi) {
-          this.getIP();
-        }
-        let updakaObj;
-        if (!this.punchCardInfo.punchCardLogs.length) {
-          this.punchCardInfo.punchCardLogs.push({
-            twStatus: '',
-            owStatus: ''
-          })
-        }
-        let position = this.punchCardInfo.punchCardLogs.length - 1;
-        if (!this.punchClock(this.punchCardInfo.punchCardLogs[position].twStatus)) {
-          updakaObj = {
-            isRange: this.outsideObtainValue,
-            location: twRange,
-            longitude: this.MyPosition.lng,
-            latitude: this.MyPosition.lat,
-            wifi: this.wifiIP
-          }
-        } else {
-          updakaObj = {
-            isRange: this.outsideObtainValue,
-            location: twRange,
-            longitude: this.MyPosition.lng,
-            latitude: this.MyPosition.lat,
-            wifi: this.wifiIP
-          }
-        }
+//      getIP(){
+//        new Promise((resolve, reject) => { //如果执行成功，将调用resolve()，如果执行失败，将调用reject();
+//          const $scripts = document.createElement('script');
+//          window.document.body.appendChild($scripts);
+//          $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
+//          resolve();
+//        }).then(() => {
+//          if (returnCitySN["cip"]) {
+//            this.wifiIP = returnCitySN["cip"];
+//            return '';
+//          }else {
+//            MessageBox('提示', '获取IP地址失败');
+//            return '';
+//          }
+//        });
+//      },
+      punchInfo(){
+        let updakaObj = {
+          isRange: this.outsideObtainValue,
+          location: this.twRange,
+          longitude: this.longitude,
+          latitude: this.latitude,
+          wifi: this.wifiIP,
+//          punchTime: this.punchDateTime.getTime(),
+          map: this.amapImg
+        };
         this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
           if (response.body.code === 200) {
             this.doSearch(true);
@@ -532,7 +539,6 @@
           }
         }, response => {
         });
-//        console.log('updakaObj', updakaObj);
       }
     },
   }
@@ -827,6 +833,15 @@
           width: 100%;
           line-height: 25px;
           font-size: 15px;
+        }
+      }
+      #amap-box {
+        padding: 10px;
+        #amapContainer {
+          width: 100%;
+          height: 150px;
+          border: #ccc solid 1px;
+          box-sizing: border-box;
         }
       }
       .getLocation-alert-btnBox {

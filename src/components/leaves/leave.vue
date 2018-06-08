@@ -35,17 +35,44 @@
             <span align="left" class="colorA6" v-text="selectHoliday.DAYS+(selectHoliday.TYPE===0?' 天':' 小时')"></span>
           </div>
         </div>
-        <div class="leave-main-box-apply">
-          <div class="leave-main-box-apply-left icon-stars">开始时间</div>
-          <div class="leave-main-box-apply-center" @click="openPicker(0)">
+        <div v-if="selectedDataApply!==3">
+          <div class="leave-main-box-apply">
+            <div class="leave-main-box-apply-left icon-stars">开始时间</div>
+            <div class="leave-main-box-apply-center" @click="openPicker(0)">
             <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"
                   :class="{'colorA6':!startTimeValue}"></span>
+            </div>
+          </div>
+          <div class="leave-main-box-apply">
+            <div class="leave-main-box-apply-left icon-stars">结束时间</div>
+            <div class="leave-main-box-apply-center" @click="openPicker(1)">
+              <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"
+                    :class="{'colorA6':!endTimeValue}"></span>
+            </div>
           </div>
         </div>
-        <div class="leave-main-box-apply">
-          <div class="leave-main-box-apply-left icon-stars">结束时间</div>
-          <div class="leave-main-box-apply-center" @click="openPicker(1)">
-            <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'" :class="{'colorA6':!endTimeValue}"></span>
+        <div v-if="selectedDataApply===3">
+          <div class="mt10" v-for="(n,index) in 4" :key="index">
+            <h4 align="left" class="fc1 pr">
+              <span v-text="'第'+overtimeNum(n)+'段加班申请'"></span>
+              <span v-if="index>0" class="leave-main-box-del">+</span>
+            </h4>
+            <div class="pl30">
+              <div class="leave-main-box-apply">
+                <div class="leave-main-box-apply-left icon-stars">开始时间</div>
+                <div class="leave-main-box-apply-center">
+            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"
+                  :class="{'colorA6':!startTimeValue}" @click="openPicker(0)"></span>
+                </div>
+              </div>
+              <div class="leave-main-box-apply">
+                <div class="leave-main-box-apply-left icon-stars">结束时间</div>
+                <div class="leave-main-box-apply-center">
+              <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"
+                    :class="{'colorA6':!endTimeValue}" @click="openPicker(1)"></span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="leave-main-box-applyImg" v-if="updateImage">
@@ -191,7 +218,6 @@
 
 
   let df = 'YYYY-MM-DD HH:mm';
-  let df2 = 'YYYY/MM/DD HH';
 
   export default {
     data(){
@@ -265,25 +291,27 @@
       // 开始时间格式化
       handleConfirmStart(data){
         if (data) {
-          this.startTimeValue = moment(data).format(df2) + ':00';
+          this.startTimeValue = moment(data).format(df);
         }
       },
       // 结束时间格式化
       handleConfirmEnd(data){
         if (data) {
-          this.endTimeValue = moment(data).format(df2) + ':00';
+          this.endTimeValue = moment(data).format(df);
         }
       },
       // 日历样式
       openPicker(data) {
-        let pickerslot = document.getElementsByClassName('picker-slot');
         if (data === 0) {
-          pickerslot[4].style.display = 'none';
           this.$refs.picker0.open();
         } else {
-          pickerslot[9].style.display = 'none';
           this.$refs.picker1.open();
         }
+      },
+      // 加班段数格式化
+      overtimeNum(num){
+        let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+        return arr[num - 1];
       },
       changeShow(val){ //查看申请记录
         this.$http.post('/api/v1.0/client/findApplys', {
@@ -303,9 +331,6 @@
         Indicator.open('正在提交申请...');
         let params = {
           approvalConfigUid: this.shengqingParam,//申请分类
-//          category: '',
-//          currentApprover: this.approvalTypeObj ? this.approvalTypeObj.UID : '',
-//          email: '',
           leaveUid: this.qingjiauidParam,
           startTime: new Date(this.startTimeValue).getTime(),
           endTime: new Date(this.endTimeValue).getTime(),
@@ -413,6 +438,18 @@
   #leave-wrapper {
     background: #ffffff;
     min-height: 100vh;
+    .mt10 {
+      margin-top: 10px;
+    }
+    .pl30 {
+      padding-left: 30px;
+    }
+    .fc1 {
+      color: #457aa3;
+    }
+    .pr {
+      position: relative;
+    }
     .leave-header {
       position: fixed;
       top: 0;
@@ -435,7 +472,8 @@
       .picker-slot {
         flex: none !important;
         display: inline-block;
-        width: 25%;
+        width: 20%;
+        font-size: 10px;
       }
     }
     .mint-navbar {
@@ -484,6 +522,13 @@
           content: '*';
           color: #ff4949;
           margin-right: 4px;
+        }
+        .leave-main-box-del {
+          transform: rotate(45deg) scale(2.4);
+          display: inline-block;
+          position: absolute;
+          right: 0;
+          top: 0;
         }
         .leave-main-box-apply {
           position: relative;
