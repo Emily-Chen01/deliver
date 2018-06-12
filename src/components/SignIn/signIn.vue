@@ -96,20 +96,22 @@
     <mt-popup
       v-model="qulocation"
       class="getLocation-alert-wrapper"
-      closeOnClickModal="false">
-
+      :closeOnClickModal="false">
       <div class="getLocation-alert-content">
         <!--<p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">HR SAAS系统要使用您的地理位置，是否允许？</p>-->
-        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"><span v-text="punDate"></span><br/><span
-          v-text="punTime"></span></p>
+        <!--<p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"><span v-text="punDate"></span><br/><span-->
+        <!--v-text="punTime"></span></p>-->
         <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
         <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
         <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
       </div>
+      <h3 class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+        <span class="amap-headLeft" v-text="outsideObtainValue?'区域外':'区域内'"></span>
+        <span class="amap-headRight" v-text="punTime"></span>
+      </h3>
       <div id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
         <div id="amapContainer"></div>
-        <p v-text="twRange"></p>
-        <p v-text="outsideObtainValue?'区域外':'区域内'"></p>
+        <p class="amap-detail" v-text="twRange"></p>
       </div>
       <div class="getLocation-alert-btnBox">
         <p @click="closeAlert" class="getLocation-alert-btn"
@@ -204,11 +206,12 @@
 
   let df = 'HH:mm:ss';
   let df1 = 'YYYY年MM月DD日';
-  let df2 = 'YYYY-MM-DD';
+  let df2 = 'YYYY-MM-DD HH:mm:ss';
   export default {
     components: {MtButton},
     data(){
       return {
+        sb: true,
         punchCardInfo: {//获取打卡信息记录
           locations: [],
           punchCardLogs: []
@@ -225,8 +228,8 @@
         date: moment(new Date()).format(df1), //右上角日期
         time: '00:00:00',// 打卡按钮上的时间
         punchDateTime: new Date(),//打卡时间
-        punDate: moment(new Date()).format(df2),//地图弹框中的日期
-        punTime: moment(new Date()).format(df),//地图弹框中的时间
+//        punDate: moment(new Date()).format(df2),//地图弹框中的日期
+        punTime: moment(new Date()).format(df2),//地图弹框中的时间
         imgSrc: {
           header: require('../../assets/tx.png'), // 员工头像
           PostionIcon: require('../../assets/ico_location_1.png'), // 位置图标
@@ -332,8 +335,8 @@
             this.okClickEvent();
           }
           this.punchDateTime = new Date();
-          this.punDate = moment(this.punchDateTime).format(df2);//地图弹框中的日期
-          this.punTime = moment(this.punchDateTime).format(df);//地图弹框中的时间
+//          this.punDate = moment(this.punchDateTime).format(df2);//地图弹框中的日期
+          this.punTime = moment(this.punchDateTime).format(df2);//地图弹框中的时间
         } else { //执行离线状态时的任务
           MessageBox('提示', '未连接网络');
         }
@@ -449,7 +452,13 @@
                   // 标记当前位置
                   let marker = new AMap.Marker({
                     map: map,
-                    position: lnglat
+                    position: lnglat,
+                    offset: new AMap.Pixel(-10, -26),
+                    icon: new AMap.Icon({
+                      size: [20, 26],  //图标大小
+                      image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAABOCAYAAAB8FnW4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowMDk2RkJEMTZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowMDk2RkJEMjZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAwOTZGQkNGNkIwMzExRThBQTNFRUZBNjczMDVFQzE0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAwOTZGQkQwNkIwMzExRThBQTNFRUZBNjczMDVFQzE0Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+luEmRAAABdlJREFUeNrcnGlsFVUY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',
+                      imageSize: [20, 26],
+                    })
                   });
                   let scopes = [];//考勤地点区域内半径
                   // 获取考勤地点经纬度集合
@@ -781,8 +790,6 @@
     .Punch-btn-wrapper {
       position: absolute;
       top: 350px;
-      /*bottom: 30px;*/
-      /*position: relative;*/
       box-sizing: border-box;
       width: 100%;
       .Punch-btn-bg {
@@ -835,13 +842,45 @@
           font-size: 15px;
         }
       }
+      .amap-head {
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        .amap-headLeft {
+          width: 100px;
+          text-align: left;
+          border-left: 15px solid #2c86f5;
+          font-size: 16px;
+          padding-left: 10px;
+          margin-left: 0;
+        }
+        .amap-headRight {
+          width: 100%;
+          text-align: right;
+          padding-right: 15px;
+          font-size: 14px;
+          color: #666666;
+        }
+      }
       #amap-box {
-        padding: 10px;
+        padding: 15px;
+        padding-bottom: 0;
         #amapContainer {
           width: 100%;
-          height: 150px;
+          height: 160px;
           border: #ccc solid 1px;
           box-sizing: border-box;
+          .amap-logo, .amap-copyright {
+            display: none !important;
+          }
+        }
+        .amap-detail {
+          padding-top: 15px;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          color: #333333;
         }
       }
       .getLocation-alert-btnBox {

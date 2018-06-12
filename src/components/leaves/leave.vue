@@ -473,7 +473,7 @@
         flex: none !important;
         display: inline-block;
         width: 20%;
-        font-size: 10px;
+        font-size: 12px;
       }
     }
     .mint-navbar {
