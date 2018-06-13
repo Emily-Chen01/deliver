@@ -14,19 +14,15 @@
     </div>
     <!--打卡情况信息-->
     <div class="signIn-middle" :class="{'signIn-middle1': (!punchCardInfo.isNeed || showHide)}">
-      <div class="signIn-article" v-if="punchCardInfo.punchCardLogs.length===0">
-        <div class="signIn-article-left">
-          <p class="article-icon-up"></p>
-        </div>
-      </div>
       <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs">
-        <div class="signIn-article-left">
-          <div v-if="punchClock(punch.twStatus)" class="signIn-article-line"></div>
-          <p class="article-icon-up"></p>
-          <p v-if="punchClock(punch.twStatus)" class="article-icon-down"></p>
-        </div>
         <div class="signIn-article-right" v-if="punchClock(punch.twStatus)">
           <div class="signIn-article-top" :class="{'signIn-article-top1':  punchCardInfo.attendRuleUid==='3'}">
+            <div class="article-icon-up">
+              <i class="icon_bg_signInImg bg-ico_to"></i>
+            </div>
+            <div v-if="punchClock(punch.twStatus)" class="article-icon-down">
+              <i class="icon_bg_signInImg bg-ico_off"></i>
+            </div>
             <p>
               <span v-text="'上班时间 '+punchTime(punch.twTime)"></span>
               <span class="article-tab article-tab-zc" v-if="punch.twStatus===0">正常</span>
@@ -35,15 +31,25 @@
               <span class="article-tab article-tab-qyw" v-if="punch.twOutside">区域外</span>
             </p>
             <p>
-              <img :src="imgSrc.PostionIcon">
-              <span
-                v-text="'地理位置: '+ ((!punch.twOutside) ? '区域内' : (punch.twLocation ? (punch.twLocation+'附近') : ''))"></span>
+              <i class="icon_bg_signInImg bg-ico_location_1 vam mr5"></i>
+              <span class="vam" v-text="'地理位置: '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
             </p>
             <p>
-            <span class="article-tab article-tab-sq" v-if="punch.twOutside"
-                  @click="submitApplyRouter(0)">提交请假/外出申请</span>
+              <img class="img_map" :src="punch.twMap">
+            </p>
+            <p>
+              <span class="article-tab article-tab-sq" v-if="punch.twOutside"
+                    @click="submitApplyRouter(0)">提交请假/外出申请</span>
               <span class="article-tab article-tab-wdk" v-if="punch.twStatus===1 || punch.twStatus===2"
                     @click="submitApplyRouter(1)">忘打卡</span>
+            </p>
+            <p>
+
+              <span class="article-tab article-tab-sx article-tab-sq"
+                    @click="updatePunch({punchCardUid:punch.uid,startWork:0})">
+                <i class="icon_bg_signInImg bg-icon_gengxin vam mr5"></i>
+                <span class="vam">更新当前打卡记录(已前时间地点作为记录)</span>
+              </span>
             </p>
           </div>
           <div class="signIn-article-bottom"
@@ -56,15 +62,25 @@
               <span class="article-tab article-tab-qyw" v-if="punch.owOutside">区域外</span>
             </p>
             <p>
-              <img :src="imgSrc.PostionIcon">
+              <i class="icon_bg_signInImg bg-ico_location_1 vam mr5"></i>
               <span
                 v-text="'地理位置: '+((!punch.owOutside) ? '区域内' : (punch.owLocation ? (punch.owLocation+'附近') : ''))"></span>
             </p>
             <p>
+              <img class="img_map" :src="punch.twMap">
+            </p>
+            <p v-if="punch.owOutside || punch.owStatus">
             <span class="article-tab article-tab-sq" v-if="punch.owOutside || punch.owStatus===1 || punch.owStatus===3"
                   @click="submitApplyRouter(0)">提交请假/外出申请</span>
               <span class="article-tab article-tab-jbsq" @click="submitApplyRouter(3)"
                     v-if="punch.owStatus===2">提交加班申请</span>
+            </p>
+            <p>
+              <span class="article-tab article-tab-sx article-tab-sq"
+                    @click="updatePunch({punchCardUid:punch.uid,startWork:1})">
+                <i class="icon_bg_signInImg bg-icon_gengxin vam mr5"></i>
+                <span class="vam">更新当前打卡记录(已前时间地点作为记录)</span>
+              </span>
             </p>
           </div>
         </div>
@@ -98,15 +114,13 @@
       class="getLocation-alert-wrapper"
       :closeOnClickModal="false">
       <div class="getLocation-alert-content">
-        <!--<p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">HR SAAS系统要使用您的地理位置，是否允许？</p>-->
-        <!--<p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"><span v-text="punDate"></span><br/><span-->
-        <!--v-text="punTime"></span></p>-->
         <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
         <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
         <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
       </div>
       <h3 class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-        <span class="amap-headLeft" v-text="outsideObtainValue?'区域外':'区域内'"></span>
+        <span class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''"
+              v-text="outsideObtainValue?'区域外':'区域内'"></span>
         <span class="amap-headRight" v-text="punTime"></span>
       </h3>
       <div id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
@@ -228,20 +242,21 @@
         date: moment(new Date()).format(df1), //右上角日期
         time: '00:00:00',// 打卡按钮上的时间
         punchDateTime: new Date(),//打卡时间
-//        punDate: moment(new Date()).format(df2),//地图弹框中的日期
         punTime: moment(new Date()).format(df2),//地图弹框中的时间
         imgSrc: {
           header: require('../../assets/tx.png'), // 员工头像
-          PostionIcon: require('../../assets/ico_location_1.png'), // 位置图标
           bg: require('../../assets/0_gif.gif'), // 打卡按钮背景1
           bg1: require('../../assets/0_gif1.gif'), // 打卡按钮背景2
           alertHeader: require('../../assets/pic_check in.png'), // 打卡成功弹框中的图标
         },
-        outsideObtainValue: true, //获取的经纬度，判断是否区域内，true是区域外，false区域内
+        outsideObtainValue: false, //获取的经纬度，判断是否区域内，true是区域外，false区域内
         searchLocationArray: [],  //查询出来的locations经纬度，来判断是否在考勤地点区域内
         twRange: '', //记录打卡时，所在的地址
         showHide: false,//是否显示全部打卡信息
         amapImg: '',//地图截图
+        updateState: false,//判断是否更新打卡
+        punchCardUid: '',//更新打卡的数据id
+        startWork: null,//更新打卡的上下班场次
       }
     },
     created(){
@@ -312,7 +327,7 @@
             foreignObjectRendering: false,
             allowTaint: false
           }).then(function (canvas) {
-            self.amapImg = canvas.toDataURL('image/png');
+            self.amapImg = canvas.toDataURL('image/png').split(',')[1];
             self.punchInfo();
           });
         } else {
@@ -321,6 +336,7 @@
           MessageBox('提示', '打卡信息已失效，请重新打卡');
         }
       },
+      //打卡
       handerClickEvent(){  //打卡按钮   上班或下班
         if (navigator.onLine) { //正常工作
           this.wifiPopup = false;
@@ -331,16 +347,45 @@
             this.wifiPopup = true;// 获取wifi弹框内容
             this.wifiIP = '';
             this.qulocation = true;
+
+//            let lnglat = [116.397428, 39.90923];
+//            // 创建地图
+//            let map = new AMap.Map('amapContainer', {
+//              zoom: 16,//级别
+//              center: lnglat,//中心点坐标
+//              dragEnable: false, //是否可拖拽
+//              doubleClickZoom: false,//是否双击放大
+//              touchZoom: false,//移动端多指触控放大缩小
+//            });
+//            // 标记当前位置
+//            let marker = new AMap.Marker({
+//              map: map,
+//              position: lnglat,
+//              offset: new AMap.Pixel(-10, -26),
+//              icon: new AMap.Icon({
+//                size: [20, 26],  //图标大小
+//                image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAABOCAYAAAB8FnW4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowMDk2RkJEMTZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowMDk2RkJEMjZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAwOTZGQkNGNkIwMzExRThBQTNFRUZBNjczMDVFQzE0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAwOTZGQkQwNkIwMzExRThBQTNFRUZBNjczMDVFQzE0Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+luEmRAAABdlJREFUeNrcnGlsFVUYhr8OS8TQ1iUmXY0mAt0kSAUa0R8Yq5FfKilEY/WHe1TcKkIhUYEU0iKSCjHRKHHDgDEQo/6w0SgGpAsCsbRQiBu0LGlcqxQtre/rnEsuN13mzndmeoc3eUNye+93zjNnX4a0gVtvkYB0ATwDngkXw5PgLDgDnghfCJ+Gf4O74R/gg/A+eAf8fRCZSrMMnAnPg++A5xgov/oR/hjebB7AQCoBT4OfgivgCQEUDEt+A/wm/JcmkKPMSAG8Ff4WvicgWGoKXG+qPR/suLCBCVZj2tttrCkSji6D18J74BvCAp5mQJfA42V0xE7wKwM/LkjgR+FvTI872koz1Xs7nG8bmMFfgteb4SaVVGYKodgW8Bj4LfhpSV3lmpK+1gbwK3ClpL4ugT8dqbmNBLwKfkSiI/biX5gSTxr4dnixRE95ZnY2PhngK8ysJqqaDT/vFZifvQNfJNHWc4N1YoMBPwRfL9HXGNPhpg0HfDG8Qs4flSWOMGMTvlAFX2p3PoQHXFyCVTGWxUVFIjk5WA2nu3/r+VOkq0ukrV2kqVFkfysWgQO2odmWN8F9ictDttmf4XRroOU3i8xf4EJ6EeG3oINt+Mw2ODIhWxKBWbp1VsJnZWFAqxaZPNnf7zs6RFZjMXb8uC3gnabnPtuG2bAftBJ66lSRdfX+YSn+ljFKrrYFfB1cGA9cZmUFNL1UZCVKJiNDn0XGqMFEr7TUFvT8eOB5+vkNJjhLl6EbHGuv5TFW9TI3tl5z44HnqkI5CFO1SGRCADs8jMnYjnY3SlhVMhglJ1a/feumcl2b9dKmy8ttTERmO6b96oYfDj1Bq2KBm5aylyHwdFWIkhLv46xGTINp6TSFwAWqEDNmhjdR1Kd1lWOWgv5VWBQecEGhNkKeM9zugCfl5oQHnJerjfB/L52pCjExPTxgfVqZjoR3apAK6iVwtyoEl3hhSZ9WN4GPqUJ0doUHfLRTG+EYgfepQrS3hwd8QJ3WXgI3qUI0N4YH3NykjdBI4K9VIVpb3Z2KoMU0mJZO2wl8wNifuBXzwebggZmGbtunDT4UW3N9pMpMQwNCdQQHe/iQm4ZO2+LXw++rQvX3i6ypEzl1yj4sY9bVumno9F488F64RRXuyBGRVTUifX32YBmLMRlbpx2mSp+zEf+GOoMtzSLLX7RT0ozBWIyp11m2+G1aXhbjo9SfKeXnizy7CIuxSf7bLKuxvmSpE/CVfISJJdwDv2qlKjKjTywUWfcy5jZJTOT4Xf6Gv7UDS62PwSaWMJUt7g04e7dzYkcts2a5Ry3Z2ecetRCyDc2rMZCjFhbi5fCvsQ8S91RZHBvFPUG0IwK0fuc6fG2Ih02s0jGtFPfSZ9T1B1yb+OFgwEfh188DYHQG8osXYKrG1P+oiqdwawf7w1DAbMtrIgy82FRpz8AUj067IgjLmcrbQ/1xOOC/4eqIwXJMWyjDXCYf6YSKT2pXhIBHzK/j4Yk9Bp+JAGyPlxrp5QxyN/xaBICXe+lzvB66Vot2dzNY7TbjrtgC5qs2T6Yo7L/w/WKuJdkCpnjt55MUBK41GxhiG5h6GP49hWC5UZ3UzcFkgTnPrkoR2H5TlU8HCRzbLvk8BYC5sN+Z7I/8AHNsvs90ZKMlvqm2xM8P/d4F+gl+fBR75Uoz9Q0NmHpX3Kv2YWuFWSBI2MAUXwDpDBF2l1mry2gBc7/oXrH0qquHuXKldl7vWMgIe+z6EICfgQ9rgziWMsMdhj0Bwn5oawFjC7gXvlOC2QfjiPCArWCOxYwdNFNPm+KC4C5J2FtOFWCKR5IbLcZ7wc9sKkxgMTskNm668B3C1bYzFwQwZ0AVfmdCRidtDEFhAVP7FR0NV0F3S0BbxEEBU5vMiiZZcSbVEFSmggSOTRaS6XS+NB2VRBX4H3HfCjvp4bsnzBB0JsrAsV2SOebfocT/kORGCWFnNAxgijdo+JrZUnFvC/WaWVmL+ewa853A9Z8AAwCGM11KNsnUzQAAAABJRU5ErkJggg==',
+//                imageSize: [20, 26],
+//              })
+//            });
+
           } else {
             this.okClickEvent();
           }
           this.punchDateTime = new Date();
-//          this.punDate = moment(this.punchDateTime).format(df2);//地图弹框中的日期
           this.punTime = moment(this.punchDateTime).format(df2);//地图弹框中的时间
         } else { //执行离线状态时的任务
           MessageBox('提示', '未连接网络');
         }
       },
+      //更新打卡
+      updatePunch(data){
+        this.updateState = true;
+        this.punchCardUid = data.punchCardUid;
+        this.startWork = data.startWork;
+        this.handerClickEvent();
+      },
+      //取消弹框按钮
       closeAlert(){ //打卡获取地理位置alert
         this.showBtnContent = false;
         this.qulocation = false;
@@ -350,6 +395,7 @@
           this.wifiPopup = false;
         }, 300);
       },
+      //我知道了按钮
       knowFunction(){
         this.popupVisible = false;
         this.qulocation = false;
@@ -537,10 +583,24 @@
           longitude: this.longitude,
           latitude: this.latitude,
           wifi: this.wifiIP,
-//          punchTime: this.punchDateTime.getTime(),
           map: this.amapImg
         };
-        this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
+//        let updakaObj = {
+//          isRange: false,
+//          location: '创意产业园1',
+//          longitude: 116.397428,
+//          latitude: 39.90923,
+//          wifi: '',
+//          map: this.amapImg
+//        };
+        let url = '/api/v1.0/client/punchCardLog';
+        if (this.updateState) {
+          url = '/api/v1.0/client/updatePunchCardLog';
+          updakaObj.punchCardUid = this.punchCardUid;
+          updakaObj.startWork = this.startWork;
+          this.updateState = false;
+        }
+        this.$http.post(url, updakaObj).then(response => { //打卡
           if (response.body.code === 200) {
             this.doSearch(true);
           } else if (response.body.code === 500) {
@@ -572,6 +632,15 @@
         overflow: hidden;
         *zoom: 1
       }
+    }
+    .mr5{
+      margin-right: 5px;
+    }
+    .vam {
+      vertical-align: middle;
+    }
+    .vat{
+      vertical-align: top;
     }
     p {
       margin: 0;
@@ -631,53 +700,24 @@
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        padding: 25px 20px;
+        padding: 25px 0;
         margin-bottom: 20px;
-        .signIn-article-left {
-          position: relative;
-          width: 22px;
-          height: 144px;
-          p {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-
-          }
-          .article-icon-up {
-            top: 0;
-            background: url("../../assets/ico_to.png");
-            background-size: 22px 22px;
-          }
-          .article-icon-down {
-            bottom: 0;
-            background: url("../../assets/ico_off.png");
-            background-size: 22px 22px;
-          }
-          .signIn-article-line {
-            position: absolute;
-            top: 1px;
-            left: 10px;
-            height: 142px;
-            border-left: 1px solid #98abbf;
-          }
-        }
         .signIn-article-right {
           position: absolute;
           top: 25px;
           text-align: left;
           box-sizing: border-box;
-          padding-left: 22px;
-          width: 90%;
+          padding: 0 15px 0 25px;
           .signIn-article-top, .signIn-article-bottom {
             box-sizing: border-box;
-            padding-left: 10px;
+            padding-left: 20px;
+            padding-bottom: 30px;
             font-size: 0;
             p {
               box-sizing: border-box;
               width: 100%;
               min-height: 22px;
-              margin-bottom: 4px;
+              margin-bottom: 5px;
               span {
                 box-sizing: border-box;
                 display: inline-block;
@@ -709,6 +749,10 @@
               .article-tab-sq, .article-tab-wdk, .article-tab-jbsq {
                 background-color: #20a2ff;
               }
+              .article-tab-sx {
+                font-size: 10px;
+                background-color: #f08c60;
+              }
               .article-tab-sq {
                 min-width: 120px;
                 padding: 3px 10px;
@@ -716,6 +760,10 @@
               .article-tab-jbsq {
                 min-width: 90px;
                 padding: 3px 10px;
+              }
+              .img-postionIcon {
+                height: 15px;
+                margin-right: 5px;
               }
             }
             p:nth-child(1) {
@@ -725,17 +773,35 @@
                 margin-right: 10px;
               }
             }
-            img {
-              height: 15px;
-              margin-right: 5px;
+            .img_map {
+              width: 100%;
+            }
+          }
+          .signIn-article-top {
+            position: relative;
+            border-left: 1px solid #98abbf;
+            .article-icon-up {
+              display: inline-block;
+              width: 22px;
+              height: 22px;
+              position: absolute;
+              top: -1px;
+              left: -11px;
+            }
+            .article-icon-down {
+              display: inline-block;
+              width: 22px;
+              height: 22px;
+              position: absolute;
+              bottom: -1px;
+              left: -11px;
             }
           }
           .signIn-article-top1 {
             margin-top: 30px;
           }
           .signIn-article-bottom {
-            position: absolute;
-            top: 122px;
+            margin-top: -20px;
           }
         }
       }
@@ -850,10 +916,15 @@
         .amap-headLeft {
           width: 100px;
           text-align: left;
-          border-left: 15px solid #2c86f5;
+          border-left: 15px solid #2bcebd;
           font-size: 16px;
           padding-left: 10px;
           margin-left: 0;
+          color: #2bcebd;
+        }
+        .amap-headLeft1 {
+          border-left: 15px solid #ff4947;
+          color: #ff4947;
         }
         .amap-headRight {
           width: 100%;
@@ -901,7 +972,7 @@
           color: #1f2d3d;
         }
         .getLocation-alert-btn:nth-child(2) {
-          background-color: #20a2ff;
+          background-color: #20a0ff;
           color: #ffffff;
         }
         .getLocation-alert-btnLeft {

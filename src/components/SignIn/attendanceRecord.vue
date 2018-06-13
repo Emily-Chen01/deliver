@@ -25,8 +25,12 @@
         <div class="punchInfo" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">
           <div class="punchInfoLeft">
             <div class="punchInfoLine"></div>
-            <p class="punchInfoUp"></p>
-            <p class="punchInfoDown"></p>
+            <p class="punchInfoUp">
+              <i class="icon_bg_signInImg bg-ico_to"></i>
+            </p>
+            <p class="punchInfoDown">
+              <i class="icon_bg_signInImg bg-ico_off"></i>
+            </p>
           </div>
           <div class="punchInfoRight">
             <p
@@ -333,14 +337,10 @@
           border-radius: 50%;
         }
         .punchInfoUp {
-          top: 0;
-          background: url("../../assets/ico_to.png");
-          background-size: 22px 22px;
+          top: -1px;
         }
         .punchInfoDown {
-          bottom: 0;
-          background: url("../../assets/ico_off.png");
-          background-size: 22px 22px;
+          bottom: -1px;
         }
       }
       .punchInfoRight {

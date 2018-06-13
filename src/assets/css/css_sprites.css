@@ -17,6 +17,12 @@
 .bg-ico_title {  width: 16px; height: 13px;  background-position: -5px -5px;  }
 .bg-ico_type {  width: 15px; height: 15px;  background-position: -5px -126px; }
 
+/*打卡页模块*/
+.icon_bg_signInImg{display: inline-block;vertical-align:middle;background:url(../images/signIn/icon_bg_signInImg.png)  no-repeat;background-size:32px 114px;}
+.bg-ico_location_1 {  width: 12px; height: 16px;  background-position: -5px -29px;  }
+.bg-ico_off {  width: 22px; height: 22px;  background-position: -5px -55px;  }
+.bg-ico_to {  width: 22px; height: 22px;  background-position: -5px -87px;  }
+.bg-icon_gengxin {  width: 14px; height: 14px;  background-position: -5px -5px;  }
 
 .bg-img{display: inline-block;vertical-align:middle;background:url(../css_sprites.png)  no-repeat;background-size:168px 157px;}
 .arrow_3_disabled{height:11px;width:7px;background-position:0 0;}
