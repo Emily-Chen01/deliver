@@ -52,28 +52,35 @@
           </div>
         </div>
         <div v-if="selectedDataApply===3">
-          <div class="mt10" v-for="(n,index) in 4" :key="index">
+          <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
             <h4 align="left" class="fc1 pr">
-              <span v-text="'第'+overtimeNum(n)+'段加班申请'"></span>
-              <span v-if="index>0" class="leave-main-box-del">+</span>
+              <span v-text="'第'+overtimeNum(applyIndex)+'段加班申请'"></span>
+              <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
             </h4>
             <div class="pl30">
               <div class="leave-main-box-apply">
                 <div class="leave-main-box-apply-left icon-stars">开始时间</div>
                 <div class="leave-main-box-apply-center">
-            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"
-                  :class="{'colorA6':!startTimeValue}" @click="openPicker(0)"></span>
+            <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
+                  :class="{'colorA6':!apply.startTime}" @click="openPicker(0,applyIndex)"></span>
                 </div>
               </div>
               <div class="leave-main-box-apply">
                 <div class="leave-main-box-apply-left icon-stars">结束时间</div>
                 <div class="leave-main-box-apply-center">
-              <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"
-                    :class="{'colorA6':!endTimeValue}" @click="openPicker(1)"></span>
+              <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
+                    :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex)"></span>
                 </div>
               </div>
             </div>
           </div>
+          <div class="mt10">
+            <mt-button type="primary"
+                       @click.native="addTime()">
+              <span> +添加新的加班时间段</span>
+            </mt-button>
+          </div>
+
         </div>
         <div class="leave-main-box-applyImg" v-if="updateImage">
           <el-upload
@@ -84,14 +91,14 @@
             :on-success="passportUrlOk"
             :before-upload="beforePassportUrl">
             <div class="leave-main-box-apply-upload"
-                 :style="{'background-image': 'url('+(imgSrc.shenFenIcon ? imgSrc.shenFenIcon : imgSrc.shenFenIconShowCamera)+')'}"></div>
+                 :style="{'background-image': 'url('+(applyData.image ? applyData.image : imgSrc.shenFenIconShowCamera)+')'}"></div>
           </el-upload>
           <p v-show="passportUrlErrFlag">
             请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
         </div>
         <div class="leave-main-box-applyText">
           <div class="leave-main-box-applyText-top icon-stars">申请内容</div>
-          <textarea placeholder="#请输入文字(不超过50字)" v-model="holidayModel"></textarea>
+          <textarea placeholder="#请输入文字(不超过50字)" v-model="applyData.remarks"></textarea>
         </div>
         <div class="leave-main-box-apply" v-if="approvalTypeObj">
           <div class="leave-main-box-apply-left"
@@ -127,11 +134,18 @@
                 <span class="leave-main-content-title-left"
                       v-text="item.name+'申请'+(item.name===item.sname ? '':('('+item.sname+')'))"></span>
                 <span class="leave-main-content-title-right"
-                      v-text="item.status===0 ? '审核中' : (item.status===1 ? '已通过' : '未通过')"></span>
+                      v-text="applyState(item.status)"></span>
               </h3>
             </div>
             <div class="leave-main-content-Info">
-              <div>
+              <div v-if="item.time&&item.time.length>0" :class="{'marginTop10': overIndex>0}"
+                   v-for="(overTime,overIndex) in item.time" :key="overIndex">
+                <h3 v-text="'第'+overtimeNum(overIndex)+'段时间起止时间'"></h3>
+                <p>
+                  <span v-text="datefmt(overTime.startTime)"></span> 至 <span v-text="datefmt(overTime.endTime)"></span>
+                </p>
+              </div>
+              <div v-if="!(item.time&&item.time.length>0)">
                 <h3>起止日期</h3>
                 <p>
                   <span v-text="datefmt(item.startTime)"></span> 至 <span v-text="datefmt(item.endTime)"></span>
@@ -149,11 +163,16 @@
                 <h3>拒绝原因</h3>
                 <p v-text="item.why"></p>
               </div>
+              <div class="leave-main-content-append marginTop10" v-if="item.image">
+                <h3>附件内容：</h3>
+                <mt-button size="small" class="leave-main-content-btn" type="primary" @click="lookImages(item.image)">
+                  <span>查看附件</span>
+                </mt-button>
+              </div>
             </div>
-            <div class="leave-main-content-append" v-if="item.image">
-              <h3>附件内容：</h3>
-              <mt-button size="small" class="leave-main-content-btn" type="primary" @click="lookImages(item.image)">
-                <span>查看附件</span>
+            <div class="leave-main-content-append leave-main-content-append1 " v-if="item.status===0">
+              <mt-button size="small" class="leave-main-content-btn" type="primary" @click="revokes(item.uid)">
+                <span>撤回申请</span>
               </mt-button>
             </div>
           </div>
@@ -212,7 +231,7 @@
   </div>
 </template>
 <script>
-  import {DatetimePicker, Navbar, TabItem, Popup, Indicator} from 'mint-ui';
+  import {DatetimePicker, Navbar, TabItem, Popup, Indicator, MessageBox} from 'mint-ui';
   import utils from '@/components/utils'
   import moment from 'moment'
 
@@ -237,27 +256,40 @@
         holidayTypeArray: [], // 假期类型列表
         selectHoliday: {},
         imgSrc: {
-          shenFenIcon: '',
           shenFenIconShowCamera: require('../../assets/camera.png'),
           ico_success: require('../../assets/ico_success.png'),
           ico_error: require('../../assets/ico_error.png'),
         },
         changeApply: true, // 是否显示假期分类
         updateImage: true, //上传图片按钮是否隐藏
-        holidayModel: '', //备注div
         approvalTypeObj: {}, // 审批人
         startTimeValue: '', //开始时间value
         startTimeValue1: new Date(),  //初始化日历插件
         endTimeValue: '',  //结束时间value
         endTimeValue1: new Date(),//初始化日历插件
-        textareaString: '',// 去除空格缩进后的备注信息
-        qingjiauidParam: '', // 假期类型uid
-        shengqingParam: '',  //申请类型uid
         searchApplyRecord: [], //搜索申请记录
         leaveSuccess: false, //成功显示的弹框
         alertMessage: '',//提交弹框文字，显示提交状态
         alertSuccessImage: false,//显示提交状态
         codeSuccess: '',//点击我知道了进行状态判断跳转
+        applyData: {
+          approvalConfigUid: '',//申请分类
+          leaveUid: '',// 假期类型uid
+          startTime:'', //开始时间value
+          endTime: '', //结束时间value
+          image: '',//附件
+          remarks: '',//备注
+          category: '',//审批人类型
+//          currentApprover:'',//审批人uid
+//          email:'',//审批人邮箱
+        },
+        applyWorkRef: [//加班时间段
+          {
+            startTime: '',
+            endTime: '',
+          }
+        ],
+        pos: '',//记录加班时间段的位置
       };
     },
     created: function () {
@@ -283,35 +315,82 @@
       });
     },
     watch: {
-      holidayModel: function (val, oldVal) { //备注value 用于上传参数
-        this.textareaString = val.trim();
-      },
     },
     methods: {
+      //添加加班时间段
+      addTime(){
+        this.applyWorkRef.push({
+          startTime: '',
+          endTime: '',
+        });
+      },
+      //删除加班时间段
+      deleteTime(num){
+        this.applyWorkRef.splice(num, 1);
+      },
       // 开始时间格式化
       handleConfirmStart(data){
         if (data) {
-          this.startTimeValue = moment(data).format(df);
+          if (this.selectedDataApply === 3) {
+            this.applyWorkRef[this.pos].startTime = moment(data).format(df);
+          } else {
+            this.startTimeValue = moment(data).format(df);
+          }
         }
       },
       // 结束时间格式化
       handleConfirmEnd(data){
         if (data) {
-          this.endTimeValue = moment(data).format(df);
+          if (this.selectedDataApply === 3) {
+            this.applyWorkRef[this.pos].endTime = moment(data).format(df);
+          } else {
+            this.endTimeValue = moment(data).format(df);
+          }
+
         }
       },
+      //审批状态
+      applyState(state){
+        let status;
+        switch (state) {
+          case 0:
+            status='审批中';
+            break;
+          case 1:
+            status='已通过';
+            break;
+          case 2:
+            status='未通过';
+            break;
+          case 3:
+            status='已撤回';
+            break;
+        }
+        return status;
+      },
       // 日历样式
-      openPicker(data) {
-        if (data === 0) {
+      openPicker(type, pos) {
+        this.pos = pos;
+        if (type === 0) {
+          if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].startTime) {
+            this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
+          } else {
+            this.startTimeValue1 = new Date();
+          }
           this.$refs.picker0.open();
         } else {
+          if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].endTime) {
+            this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
+          } else {
+            this.endTimeValue1 = new Date();
+          }
           this.$refs.picker1.open();
         }
       },
       // 加班段数格式化
       overtimeNum(num){
         let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-        return arr[num - 1];
+        return arr[num];
       },
       changeShow(val){ //查看申请记录
         this.$http.post('/api/v1.0/client/findApplys', {
@@ -327,26 +406,32 @@
         });
 
       },
+      //提交申请
       handerDataSubmit(){
         Indicator.open('正在提交申请...');
-        let params = {
-          approvalConfigUid: this.shengqingParam,//申请分类
-          leaveUid: this.qingjiauidParam,
-          startTime: new Date(this.startTimeValue).getTime(),
-          endTime: new Date(this.endTimeValue).getTime(),
-          image: this.imgSrc.shenFenIcon,
-          remarks: this.textareaString
-        };
+        if (this.selectedDataApply === 3) {
+          this.applyData.applyWorkRef = this.applyWorkRef.map((item, index) => {
+            return {
+              startTime: new Date(item.startTime).getTime(),
+              endTime: new Date(item.endTime).getTime(),
+              sort: index,
+            };
+          });
+        } else {
+          this.applyData.startTime = new Date(this.startTimeValue).getTime();
+          this.applyData.endTime = new Date(this.endTimeValue).getTime();
+        }
+        this.applyData.remarks = this.applyData.remarks.trim();
         if (this.approvalTypeObj) {
           if (this.approvalTypeObj.WAY === '1') {
-            params.category = '1';
-            params.currentApprover = this.approvalTypeObj.UID
+            this.applyData.category = '1';
+            this.applyData.currentApprover = this.approvalTypeObj.UID
           } else if (this.approvalTypeObj.WAY === '2') {
-            params.category = '2';
-            params.email = this.approvalTypeObj.NAME
+            this.applyData.category = '2';
+            this.applyData.email = this.approvalTypeObj.NAME
           }
         }
-        this.$http.post('/api/v1.0/client/apply', params).then(response => { //提交请假申请
+        this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
           this.leaveSuccess = true;
@@ -369,13 +454,13 @@
         let state = false;
         for (let i = 0; i < this.applyTypeArray.length; i++) {
           if (this.selectedDataApply === this.applyTypeArray[i].type) {
-            this.shengqingParam = this.applyTypeArray[i].uid;
+            this.applyData.approvalConfigUid = this.applyTypeArray[i].uid;
             state = true;
           }
         }
         if (!state) {
           this.selectedDataApply = this.applyTypeArray[0].type;
-          this.shengqingParam = this.applyTypeArray[0].uid;
+          this.applyData.approvalConfigUid = this.applyTypeArray[0].uid;
         }
         if (this.selectedDataApply === 0) { //请假
           this.changeApply = true; //假期类型显示
@@ -385,7 +470,7 @@
         }
       },
       qingjiaclick(value){
-        this.qingjiauidParam = value.LEAVE_INFO_UID;
+        this.applyData.leaveUid = value.LEAVE_INFO_UID;
         this.selectHoliday = value;
       },
       // 打开查看附件弹框
@@ -413,22 +498,37 @@
       // 上传图片成功
       passportUrlOk(res, file) {
         if (res.code === 200) {
-          this.imgSrc.shenFenIcon = res.result;
+          this.applyData.image = res.result;
         }
-//        Indicator.close();//图片上传成功
       },
       // 上传图片前验证
       beforePassportUrl(file) {
         let isImage = utils.isImage(file);
         let isInSize = utils.isInSize(file, 5);
         if (isImage && isInSize) {
-//          Indicator.open('图片上传中...');
           this.passportUrlErrFlag = false;
         } else {
           this.passportUrlErrFlag = true;
         }
         return isImage && isInSize;
       },
+      //撤回申请
+      revokes(uid){
+        MessageBox.confirm('确定执行撤回?', '提示').then(action => {
+          Indicator.open('正在撤回...');
+          this.$http.get('/api/v1.0/client/revokeApply/' + uid).then(response => { //提交请假申请
+            Indicator.close();
+            if (response.body.code === 200) {
+              this.changeShow(-1);
+              MessageBox('提示', '撤回成功');
+            } else {
+              MessageBox('提示', '撤回失败');
+            }
+          }, response => {
+//          console.log('error callback');
+          });
+        });
+      }
     },
     components: {},
   }
@@ -697,13 +797,8 @@
             }
             .leave-main-content-append {
               box-sizing: border-box;
-              padding-left: 15px;
-              height: 35px;
-              line-height: 35px;
-              border-top: 1px solid #d3dce6;
               background-color: #ffffff;
               text-align: left;
-
               h3 {
                 display: inline-block;
                 font-size: 14px;
@@ -713,6 +808,11 @@
                 height: 22px;
                 font-size: 12px;
               }
+            }
+            .leave-main-content-append1 {
+              border-top: 1px solid #d3dce6;
+              padding: 10px 0;
+              text-align: center;
             }
           }
           .myApplyNo {

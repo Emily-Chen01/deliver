@@ -47,8 +47,8 @@
 
               <span class="article-tab article-tab-sx article-tab-sq"
                     @click="updatePunch({punchCardUid:punch.uid,startWork:0})">
-                <i class="icon_bg_signInImg bg-icon_gengxin vam mr5"></i>
-                <span class="vam">更新当前打卡记录(已前时间地点作为记录)</span>
+                <i class="icon_bg_signInImg bg-icon_gengxin vat mt1"></i>
+                更新当前打卡记录(已前时间地点作为记录)
               </span>
             </p>
           </div>
@@ -78,8 +78,8 @@
             <p>
               <span class="article-tab article-tab-sx article-tab-sq"
                     @click="updatePunch({punchCardUid:punch.uid,startWork:1})">
-                <i class="icon_bg_signInImg bg-icon_gengxin vam mr5"></i>
-                <span class="vam">更新当前打卡记录(已前时间地点作为记录)</span>
+                <i class="icon_bg_signInImg bg-icon_gengxin vat mt1"></i>
+                更新当前打卡记录(已前时间地点作为记录)
               </span>
             </p>
           </div>
@@ -263,7 +263,7 @@
       this.doSearch(); //初始化页面查询数据
     },
     methods: {
-      //初始开始
+      //====初始开始====//
       doSearch(state){
         this.handerSign();
         setInterval(this.handerSign, 1000);
@@ -298,11 +298,11 @@
 //          console.log('error callback');
         });
       },
-      //初始结束
-      // 格式化日期
+      //====初始结束====//
+
+      // 打卡按钮 格式化时间
       handerSign(){
-        let oDate = new Date();
-        this.time = moment(oDate).format(df);
+        this.time = moment(new Date()).format(df);
       },
       // 判断上下班状态
       punchClock(state){
@@ -343,7 +343,7 @@
           if (this.punchCardInfo.isWifi) {
             const $scripts = document.createElement('script');
             window.document.body.appendChild($scripts);
-            $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
+            $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8"; //获取IP
             this.wifiPopup = true;// 获取wifi弹框内容
             this.wifiIP = '';
             this.qulocation = true;
@@ -408,10 +408,9 @@
       //获取wifi地址
       okClickWifi(){
         this.wifiPopup = true;
-        if (returnCitySN["cip"]) {
+        if (returnCitySN["cip"]) {//获取IP
           this.wifiIP = returnCitySN["cip"];
           this.qulocation = false;
-          console.log(this.wifiIP)
           this.okClickEvent();
         } else {
           this.qulocation = false;
@@ -559,23 +558,7 @@
         });
         //点击获取定位结束
       },
-      // 获取ip地址
-//      getIP(){
-//        new Promise((resolve, reject) => { //如果执行成功，将调用resolve()，如果执行失败，将调用reject();
-//          const $scripts = document.createElement('script');
-//          window.document.body.appendChild($scripts);
-//          $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
-//          resolve();
-//        }).then(() => {
-//          if (returnCitySN["cip"]) {
-//            this.wifiIP = returnCitySN["cip"];
-//            return '';
-//          }else {
-//            MessageBox('提示', '获取IP地址失败');
-//            return '';
-//          }
-//        });
-//      },
+      //上传打卡信息
       punchInfo(){
         let updakaObj = {
           isRange: this.outsideObtainValue,
@@ -633,13 +616,16 @@
         *zoom: 1
       }
     }
-    .mr5{
+    .mr5 {
       margin-right: 5px;
+    }
+    .mt1{
+      margin-top: 1px;
     }
     .vam {
       vertical-align: middle;
     }
-    .vat{
+    .vat {
       vertical-align: top;
     }
     p {
@@ -750,6 +736,7 @@
                 background-color: #20a2ff;
               }
               .article-tab-sx {
+                /*line-height: 22px;*/
                 font-size: 10px;
                 background-color: #f08c60;
               }
