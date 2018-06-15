@@ -31,8 +31,8 @@
               <span class="article-tab article-tab-qyw" v-if="punch.twOutside">区域外</span>
             </p>
             <p>
-              <i class="icon_bg_signInImg bg-ico_location_1 vam mr5"></i>
-              <span class="vam" v-text="'地理位置: '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
+              <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
+              <span v-text="'地理位置: '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
             </p>
             <p>
               <img class="img_map" :src="punch.twMap">
@@ -62,9 +62,9 @@
               <span class="article-tab article-tab-qyw" v-if="punch.owOutside">区域外</span>
             </p>
             <p>
-              <i class="icon_bg_signInImg bg-ico_location_1 vam mr5"></i>
+              <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
               <span
-                v-text="'地理位置: '+((!punch.owOutside) ? '区域内' : (punch.owLocation ? (punch.owLocation+'附近') : ''))"></span>
+                v-text="'地理位置: '+ (punch.owLocation ? (punch.owLocation+'附近') : '')"></span>
             </p>
             <p>
               <img class="img_map" :src="punch.twMap">
@@ -619,7 +619,7 @@
     .mr5 {
       margin-right: 5px;
     }
-    .mt1{
+    .mt1 {
       margin-top: 1px;
     }
     .vam {
