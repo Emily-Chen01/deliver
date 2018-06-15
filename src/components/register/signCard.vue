@@ -58,6 +58,12 @@
             <!--<i slot="icon" class="icon_bg_homeImg bg-ico_task"></i>-->
           <!--</mt-cell>-->
         <!--</div>-->
+        <!--<div @click="changeList(5)">-->
+          <!--<mt-cell title="我的审批" is-link>-->
+            <!--<span v-text="'当前无审批'"></span>-->
+            <!--<i slot="icon" class="icon_bg_homeImg bg-ico_task"></i>-->
+          <!--</mt-cell>-->
+        <!--</div>-->
       </div>
     </div>
     <!--解除绑定-->
@@ -171,6 +177,8 @@
           this.$router.push({path: '/notice'});
         }else if (indexX === 4) {
           this.$router.push({path: '/task'});
+        }else if (indexX === 5) {
+          this.$router.push({path: '/approve'});
         }
       },
       routerMyData(){
