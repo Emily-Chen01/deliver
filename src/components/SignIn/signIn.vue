@@ -97,7 +97,6 @@
         <span v-else>查看全部</span>
       </mt-button>
     </div>
-    <div id="toImage" style="position: absolute;z-index: 1000;"></div>
     <!--打卡区域-->
     <div class="Punch-btn-wrapper" v-if="punchCardInfo.isNeed && !showHide">
       <div class="Punch-btn-bg">
@@ -134,7 +133,7 @@
            :class="(punchCardInfo.locations.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
            v-text="(punchCardInfo.locations.length && !failModel) ? '取消' : '确定'">
         </p>
-        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup" @click="toImage"
+        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup" @click="determinePunchCard"
            class="getLocation-alert-btn getLocation-alert-btnRight">
           确定打卡
         </p>
@@ -317,39 +316,19 @@
       showHides(){
         this.showHide = !this.showHide;
       },
-      // 地图转换成图片
-      toImage(){
+      // 确定打卡
+      determinePunchCard(){
         let disTime = new Date().getTime() - this.punchDateTime.getTime();
         if (disTime < 5 * 60 * 1000) {
-//          let self = this;
           this.qulocation = false;
           this.punchInfo();
-//          alert('转换之前', 12345678);
-//          html2canvas(document.getElementById('amapContainer'), {
-//            useCORS: true,
-//            foreignObjectRendering: false,
-//            allowTaint: false,
-//          }).then(function (canvas) {
-//            self.amapImg = canvas.toDataURL('image/png').split(',')[1];
-//            self.punchInfo();
-//          }).catch((res) => {
-////            alert('转换之后', 12345678);
-//            html2canvas(document.getElementById('amap-detail'), {
-//              useCORS: true,
-//              foreignObjectRendering: false,
-//              allowTaint: false,
-//            }).then(function (canvas) {
-//              self.amapImg = canvas.toDataURL('image/png').split(',')[1];
-//              self.punchInfo();
-//            })
-//          });
         } else {
           this.showBtnContent = false;
           this.qulocation = false;
           MessageBox('提示', '打卡信息已失效，请重新打卡');
         }
       },
-      //打卡
+      //打卡开始
       handerClickEvent(){  //打卡按钮   上班或下班
         if (navigator.onLine) { //正常工作
           this.wifiPopup = false;
