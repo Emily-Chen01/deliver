@@ -492,7 +492,7 @@
 //                  });
 
                   //静态地图路径
-                  let url = 'http://restapi.amap.com/v3/staticmap?location=' + lnglat[0] + ',' + lnglat[1] + '&zoom=16&size=240*180&markers=small,0xFF0000,:' + lnglat[0] + ',' + lnglat[1] + '&key=d13d68aaba61ec414fe228c9bbfbaa4d';
+                  let url = 'http://restapi.amap.com/v3/staticmap?location=' + lnglat[0] + ',' + lnglat[1] + '&zoom=16&size=240*180&markers=small,0xFF0000,:' + lnglat[0] + ',' + lnglat[1] + '&key=79772b4966abdb3838a61e903d9d30e6';
                   getUrlBase64(url, 'png', (base64) => {
                     self.amapImg = base64;
                   });
