@@ -32,9 +32,10 @@
             </p>
             <p>
               <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
-              <span v-text="'地理位置: '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
+              <span class="signIn-article_location"
+                    v-text="'地理位置: '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
             </p>
-            <p>
+            <p align="left">
               <img class="img_map" :src="punch.twMap">
             </p>
             <p>
@@ -47,7 +48,7 @@
 
               <span class="article-tab article-tab-sx article-tab-sq"
                     @click="updatePunch({punchCardUid:punch.uid,startWork:0})">
-                <i class="icon_bg_signInImg bg-icon_gengxin vat mt1"></i>
+                <i class="icon_bg_signInImg bg-icon_gengxin"></i>
                 更新当前打卡记录(已前时间地点作为记录)
               </span>
             </p>
@@ -63,10 +64,10 @@
             </p>
             <p>
               <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
-              <span
-                v-text="'地理位置: '+ (punch.owLocation ? (punch.owLocation+'附近') : '')"></span>
+              <span class="signIn-article_location"
+                    v-text="'地理位置: '+ (punch.owLocation ? (punch.owLocation+'附近') : '')"></span>
             </p>
-            <p>
+            <p align="left">
               <img class="img_map" :src="punch.twMap">
             </p>
             <p v-if="punch.owOutside || punch.owStatus">
@@ -78,7 +79,7 @@
             <p>
               <span class="article-tab article-tab-sx article-tab-sq"
                     @click="updatePunch({punchCardUid:punch.uid,startWork:1})">
-                <i class="icon_bg_signInImg bg-icon_gengxin vat mt1"></i>
+                <i class="icon_bg_signInImg bg-icon_gengxin"></i>
                 更新当前打卡记录(已前时间地点作为记录)
               </span>
             </p>
@@ -124,8 +125,9 @@
         <span class="amap-headRight" v-text="punTime"></span>
       </h3>
       <div id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-        <div id="amapContainer"></div>
-        <p class="amap-detail" v-text="twRange"></p>
+        <!--<div id="amapContainer"></div>-->
+        <img :src="amapImg" alt="">
+        <p class="amap-detail" id="amap-detail" v-text="twRange"></p>
       </div>
       <div class="getLocation-alert-btnBox">
         <p @click="closeAlert" class="getLocation-alert-btn"
@@ -225,7 +227,6 @@
     components: {MtButton},
     data(){
       return {
-        sb: true,
         punchCardInfo: {//获取打卡信息记录
           locations: [],
           punchCardLogs: []
@@ -320,16 +321,28 @@
       toImage(){
         let disTime = new Date().getTime() - this.punchDateTime.getTime();
         if (disTime < 5 * 60 * 1000) {
-          let self = this;
-          self.qulocation = false;
-          html2canvas(document.getElementById('amapContainer'), {
-            useCORS: true,
-            foreignObjectRendering: false,
-            allowTaint: false
-          }).then(function (canvas) {
-            self.amapImg = canvas.toDataURL('image/png').split(',')[1];
-            self.punchInfo();
-          });
+//          let self = this;
+          this.qulocation = false;
+          this.punchInfo();
+//          alert('转换之前', 12345678);
+//          html2canvas(document.getElementById('amapContainer'), {
+//            useCORS: true,
+//            foreignObjectRendering: false,
+//            allowTaint: false,
+//          }).then(function (canvas) {
+//            self.amapImg = canvas.toDataURL('image/png').split(',')[1];
+//            self.punchInfo();
+//          }).catch((res) => {
+////            alert('转换之后', 12345678);
+//            html2canvas(document.getElementById('amap-detail'), {
+//              useCORS: true,
+//              foreignObjectRendering: false,
+//              allowTaint: false,
+//            }).then(function (canvas) {
+//              self.amapImg = canvas.toDataURL('image/png').split(',')[1];
+//              self.punchInfo();
+//            })
+//          });
         } else {
           this.showBtnContent = false;
           this.qulocation = false;
@@ -347,28 +360,6 @@
             this.wifiPopup = true;// 获取wifi弹框内容
             this.wifiIP = '';
             this.qulocation = true;
-
-//            let lnglat = [116.397428, 39.90923];
-//            // 创建地图
-//            let map = new AMap.Map('amapContainer', {
-//              zoom: 16,//级别
-//              center: lnglat,//中心点坐标
-//              dragEnable: false, //是否可拖拽
-//              doubleClickZoom: false,//是否双击放大
-//              touchZoom: false,//移动端多指触控放大缩小
-//            });
-//            // 标记当前位置
-//            let marker = new AMap.Marker({
-//              map: map,
-//              position: lnglat,
-//              offset: new AMap.Pixel(-10, -26),
-//              icon: new AMap.Icon({
-//                size: [20, 26],  //图标大小
-//                image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAABOCAYAAAB8FnW4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowMDk2RkJEMTZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowMDk2RkJEMjZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAwOTZGQkNGNkIwMzExRThBQTNFRUZBNjczMDVFQzE0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAwOTZGQkQwNkIwMzExRThBQTNFRUZBNjczMDVFQzE0Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+luEmRAAABdlJREFUeNrcnGlsFVUY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',
-//                imageSize: [20, 26],
-//              })
-//            });
-
           } else {
             this.okClickEvent();
           }
@@ -424,8 +415,7 @@
         let curl;
         //判断是不是安卓苹果
         let u = navigator.userAgent;
-        let isAndroid = '0';
-        isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         if (isAndroid) {
           curl = {
             location: location.href //安卓的参数
@@ -486,25 +476,43 @@
                       MessageBox('提示', '获取地理位置失败');
                     }
                   });
+
                   // 创建地图
-                  let map = new AMap.Map('amapContainer', {
-                    zoom: 16,//级别
-                    center: lnglat,//中心点坐标
-                    dragEnable: false, //是否可拖拽
-                    doubleClickZoom: false,//是否双击放大
-                    touchZoom: false,//移动端多指触控放大缩小
+//                  let map = new AMap.Map('amapContainer', {
+//                    zoom: 16,//级别
+//                    center: lnglat,//中心点坐标
+//                    dragEnable: false, //是否可拖拽
+//                    doubleClickZoom: false,//是否双击放大
+//                    touchZoom: false,//移动端多指触控放大缩小
+//                  });
+//                  // 标记当前位置
+//                  let marker = new AMap.Marker({
+//                    map: map,
+//                    position: lnglat,
+//                  });
+
+                  //静态地图路径
+                  let url = 'http://restapi.amap.com/v3/staticmap?location=' + lnglat[0] + ',' + lnglat[1] + '&zoom=16&size=240*180&markers=small,0xFF0000,:' + lnglat[0] + ',' + lnglat[1] + '&key=d13d68aaba61ec414fe228c9bbfbaa4d';
+                  getUrlBase64(url, 'png', (base64) => {
+                    self.amapImg = base64;
                   });
-                  // 标记当前位置
-                  let marker = new AMap.Marker({
-                    map: map,
-                    position: lnglat,
-                    offset: new AMap.Pixel(-10, -26),
-                    icon: new AMap.Icon({
-                      size: [20, 26],  //图标大小
-                      image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAABOCAYAAAB8FnW4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowMDk2RkJEMTZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowMDk2RkJEMjZCMDMxMUU4QUEzRUVGQTY3MzA1RUMxNCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAwOTZGQkNGNkIwMzExRThBQTNFRUZBNjczMDVFQzE0IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAwOTZGQkQwNkIwMzExRThBQTNFRUZBNjczMDVFQzE0Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+luEmRAAABdlJREFUeNrcnGlsFVUYhr8OS8TQ1iUmXY0mAt0kSAUa0R8Yq5FfKilEY/WHe1TcKkIhUYEU0iKSCjHRKHHDgDEQo/6w0SgGpAsCsbRQiBu0LGlcqxQtre/rnEsuN13mzndmeoc3eUNye+93zjNnX4a0gVtvkYB0ATwDngkXw5PgLDgDnghfCJ+Gf4O74R/gg/A+eAf8fRCZSrMMnAnPg++A5xgov/oR/hjebB7AQCoBT4OfgivgCQEUDEt+A/wm/JcmkKPMSAG8Ff4WvicgWGoKXG+qPR/suLCBCVZj2tttrCkSji6D18J74BvCAp5mQJfA42V0xE7wKwM/LkjgR+FvTI872koz1Xs7nG8bmMFfgteb4SaVVGYKodgW8Bj4LfhpSV3lmpK+1gbwK3ClpL4ugT8dqbmNBLwKfkSiI/biX5gSTxr4dnixRE95ZnY2PhngK8ysJqqaDT/vFZifvQNfJNHWc4N1YoMBPwRfL9HXGNPhpg0HfDG8Qs4flSWOMGMTvlAFX2p3PoQHXFyCVTGWxUVFIjk5WA2nu3/r+VOkq0ukrV2kqVFkfysWgQO2odmWN8F9ictDttmf4XRroOU3i8xf4EJ6EeG3oINt+Mw2ODIhWxKBWbp1VsJnZWFAqxaZPNnf7zs6RFZjMXb8uC3gnabnPtuG2bAftBJ66lSRdfX+YSn+ljFKrrYFfB1cGA9cZmUFNL1UZCVKJiNDn0XGqMFEr7TUFvT8eOB5+vkNJjhLl6EbHGuv5TFW9TI3tl5z44HnqkI5CFO1SGRCADs8jMnYjnY3SlhVMhglJ1a/feumcl2b9dKmy8ttTERmO6b96oYfDj1Bq2KBm5aylyHwdFWIkhLv46xGTINp6TSFwAWqEDNmhjdR1Kd1lWOWgv5VWBQecEGhNkKeM9zugCfl5oQHnJerjfB/L52pCjExPTxgfVqZjoR3apAK6iVwtyoEl3hhSZ9WN4GPqUJ0doUHfLRTG+EYgfepQrS3hwd8QJ3WXgI3qUI0N4YH3NykjdBI4K9VIVpb3Z2KoMU0mJZO2wl8wNifuBXzwebggZmGbtunDT4UW3N9pMpMQwNCdQQHe/iQm4ZO2+LXw++rQvX3i6ypEzl1yj4sY9bVumno9F488F64RRXuyBGRVTUifX32YBmLMRlbpx2mSp+zEf+GOoMtzSLLX7RT0ozBWIyp11m2+G1aXhbjo9SfKeXnizy7CIuxSf7bLKuxvmSpE/CVfISJJdwDv2qlKjKjTywUWfcy5jZJTOT4Xf6Gv7UDS62PwSaWMJUt7g04e7dzYkcts2a5Ry3Z2ecetRCyDc2rMZCjFhbi5fCvsQ8S91RZHBvFPUG0IwK0fuc6fG2Ih02s0jGtFPfSZ9T1B1yb+OFgwEfh188DYHQG8osXYKrG1P+oiqdwawf7w1DAbMtrIgy82FRpz8AUj067IgjLmcrbQ/1xOOC/4eqIwXJMWyjDXCYf6YSKT2pXhIBHzK/j4Yk9Bp+JAGyPlxrp5QxyN/xaBICXe+lzvB66Vot2dzNY7TbjrtgC5qs2T6Yo7L/w/WKuJdkCpnjt55MUBK41GxhiG5h6GP49hWC5UZ3UzcFkgTnPrkoR2H5TlU8HCRzbLvk8BYC5sN+Z7I/8AHNsvs90ZKMlvqm2xM8P/d4F+gl+fBR75Uoz9Q0NmHpX3Kv2YWuFWSBI2MAUXwDpDBF2l1mry2gBc7/oXrH0qquHuXKldl7vWMgIe+z6EICfgQ9rgziWMsMdhj0Bwn5oawFjC7gXvlOC2QfjiPCArWCOxYwdNFNPm+KC4C5J2FtOFWCKR5IbLcZ7wc9sKkxgMTskNm668B3C1bYzFwQwZ0AVfmdCRidtDEFhAVP7FR0NV0F3S0BbxEEBU5vMiiZZcSbVEFSmggSOTRaS6XS+NB2VRBX4H3HfCjvp4bsnzBB0JsrAsV2SOebfocT/kORGCWFnNAxgijdo+JrZUnFvC/WaWVmL+ewa853A9Z8AAwCGM11KNsnUzQAAAABJRU5ErkJggg==',
-                      imageSize: [20, 26],
-                    })
-                  });
+                  //传入图片路径，返回base64
+                  function getUrlBase64(url, ext, callback) {
+                    let canvas = document.createElement("canvas");   //创建canvas DOM元素
+                    let ctx = canvas.getContext("2d");
+                    let img = new Image;
+                    img.crossOrigin = 'Anonymous';
+                    img.src = url;
+                    img.onload = function () {
+                      canvas.height = 160; //指定画板的高度,自定义
+                      canvas.width = 240; //指定画板的宽度，自定义
+                      ctx.drawImage(img, 0, 0, 240, 160, 0, 0, 240, 160); //参数可自定义
+                      let dataURL = canvas.toDataURL("image/" + ext);
+                      callback.call(this, dataURL); //回掉函数获取Base64编码
+                      canvas = null;
+                    };
+                  }
+
                   let scopes = [];//考勤地点区域内半径
                   // 获取考勤地点经纬度集合
                   self.searchLocationArray = (rt => {
@@ -529,8 +537,7 @@
                 cancel: function (res) {
                   //判断是不是安卓苹果
                   let u = navigator.userAgent;
-                  let isAndroid = '0';
-                  isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                  let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
                   self.showBtnContent = false;
                   if (isAndroid) {
                     MessageBox('提示', '您拒绝了获取定位请求，只有允许才能进行打卡');
@@ -566,16 +573,8 @@
           longitude: this.longitude,
           latitude: this.latitude,
           wifi: this.wifiIP,
-          map: this.amapImg
+          map: this.amapImg.split(',')[1]
         };
-//        let updakaObj = {
-//          isRange: false,
-//          location: '创意产业园1',
-//          longitude: 116.397428,
-//          latitude: 39.90923,
-//          wifi: '',
-//          map: this.amapImg
-//        };
         let url = '/api/v1.0/client/punchCardLog';
         if (this.updateState) {
           url = '/api/v1.0/client/updatePunchCardLog';
@@ -601,7 +600,7 @@
   #signIn-wrapper {
     position: relative;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background-color: #ffffff;
     .clearFix {
       &:before {
@@ -618,9 +617,6 @@
     }
     .mr5 {
       margin-right: 5px;
-    }
-    .mt1 {
-      margin-top: 1px;
     }
     .vam {
       vertical-align: middle;
@@ -713,6 +709,10 @@
                 text-align: center;
                 border-radius: 4px;
               }
+              .signIn-article_location {
+                display: inline;
+                vertical-align: middle;
+              }
               .article-tab {
                 font-size: 14px;
                 padding: 3px 0;
@@ -761,7 +761,7 @@
               }
             }
             .img_map {
-              width: 100%;
+              width: 240px;
             }
           }
           .signIn-article-top {

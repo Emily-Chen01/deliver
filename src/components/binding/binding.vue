@@ -54,13 +54,9 @@
     <mt-popup
       v-model="errorModel"
       class="binding-Bomb"
-      closeOnClickModal="true">
+      :closeOnClickModal="true">
       <div class="binding-Bomb-imgBox">
         <img :src="imgSrc.bg2" class="alertImages"/>
-      </div>
-      <div v-if="noneModel" class="binding-Bomb-main">
-        <p class="fs13">抱歉!</p>
-        <p class="fs12">没有找到您的员工记录,请联系您的HR</p>
       </div>
       <div v-if="alertMessageShow" class="binding-Bomb-main">
         <p class="fs12" v-text="alertMessage"></p>
@@ -91,7 +87,6 @@
         yanzheng: '获取验证码',//验证码
         YZdisabled: false,
         errorModel: false, //错误弹框
-        noneModel: false, //没有员工
         alertMessage: '', //进行赋值的错误信息
         alertMessageShow: true,
         verCode: '',//图形验证码
@@ -127,9 +122,7 @@
               timer1 = setInterval(settime, 1000);
               this.setCookie('iphoneNumber', this.phoneNumber, 365);
             } else if (response.body.code === 500) {
-              this.errorModel = true;
-              this.noneModel = true;
-              this.alertMessageShow = false; //动态赋值信息false
+              this.popupBomb(response.body.message);
             } else if (response.body.code === 1000) {
               this.verCodeShow = true;
               this.verCode = response.body.result;
@@ -200,7 +193,6 @@
       popupBomb(message){
         this.alertMessageShow = true;
         this.errorModel = true;
-        this.noneModel = false; //隐藏没有记录
         this.alertMessage = message;
       },
       // 验证图形验证码
