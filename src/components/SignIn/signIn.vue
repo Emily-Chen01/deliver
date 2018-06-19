@@ -68,7 +68,7 @@
                     v-text="'地理位置: '+ (punch.owLocation ? (punch.owLocation+'附近') : '')"></span>
             </p>
             <p align="left">
-              <img class="img_map" :src="punch.twMap">
+              <img class="img_map" :src="punch.owMap">
             </p>
             <p v-if="punch.owOutside || punch.owStatus">
             <span class="article-tab article-tab-sq" v-if="punch.owOutside || punch.owStatus===1 || punch.owStatus===3"
