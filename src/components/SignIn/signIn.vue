@@ -54,7 +54,7 @@
             </p>
           </div>
           <div class="signIn-article-bottom"
-               v-if="punchClock(punch.owStatus) && (punchCardInfo.attendRuleUid==='1'|| punchCardInfo.attendRuleUid==='2')">
+               v-if="punchClock(punch.owStatus) && (punchCardInfo.attendRuleUid==='1'|| punchCardInfo.attendRuleUid==='2'||punchCardInfo.attendRuleUid==='5'|| punchCardInfo.attendRuleUid==='6')">
             <p>
               <span v-text="'下班时间 '+punchTime(punch.owTime)"></span>
               <span class="article-tab article-tab-zc" v-if="punch.owStatus===0 || punch.owStatus===2">正常</span>
@@ -147,7 +147,7 @@
     <mt-popup
       v-model="popupVisible"
       class="punch-success-wrapper"
-      closeOnClickModal="false">
+      :closeOnClickModal="false">
       <div class="punch-success-box" v-if="popupVisible">
         <div class="punch-success-header">
           <div class="punch-success-headerLeft"></div>
@@ -158,51 +158,56 @@
           <div class="punch-success-img">
             <img :src="imgSrc.alertHeader">
           </div>
-          <p class="punch-success-time"
-             v-text="(punchCardInfo.status===false || punchCardInfo.attendRuleUid === '3')?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
-          <div class="punch-success-tab" v-if="punchCardInfo.status===false">
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-zc"
-                       v-if="punchCardSuccess.punchCardLogs.twStatus===0">
-              <span>打卡正常</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-cd"
-                       v-if="punchCardSuccess.punchCardLogs.twStatus===1">
-              <span>您迟到了</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-kg"
-                       v-if="punchCardSuccess.punchCardLogs.twStatus===2">
-              <span>旷工打卡</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-qyw"
-                       v-if="punchCardSuccess.punchCardLogs.twOutside">
-              <span>区域外</span>
-            </mt-button>
-          </div>
-          <div class="punch-success-tab" v-else>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-zc"
-                       v-if="punchCardSuccess.punchCardLogs.owStatus===0 || punchCardSuccess.punchCardLogs.owStatus===2">
-              <span>打卡正常</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-kg"
-                       v-if="punchCardSuccess.punchCardLogs.owStatus===3">
-              <span>旷工打卡</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-zt"
-                       v-if="punchCardSuccess.punchCardLogs.owStatus===1">
-              <span>早退</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-qyw"
-                       v-if="punchCardSuccess.punchCardLogs.owOutside">
-              <span>区域外</span>
-            </mt-button>
+          <div>
+            <p v-if="updatePunchCard.updateState" class="punch-success-time"
+               v-text="(updatePunchCard.startWork===0)?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
+            <p v-if="!updatePunchCard.updateState" class="punch-success-time"
+               v-text="(punchCardInfo.status===false || punchCardInfo.attendRuleUid === '3')?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
+            <div class="punch-success-tab"
+                 v-if="punchCardInfo.status===false||(updatePunchCard.updateState && updatePunchCard.startWork===0) || punchCardInfo.attendRuleUid === '3'">
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===0">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-cd"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===1">
+                <span>您迟到了</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===2">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.twOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
+            <div class="punch-success-tab" v-else>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===0 || punchCardSuccess.punchCardLogs.owStatus===2">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===3">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zt"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===1">
+                <span>早退</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.owOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
           </div>
         </div>
         <div class="punch-success-btn" @click="knowFunction">
@@ -226,6 +231,11 @@
     components: {MtButton},
     data(){
       return {
+        updatePunchCard: {//更新打卡信息记录
+          updateState: false,//判断是否更新打卡
+          punchCardUid: '',//更新打卡的数据id
+          startWork: null,//更新打卡的上下班场次,0上班1下班
+        },
         punchCardInfo: {//获取打卡信息记录
           locations: [],
           punchCardLogs: []
@@ -254,9 +264,6 @@
         twRange: '', //记录打卡时，所在的地址
         showHide: false,//是否显示全部打卡信息
         amapImg: '',//地图截图
-        updateState: false,//判断是否更新打卡
-        punchCardUid: '',//更新打卡的数据id
-        startWork: null,//更新打卡的上下班场次
       }
     },
     created(){
@@ -284,7 +291,15 @@
             }
             if (state) {
               this.punchCardSuccess = JSON.parse(JSON.stringify(this.punchCardInfo));
-              this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs.length ? this.punchCardInfo.punchCardLogs[this.punchCardInfo.punchCardLogs.length - 1] : {};
+              if (this.updatePunchCard.updateState) {
+                for (let i = 0; i < this.punchCardInfo.punchCardLogs.length; i++) {
+                  if (this.updatePunchCard.punchCardUid === this.punchCardInfo.punchCardLogs[0].uid) {
+                    this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs[0];
+                  }
+                }
+              } else {
+                this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs.length ? this.punchCardInfo.punchCardLogs[this.punchCardInfo.punchCardLogs.length - 1] : {};
+              }
               this.popupVisible = true;
               this.showBtnContent = false;
             }
@@ -350,9 +365,9 @@
       },
       //更新打卡
       updatePunch(data){
-        this.updateState = true;
-        this.punchCardUid = data.punchCardUid;
-        this.startWork = data.startWork;
+        this.updatePunchCard.updateState = true;
+        this.updatePunchCard.punchCardUid = data.punchCardUid;
+        this.updatePunchCard.startWork = data.startWork;
         this.handerClickEvent();
       },
       //取消弹框按钮
@@ -369,6 +384,7 @@
       knowFunction(){
         this.popupVisible = false;
         this.qulocation = false;
+        this.updatePunchCard.updateState = false;//更新打卡状态
       },
       //提交申请跳转路由开始
       submitApplyRouter(type){
@@ -555,11 +571,10 @@
           map: this.amapImg.split(',')[1]
         };
         let url = '/api/v1.0/client/punchCardLog';
-        if (this.updateState) {
+        if (this.updatePunchCard.updateState) {
           url = '/api/v1.0/client/updatePunchCardLog';
-          updakaObj.punchCardUid = this.punchCardUid;
-          updakaObj.startWork = this.startWork;
-          this.updateState = false;
+          updakaObj.punchCardUid = this.updatePunchCard.punchCardUid;
+          updakaObj.startWork = this.updatePunchCard.startWork;
         }
         this.$http.post(url, updakaObj).then(response => { //打卡
           if (response.body.code === 200) {
