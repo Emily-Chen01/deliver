@@ -51,7 +51,7 @@ Vue.http.interceptors.push(function (request, next) {
   // continue to next interceptor
   next(response => {
     if (response.body.code === 4001) {
-      console.log('inter', response.body.message);
+      // console.log('inter', response.body.message);
       router.push({path: 'index'});
     }
   });
