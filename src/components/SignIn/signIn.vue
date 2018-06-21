@@ -99,9 +99,7 @@
     </div>
     <!--打卡区域-->
     <div class="Punch-btn-wrapper" v-if="punchCardInfo.isNeed && !showHide">
-      <div class="Punch-btn-bg">
-        <img :src="showBtnContent ? imgSrc.bg1 : imgSrc.bg">
-      </div>
+      <div class="Punch-btn-bg" :class="showBtnContent ? 'Punch-btn-bg1':'Punch-btn-bg0'"></div>
       <mt-button class="Punch-btn-btn" type="primary" :disabled="showBtnContent"
                  @click="handerClickEvent">
         <p v-text="showBtnContent ? '正在获取' : (punchCardInfo.status ? '上班打卡' : '下班打卡')"></p>
@@ -255,8 +253,6 @@
         punTime: moment(new Date()).format(df2),//地图弹框中的时间
         imgSrc: {
           header: require('../../assets/tx.png'), // 员工头像
-          bg: require('../../assets/0_gif.gif'), // 打卡按钮背景1
-          bg1: require('../../assets/0_gif1.gif'), // 打卡按钮背景2
           alertHeader: require('../../assets/pic_check in.png'), // 打卡成功弹框中的图标
         },
         outsideObtainValue: false, //获取的经纬度，判断是否区域内，true是区域外，false区域内
@@ -669,18 +665,15 @@
     }
     .signIn-middle {
       position: relative;
-      padding-top: 60px;
-      height: 250px;
+      padding-top: 100px;
+      height: 210px;
       overflow-y: hidden;
       .signIn-article {
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        padding: 25px 0;
         margin-bottom: 20px;
         .signIn-article-right {
-          position: absolute;
-          top: 25px;
           text-align: left;
           box-sizing: border-box;
           padding: 0 15px 0 25px;
@@ -730,7 +723,6 @@
                 background-color: #20a2ff;
               }
               .article-tab-sx {
-                /*line-height: 22px;*/
                 font-size: 10px;
                 background-color: #f08c60;
               }
@@ -785,6 +777,9 @@
             margin-top: -20px;
           }
         }
+      }
+      .signIn-article:last-child{
+        margin-bottom: 50px;
       }
       .signIn_mask {
         position: absolute;
@@ -843,10 +838,14 @@
         margin: 0 auto;
         width: 250px;
         height: 250px;
-        img {
-          width: 100%;
-          height: 100%;
-        }
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+      .Punch-btn-bg0{
+        background-image: url('../../assets/0_gif.gif');
+      }
+      .Punch-btn-bg1{
+        background-image: url('../../assets/0_gif1.gif');
       }
       .Punch-btn-btn {
         position: absolute;

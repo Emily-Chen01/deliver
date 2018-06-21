@@ -1214,7 +1214,7 @@
                     break;
                 }
               });
-              console.log('this.staffRecordInfo', this.staffRecordInfo)
+//              console.log('this.staffRecordInfo', this.staffRecordInfo)
               if (
                 this.staffInfoName["podoMessage"] &&
                 typeof this.staffInfoName["podoMessage"].typeOfDemicile ===
