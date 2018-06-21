@@ -44,7 +44,7 @@
             <h3>加班时长</h3>
             <p><span>平日加班:</span><span>{{item.overworkTime}}小时</span></p>
             <p><span>周末加班:</span><span>{{item.overworkTime}}小时</span></p>
-            <p><span>假日加班:</span><span>{{item.overworkTime}}小时</span></p>
+            <p><span>节假日加班:</span><span>{{item.overworkTime}}小时</span></p>
           </div>
           <div class="marginTop10">
             <h3>事由</h3>

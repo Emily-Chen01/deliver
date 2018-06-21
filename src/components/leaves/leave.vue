@@ -153,7 +153,9 @@
               </div>
               <div v-if="item.overworkTime" class="marginTop10">
                 <h3>加班时长</h3>
-                <p>{{item.overworkTime}}小时</p>
+                <p><span>平日加班：</span><span v-text="queryOverworkTime(item.workTime,0)+'小时'"></span></p>
+                <p><span>周末加班：</span><span v-text="queryOverworkTime(item.workTime,1)+'小时'"></span></p>
+                <p><span>节假日加班：</span><span v-text="queryOverworkTime(item.workTime,2)+'小时'"></span></p>
               </div>
               <div class="marginTop10">
                 <h3>事由</h3>
@@ -275,7 +277,7 @@
         applyData: {
           approvalConfigUid: '',//申请分类
           leaveUid: '',// 假期类型uid
-          startTime:'', //开始时间value
+          startTime: '', //开始时间value
           endTime: '', //结束时间value
           image: '',//附件
           remarks: '',//备注
@@ -314,8 +316,7 @@
 //        console.log('假期分类 error callback');
       });
     },
-    watch: {
-    },
+    watch: {},
     methods: {
       //添加加班时间段
       addTime(){
@@ -354,16 +355,16 @@
         let status;
         switch (state) {
           case 0:
-            status='审批中';
+            status = '审批中';
             break;
           case 1:
-            status='已通过';
+            status = '已通过';
             break;
           case 2:
-            status='未通过';
+            status = '未通过';
             break;
           case 3:
-            status='已撤回';
+            status = '已撤回';
             break;
         }
         return status;
@@ -528,6 +529,16 @@
 //          console.log('error callback');
           });
         });
+      },
+      //格式化加班时长
+      queryOverworkTime(arr, type){
+        let time = 0;
+        arr.map(item => {
+          if (item.type === type) {
+            time = item.time;
+          }
+        });
+        return time;
       }
     },
     components: {},
