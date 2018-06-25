@@ -49,7 +49,7 @@
               <span class="article-tab article-tab-sx article-tab-sq"
                     @click="updatePunch({punchCardUid:punch.uid,startWork:0})">
                 <i class="icon_bg_signInImg bg-icon_gengxin"></i>
-                更新当前打卡记录(已前时间地点作为记录)
+                更新当前打卡记录(以当前时间地点作为记录)
               </span>
             </p>
           </div>
@@ -80,7 +80,7 @@
               <span class="article-tab article-tab-sx article-tab-sq"
                     @click="updatePunch({punchCardUid:punch.uid,startWork:1})">
                 <i class="icon_bg_signInImg bg-icon_gengxin"></i>
-                更新当前打卡记录(已前时间地点作为记录)
+                更新当前打卡记录(以当前时间地点作为记录)
               </span>
             </p>
           </div>
