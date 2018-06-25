@@ -238,7 +238,7 @@
   import moment from 'moment'
 
 
-  let df = 'YYYY-MM-DD HH:mm';
+  let df = 'YYYY/MM/DD HH:mm';
 
   export default {
     data(){
@@ -375,15 +375,19 @@
         if (type === 0) {
           if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].startTime) {
             this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
-          } else {
+          } else if (this.selectedDataApply === 3) {
             this.startTimeValue1 = new Date();
+          } else {
+            this.startTimeValue1 = this.startTimeValue ? this.startTimeValue : new Date();
           }
           this.$refs.picker0.open();
         } else {
           if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].endTime) {
             this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
-          } else {
+          } else if (this.selectedDataApply === 3) {
             this.endTimeValue1 = new Date();
+          } else {
+            this.endTimeValue1 = this.endTimeValue ? this.endTimeValue : new Date();
           }
           this.$refs.picker1.open();
         }
