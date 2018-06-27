@@ -781,12 +781,14 @@
                       <p v-else-if="item.jname==='dateOfBirth'" class="pl10" :class="{'fc-bbb':!item.isedit}"
                          v-text="datefmt(staffInfoName[item.jname])"></p>
                       <select v-else-if="item.jname==='nation'" :disabled="!item.isedit"
-                              v-model="staffInfoName[item.jname]" :class="{'option-color':!staffInfoName[item.jname]}">
+                              v-model="staffInfoName[item.jname]" @change="removeColor"
+                              :class="{'option-color':!staffInfoName[item.jname]}">
                         <option :value="''||null" disabled>请选择{{item.remark}}</option>
                         <option v-for="(v, k) in nations" :key="k" v-text="v.name" :value="v.id"></option>
                       </select>
                       <select v-else-if="item.jname==='maritalStatus'" :disabled="!item.isedit"
-                              v-model="staffInfoName[item.jname]" :class="{'option-color':!staffInfoName[item.jname]}">
+                              v-model="staffInfoName[item.jname]" @change="removeColor"
+                              :class="{'option-color':!staffInfoName[item.jname]}">
                         <option :value="''||null" disabled>请选择{{item.remark}}</option>
                         <option v-for="(v, k) in maritalStatuses" :key="k" v-text="v.name" :value="v.id"></option>
                       </select>
@@ -885,8 +887,10 @@
                           v-text="(staffStatus && item.value > -1) ? staffStatus[item.value].name : '待入职'"></span>
                     <span v-else-if="item.jname==='reporterJobNumber'">
                       <p v-if="!item.value.isEmail" v-text="reportPerson"></p>
-                      <ul v-if="item.value.isEmail&&item.value.reporterJobNumber&&item.value.reporterJobNumber.length" style="list-style-type: none">
-                        <li v-for="(email,eIndex) in item.value.reporterJobNumber" v-text="'第'+ (eIndex+1) +'级：'+ email.mail"></li>
+                      <ul v-if="item.value.isEmail&&item.value.reporterJobNumber&&item.value.reporterJobNumber.length"
+                          style="list-style-type: none">
+                        <li v-for="(email,eIndex) in item.value.reporterJobNumber"
+                            v-text="'第'+ (eIndex+1) +'级：'+ email.mail"></li>
                       </ul>
                     </span>
                     <span v-else v-text="item.value"></span>
@@ -1849,7 +1853,11 @@
             data.time.replace(/-/g, "/")
           ).getTime();
         }
-      }
+      },
+      //民族和婚姻状态有值后删除class option-color
+      removeColor(e){
+        e.currentTarget.classList.remove('option-color')
+      },
     },
     mounted: function () {
       Vue.Promise
