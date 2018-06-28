@@ -778,7 +778,7 @@
           }
         }
       }
-      .signIn-article:last-child{
+      .signIn-article:last-child {
         margin-bottom: 50px;
       }
       .signIn_mask {
@@ -834,6 +834,7 @@
       top: 350px;
       box-sizing: border-box;
       width: 100%;
+      background-color: #ffffff;
       .Punch-btn-bg {
         margin: 0 auto;
         width: 250px;
@@ -841,10 +842,10 @@
         background-size: 100% 100%;
         background-repeat: no-repeat;
       }
-      .Punch-btn-bg0{
+      .Punch-btn-bg0 {
         background-image: url('../../assets/0_gif.gif');
       }
-      .Punch-btn-bg1{
+      .Punch-btn-bg1 {
         background-image: url('../../assets/0_gif1.gif');
       }
       .Punch-btn-btn {
