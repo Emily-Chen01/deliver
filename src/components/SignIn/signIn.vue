@@ -156,13 +156,60 @@
           <div class="punch-success-img">
             <img :src="imgSrc.alertHeader">
           </div>
-          <div>
-            <p v-if="updatePunchCard.updateState" class="punch-success-time"
+          <div v-if="updatePunchCard.updateState">
+            <p class="punch-success-time"
                v-text="(updatePunchCard.startWork===0)?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
-            <p v-if="!updatePunchCard.updateState" class="punch-success-time"
+            <div class="punch-success-tab"
+                 v-if="updatePunchCard.updateState && updatePunchCard.startWork===0">
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===0">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-cd"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===1">
+                <span>您迟到了</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===2">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.twOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
+            <div class="punch-success-tab" v-else>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===0 || punchCardSuccess.punchCardLogs.owStatus===2">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===3">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zt"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===1">
+                <span>早退</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.owOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
+          </div>
+          <div v-else>
+            <p class="punch-success-time"
                v-text="(punchCardInfo.status===false || punchCardInfo.attendRuleUid === '3')?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
             <div class="punch-success-tab"
-                 v-if="punchCardInfo.status===false||(updatePunchCard.updateState && updatePunchCard.startWork===0) || punchCardInfo.attendRuleUid === '3'">
+                 v-if="punchCardInfo.status===false|| punchCardInfo.attendRuleUid === '3'">
               <mt-button type="default"
                          class="punch-success-tabHeight article-tab-zc"
                          v-if="punchCardSuccess.punchCardLogs.twStatus===0">
