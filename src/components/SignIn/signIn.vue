@@ -336,8 +336,8 @@
               this.punchCardSuccess = JSON.parse(JSON.stringify(this.punchCardInfo));
               if (this.updatePunchCard.updateState) {
                 for (let i = 0; i < this.punchCardInfo.punchCardLogs.length; i++) {
-                  if (this.updatePunchCard.punchCardUid === this.punchCardInfo.punchCardLogs[0].uid) {
-                    this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs[0];
+                  if (this.updatePunchCard.punchCardUid === this.punchCardInfo.punchCardLogs[i].uid) {
+                    this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs[i];
                   }
                 }
               } else {
@@ -436,7 +436,6 @@
       },
       //获取wifi地址
       okClickWifi(){
-        this.wifiPopup = true;
         if (returnCitySN["cip"]) {//获取IP
           this.wifiIP = returnCitySN["cip"];
           this.qulocation = false;
@@ -448,6 +447,7 @@
       },
       // 获取位置信息
       okClickEvent(){
+        this.wifiPopup = false;
         this.showBtnContent = true;
         let self = this;
         let curl;
