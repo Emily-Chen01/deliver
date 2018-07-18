@@ -31,11 +31,8 @@
                 <img :src="'data:image/jpg;base64,'+verCode" width="100%" height="100%" alt="">
               </div>
             </el-col>
-            <el-button type="primary" @click.native="submitVerCode" class="binding-main-btn mt20 fs12">验证图形验证码
-
-
-
-
+            <el-button type="primary" @click.native="submitVerCode" class="binding-main-btn mt20 fs12">
+              <span>验证图形验证码</span>
             </el-button>
           </el-form-item>
           <el-form-item>
@@ -118,6 +115,7 @@
                   self.yanzheng = "重新发送(" + countdown + ")";
                 }
               }
+
               //获取验证码倒计时
               timer1 = setInterval(settime, 1000);
               this.setCookie('iphoneNumber', this.phoneNumber, 365);

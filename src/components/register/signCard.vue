@@ -28,7 +28,7 @@
       <!--中间选项列表-->
       <div id="record-list-wrapper">
         <div @click="changeList(0)">
-          <mt-cell title="请假申请" is-link>
+          <mt-cell title="考勤审批" is-link>
             <span v-text="recordShow.apply ? recordShow.apply : '当前无申请记录'"></span>
             <!--<i slot="icon" class="bg-img ico_leave"></i>-->
             <i slot="icon" class="icon_bg_homeImg bg-ico_leave"></i>

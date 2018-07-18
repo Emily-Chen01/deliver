@@ -24,7 +24,9 @@
               <i class="icon_bg_signInImg bg-ico_off"></i>
             </div>
             <p>
-              <span v-text="'上班时间 '+punchTime(punch.twTime)"></span>
+              <span v-text="'上班时间： '+punchTime(punch.twTime)"></span>
+            </p>
+            <p>
               <span class="article-tab article-tab-zc" v-if="punch.twStatus===0">正常</span>
               <span class="article-tab article-tab-cd" v-else-if="punch.twStatus===1">迟到</span>
               <span class="article-tab article-tab-kg" v-else-if="punch.twStatus===2">旷工</span>
@@ -33,7 +35,7 @@
             <p>
               <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
               <span class="signIn-article_location"
-                    v-text="'地理位置: '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
+                    v-text="'地理位置： '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
             </p>
             <p align="left">
               <img class="img_map" :src="punch.twMap">
@@ -45,7 +47,6 @@
                     @click="submitApplyRouter(1)">忘打卡</span>
             </p>
             <p>
-
               <span class="article-tab article-tab-sx article-tab-sq"
                     @click="updatePunch({punchCardUid:punch.uid,startWork:0})">
                 <i class="icon_bg_signInImg bg-icon_gengxin"></i>
@@ -56,7 +57,9 @@
           <div class="signIn-article-bottom"
                v-if="punchClock(punch.owStatus) && (punchCardInfo.attendRuleUid==='1'|| punchCardInfo.attendRuleUid==='2'||punchCardInfo.attendRuleUid==='5'|| punchCardInfo.attendRuleUid==='6')">
             <p>
-              <span v-text="'下班时间 '+punchTime(punch.owTime)"></span>
+              <span v-text="'下班时间： '+punchTime(punch.owTime)"></span>
+            </p>
+            <p>
               <span class="article-tab article-tab-zc" v-if="punch.owStatus===0 || punch.owStatus===2">正常</span>
               <span class="article-tab article-tab-zt" v-else-if="punch.owStatus===1">早退</span>
               <span class="article-tab article-tab-kg" v-else-if="punch.owStatus===3">旷工</span>
@@ -65,7 +68,7 @@
             <p>
               <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
               <span class="signIn-article_location"
-                    v-text="'地理位置: '+ (punch.owLocation ? (punch.owLocation+'附近') : '')"></span>
+                    v-text="'地理位置： '+ (punch.owLocation ? (punch.owLocation+'附近') : '')"></span>
             </p>
             <p align="left">
               <img class="img_map" :src="punch.owMap">
@@ -272,6 +275,7 @@
   let df = 'HH:mm:ss';
   let df1 = 'YYYY年MM月DD日';
   let df2 = 'YYYY-MM-DD HH:mm:ss';
+  let df3 = 'YYYY-MM-DD HH:mm:ss';
   export default {
     components: {MtButton},
     data(){
@@ -368,7 +372,7 @@
       },
       //格式化时间
       punchTime(time){
-        return time ? moment(time).format(df) : '';
+        return time ? moment(time).format(df3) : '';
       },
       // 是否显示全部打卡信息
       showHides(){

@@ -171,6 +171,10 @@
                   <span>查看附件</span>
                 </mt-button>
               </div>
+              <div class="marginTop10" v-if="item.status===0&&(item.category===1||item.category===2)">
+                <h3 v-text="item.category===1 ? '当前审批人' : '当前审批邮箱'"></h3>
+                <p v-text="item.category===1 ? item.approvaler : item.email"></p>
+              </div>
             </div>
             <div class="leave-main-content-append leave-main-content-append1 " v-if="item.status===0">
               <mt-button size="small" class="leave-main-content-btn" type="primary" @click="revokes(item.uid)">

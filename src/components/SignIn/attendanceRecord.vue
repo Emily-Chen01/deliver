@@ -46,7 +46,7 @@
 <script>
   import fullCalendar from '@/components/vue-fullcalendar/src/fullCalendar'
   import moment from 'moment'
-  let df = 'HH:mm:ss';
+  let df = 'YYYY/MM/DD HH:mm:ss';
   let df1 = 'YYYY/MM';
   let df2 = 'YYYY/MM/DD';
 

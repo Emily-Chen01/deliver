@@ -33,6 +33,7 @@ module.exports = {
         target: 'http://192.168.140.215:8082/',
         // target: 'http://192.168.140.72:8080/', //keivn的
         // target: 'http://192.168.140.71:8080/',  // start的
+        // target: 'http://123.57.51.45:8080/', // test
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
