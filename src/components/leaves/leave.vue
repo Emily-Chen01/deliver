@@ -151,11 +151,15 @@
                   <span v-text="datefmt(item.startTime)"></span> 至 <span v-text="datefmt(item.endTime)"></span>
                 </p>
               </div>
-              <div v-if="item.overworkTime" class="marginTop10">
+              <div v-if="item.configType===3 && item.overworkTime" class="marginTop10">
                 <h3>加班时长</h3>
                 <p><span>平日加班：</span><span v-text="queryOverworkTime(item.workTime,0)+'小时'"></span></p>
                 <p><span>周末加班：</span><span v-text="queryOverworkTime(item.workTime,1)+'小时'"></span></p>
                 <p><span>节假日加班：</span><span v-text="queryOverworkTime(item.workTime,2)+'小时'"></span></p>
+              </div>
+              <div v-if="!(item.configType===3)" class="marginTop10">
+                <h3>申请时长</h3>
+                <p><span v-text="item.days ? item.days : '--'"></span></p>
               </div>
               <div class="marginTop10">
                 <h3>事由</h3>
