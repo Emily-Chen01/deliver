@@ -275,7 +275,7 @@
   let df = 'HH:mm:ss';
   let df1 = 'YYYY年MM月DD日';
   let df2 = 'YYYY-MM-DD HH:mm:ss';
-  let df3 = 'YYYY-MM-DD HH:mm:ss';
+  let df3 = 'YYYY-MM-DD HH:mm';
   export default {
     components: {MtButton},
     data(){
@@ -443,6 +443,10 @@
         if (returnCitySN["cip"]) {//获取IP
           this.wifiIP = returnCitySN["cip"];
           this.qulocation = false;
+          // 加定时器是因为弹框不能立即消失，状态值改变，里面的内容会乱，加个定时器延迟其他状态值改变
+          setTimeout(() => {
+            this.wifiPopup = false;
+          }, 300);
           this.okClickEvent();
         } else {
           this.qulocation = false;
@@ -451,7 +455,6 @@
       },
       // 获取位置信息
       okClickEvent(){
-        this.wifiPopup = false;
         this.showBtnContent = true;
         let self = this;
         let curl;
