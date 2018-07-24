@@ -190,8 +190,8 @@
           this.$http.post('/api/v1.0/client/unbind').then(response => {
             if (response.body.code === 200) {
               Toast({
-                message: '操作成功',
-                iconClass: 'ico_workbench_2'
+                message: '解绑成功',
+                iconClass: 'bg-img ico_success'
               });
               this.$router.push({path: '/binding'});
             }
