@@ -13,10 +13,6 @@
               v-text="arryOneself.record.deptName+' '+arryOneself.record.position"></p>
             <p v-text="arryOneself.record.companyName"></p>
           </div>
-          <div class="header-top-right" @click="routerMyData">
-            <i class="bg-img ico_info"></i>
-            <span>员工信息</span>
-          </div>
         </div>
         <div class="header-bottom" v-if="arryOneself.punchCard">
           <mt-button class="hand-btn" @click="handerSign">
@@ -26,45 +22,22 @@
         </div>
       </div>
       <!--中间选项列表-->
-      <div id="record-list-wrapper">
-        <div @click="changeList(0)">
-          <mt-cell title="考勤审批" is-link>
-            <span v-text="recordShow.apply ? recordShow.apply : '当前无申请记录'"></span>
-            <!--<i slot="icon" class="bg-img ico_leave"></i>-->
-            <i slot="icon" class="icon_bg_homeImg bg-ico_leave"></i>
-          </mt-cell>
-        </div>
-        <div @click="changeList(1)">
-          <mt-cell title="我的考勤" is-link>
-            <span v-text="recordShow.punchCard ? recordShow.punchCard : '本月无考勤异常'"></span>
-            <i slot="icon" class="icon_bg_homeImg bg-ico_attendance"></i>
-          </mt-cell>
-        </div>
-        <div @click="changeList(2)">
-          <mt-cell title="我的工资条" is-link>
-            <span v-text="recordShow.salary ? recordShow.salary : '当前无工资条记录'"></span>
-            <i slot="icon" class="icon_bg_homeImg bg-ico_wage"></i>
-          </mt-cell>
-        </div>
-        <div @click="changeList(3)">
-          <mt-cell title="公司公告" is-link>
-            <span v-text="recordShow.notice ? recordShow.notice : '当前无未读公告'"></span>
-            <i slot="icon" class="icon_bg_homeImg bg-ico_announcement"></i>
-          </mt-cell>
-        </div>
-        <!--<div @click="changeList(4)">-->
-          <!--<mt-cell title="我的任务" is-link>-->
-            <!--<span v-text="'当前无完成任务'"></span>-->
-            <!--<i slot="icon" class="icon_bg_homeImg bg-ico_task"></i>-->
-          <!--</mt-cell>-->
-        <!--</div>-->
-        <!--<div @click="changeList(5)">-->
-          <!--<mt-cell title="我的审批" is-link>-->
-            <!--<span v-text="'当前无审批'"></span>-->
-            <!--<i slot="icon" class="icon_bg_homeImg bg-ico_task"></i>-->
-          <!--</mt-cell>-->
-        <!--</div>-->
-      </div>
+      <ul id="record-list-wrapper">
+        <li class="record-list-item" v-for="(listItem, listIndex) in listData" :key="listIndex"
+            @click="changeList(listItem.type)">
+          <div class="record-list-item_main">
+
+            <div class="record-list-item_position">
+              <div style="display: inline-block;position: relative;">
+                <p class="record-list-item_tag" v-if="listItem.num" v-text="listItem.num">1</p>
+                <i class="icon_bg_homeImg" :class="listItem.icon"></i><br/>
+              </div>
+              <p class="mt10" v-text="listItem.name">我的考勤</p>
+            </div>
+          </div>
+        </li>
+        <li class="record-list-item"></li>
+      </ul>
     </div>
     <!--解除绑定-->
     <div v-if="!toolState" id="Binding-wrapper">
@@ -102,12 +75,55 @@
         select: '1',
         state: false,
         arryOneself: {},
+        listData: [// 九宫格数据
+          {
+            name: '考勤审批',
+            icon: 'bg-apply',
+            type: 0,
+            num: 0
+          },
+          {
+            name: '我的考勤',
+            icon: 'bg-attendance',
+            type: 1,
+            num: 0,
+            date: ''
+          },
+          {
+            name: '我的工资条',
+            icon: 'bg-wages',
+            type: 2,
+            num: 0
+          },
+          {
+            name: '公司公告',
+            icon: 'bg-notice',
+            type: 3,
+            num: 0
+          },
+          {
+            code: 'personal',
+            name: '个人信息',
+            icon: 'bg-personal',
+            type: 4,
+            num: 0
+          },
+//          {
+//            name: '我的任务',
+//            icon: 'bg-personal',
+//            type: 5
+//            num:0
+//          },
+//          {
+//            name: '我的审批',
+//            icon: 'bg-personal',
+//            type: 6
+//            num:0
+//          }
+        ],
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
-          ico_pencil: require('../../assets/ico_pencil.png'),
-          ico_info: require('../../assets/ico_info.png')
-        },
-        recordShow: {},
+        }
       }
     },
     watch: {
@@ -123,7 +139,27 @@
       this.state = false;
       Indicator.open('正在加载...');
       this.$http.get('/api/v1.0/client/status').then(response => {
-        this.recordShow = response.body.result;
+        this.listData.map((item) => {
+          switch (item.type) {
+            case 0:
+              item.num = response.body.result.apply;
+              break;
+            case 1:
+              item.num = response.body.result.punchCard;
+              item.date = response.body.result.date;
+              break;
+            case 2:
+              item.num = response.body.result.salary;
+              break;
+            case 3:
+              item.num = response.body.result.notice;
+              break;
+            case 4:
+              break;
+            default:
+              break;
+          }
+        });
       }, response => {
         console.log('error callback');
       });
@@ -155,34 +191,43 @@
         });
       },
       changeList(indexX){
-        if (indexX === 0) {
-          this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
-            if (response.body.code === 200) {
-              if (response.body.result.length === 0) { //此处设置的是在pc端关闭了考勤给出提示关闭了
-                MessageBox('', '您的申请功能已经被管理员关闭了');
-              } else {
-                this.setCookie('leaveType', indexX, 365);
-                this.$router.push({path: '/leave'});
+        switch (indexX) {
+          case 0:
+            this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
+              if (response.body.code === 200) {
+                if (response.body.result.length === 0) { //此处设置的是在pc端关闭了考勤给出提示关闭了
+                  MessageBox('', '您的申请功能已经被管理员关闭了');
+                } else {
+                  this.setCookie('leaveType', indexX, 365);
+                  this.$router.push({path: '/leave'});
+                }
               }
-            }
-          }, response => {
-            console.log('error callback');
-          });
-        } else if (indexX === 1) {
-          this.$router.push({path: '/attendanceRecord'});
-        } else if (indexX === 2) {
-          this.setCookie('mySalaryDate', this.recordShow.date, 365);
-          this.$router.push({path: '/mySalary'});
-        } else if (indexX === 3) {
-          this.$router.push({path: '/notice'});
-        }else if (indexX === 4) {
-          this.$router.push({path: '/task'});
-        }else if (indexX === 5) {
-          this.$router.push({path: '/approve'});
+            }, response => {
+              console.log('error callback');
+            });
+            break;
+          case 1:
+            this.$router.push({path: '/attendanceRecord'});
+            break;
+          case 2:
+            this.setCookie('mySalaryDate', this.listData[1].date, 365);
+            this.$router.push({path: '/mySalary'});
+            break;
+          case 3:
+            this.$router.push({path: '/notice'});
+            break;
+          case 4:
+            this.$router.push({path: '/myData'});
+            break;
+          case 5:
+            this.$router.push({path: '/task'});
+            break;
+          case 6:
+            this.$router.push({path: '/approve'});
+            break;
+          default:
+            break;
         }
-      },
-      routerMyData(){
-        this.$router.push({path: '/MyData'});
       },
       // 解除绑定
       handerUnbundling(){
@@ -209,6 +254,9 @@
 
 <style lang="scss">
   #signCard-wrapper {
+    .mt10 {
+      margin-top: 10px;
+    }
     #bg {
       width: 100%;
       background-image: url("../../assets/bg.png");
@@ -218,7 +266,7 @@
         overflow: hidden;
         box-sizing: border-box;
         width: 100%;
-        padding: 25px 0 20px 95px;
+        padding: 25px 15px 20px 95px;
         text-align: left;
         font-size: 14px;
         color: #ffffff;
@@ -242,34 +290,9 @@
           box-sizing: border-box;
           display: inline-block;
           padding-left: 10px;
-          padding-right: 15px;
           p {
             margin: 0;
             line-height: 24px;
-          }
-          p:first-child {
-            padding-right: 90px;
-          }
-        }
-        .header-top-right {
-          position: absolute;
-          right: 0;
-          margin-top: -5px;
-          padding-right: 15px;
-          height: 30px;
-          border-bottom-left-radius: 15px;
-          border-top-left-radius: 15px;
-          background-color: rgba(26, 128, 204, 0.4);
-          font-size: 0;
-          i {
-            margin: 7px 0 0 15px;
-          }
-          span {
-            display: inline-block;
-            font-size: 14px;
-            line-height: 14px;
-            padding: 8px 0 0 8px;
-            vertical-align: middle;
           }
         }
       }
@@ -290,23 +313,48 @@
 
     #record-list-wrapper {
       margin-top: 13px;
-      border-bottom: 1px solid #d9d9d9;
-      .ImgIcon {
-        margin-right: 8px;
-        width: 19px;
-        height: 19px;
+      font-size: 0;
+      .record-list-item {
+        position: relative;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 33.33%;
+        padding-top: 33.33%;
+        background-color: #ffffff;
+        .record-list-item_main {
+          position: absolute;
+          top: 0;
+          font-size: 14px;
+          color: #333333;
+          height: 100%;
+          width: 100%;
+          line-height: 100%;
+          .record-list-item_position {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100%;
+            transform: translate(-50%, -50%);
+          }
+          .record-list-item_tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 14px;
+            min-width: 14px;
+            padding: 1px;
+            border-radius: 9px;
+            font-size: 10px;
+            background-color: red;
+            color: #ffffff;
+          }
+        }
       }
-      /*覆盖组件原有样式*/
-      .mint-cell {
-        /*border-top: 1px solid #d9d9d9;*/
+      .record-list-item:nth-child(3n) {
+        border-right: none;
       }
-      .mint-cell-text, .mint-cell-value {
-        font-size: 14px;
-      }
-      /*覆盖组件原有样式*/
-      .mint-cell:last-child {
-        background-position: top;
-        text-align: left;
+      .record-list-item:active {
+        background-color: #f7f8fb;
       }
     }
 
