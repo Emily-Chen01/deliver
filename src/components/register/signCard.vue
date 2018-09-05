@@ -10,8 +10,8 @@
           <div class="header-top-center">
             <p v-text="arryOneself.name"></p>
             <p
-              v-text="arryOneself.record.deptName+' '+arryOneself.record.position"></p>
-            <p v-text="arryOneself.record.companyName"></p>
+              v-text="arryOneself.deptName+' '+arryOneself.position"></p>
+            <p v-text="arryOneself.companyName"></p>
           </div>
         </div>
         <div class="header-bottom" v-if="arryOneself.punchCard">
@@ -174,7 +174,7 @@
           if (response.body.code === 200) {
             if (response.body.result) {
               this.arryOneself = response.body.result;
-              this.setCookie('infoObjPassPostion', this.arryOneself.record.deptName, 365);
+              this.setCookie('infoObjPassPostion', this.arryOneself.deptName, 365);
               this.setCookie('infoObjPassName', this.arryOneself.name, 365);
               if (this.arryOneself.staffPhoUrl) {
                 this.imgSrc.comAddress = this.arryOneself.staffPhoUrl;

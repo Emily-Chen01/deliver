@@ -1,0 +1,160 @@
+@import "boxCard";
+.employees-func {
+  //min-width: 1000px;
+  //text-align: left;
+  width: 100%;
+  //padding-top: 30px;
+  .tab-wrapper {
+    height: 32px;
+    position: relative;
+  }
+  .tabs {
+    position: absolute;
+    bottom: -11px;
+    left: 0;
+  }
+  .tab {
+    display: block;
+    height: 42px;
+    line-height: 42px;
+    padding: 0 1em;
+    border: 1px solid #ebeef5;
+    background: #fff;
+    border-radius: 3px 3px 0 0;
+    color: #1F2D3D;
+    &:last-of-type {
+      margin-left: 0.5em;
+    }
+    &:hover {
+      color: #409eff;
+      border-color: #c6e2ff;
+      border-bottom-color: #ecf5ff;
+      background-color: #ecf5ff;
+    }
+    &.on {
+      color: #fff;
+      border-color: #409eff;
+      border-bottom-color: #409eff;
+      background-color: #409eff;
+    }
+  }
+  .employees-func-body {
+    //padding-top: 20px;
+    .header-bar {
+      padding: 0 20px;
+      background: #eee;
+      border-bottom: 1px solid #e3e3e3;
+      font-size: 14px;
+      .el-col {
+        padding-top: 15px;
+        padding-bottom: 12px;
+      }
+      .opt {
+        text-align: right;
+        padding-right: 4px;
+        .el-switch.used {
+          margin-left: 10px;
+          .is-active {
+            color: #F56C6C;
+          }
+        }
+      }
+      .el-checkbox {
+        margin-left: 12px;
+      }
+      .fields-tip {
+        margin-left: 16px;
+      }
+    }
+
+    .field-wrapper {
+      padding: 16px 0 0px 20px;
+      .field-item {
+        float: left;
+        display: block;
+        width: 12.4em;
+        padding: 0 12px;
+        font-size: 12px;
+        height: 30px;
+        line-height: 30px;
+        margin-right: 16px;
+        margin-bottom: 16px;
+
+        color: #606266;
+        border: 1px solid #dcdfe6;
+        background-color: #fff;
+        border-radius: 4px;
+
+        &:hover {
+          color: #409eff;
+          border-color: #c6e2ff;
+          background-color: #ecf5ff;
+        }
+        &.disabled,
+        &.disabled:hover {
+          color: #bcbec2;
+          background-color: #f4f4f5;
+          border-color: #e9e9eb;
+          cursor: default;
+        }
+
+        &.default,
+        &.default:hover {
+          color: #fff;
+          background-color: #909399;
+          border-color: #909399;
+          i {
+            color: #606266;
+          }
+          cursor: default;
+        }
+
+        &.applied {
+          background: #fff;
+          border-color: #409eff;
+          color: #409eff;
+          &:hover {
+            background: #409eff;
+            border-color: #409eff;
+            color: #fff;
+          }
+          &.disabled,
+          &.disabled:hover {
+            color: #8cc5ff;
+            background-color: #ecf5ff;
+            border-color: #d9ecff;
+            cursor: default;
+          }
+        }
+
+        &.custom {
+          color: #909399;
+          background: #f4f4f5;
+          border-color: #d3d4d6;
+          &:hover {
+            background-color: #4db3ff;
+            border-color: #4db3ff;
+            color: #fff;
+          }
+          &.disabled,
+          &.disabled:hover {
+            color: #fff;
+            background-color: #c8c9cc;
+            border-color: #c8c9cc;
+            cursor: default;
+          }
+        }
+
+        .operation-field {
+          margin-right: 0.3em;
+          .edit {
+            color: #67C23A !important;
+          }
+          .delete {
+            color: #F56C6C;
+          }
+        }
+      }
+    }
+  }
+}
