@@ -10,7 +10,7 @@
           <div class="header-top-center">
             <p v-text="arryOneself.name"></p>
             <p
-              v-text="arryOneself.deptName+' '+arryOneself.position"></p>
+              v-text="arryOneself.deptName+' '+(arryOneself.position ? arryOneself.position : '')"></p>
             <p v-text="arryOneself.companyName"></p>
           </div>
         </div>
@@ -32,7 +32,7 @@
                 <p class="record-list-item_tag" v-if="listItem.num" v-text="listItem.num">1</p>
                 <i class="icon_bg_homeImg" :class="listItem.icon"></i><br/>
               </div>
-              <p class="mt10" v-text="listItem.name">我的考勤</p>
+              <p class="mt10" v-text="listItem.name"></p>
             </div>
           </div>
         </li>

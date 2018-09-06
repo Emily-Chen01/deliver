@@ -20,17 +20,19 @@
           v-show="body.uid === actTab">
           <div
             data-level="2"
-            class="part"
+            class="employees-func-part"
             v-for="(part, partIdx) in body.children"
             :key="part.uid">
             <el-row class="header-bar">
               <el-col :span="12" align="left">
-                <span v-text="part.fieldName"></span>
+                <i class="icon_bg_signInImg" :class="`bg-ic_${part.jname}`"></i>
+                <span class="vam" v-text="part.fieldName"></span>
               </el-col>
               <el-col :span="12" class="opt">
-                <a href="javascript:;" @click="toggleFold(part.uid)">
-                  <i :class="{'el-icon-arrow-up': !fold[part.uid], 'el-icon-arrow-down': fold[part.uid]}"></i>
-                  {{ !fold[part.uid] ? '收起' : '展开' }}
+                <a @click="toggleFold(part.uid)">
+                  <i class="icon_bg_signInImg"
+                     :class="{'bg-ic_shouqi': !fold[part.uid], 'bg-ic_zhankai': fold[part.uid]}"></i>
+                  <span class="vam">{{ !fold[part.uid] ? '收起' : '展开' }}</span>
                 </a>
               </el-col>
             </el-row>
@@ -921,7 +923,7 @@
             if (configType === 'province') {
               return this.$http.get('/api/v1.0/common/query/province');
             } else if (configType === '_depts') {
-              return this.$http.get(`/api/v1.0/dept/fundept/staff`)
+              return this.$http.get(`/api/v1.0/client/fundept/staff`)
             } else {
               return this.$http.get(`/api/v1.0/common/config/${configType}`);
             }
@@ -935,20 +937,10 @@
                     this.confItems,
                     configType.toString(),
                     (result => {
-                      if (
-                        this.perm.hasHighRole
-                        || utils.isDeptTreeWalk(this.perm.code)
-                      ) {
-                        return utils.getDE({children: result}).map(dept => {
-                          dept.id = dept.uid;
-                          return dept;
-                        });
-                      } else {
-                        return utils.getDE(result).map(dept => {
-                          dept.id = dept.uid;
-                          return dept;
-                        });
-                      }
+                      return utils.getDE(result).map(dept => {
+                        dept.id = dept.uid;
+                        return dept;
+                      });
                     })(body.result)
                   );
                 } else {
@@ -1106,6 +1098,7 @@
           this.model.mails = rootdata.mails;
           this.model.uid = rootdata.uid;
           this.model.bodies = _.cloneDeep(tmpmodel);
+          console.log('this.model', this.model);
           this.arrangeVein();
           Indicator.close();
         }
@@ -1128,6 +1121,14 @@
 
   #employees-wrapper {
     width: 100%;
+    .vam {
+      vertical-align: middle;
+    }
+    .box-card {
+      border: none;
+      box-shadow: none;
+      margin-bottom: 35px;
+    }
     .tab-wrapper {
       height: 32px;
       position: relative;
@@ -1162,23 +1163,29 @@
       }
     }
     .employees-func-body {
+      .employees-func-part {
+        border-bottom: 5px solid rgb(239, 242, 247);
+      }
       .header-bar {
         padding: 0 20px;
-        background: #eee;
+        /*background: #eee;*/
         border-bottom: 1px solid #e3e3e3;
         font-size: 14px;
+        .header-bar_title {
+          font-weight: bold;
+          font-size: 15px;
+          color: #1f2d3d;
+        }
         .el-col {
-          padding-top: 15px;
-          padding-bottom: 12px;
+          height: 44px;
+          line-height: 44px;
         }
         .opt {
           text-align: right;
           padding-right: 4px;
-          .el-switch.used {
-            margin-left: 10px;
-            .is-active {
-              color: #F56C6C;
-            }
+          span {
+            font-size: 12px;
+            color: #99a9bf;
           }
         }
         .el-checkbox {
@@ -1187,7 +1194,7 @@
       }
       .fieldset-wrapper {
         padding: 20px 20px 0;
-        background: #eff3f7;
+        /*background: #eff3f7;*/
         .field-group {
           overflow: hidden;
           .group-hd {

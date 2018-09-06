@@ -24,6 +24,28 @@
 .bg-ico_to {  width: 22px; height: 22px;  background-position: -5px -87px;  }
 .bg-icon_gengxin {  width: 14px; height: 14px;  background-position: -5px -5px;  }
 
+/*个人信息页*/
+.icon_bg_signInImg{display: inline-block;vertical-align:middle;background:url(../images/myData/icon_bg_myData.png)  no-repeat;background-size:138px 120px;}
+.bg-ic_cardInfo {  width: 24px; height: 24px;  background-position: -33px -3px;  }
+.bg-ic_archive {  width: 24px; height: 24px;  background-position:  -63px -63px;  }
+.bg-ic_education {  width: 24px; height: 24px;  background-position:  -3px -33px;  }
+.bg-ic_salary {  width: 24px; height: 24px;  background-position:  -33px -33px;  }
+.bg-ic_family {  width: 24px; height: 24px;  background-position:  -63px -3px;  }
+.bg-ic_personal {  width: 24px; height: 24px;  background-position:  -63px -33px;  }
+.bg-ic_skill {  width: 24px; height: 24px;  background-position:  -3px -63px;  }
+.bg-ic_emergency {  width: 24px; height: 24px;  background-position:  -33px -63px;  }
+.bg-ic_contact {  width: 24px; height: 24px;  background-position:  -3px -3px;  }
+.bg-ic_train {  width: 24px; height: 24px;  background-position:  -93px -3px;  }
+.bg-ic_socsecFundAccount {  width: 24px; height: 24px;  background-position:  -93px -33px;  }
+.bg-ic_shouqi {  width: 12px; height: 12px;  background-position:  -93px -93px;  }
+.bg-ic_job {  width: 24px; height: 24px;  background-position:  -3px -93px;  }
+.bg-ic_language {  width: 24px; height: 24px;  background-position: -33px -93px;  }
+.bg-ic_duty {  width: 24px; height: 24px;background-position:  -93px -63px;}
+.bg-ic_zhankai {  width: 12px; height: 12px;  background-position:  -123px -3px;  }
+.bg-ic_credential {  width: 24px; height: 24px;  background-position:  -63px -93px;  }
+
+
+
 .bg-img{display: inline-block;vertical-align:middle;background:url(../css_sprites.png)  no-repeat;background-size:168px 157px;}
 .arrow_3_disabled{height:11px;width:7px;background-position:0 0;}
 .arrow_4{height:11px;width:7px;background-position:-10px 0;}
