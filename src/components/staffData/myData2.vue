@@ -1778,7 +1778,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "../../assets/css/employees-func";
+/*@import "../../assets/css/employees-func";*/
 .fieldset-wrapper {
   padding: 20px 20px 0;
   .field-group {
