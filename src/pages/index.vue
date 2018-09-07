@@ -42,12 +42,14 @@
     created() {
       //====获取openidstart  6-2早注释为了本地测试 提交需解除注释---------此处电脑端调试要注释掉
       let _href = window.location.href;
+
       function getUrlParam(url, name) { //获取地址栏的参数
         let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         let r = url.substring(url.indexOf('?') + 1).match(reg);
         if (r !== null) return unescape(r[2]);
         return null;
       }
+
       let openID = getUrlParam(_href, "openid");
       if (openID === null) {
         let path = '/api/v1.0/wechat';
@@ -60,13 +62,13 @@
       this.handerList();        //先查询是否有绑定 有返回手机号
       //====获取openid 结束====
     },
-    watch:{
-      '$route'(to,from){
-        if(to.query.openid){
-          let openID=to.query.openid;
+    watch: {
+      '$route'(to, from){
+        if (to.query.openid) {
+          let openID = to.query.openid;
           this.setCookie('openId', openID, 365);
           this.handerList();
-        }else {
+        } else {
           let path = '/api/v1.0/wechat';
           let protocol = location.protocol;
           let hostname = location.hostname;
@@ -83,7 +85,7 @@
             //初始化查询看是否有是一个公司进行跳转signCard  开始
             this.findCompany(isbingPhone);
           } else {
-              this.$router.push({path: '/binding'});
+            this.$router.push({path: '/binding'});
           }
         }, response => {
           console.log('error callback');
@@ -104,11 +106,12 @@
                 };
                 this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
                   if (response.body.code === 200) {
-                      if (response.body.result === '-1' || response.body.result === '-2') {
-                        this.$router.push({path: '/myData'});
-                      } else {
-                        this.$router.push({path: '/signCard'});
-                      }
+                    this.setCookie('isLowEntry', response.body.result, 365);//员工状态
+                    if (response.body.result === '-1' || response.body.result === '-2') {
+                      this.$router.push({path: '/myData'});
+                    } else {
+                      this.$router.push({path: '/signCard'});
+                    }
                   }
                 }, response => {
 //                  console.log('error callback');

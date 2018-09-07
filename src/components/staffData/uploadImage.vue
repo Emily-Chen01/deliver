@@ -1,15 +1,18 @@
 <template>
   <div>
-    <el-upload action="/api/v1.0/client/upload" name="files" :show-file-list="false" :headers="tokenHeader"
-               :on-success="staffPhoUrlOk"
-               :before-upload="beforeStaffPhoUrl">
-      <el-button type="primary" size="small">
+    <div style="display: inline-block">
+      <el-upload action="/api/v1.0/client/upload" name="files" :show-file-list="false" :headers="tokenHeader"
+                 :on-success="staffPhoUrlOk"
+                 :before-upload="beforeStaffPhoUrl">
+        <el-button type="primary" size="small">
         <span>
           <i class="el-icon-upload"></i>
           <span v-text="'上传'+title"></span>
         </span>
-      </el-button>
-    </el-upload>
+        </el-button>
+      </el-upload>
+    </div>
+    <slot name="button"></slot>
     <p class="uploadErrorTip" v-if="uploadErrFlag && type==='image'">
       请上传正确的照片(格式为 {{errType}}，体积小于 {{parseInt(configs.numberLimit / 1000)}} 兆，图片不超过{{configs.fieldSize}}个)</p>
     <p class="uploadErrorTip" v-if="uploadErrFlag && type==='file'">

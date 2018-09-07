@@ -4,14 +4,18 @@
     <el-card v-if="model.mails && model.bodies" class="box-card">
       <div slot="header" class="clearfix tab-wrapper">
         <mt-navbar fixed v-model="selected" class="dataTitle">
-          <mt-tab-item v-for="item in model.bodies"
+          <mt-tab-item v-if="!isLowEntry" v-for="item in model.bodies"
+                       :key="item.uid" :id="item.uid">
+            <span>{{item.fieldName === item.fieldDescr ? item.fieldName : (item.fieldName + item.fieldDescr)}}</span>
+          </mt-tab-item>
+          <mt-tab-item v-else-if="isLowEntry && index===0" v-for="(item,index) in model.bodies"
                        :key="item.uid" :id="item.uid">
             <span>{{item.fieldName === item.fieldDescr ? item.fieldName : (item.fieldName + item.fieldDescr)}}</span>
           </mt-tab-item>
         </mt-navbar>
       </div>
 
-      <el-form ref="fm" :model="model" label-suffix="：" :label-width="labelWidth">
+      <el-form ref="fm" :model="model" label-suffix="：" :label-width="labelWidth" align="left">
         <div
           data-level="1"
           class="employees-func-body"
@@ -24,13 +28,13 @@
             v-for="(part, partIdx) in body.children"
             :key="part.uid">
             <el-row class="header-bar">
-              <el-col :span="12" align="left">
-                <i class="icon_bg_signInImg" :class="`bg-ic_${part.jname}`"></i>
+              <el-col :span="12">
+                <i class="icon_bg_signMyData" :class="`bg-ic_${part.jname}`"></i>
                 <span class="vam" v-text="part.fieldName"></span>
               </el-col>
               <el-col :span="12" class="opt">
                 <a @click="toggleFold(part.uid)">
-                  <i class="icon_bg_signInImg"
+                  <i class="icon_bg_signMyData"
                      :class="{'bg-ic_shouqi': !fold[part.uid], 'bg-ic_zhankai': fold[part.uid]}"></i>
                   <span class="vam">{{ !fold[part.uid] ? '收起' : '展开' }}</span>
                 </a>
@@ -265,13 +269,42 @@
                     :required="(field.isDefault || field.isRequired) && isBase"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
-                    <uploadImage :title="field.fieldName" :configs="field._configs" :type="'image'"
-                                 :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile"></uploadImage>
-                    <div class="customize-uploads">
-                      <div class="customize-upload" v-for="(item, idx) in field._configs._staffValues.value" :key="idx">
-                        <i class="bg-img ico_select_1"
-                           @click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>
-                        <img :src="item" @click="openTab(item)"/>
+                    <uploadImage
+                      v-show="!field._configs.fileEdit"
+                      :title="field.fieldName" :configs="field._configs" :type="'image'"
+                      :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
+                      <el-button slot="button" type="primary" size="small"
+                                 :disabled="!(field._configs._staffValues.value.length>0)"
+                                 @click="editImg(bodyIdx,partIdx,groupIdx,fieldIdx)">
+                        <span>编辑</span>
+                      </el-button>
+                    </uploadImage>
+                    <div v-show="field._configs.fileEdit">
+                      <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)">
+                        <span>删除</span>
+                      </el-button>
+                      <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" size="small">取消</el-button>
+                    </div>
+
+
+                    <!--<div class="customize-uploads">-->
+                    <!--<div class="customize-upload" v-for="(item, idx) in field._configs._staffValues.value" :key="idx">-->
+                    <!--<i class="bg-img ico_select_1"-->
+                    <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
+                    <!--<img :src="item.url" @click="openTab(item)"/>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <div class="YD_image_list">
+                      <div class="YD_image_list_item"
+                           v-for="(n, index) in (field._configs._staffValues.value)"
+                           v-fancybox-thumbnail="[n.width, n.height]" :data-index="index">
+                        <img v-if="!field._configs.fileEdit" @click="queryImg($event)" :src="n.url" alt="">
+                        <!--<i v-if="field._configs.fileEdit" class="bg-img ico_select_1" :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"-->
+                        <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
+                        <i v-if="field._configs.fileEdit" class="bg-img YD_image_list_item_icon"
+                           :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                           @click="selectImg(field._configs._staffValues.value,index)"></i>
+                        <img v-if="field._configs.fileEdit" :src="n.url" alt="">
                       </div>
                     </div>
                   </el-form-item>
@@ -281,14 +314,40 @@
                     :required="(field.isDefault || field.isRequired) && isBase"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
-                    <uploadImage :title="field.fieldName" :configs="field._configs" :type="'file'"
-                                 :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile"></uploadImage>
-                    <div class="customize-uploads">
-                      <div class="customize-upload" v-for="(item, idx) in field._configs._staffValues.value" :key="idx">
-                        <i class="fa fa-minus-circle rmv"
-                           @click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>
-                        <a :href="item + `&token=${tokenHeader.token}&mobile=${tokenHeader.mobile}`"
-                           :class="getExtType(item)">下载</a>
+                    <uploadImage
+                      v-show="!field._configs.fileEdit && isBase"
+                      :title="field.fieldName" :configs="field._configs" :type="'file'"
+                      :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
+                      <el-button slot="button" type="primary" size="small"
+                                 :disabled="!(field._configs._staffValues.value.length>0)"
+                                 @click="editImg(bodyIdx,partIdx,groupIdx,fieldIdx)">
+                        <span>编辑</span>
+                      </el-button>
+                    </uploadImage>
+                    <div v-show="field._configs.fileEdit && isBase">
+                      <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)">
+                        <span>删除</span>
+                      </el-button>
+                      <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" size="small">取消</el-button>
+                    </div>
+                    <!--<div class="customize-uploads">-->
+                    <!--<div class="customize-upload" v-for="(item, idx) in field._configs._staffValues.value" :key="idx">-->
+                    <!--<i class="fa fa-minus-circle rmv"-->
+                    <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
+                    <!--<a :href="item + `&token=${tokenHeader.token}&mobile=${tokenHeader.mobile}`"-->
+                    <!--:class="getExtType(item)">下载</a>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <div class="YD_image_list">
+                      <div class="YD_image_list_item"
+                           v-for="(n, index) in field._configs._staffValues.value"
+                           v-fancybox-thumbnail="[40, 40]" :data-index="index">
+                        <i v-if="field._configs.fileEdit" class="bg-img YD_image_list_item_icon"
+                           :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                           @click="selectImg(field._configs._staffValues.value,index)"></i>
+                        <img src="../../assets/ico_document.png" alt="">
+                        <a :href="n.url + `&token=${tokenHeader.token}&mobile=${tokenHeader.mobile}`"
+                           :class="getExtType(n.url)">下载</a>
                       </div>
                     </div>
                   </el-form-item>
@@ -413,6 +472,7 @@
   import "element-ui/lib/theme-default/index.css";
   import utils from '../common/utils'
   import uploadImage from "./uploadImage"
+  import fancyBox from 'vue-fancybox';
   //  import jobReporter from '../common/emp-one'
   import {MessageBox, Indicator} from "mint-ui";
   V.use(ElementUI);
@@ -452,6 +512,7 @@
   export default {
     data() {
       return {
+        isLowEntry: false,//判断是否是待入职员工
         startDate: new Date(),
         nowDateTime: new Date(),
         selected: '',//tab切换的判断位
@@ -472,6 +533,19 @@
         perm: {},
         actTab: '',
         fold: null,
+        imageList: [
+          {width: 900, height: 675, url: 'http://ocm0knkb1.bkt.clouddn.com/1-1.jpg'},
+          {width: 601, height: 1024, url: 'http://ocm0knkb1.bkt.clouddn.com/1-2.jpg'},
+          {width: 1024, height: 700, url: 'http://ocm0knkb1.bkt.clouddn.com/1-3.jpg'},
+          {width: 1366, height: 768, url: 'http://ocm0knkb1.bkt.clouddn.com/1-4.jpg'},
+          {width: 1920, height: 1200, url: 'http://ocm0knkb1.bkt.clouddn.com/1-5.jpg'},
+          {width: 500, height: 750, url: 'http://ocm0knkb1.bkt.clouddn.com/1-6.jpg'},
+          {width: 2560, height: 1714, url: 'http://ocm0knkb1.bkt.clouddn.com/1-7.jpg'},
+          {width: 1920, height: 1200, url: 'http://ocm0knkb1.bkt.clouddn.com/1-8.jpg'},
+          {width: 1920, height: 1200, url: 'http://ocm0knkb1.bkt.clouddn.com/1-9.jpg'},
+          {width: 286, height: 220, url: 'http://ocm0knkb1.bkt.clouddn.com/1-10.jpg'},
+          {width: 1024, height: 1024, url: 'http://ocm0knkb1.bkt.clouddn.com/1-12.jpg'}
+        ]
       }
     },
     methods: {
@@ -782,11 +856,19 @@
               one_group.forEach(field => {
                 if (_.isArray(field._configs._staffValues.value) && field._configs._staffValues.value.length > 0) {
                   field._configs._staffValues.value.forEach(value => {
-                    postData.staffValues.push({
-                      staffFieldConfigUid: field._configs.uid,
-                      value: value,
-                      term: groupIdx,
-                    })
+                    if (field._configs.fieldType === '7' || field._configs.fieldType === '8') {
+                      postData.staffValues.push({
+                        staffFieldConfigUid: field._configs.uid,
+                        value: value.url,
+                        term: groupIdx,
+                      })
+                    } else {
+                      postData.staffValues.push({
+                        staffFieldConfigUid: field._configs.uid,
+                        value: value,
+                        term: groupIdx,
+                      })
+                    }
                   })
                 } else if (!_.isArray(field._configs._staffValues.value) && field._configs._staffValues.value !== null && field._configs._staffValues.value !== '') {
                   postData.staffValues.push({
@@ -807,7 +889,9 @@
         this.$http.post('/api/v1.0/client/updateStaffInfo', postData).then(res => {
           const {body: {code, message}} = res;
           if (code === 200) {
-            this.$router.push({path: "/signCard"});
+            if (!this.isLowEntry) {
+              this.$router.push({path: "/signCard"});
+            }
           }
           MessageBox("提示", message);
           Indicator.close();
@@ -854,7 +938,44 @@
       },
       //上传图片文件
       updateImgFile(data){
-        this.model.bodies[data.position.bodyIdx].children[data.position.partIdx]._children[data.position.groupIdx][data.position.fieldIdx]._configs._staffValues.value.push(data.url);
+        this.model.bodies[data.position.bodyIdx].children[data.position.partIdx]._children[data.position.groupIdx][data.position.fieldIdx]._configs._staffValues.value.push(
+          {
+            selected: false,
+            url: data.url,
+            width: 0,
+            height: 0
+          }
+        );
+      },
+      //查看图片
+      queryImg(e){
+        fancyBox(e.target, this.imageList);
+      },
+      //编辑操作
+      editImg(bodyIdx, partIdx, groupIdx, fieldIdx){
+        console.log(123456789, this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value)
+        V.set(this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs, 'fileEdit', true)
+      },
+      //取消删除文件
+      cancelEditImg(bodyIdx, partIdx, groupIdx, fieldIdx){
+        V.set(this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs, 'fileEdit', false);
+      },
+      //编辑状态，删除文件
+      deleteFile(bodyIdx, partIdx, groupIdx, fieldIdx){
+        let list = this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value;
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].selected) {
+            list.splice(i, 1);
+            i--;
+          }
+        }
+        console.log(list)
+        this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value = list;
+        this.cancelEditImg(bodyIdx, partIdx, groupIdx, fieldIdx);
+      },
+      //选择删除的文件
+      selectImg(list, i){
+        V.set(list[i], 'selected', !list[i].selected)
       },
     },
     watch: {
@@ -870,6 +991,10 @@
     },
     mounted() {
       Indicator.open("正在加载...");
+      let isLowEntry = this.getCookie("isLowEntry");
+      if (isLowEntry === '-1' || isLowEntry === '-2') {
+        this.isLowEntry = true;
+      }
       const rootdata = {
         staffFields: null,
         mails: null,
@@ -1040,7 +1165,34 @@
                           }
                         }
                       });
-                      if (setvalues.length > 1) {
+                      if (setvalues.length > 0 && (fieldType === '7' || fieldType === '8')) {
+//                        if (fieldType === '7') {
+                        let arr = [];
+                        setvalues.forEach(item => {
+                          let img_url = item;
+                          // 创建对象
+                          let img = new Image();
+                          // 改变图片的src
+                          img.src = img_url;
+                          // 加载完成执行
+                          arr.push({
+                            width: img.width,
+                            height: img.height,
+                            url: item,
+                            selected: false
+                          })
+                        });
+                        return {
+                          value: arr,
+                          term: 0
+                        }
+//                        } else {
+//                          return {
+//                            value: setvalues,
+//                            term: 0
+//                          }
+//                        }
+                      } else if (setvalues.length > 1) {
                         return {
                           value: setvalues,
                           term: 0
@@ -1124,6 +1276,23 @@
     .vam {
       vertical-align: middle;
     }
+    .YD_image_list {
+      line-height: normal;
+      .YD_image_list_item {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        height: 60px;
+        width: 60px;
+        margin: 2px 5px 0 0;
+        .YD_image_list_item_icon {
+          position: absolute;
+          right: 5px;
+          bottom: 5px;
+        }
+      }
+    }
+
     .box-card {
       border: none;
       box-shadow: none;
