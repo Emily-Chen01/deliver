@@ -226,15 +226,15 @@
                       <el-input :maxlength="64" :disabled="!field.isEdit || !isBase"
                                 v-model.trim="item.mail"></el-input>
                       <!--<el-button class="mail-x" type="text" :disabled="!field.isEdit || !isBase"-->
-                                 <!--@click="removeAPEmail(i)">-->
-                        <!--<i class="el-icon-delete"></i>-->
+                      <!--@click="removeAPEmail(i)">-->
+                      <!--<i class="el-icon-delete"></i>-->
                       <!--</el-button>-->
                     </el-form-item>
                     <!--<el-form-item>-->
-                      <!--<el-button :disabled="!field.isEdit || !isBase" type="primary" icon="el-icon-circle-plus-outline"-->
-                                 <!--@click="addAPEmail">-->
-                        <!--<span>添加审批邮箱</span>-->
-                      <!--</el-button>-->
+                    <!--<el-button :disabled="!field.isEdit || !isBase" type="primary" icon="el-icon-circle-plus-outline"-->
+                    <!--@click="addAPEmail">-->
+                    <!--<span>添加审批邮箱</span>-->
+                    <!--</el-button>-->
                     <!--</el-form-item>-->
                   </div>
                   <el-form-item
@@ -325,7 +325,8 @@
                       <div class="YD_image_list_item"
                            v-for="(n, index) in (field._configs._staffValues.value)"
                            v-fancybox-thumbnail="[n.width, n.height]" :data-index="index">
-                        <img v-if="!field._configs.fileEdit" @click="queryImg($event)" :src="n.url" alt="">
+                        <img v-if="!field._configs.fileEdit" @click="queryImg($event,field._configs._staffValues.value)"
+                             :src="n.url" alt="">
                         <!--<i v-if="field._configs.fileEdit" class="bg-img ico_select_1" :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"-->
                         <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
                         <i v-if="field._configs.fileEdit" class="bg-img YD_image_list_item_icon"
@@ -532,20 +533,7 @@
         },
         perm: {},
         actTab: '',
-        fold: null,
-        imageList: [
-          {width: 900, height: 675, url: 'http://ocm0knkb1.bkt.clouddn.com/1-1.jpg'},
-          {width: 601, height: 1024, url: 'http://ocm0knkb1.bkt.clouddn.com/1-2.jpg'},
-          {width: 1024, height: 700, url: 'http://ocm0knkb1.bkt.clouddn.com/1-3.jpg'},
-          {width: 1366, height: 768, url: 'http://ocm0knkb1.bkt.clouddn.com/1-4.jpg'},
-          {width: 1920, height: 1200, url: 'http://ocm0knkb1.bkt.clouddn.com/1-5.jpg'},
-          {width: 500, height: 750, url: 'http://ocm0knkb1.bkt.clouddn.com/1-6.jpg'},
-          {width: 2560, height: 1714, url: 'http://ocm0knkb1.bkt.clouddn.com/1-7.jpg'},
-          {width: 1920, height: 1200, url: 'http://ocm0knkb1.bkt.clouddn.com/1-8.jpg'},
-          {width: 1920, height: 1200, url: 'http://ocm0knkb1.bkt.clouddn.com/1-9.jpg'},
-          {width: 286, height: 220, url: 'http://ocm0knkb1.bkt.clouddn.com/1-10.jpg'},
-          {width: 1024, height: 1024, url: 'http://ocm0knkb1.bkt.clouddn.com/1-12.jpg'}
-        ]
+        fold: null
       }
     },
     methods: {
@@ -948,8 +936,8 @@
         );
       },
       //查看图片
-      queryImg(e){
-        fancyBox(e.target, this.imageList);
+      queryImg(e, list){
+        fancyBox(e.target, list);
       },
       //编辑操作
       editImg(bodyIdx, partIdx, groupIdx, fieldIdx){
@@ -1166,7 +1154,6 @@
                         }
                       });
                       if (setvalues.length > 0 && (fieldType === '7' || fieldType === '8')) {
-//                        if (fieldType === '7') {
                         let arr = [];
                         setvalues.forEach(item => {
                           let img_url = item;
@@ -1186,12 +1173,6 @@
                           value: arr,
                           term: 0
                         }
-//                        } else {
-//                          return {
-//                            value: setvalues,
-//                            term: 0
-//                          }
-//                        }
                       } else if (setvalues.length > 1) {
                         return {
                           value: setvalues,
@@ -1250,7 +1231,6 @@
           this.model.mails = rootdata.mails;
           this.model.uid = rootdata.uid;
           this.model.bodies = _.cloneDeep(tmpmodel);
-          console.log('this.model', this.model);
           this.arrangeVein();
           Indicator.close();
         }
@@ -1289,6 +1269,10 @@
           position: absolute;
           right: 5px;
           bottom: 5px;
+        }
+        img {
+          width: 100%;
+          height: 100%;
         }
       }
     }
