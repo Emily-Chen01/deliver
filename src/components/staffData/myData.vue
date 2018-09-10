@@ -61,7 +61,7 @@
                 </div>
                 <template v-for="(field, fieldIdx) in group">
                   <el-form-item
-                    v-if="field._configs.fieldType === '9'"
+                    v-if="field._configs.fieldType === '9' && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -80,7 +80,7 @@
                   </el-form-item>
 
                   <el-form-item
-                    v-if="field._configs.fieldType === '10'"
+                    v-if="field._configs.fieldType === '10' && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -99,7 +99,7 @@
                   </el-form-item>
 
                   <el-form-item
-                    v-if="field._configs.fieldType === '4' && field.jname !== 'reporterJobNumber'"
+                    v-if="field._configs.fieldType === '4' && field.jname !== 'reporterJobNumber' && field.isVisible"
                     :key="field.uid"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
@@ -140,7 +140,7 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item
-                    v-show="field._configs.fieldType === '4' && field.jname === 'reporterJobNumber' && showed(field)"
+                    v-show="field._configs.fieldType === '4' && field.jname === 'reporterJobNumber' && showed(field) && field.isVisible"
                     :key="field.uid"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
@@ -157,7 +157,7 @@
                   </el-form-item>
 
                   <el-form-item
-                    v-if="field._configs.fieldType === '1' && showed(field)"
+                    v-if="field._configs.fieldType === '1' && showed(field) && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -178,7 +178,7 @@
                   </el-form-item>
 
                   <el-form-item
-                    v-if="field._configs.fieldType === '5'"
+                    v-if="field._configs.fieldType === '5' && field.isVisible"
                     :key="field.uid"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
@@ -209,9 +209,36 @@
                       </el-radio>
                     </el-radio-group>
                   </el-form-item>
-
+                  <div
+                    v-if="field._configs.fieldType === '5'&& isEmail('isEmail', '0') && field.jname === 'isEmail' && field.isVisible">
+                    <el-form-item
+                      v-for="(item, i) in model.mails"
+                      :key="i"
+                      :label="`第${i + 1}级审批邮箱`"
+                      :prop="`mails.${i}.mail`"
+                      :rules="[{
+                    required: (field.isDefault || field.isRequired) && isBase,
+                    pattern: /^[A-Za-z0-9]+([-_.][A-Za-z0-9]+)*@([A-Za-z0-9]+[-.])+[A-Za-z0-9]{2,5}$/,
+                    message: '请输入正确的审批邮箱',
+                    trigger: 'blur'
+                  }]"
+                      class="text-form-item">
+                      <el-input :maxlength="64" :disabled="!field.isEdit || !isBase"
+                                v-model.trim="item.mail"></el-input>
+                      <!--<el-button class="mail-x" type="text" :disabled="!field.isEdit || !isBase"-->
+                                 <!--@click="removeAPEmail(i)">-->
+                        <!--<i class="el-icon-delete"></i>-->
+                      <!--</el-button>-->
+                    </el-form-item>
+                    <!--<el-form-item>-->
+                      <!--<el-button :disabled="!field.isEdit || !isBase" type="primary" icon="el-icon-circle-plus-outline"-->
+                                 <!--@click="addAPEmail">-->
+                        <!--<span>添加审批邮箱</span>-->
+                      <!--</el-button>-->
+                    <!--</el-form-item>-->
+                  </div>
                   <el-form-item
-                    v-if="field._configs.fieldType === '2'"
+                    v-if="field._configs.fieldType === '2' && field.isVisible"
                     :key="field.uid"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
@@ -226,7 +253,7 @@
                               icon="date"></el-input>
                   </el-form-item>
                   <el-form-item
-                    v-if="field._configs.fieldType === '3'"
+                    v-if="field._configs.fieldType === '3' && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -244,7 +271,7 @@
                     </el-input>
                   </el-form-item>
                   <el-form-item
-                    v-if="field._configs.fieldType === '6'"
+                    v-if="field._configs.fieldType === '6' && field.isVisible"
                     :key="field.uid"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
@@ -264,7 +291,7 @@
                     </el-checkbox-group>
                   </el-form-item>
                   <el-form-item
-                    v-if="field._configs.fieldType === '7'"
+                    v-if="field._configs.fieldType === '7' && field.isVisible"
                     :key="field.uid"
                     :required="(field.isDefault || field.isRequired) && isBase"
                     :label="field.fieldName"
@@ -309,7 +336,7 @@
                     </div>
                   </el-form-item>
                   <el-form-item
-                    v-if="field._configs.fieldType === '8'"
+                    v-if="field._configs.fieldType === '8' && field.isVisible"
                     :key="field.uid"
                     :required="(field.isDefault || field.isRequired) && isBase"
                     :label="field.fieldName"
@@ -353,7 +380,7 @@
                   </el-form-item>
 
                   <el-form-item
-                    v-if="field._configs.fieldType === '11'"
+                    v-if="field._configs.fieldType === '11' && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -371,7 +398,7 @@
                     </el-input>
                   </el-form-item>
                   <el-form-item
-                    v-if="field._configs.fieldType === '12'"
+                    v-if="field._configs.fieldType === '12' && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -389,7 +416,7 @@
                     </el-input>
                   </el-form-item>
                   <el-form-item
-                    v-if="field._configs.fieldType === '13'"
+                    v-if="field._configs.fieldType === '13' && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -407,7 +434,7 @@
                     </el-input>
                   </el-form-item>
                   <el-form-item
-                    v-if="field._configs.fieldType === '14'"
+                    v-if="field._configs.fieldType === '14' && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -423,33 +450,6 @@
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
-                  </el-form-item>
-                </template>
-                <template v-if="bodyIdx === 1&& partIdx === 0&& groupIdx === 0&& isEmail('isEmail', '0')">
-                  <el-form-item
-                    v-for="(item, i) in model.mails"
-                    :key="i"
-                    v-if="true && 'something dpdwork'"
-                    :label="`第${i + 1}级审批邮箱`"
-                    :prop="`mails.${i}.mail`"
-                    :rules="[{
-                    required: true,
-                    pattern: /^[A-Za-z0-9]+([-_.][A-Za-z0-9]+)*@([A-Za-z0-9]+[-.])+[A-Za-z0-9]{2,5}$/,
-                    message: '请输入正确的审批邮箱',
-                    trigger: 'blur'
-                  }]"
-                    class="text-form-item">
-                    <el-input class="mail-input" :maxlength="64" :disabled="!field.isEdit || !isBase"
-                              v-model.trim="item.mail"></el-input>
-                    <el-button class="mail-x" type="danger" :disabled="!field.isEdit || !isBase"
-                               icon="el-icon-remove-outline" @click="removeAPEmail(i)"></el-button>
-                  </el-form-item>
-
-                  <el-form-item v-if="true">
-                    <el-button :disabled="!field.isEdit || !isBase" type="primary" icon="el-icon-circle-plus-outline"
-                               @click="addAPEmail">
-                      <span>添加审批邮箱</span>
-                    </el-button>
                   </el-form-item>
                 </template>
               </div>
@@ -1003,7 +1003,7 @@
       this.$http.get('/api/v1.0/client/selectStaff').then(res => {
         const {body: {code, result}} = res;
         if (code === 200) {
-          rootdata.mails = [];
+          rootdata.mails = result.approvalMails || [];
           rootdata.staffFields = result.staffFields;
           rootdata.uid = result.uid;
           this.selected = rootdata.staffFields[0].uid;
@@ -1404,7 +1404,10 @@
             display: inline-block;
           }
           .mail-input {
-            width: 81.5%;
+            width: 78%;
+          }
+          .mail-x {
+            width: 20%;
           }
         }
         .el-checkbox-group {
