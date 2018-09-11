@@ -184,7 +184,7 @@ let isImage = (file, type) => {
   if (type) {
     return type.indexOf('-' + getFileExt(file) + '-') > -1;
   } else {
-    return '-jpg-jpeg-png-'.indexOf('-' + getFileExt(file) + '-') > -1;
+    return '-jpg-jpeg-png-JPG-JPEG-PNG-'.indexOf('-' + getFileExt(file) + '-') > -1;
   }
   // console.log('t', ext, '-jpg-jpeg-png-'.indexOf('-' + ext + '-') > -1);
 };
@@ -193,16 +193,16 @@ let isDoc = (file, type) => {
   if (type) {
     return type.indexOf('-' + getFileExt(file) + '-') > -1;
   } else {
-    return '-doc-docx-pdf-'.indexOf('-' + getFileExt(file) + '-') > -1;
+    return '-doc-docx-pdf-DOC-DOCX-PDF-'.indexOf('-' + getFileExt(file) + '-') > -1;
   }
 };
 
 let isContract = file => {
-  return '-doc-docx-pdf-jpg-jpeg-'.indexOf('-' + getFileExt(file) + '-') > -1;
+  return '-doc-docx-pdf-jpg-jpeg-DOC-DOCX-PDF-JPG-JPEG-'.indexOf('-' + getFileExt(file) + '-') > -1;
 }
 
 let isExcel = file => {
-  return '-xls-xlsx-'.indexOf('-' + getFileExt(file) + '-') > -1;
+  return '-xls-xlsx-XLS-XLSX-'.indexOf('-' + getFileExt(file) + '-') > -1;
 }
 
 let isInSize = (file, size) => {

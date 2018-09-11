@@ -44,20 +44,18 @@
               <div class="field-group" v-for="(group, groupIdx) in part._children" :key="group">
                 <div class="group-hd clearfix" v-if="part.isGroup">
                   <span class="pull-left">第 {{groupIdx + 1}} 段{{part.fieldName}}</span>
-                  <a
-                    class="pull-right add"
-                    href="javascript:;"
-                    @click="addGroup(part.uid, bodyIdx, partIdx, groupIdx + 1)">
-                    <i class="el-icon-circle-plus-outline"></i> 添加
-                </a>
-                  <a
-                    v-if="part._children.length > 1"
-                    class="pull-right"
-                    href="javascript:;"
-                    style="color: #F56C6C;"
-                    @click="removeGroup(bodyIdx, partIdx, groupIdx)">
-                    <i class="el-icon-circle-close-outline"></i> 删除
-                </a>
+                  <span class="pull-right add"
+                        @click="addGroup(part.uid, bodyIdx, partIdx, groupIdx + 1)">
+                    <i class="icon_bg_signMyData bg-ic_add"></i>
+                    <span class="vam">添加</span>
+                </span>
+                  <span v-if="part._children.length > 1"
+                        class="pull-right del"
+                        style="color: #F56C6C;"
+                        @click="removeGroup(bodyIdx, partIdx, groupIdx)">
+                    <i class="icon_bg_signMyData bg-ic_del"></i>
+                    <span class="vam">删除</span>
+                </span>
                 </div>
                 <template v-for="(field, fieldIdx) in group">
                   <el-form-item
@@ -108,36 +106,23 @@
                     trigger: 'change',
                     message: field._configs.fieldHint
                   }]">
-                    <el-select
-                      v-if="!field.isDefined"
-                      :disabled="isDisabledByField(field) || !field.isEdit || !isBase"
-                      filterable
-                      clearable
-                      v-model="field._configs._staffValues.value"
-                      placeholder="请选择"
-                      @change="makeCities(field)">
-                      <el-option
-                        v-for="item in confItems[makeKeyOfConfitems(field)]"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                        :class="{[item.idx]: `dept-item-${item.idx}`}">
-                      </el-option>
-                    </el-select>
-                    <el-select
-                      v-else
-                      :disabled="!field.isEdit || !isBase"
-                      filterable
-                      clearable
-                      v-model="field._configs._staffValues.value"
-                      placeholder="请选择">
-                      <el-option
-                        v-for="item in field._configs.staffFieldValues"
-                        :key="item.uid"
-                        :label="item.value"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
+                    <select v-if="!field.isDefined"
+                            :disabled="isDisabledByField(field) || !field.isEdit || !isBase"
+                            v-model="field._configs._staffValues.value"
+                            @change="makeCities(field)"
+                            class="myData_select">
+                      <option v-for="item in confItems[makeKeyOfConfitems(field)]"
+                              :key="item.id"
+                              v-text="item.name"
+                              :value="item.id"
+                              :class="{[item.idx]: `dept-item-${item.idx}`}"></option>
+                    </select>
+                    <select v-else-if="field.isDefined" :disabled="!field.isEdit || !isBase"
+                            v-model="field._configs._staffValues.value"
+                            class="myData_select">
+                      <option v-for="item in field._configs.staffFieldValues" :key="item.uid" v-text="item.value"
+                              :value="item.value"></option>
+                    </select>
                   </el-form-item>
                   <el-form-item
                     v-show="field._configs.fieldType === '4' && field.jname === 'reporterJobNumber' && showed(field) && field.isVisible"
@@ -1277,6 +1262,37 @@
       }
     }
 
+    .picker-items {
+      display: block;
+      width: 100%;
+      .picker-slot {
+        flex: none !important;
+        display: inline-block;
+      }
+    }
+    .myData_select {
+      width: 100%;
+      border: 1px solid #bfcbd9;
+      color: #1f2d3d;
+      border-radius: 4px;
+      height: 34px;
+      outline: none;
+      padding-left: 10px;
+      text-align: left;
+      font-size: 14px;
+      /*很关键：将默认的select选择框样式清除*/
+      appearance: none;
+      /*!*在选择框的最右侧中间显示小箭头图片*!*/
+      background: url("../../assets/images/ic_xiala2x.png") no-repeat scroll right center transparent;
+      background-size: 30px;
+      /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+      padding-right: 30px;
+      &:disabled {
+        background-color: #eef1f6;
+        border-color: #d1dbe5;
+        color: #bbb;
+      }
+    }
     .box-card {
       border: none;
       box-shadow: none;
@@ -1352,11 +1368,19 @@
           overflow: hidden;
           .group-hd {
             margin-bottom: 20px;
-            background: #eee;
+            background: #eff3f7;
+            color: #1e2c3c;
+            font-size: 15px;
             line-height: 2.5;
             padding: 0 20px;
+            width: 100%;
             .add {
               margin-left: 1em;
+              font-size: 12px;
+            }
+            .del {
+              margin-left: 1em;
+              font-size: 12px;
             }
           }
           .job-reporter {

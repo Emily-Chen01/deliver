@@ -39,9 +39,9 @@
           "3": "gif"
         },
         picPatt: {
-          "1": "jpg-jpeg",
-          "2": "png",
-          "3": "gif"
+          "1": "jpg-jpeg-JPG-JPEG",
+          "2": "png-PNG",
+          "3": "gif-GIF"
         },
         docFormatsMap: {
           "1": "doc(docx)",
@@ -52,12 +52,12 @@
           "6": "zip(rar)"
         },
         docPatt: {
-          "1": "doc-docx",
-          "2": "pdf",
-          "3": "txt",
-          "4": "xls-xlsx",
-          "5": "ppt-pptx",
-          "6": "zip-rar"
+          "1": "doc-docx-DOC-DOCX",
+          "2": "pdf-PDF",
+          "3": "txt-TXT",
+          "4": "xls-xlsx-XLS-XLSX",
+          "5": "ppt-pptx-PPT-PPTX",
+          "6": "zip-rar-ZIP-RAR"
         }
       };
     },
