@@ -14,7 +14,8 @@ import mySalary from "@/components/SignIn/mySalary"
 import binding from "@/components/binding/binding"
 import task from "@/components/task/task"
 import taskDetails from "@/components/task/details"
-import approve from "@/components/approve/approve"
+import approve from "@/components/myApprove/approve"
+import approved from "@/components/approve/approved"
 
 
 Vue.use(Router);
@@ -50,6 +51,10 @@ export default new Router({
     //   path: '/approve',  //我的审批
     //   component: approve
     // },
+    {
+      path: '/approved',  //已审批
+      component: approved
+    },
     {
       path: '/signCard',  //点击公司后进入签到打卡
       component: signCard

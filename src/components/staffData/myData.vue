@@ -1241,6 +1241,7 @@
     .vam {
       vertical-align: middle;
     }
+    // 复写lable原有样式
     .YD_image_list {
       line-height: normal;
       .YD_image_list_item {
@@ -1428,6 +1429,11 @@
     }
     .el-card__header {
       height: 44px;
+    }
+    .el-form-item__label {
+      font-weight: 900;
+      font-size: 14px;
+      color: #457aa3;
     }
     a {
       text-decoration: none;

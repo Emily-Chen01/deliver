@@ -36,7 +36,7 @@
             </div>
           </div>
         </li>
-        <li class="record-list-item"></li>
+        <!--<li class="record-list-item"></li>-->
       </ul>
     </div>
     <!--解除绑定-->
@@ -111,15 +111,21 @@
 //          {
 //            name: '我的任务',
 //            icon: 'bg-personal',
-//            type: 5
+//            type: 5,
 //            num:0
 //          },
 //          {
 //            name: '我的审批',
 //            icon: 'bg-personal',
-//            type: 6
+//            type: 6,
 //            num:0
-//          }
+//          } ,
+          {
+            name: '已审批',
+            icon: 'bg-personal',
+            type: 7,
+            num: 0
+          }
         ],
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
@@ -155,6 +161,12 @@
               item.num = response.body.result.notice;
               break;
             case 4:
+              break;
+            case 5:
+              break;
+            case 6:
+              break;
+            case 7:
               break;
             default:
               break;
@@ -224,6 +236,9 @@
             break;
           case 6:
             this.$router.push({path: '/approve'});
+            break;
+          case 7:
+            this.$router.push({path: '/approved'});
             break;
           default:
             break;
