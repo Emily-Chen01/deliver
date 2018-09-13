@@ -1,9 +1,9 @@
 <template>
   <div id="approve-wrapper">
     <mt-navbar v-model="selectInfo" class="approve-header">
-      <mt-tab-item id="a">
-        <div @click="changeShow(-1)"><span>待处理审批</span></div>
-      </mt-tab-item>
+      <!--<mt-tab-item id="a">-->
+        <!--<div @click="changeShow(-1)"><span>待处理审批</span></div>-->
+      <!--</mt-tab-item>-->
       <mt-tab-item id="b">
         <div @click="changeShow(0)"><span>已处理审批</span></div>
       </mt-tab-item>
@@ -127,7 +127,7 @@
 //          charset: 'utf-8',
 //          openId: this.getCookie('openId')
 //        },
-        selectInfo: 'a', // 申请分类的nav
+        selectInfo: 'b', // 申请分类的nav
         popImgSrc: '', // 查看的图片
         popupVisible: false, // 查看图片弹框
         imgSrc: {
@@ -237,7 +237,8 @@
 
 <style lang="scss">
   #approve-wrapper {
-    background: #ffffff;
+    /*background: #ffffff;*/
+    background: #eff3f7;
     min-height: 100vh;
     .mt10 {
       margin-top: 10px;

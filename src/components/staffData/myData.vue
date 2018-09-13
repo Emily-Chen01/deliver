@@ -65,13 +65,13 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field)
                   }]">
                     <el-input
-                      :disabled="!field.isEdit || !isBase"
+                      :disabled="!field.isEdit"
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
@@ -84,13 +84,13 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field)
                   }]">
                     <el-input
-                      :disabled="!field.isEdit || !isBase"
+                      :disabled="!field.isEdit"
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
@@ -102,12 +102,12 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'change',
                     message: field._configs.fieldHint
                   }]">
                     <select v-if="!field.isDefined"
-                            :disabled="isDisabledByField(field) || !field.isEdit || !isBase"
+                            :disabled="isDisabledByField(field) || !field.isEdit"
                             v-model="field._configs._staffValues.value"
                             @change="makeCities(field)"
                             class="myData_select">
@@ -117,7 +117,7 @@
                               :value="item.id"
                               :class="{[item.idx]: `dept-item-${item.idx}`}"></option>
                     </select>
-                    <select v-else-if="field.isDefined" :disabled="!field.isEdit || !isBase"
+                    <select v-else-if="field.isDefined" :disabled="!field.isEdit"
                             v-model="field._configs._staffValues.value"
                             class="myData_select">
                       <option v-for="item in field._configs.staffFieldValues" :key="item.uid" v-text="item.value"
@@ -130,7 +130,7 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     message: field._configs.fieldHint
                   }]">
                     <!--<job-reporter-->
@@ -148,7 +148,7 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field, getFieldsByJname(field._dpd4show))
@@ -156,7 +156,7 @@
                     :ref="field.jname">
                     <el-input
                       @keyup.native="isIDCard(field)"
-                      :disabled="isDisabledByField(field) || !field.isEdit || !isBase"
+                      :disabled="isDisabledByField(field) || !field.isEdit"
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
@@ -168,14 +168,14 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'change',
                     message: field._configs.fieldHint
                   }]">
                     <el-radio-group
                       v-if="!field.isDefined"
                       v-model="field._configs._staffValues.value"
-                      :disabled="isDisabledByField(field) || !field.isEdit || !isBase">
+                      :disabled="isDisabledByField(field) || !field.isEdit">
                       <el-radio
                         v-for="item in confItems[field._configs.configType]"
                         :key="item.id"
@@ -202,21 +202,21 @@
                       :label="`第${i + 1}级审批邮箱`"
                       :prop="`mails.${i}.mail`"
                       :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     pattern: /^[A-Za-z0-9]+([-_.][A-Za-z0-9]+)*@([A-Za-z0-9]+[-.])+[A-Za-z0-9]{2,5}$/,
                     message: '请输入正确的审批邮箱',
                     trigger: 'blur'
                   }]"
                       class="text-form-item">
-                      <el-input :maxlength="64" :disabled="!field.isEdit || !isBase"
+                      <el-input :maxlength="64" :disabled="!field.isEdit"
                                 v-model.trim="item.mail"></el-input>
-                      <!--<el-button class="mail-x" type="text" :disabled="!field.isEdit || !isBase"-->
+                      <!--<el-button class="mail-x" type="text" :disabled="!field.isEdit"-->
                       <!--@click="removeAPEmail(i)">-->
                       <!--<i class="el-icon-delete"></i>-->
                       <!--</el-button>-->
                     </el-form-item>
                     <!--<el-form-item>-->
-                    <!--<el-button :disabled="!field.isEdit || !isBase" type="primary" icon="el-icon-circle-plus-outline"-->
+                    <!--<el-button :disabled="!field.isEdit" type="primary" icon="el-icon-circle-plus-outline"-->
                     <!--@click="addAPEmail">-->
                     <!--<span>添加审批邮箱</span>-->
                     <!--</el-button>-->
@@ -228,11 +228,11 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'change',
                     message: field._configs.fieldHint
                   }]">
-                    <el-input :disabled="isDisabledByField(field) || !field.isEdit || !isBase"
+                    <el-input :disabled="isDisabledByField(field) || !field.isEdit"
                               v-model="field._configs._staffValues.value" placeholder="请选择日期" readonly
                               @focus="openPicker({bodyIdx,partIdx,groupIdx,fieldIdx},field._configs._staffValues.value)"
                               icon="date"></el-input>
@@ -244,7 +244,7 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field)
@@ -252,7 +252,7 @@
                     <el-input
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256"
-                      :disabled="isDisabledByField(field) || !field.isEdit || !isBase">
+                      :disabled="isDisabledByField(field) || !field.isEdit">
                     </el-input>
                   </el-form-item>
                   <el-form-item
@@ -261,12 +261,12 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     type: 'array',
                     trigger: 'change',
                     message: field._configs.fieldHint
                   }]">
-                    <el-checkbox-group v-model="field._configs._staffValues.value" :disabled="!field.isEdit || !isBase">
+                    <el-checkbox-group v-model="field._configs._staffValues.value" :disabled="!field.isEdit">
                       <el-checkbox
                         v-for="item in field._configs.staffFieldValues || []"
                         :key="item.uid"
@@ -278,7 +278,7 @@
                   <el-form-item
                     v-if="field._configs.fieldType === '7' && field.isVisible"
                     :key="field.uid"
-                    :required="(field.isDefault || field.isRequired) && isBase"
+                    :required="(field.isDefault || field.isRequired)"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
                     <uploadImage
@@ -324,11 +324,11 @@
                   <el-form-item
                     v-if="field._configs.fieldType === '8' && field.isVisible"
                     :key="field.uid"
-                    :required="(field.isDefault || field.isRequired) && isBase"
+                    :required="(field.isDefault || field.isRequired)"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
                     <uploadImage
-                      v-show="!field._configs.fileEdit && isBase"
+                      v-show="!field._configs.fileEdit"
                       :title="field.fieldName" :configs="field._configs" :type="'file'"
                       :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
                       <el-button slot="button" type="primary" size="small"
@@ -337,7 +337,7 @@
                         <span>编辑</span>
                       </el-button>
                     </uploadImage>
-                    <div v-show="field._configs.fileEdit && isBase">
+                    <div v-show="field._configs.fileEdit">
                       <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)">
                         <span>删除</span>
                       </el-button>
@@ -372,13 +372,13 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field)
                   }]">
                     <el-input
-                      :disabled="!field.isEdit || !isBase"
+                      :disabled="!field.isEdit"
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
@@ -390,13 +390,13 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field)
                   }]">
                     <el-input
-                      :disabled="!field.isEdit || !isBase"
+                      :disabled="!field.isEdit"
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
@@ -408,13 +408,13 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field)
                   }]">
                     <el-input
-                      :disabled="!field.isEdit || !isBase"
+                      :disabled="!field.isEdit"
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
@@ -426,13 +426,13 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
                     :rules="[{
-                    required: (field.isDefault || field.isRequired) && isBase,
+                    required: (field.isDefault || field.isRequired),
                     trigger: 'blur',
                     message: field._configs.fieldHint,
                     validator: makeValidator(field)
                   }]">
                     <el-input
-                      :disabled="isDisabledByField(field) || !field.isEdit || !isBase"
+                      :disabled="isDisabledByField(field) || !field.isEdit"
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
                     </el-input>
@@ -502,7 +502,6 @@
         startDate: new Date(),
         nowDateTime: new Date(),
         selected: '',//tab切换的判断位
-        isBase: true,//判断是不是基础信息
         labelWidth: '140px',
         uid: null,
         staffRecordUid: null,
@@ -718,6 +717,7 @@
                 if (val) {
                   this.$http.get(`/api/v1.0/common/query/city/${val}`).then(({body: res}) => {
                     if (res.code === 200) {
+
                       this.$set(this.confItems, `${_hold4query}_${needQueryField._mark}`, res.result)
                       this.updateWholeModel(
                         [
@@ -954,11 +954,6 @@
     watch: {
       // 监听是否切换岗位与基本信息
       selected: function (newValue, oldValue) {
-        if (newValue === this.model.bodies[0].uid) {
-          this.isBase = true;
-        } else {
-          this.isBase = false;
-        }
         this.switchTab(newValue);
       }
     },
@@ -1216,6 +1211,7 @@
           this.model.mails = rootdata.mails;
           this.model.uid = rootdata.uid;
           this.model.bodies = _.cloneDeep(tmpmodel);
+          console.log('this.model',this.model)
           this.arrangeVein();
           Indicator.close();
         }

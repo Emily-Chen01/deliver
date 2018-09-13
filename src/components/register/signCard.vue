@@ -77,7 +77,7 @@
         arryOneself: {},
         listData: [// 九宫格数据
           {
-            name: '考勤审批',
+            name: '审批申请',
             icon: 'bg-apply',
             type: 0,
             num: 0
@@ -114,17 +114,11 @@
 //            type: 5,
 //            num:0
 //          },
-//          {
-//            name: '我的审批',
-//            icon: 'bg-personal',
-//            type: 6,
-//            num:0
-//          } ,
           {
-            name: '已审批',
-            icon: 'bg-personal',
-            type: 7,
-            num: 0
+            name: '我的审批',
+            icon: 'bg-approve',
+            type: 6,
+            num:0
           }
         ],
         imgSrc: {
@@ -165,8 +159,6 @@
             case 5:
               break;
             case 6:
-              break;
-            case 7:
               break;
             default:
               break;
@@ -236,9 +228,6 @@
             break;
           case 6:
             this.$router.push({path: '/approve'});
-            break;
-          case 7:
-            this.$router.push({path: '/approved'});
             break;
           default:
             break;
