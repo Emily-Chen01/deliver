@@ -16,7 +16,7 @@
     <p class="uploadErrorTip" v-if="uploadErrFlag && type==='image'">
       请上传正确的照片(格式为 {{errType}}，体积小于 {{parseInt(configs.numberLimit / 1000)}} 兆，图片不超过{{configs.fieldSize}}个)</p>
     <p class="uploadErrorTip" v-if="uploadErrFlag && type==='file'">
-      请上传正确的文件(格式为 {{errType}}，体积小于 {{parseInt(configs.numberLimit / 1000)}} 兆，图片不超过{{configs.fieldSize}}个)</p>
+      请上传正确的文件(格式为 {{errType}}，体积小于 {{parseInt(configs.numberLimit / 1000)}} 兆，文件不超过{{configs.fieldSize}}个)</p>
   </div>
 </template>
 
