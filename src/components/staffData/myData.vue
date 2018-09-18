@@ -4,13 +4,14 @@
     <el-card v-if="model.mails && model.bodies" class="box-card">
       <div slot="header" class="clearfix tab-wrapper">
         <mt-navbar fixed v-model="selected" class="dataTitle">
-          <mt-tab-item v-if="!isLowEntry" v-for="item in model.bodies"
+          <mt-tab-item v-if="isLowEntry!=='-2'" v-for="item in model.bodies"
                        :key="item.uid" :id="item.uid">
             <span>{{item.fieldName === item.fieldDescr ? item.fieldName : (item.fieldName + item.fieldDescr)}}</span>
           </mt-tab-item>
-          <mt-tab-item v-else-if="isLowEntry && index===0" v-for="(item,index) in model.bodies"
+          <mt-tab-item v-if="isLowEntry==='-2' && index===0" v-for="(item,index) in model.bodies"
                        :key="item.uid" :id="item.uid">
-            <span>{{item.fieldName === item.fieldDescr ? item.fieldName : (item.fieldName + item.fieldDescr)}}</span>
+            <span
+              v-text="(item.fieldName === item.fieldDescr) ? item.fieldName : (item.fieldName + item.fieldDescr)"></span>
           </mt-tab-item>
         </mt-navbar>
       </div>
@@ -21,7 +22,7 @@
           class="employees-func-body"
           v-for="(body, bodyIdx) in model.bodies"
           :key="body.uid"
-          v-show="body.uid === actTab">
+          v-if="body.uid === actTab">
           <div
             data-level="2"
             class="employees-func-part"
@@ -125,7 +126,7 @@
                     </select>
                   </el-form-item>
                   <el-form-item
-                    v-show="field._configs.fieldType === '4' && field.jname === 'reporterJobNumber' && showed(field) && field.isVisible"
+                    v-if="field._configs.fieldType === '4' && field.jname === 'reporterJobNumber' && showed(field) && field.isVisible"
                     :key="field.uid"
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
@@ -268,6 +269,7 @@
                   }]">
                     <el-checkbox-group v-model="field._configs._staffValues.value" :disabled="!field.isEdit">
                       <el-checkbox
+                        style="z-index: 0;"
                         v-for="item in field._configs.staffFieldValues || []"
                         :key="item.uid"
                         :label="item.value">
@@ -282,7 +284,7 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
                     <uploadImage
-                      v-show="!field._configs.fileEdit"
+                      v-if="!field._configs.fileEdit"
                       :title="field.fieldName" :configs="field._configs" :type="'image'"
                       :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
                       <el-button slot="button" type="primary" size="small"
@@ -291,7 +293,7 @@
                         <span>编辑</span>
                       </el-button>
                     </uploadImage>
-                    <div v-show="field._configs.fileEdit">
+                    <div v-if="field._configs.fileEdit">
                       <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)">
                         <span>删除</span>
                       </el-button>
@@ -328,7 +330,7 @@
                     :label="field.fieldName"
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
                     <uploadImage
-                      v-show="!field._configs.fileEdit"
+                      v-if="!field._configs.fileEdit"
                       :title="field.fieldName" :configs="field._configs" :type="'file'"
                       :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
                       <el-button slot="button" type="primary" size="small"
@@ -337,7 +339,7 @@
                         <span>编辑</span>
                       </el-button>
                     </uploadImage>
-                    <div v-show="field._configs.fileEdit">
+                    <div v-if="field._configs.fileEdit">
                       <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)">
                         <span>删除</span>
                       </el-button>
@@ -498,7 +500,7 @@
   export default {
     data() {
       return {
-        isLowEntry: false,//判断是否是待入职员工
+        isLowEntry: null,//判断是否是待入职员工
         startDate: new Date(),
         nowDateTime: new Date(),
         selected: '',//tab切换的判断位
@@ -823,7 +825,14 @@
          档案 archive
          */
         const postData = {uid: this.model.uid, staffValues: [], approvalMails: []};
-        this.model.bodies.forEach(body => {
+        this.model.bodies.forEach((body, bodyIndex) => {
+          if (this.isLowEntry === '-2' && bodyIndex === 0) {
+            forBody(body);
+          } else if (this.isLowEntry !== '-2') {
+            forBody(body);
+          }
+        });
+        function forBody(body) {
           body.children.forEach(part => {
             part._children.forEach((one_group, groupIdx) => {
               one_group.forEach(field => {
@@ -853,7 +862,8 @@
               });
             });
           });
-        });
+        }
+
         if (this.isEmail('isEmail', '0')) {
           this.model.mails.forEach((mail, idx) => {
             postData.approvalMails.push({mail, sort: idx + 1})
@@ -862,7 +872,7 @@
         this.$http.post('/api/v1.0/client/updateStaffInfo', postData).then(res => {
           const {body: {code, message}} = res;
           if (code === 200) {
-            if (!this.isLowEntry) {
+            if (!(this.isLowEntry === '-1' || this.isLowEntry === '-2')) {
               this.$router.push({path: "/signCard"});
             }
           }
@@ -959,10 +969,7 @@
     },
     mounted() {
       Indicator.open("正在加载...");
-      let isLowEntry = this.getCookie("isLowEntry");
-      if (isLowEntry === '-1' || isLowEntry === '-2') {
-        this.isLowEntry = true;
-      }
+      this.isLowEntry = this.getCookie("isLowEntry");
       const rootdata = {
         staffFields: null,
         mails: null,
@@ -1211,7 +1218,7 @@
           this.model.mails = rootdata.mails;
           this.model.uid = rootdata.uid;
           this.model.bodies = _.cloneDeep(tmpmodel);
-          console.log('this.model',this.model)
+          console.log('this.model', this.model)
           this.arrangeVein();
           Indicator.close();
         }

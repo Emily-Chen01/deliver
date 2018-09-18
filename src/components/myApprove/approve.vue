@@ -2,10 +2,10 @@
   <div id="approve-wrapper">
     <mt-navbar v-model="selectInfo" class="approve-header">
       <!--<mt-tab-item id="a">-->
-        <!--<div @click="changeShow(-1)"><span>待处理审批</span></div>-->
+        <!--<div @click="changeShow()"><span>待处理审批</span></div>-->
       <!--</mt-tab-item>-->
       <mt-tab-item id="b">
-        <div @click="changeShow(0)"><span>已处理审批</span></div>
+        <div @click="changeShow()"><span>已处理审批</span></div>
       </mt-tab-item>
     </mt-navbar>
     <div class="approve-main-content">
@@ -142,7 +142,7 @@
       };
     },
     created: function () {
-      this.changeShow(-1)
+      this.changeShow()
     },
     watch: {},
     methods: {
@@ -171,11 +171,7 @@
         return arr[num];
       },
       changeShow(val){ //查看审批信息
-        this.$http.post('/api/v1.0/client/findApplys', {
-          status: val,
-          pageSize: 100,
-          pageNumber: 1
-        }).then(response => { //查询请假接口
+        this.$http.get('/api/v1.0/approval/findComplete').then(response => { //查询请假接口
           if (response.body.code === 200) {
             this.searchApplyRecord = response.body.result;
           }
