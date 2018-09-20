@@ -2,7 +2,7 @@
   <div id="approve-wrapper">
     <mt-navbar v-model="selectInfo" class="approve-header">
       <!--<mt-tab-item id="a">-->
-        <!--<div @click="changeShow()"><span>待处理审批</span></div>-->
+      <!--<div @click="changeShow()"><span>待处理审批</span></div>-->
       <!--</mt-tab-item>-->
       <mt-tab-item id="b">
         <div @click="changeShow()"><span>已处理审批</span></div>
@@ -13,7 +13,7 @@
         <div class="approve-main-content-top">
           <h3 class="approve-main-content-title">
                 <span class="approve-main-content-title-left"
-                      v-text="item.name+'申请'+(item.name===item.sname ? '':('('+item.sname+')'))"></span>
+                      v-text="item.name+'申请'+(item.leaveName ? item.leaveName:'')"></span>
             <span class="approve-main-content-title-right"
                   v-text="applyState(item.status)"></span>
           </h3>
@@ -21,11 +21,11 @@
         <div class="approve-main-content-Info">
           <div>
             <h3>申请人</h3>
-            <p >张三(CI11570)</p>
+            <p v-text="item.applyer"></p>
           </div>
           <div class="marginTop10">
             <h3>当前审批人</h3>
-            <p>刘安(CI11500)</p>
+            <p v-text="item.approvaler"></p>
           </div>
           <div v-if="item.time&&item.time.length>0" class="marginTop10"
                v-for="(overTime,overIndex) in item.time" :key="overIndex">
@@ -40,11 +40,15 @@
               <span v-text="datefmt(item.startTime)"></span> 至 <span v-text="datefmt(item.endTime)"></span>
             </p>
           </div>
-          <div v-if="item.overworkTime" class="marginTop10">
+          <div v-if="item.configType===3 && item.overworkTime" class="marginTop10">
             <h3>加班时长</h3>
-            <p><span>平日加班:</span><span>{{item.overworkTime}}小时</span></p>
-            <p><span>周末加班:</span><span>{{item.overworkTime}}小时</span></p>
-            <p><span>节假日加班:</span><span>{{item.overworkTime}}小时</span></p>
+            <p><span>平日加班：</span><span v-text="queryOverworkTime(item.workTime,0)+'小时'"></span></p>
+            <p><span>周末加班：</span><span v-text="queryOverworkTime(item.workTime,1)+'小时'"></span></p>
+            <p><span>节假日加班：</span><span v-text="queryOverworkTime(item.workTime,2)+'小时'"></span></p>
+          </div>
+          <div v-if="!(item.configType===3)" class="marginTop10">
+            <h3>申请时长</h3>
+            <p><span v-text="item.days ? item.days : '--'"></span></p>
           </div>
           <div class="marginTop10">
             <h3>事由</h3>
@@ -171,7 +175,7 @@
         return arr[num];
       },
       changeShow(val){ //查看审批信息
-        this.$http.get('/api/v1.0/approval/findComplete').then(response => { //查询请假接口
+        this.$http.get('/api/v1.0/client/approval/findComplete').then(response => { //查询请假接口
           if (response.body.code === 200) {
             this.searchApplyRecord = response.body.result;
           }
@@ -202,14 +206,14 @@
         }
       },
       //通过或拒绝
-      isPass(uid,type){
-        let url,text;
-        if(type===1){//通过
-          url='/api/v1.0/client/revokeApply/'+uid
-          text='是否同意当前审批？';
-        }else if(type=2){//拒绝
-          url='/api/v1.0/client/revokeApply/'+uid
-          text='是否拒绝当前审批？';
+      isPass(uid, type){
+        let url, text;
+        if (type === 1) {//通过
+          url = '/api/v1.0/client/revokeApply/' + uid
+          text = '是否同意当前审批？';
+        } else if (type = 2) {//拒绝
+          url = '/api/v1.0/client/revokeApply/' + uid
+          text = '是否拒绝当前审批？';
         }
         MessageBox.confirm(text, '提示').then(action => {
           Indicator.open('正在处理中...');
@@ -226,6 +230,16 @@
           });
         });
       },
+      //格式化加班时长
+      queryOverworkTime(arr, type){
+        let time = 0;
+        arr.map(item => {
+          if (item.type === type) {
+            time = item.time;
+          }
+        });
+        return time;
+      }
     },
     components: {},
   }
@@ -242,10 +256,10 @@
     .pl30 {
       padding-left: 30px;
     }
-    .plr15{
+    .plr15 {
       padding: 0 15px;
     }
-    .fs13{
+    .fs13 {
       font-size: 13px;
     }
     .fc1 {
@@ -364,7 +378,7 @@
             font-size: 14px;
             color: #20a0ff;
           }
-          .approve-main-content-btnBox{
+          .approve-main-content-btnBox {
             display: inline-block;
             width: 40%;
             .approve-main-content-btn {
