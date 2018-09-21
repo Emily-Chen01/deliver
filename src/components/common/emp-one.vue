@@ -10,8 +10,8 @@
     <el-input prefix-icon="el-icon-search" v-model.trim="mso.key" @input="find"></el-input>
     <el-table border highlight-current-row :data="mso.list" height="250" @row-click="choose" v-loading="loading" :element-loading-text="loadingText">
       <el-table-column width="100" property="jobNumber" label="工号"></el-table-column>
-      <el-table-column width="150" property="name" label="姓名"></el-table-column>
-      <el-table-column width="150" property="deptName" label="部门"></el-table-column>
+      <el-table-column width="100" property="name" label="姓名"></el-table-column>
+      <el-table-column property="deptName" label="部门"></el-table-column>
       <el-table-column v-if="type === 'task' && refBy" width="84">
         <template slot-scope="scope">
           <el-tag type="success" v-if="refBy.indexOf(scope.row.recordUid) > -1">可选</el-tag>
@@ -264,6 +264,7 @@ export default {
 
 <style lang="scss">
 .choose-emp {
+  width: 90%;
   .el-table,
   .close-wrapper {
     margin-top: 16px;

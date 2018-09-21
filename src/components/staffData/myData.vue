@@ -134,12 +134,13 @@
                     required: (field.isDefault || field.isRequired),
                     message: field._configs.fieldHint
                   }]">
-                    <!--<job-reporter-->
-                    <!--@validate="empValidateJR(`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`)"-->
-                    <!--class="job-reporter" v-model="field._configs._staffValues.value" ref="jobReporter"/>-->
-                    <!--<el-tooltip v-if="field.fieldDescr" :content="field.fieldDescr" placement="right">-->
-                    <!--<i class="el-icon-info"></i>-->
-                    <!--</el-tooltip>-->
+                    <job-reporter
+                      @validate="empValidateJR(`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`)"
+                      class="job-reporter" v-model="field._configs._staffValues.value" ref="jobReporter">
+                    </job-reporter>
+                    <el-tooltip v-if="field.fieldDescr" :content="field.fieldDescr" placement="right">
+                      <i class="el-icon-info"></i>
+                    </el-tooltip>
                   </el-form-item>
 
                   <el-form-item
@@ -362,7 +363,7 @@
                            @click="selectImg(field._configs._staffValues.value,index)"></i>
                         <img src="../../assets/ico_document.png" alt="">
                         <a :href="n.url + `&token=${tokenHeader.token}&mobile=${tokenHeader.mobile}`"
-                           :class="getExtType(n.url)">下载</a>
+                           :class="getExtType(n.url)" style="font-size: 14px;">下载</a>
                       </div>
                     </div>
                   </el-form-item>
@@ -461,7 +462,7 @@
   import utils from '../common/utils'
   import uploadImage from "./uploadImage"
   import fancyBox from 'vue-fancybox';
-  //  import jobReporter from '../common/emp-one'
+  import jobReporter from '../common/emp-one'
   import {MessageBox, Indicator} from "mint-ui";
   V.use(ElementUI);
   // ====日历组件需求开始====
@@ -1230,7 +1231,7 @@
       // ====日历组件需求结束====
     },
     components: {
-//      jobReporter
+      jobReporter,
       uploadImage
     }
   }
@@ -1250,7 +1251,7 @@
       .YD_image_list_item {
         display: inline-block;
         position: relative;
-        overflow: hidden;
+        /*overflow: hidden;*/
         height: 60px;
         width: 60px;
         margin: 2px 5px 0 0;
