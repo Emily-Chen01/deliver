@@ -134,13 +134,18 @@
                     required: (field.isDefault || field.isRequired),
                     message: field._configs.fieldHint
                   }]">
-                    <job-reporter
-                      @validate="empValidateJR(`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`)"
-                      class="job-reporter" v-model="field._configs._staffValues.value" ref="jobReporter">
-                    </job-reporter>
-                    <el-tooltip v-if="field.fieldDescr" :content="field.fieldDescr" placement="right">
-                      <i class="el-icon-info"></i>
-                    </el-tooltip>
+                    <el-button :disabled="true" v-text="reporterJobNumberName"></el-button>
+                    <!--<el-input-->
+                    <!--:disabled="true"-->
+                    <!--v-model="field._configs._staffValues.value">-->
+                    <!--</el-input>-->
+                    <!--<job-reporter-->
+                    <!--@validate="empValidateJR(`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`)"-->
+                    <!--class="job-reporter" v-model="field._configs._staffValues.value" ref="jobReporter">-->
+                    <!--</job-reporter>-->
+                    <!--<el-tooltip v-if="field.fieldDescr" :content="field.fieldDescr" placement="right">-->
+                    <!--<i class="el-icon-info"></i>-->
+                    <!--</el-tooltip>-->
                   </el-form-item>
 
                   <el-form-item
@@ -520,7 +525,8 @@
         },
         perm: {},
         actTab: '',
-        fold: null
+        fold: null,
+        reporterJobNumberName: '--',//汇报人名称
       }
     },
     methods: {
@@ -540,7 +546,6 @@
           body.children.forEach(part => {
             part._children.forEach(one_group => {
               one_group.forEach(field => {
-
                 states.forEach(state => {
                   if (
                     field.jname === state.jname
@@ -976,6 +981,17 @@
         mails: null,
         uid: null
       };
+      //审批人表赋值给汇报上级
+      this.$http.get("/api/v1.0/client/findReporter").then(
+        response => {
+          if (response.body.code === 200) {
+            this.reporterJobNumberName = response.body.result.NAME;
+          }
+        },
+        response => {
+          console.log("error callback");
+        }
+      );
       this.$http.get('/api/v1.0/client/selectStaff').then(res => {
         const {body: {code, result}} = res;
         if (code === 200) {
@@ -1038,16 +1054,16 @@
                     this.confItems,
                     configType.toString(),
                     (result => {
-                      return utils.getDE(result).map(dept => {
+                      return utils.getDE(result[0]).map(dept => {
                         dept.id = dept.uid;
                         return dept;
                       });
-                    })(body.result)
-                  );
+                    })(body.result));
                 } else {
                   this.$set(this.confItems, configType.toString(), body.result);
                 }
               }
+
             });
           }).catch(res => console.log(res.status, res.statusText, res.url));
           const tmpmodel = modifyNode({
@@ -1219,7 +1235,7 @@
           this.model.mails = rootdata.mails;
           this.model.uid = rootdata.uid;
           this.model.bodies = _.cloneDeep(tmpmodel);
-          console.log('this.model', this.model)
+//          console.log('this.model', this.model)
           this.arrangeVein();
           Indicator.close();
         }
