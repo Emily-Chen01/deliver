@@ -3,8 +3,9 @@
     <div style="display: inline-block">
       <el-upload action="/api/v1.0/client/upload" name="files" :show-file-list="false" :headers="tokenHeader"
                  :on-success="staffPhoUrlOk"
-                 :before-upload="beforeStaffPhoUrl">
-        <el-button type="primary" size="small">
+                 :before-upload="beforeStaffPhoUrl"
+                 :disabled="!field.isEdit">
+        <el-button type="primary" size="small" :disabled="!field.isEdit">
         <span>
           <i class="el-icon-upload"></i>
           <span v-text="'上传'+title"></span>
@@ -14,16 +15,16 @@
     </div>
     <slot name="button"></slot>
     <p class="uploadErrorTip" v-if="uploadErrFlag && type==='image'">
-      请上传正确的照片(格式为 {{errType}}，体积小于 {{parseInt(configs.numberLimit / 1000)}} 兆，图片不超过{{configs.fieldSize}}个)</p>
+      请上传正确的照片(格式为 {{errType}}，体积小于 {{parseInt(field._configs.numberLimit / 1000)}} 兆，图片不超过{{field._configs.fieldSize}}个)</p>
     <p class="uploadErrorTip" v-if="uploadErrFlag && type==='file'">
-      请上传正确的文件(格式为 {{errType}}，体积小于 {{parseInt(configs.numberLimit / 1000)}} 兆，文件不超过{{configs.fieldSize}}个)</p>
+      请上传正确的文件(格式为 {{errType}}，体积小于 {{parseInt(field._configs.numberLimit / 1000)}} 兆，文件不超过{{field._configs.fieldSize}}个)</p>
   </div>
 </template>
 
 <script>
   import utils from "@/components/common/utils";
   export default {
-    props: ["child", 'title', 'position', 'configs', 'type'],
+    props: ["child", 'title', 'position', 'field', 'type'],
     data() {
       return {
         tokenHeader: {
@@ -68,17 +69,17 @@
         }
       },
       beforeStaffPhoUrl(file) {
-        console.log('wertyu', this.configs)
+//        console.log('wertyu', this.configs)
         let errType = '';
         let backValue;
         let condition = null;
-        let isFieldSize = this.configs._staffValues.value.length < this.configs.fieldSize;
-        if (this.configs.conditions && this.configs.conditions.length) {
+        let isFieldSize = this.field._configs._staffValues.value.length < this.field._configs.fieldSize;
+        if (this.field._configs.conditions && this.field._configs.conditions.length) {
           condition = '-'
         }
-        let isInSize = utils.isInSize(file, this.configs.numberLimit / 1000);
+        let isInSize = utils.isInSize(file, this.field._configs.numberLimit / 1000);
         if (this.type === 'image') {
-          this.configs.conditions.forEach((item, i) => {
+          this.field._configs.conditions.forEach((item, i) => {
             condition += this.picPatt[item] + '-';
             if (i !== 0) {
               errType += '、' + this.picFormatsMap[item];
@@ -93,7 +94,7 @@
             backValue = false;
           }
         } else if (this.type === 'file') {
-          this.configs.conditions.forEach((item, i) => {
+          this.field._configs.conditions.forEach((item, i) => {
             condition += this.docPatt[item] + '-';
             if (i !== 0) {
               errType += '、' + this.docFormatsMap[item];

@@ -112,6 +112,7 @@
                             v-model="field._configs._staffValues.value"
                             @change="makeCities(field)"
                             class="myData_select">
+                      <option :value="''||null">请选择</option>
                       <option v-for="item in confItems[makeKeyOfConfitems(field)]"
                               :key="item.id"
                               v-text="item.name"
@@ -121,6 +122,7 @@
                     <select v-else-if="field.isDefined" :disabled="!field.isEdit"
                             v-model="field._configs._staffValues.value"
                             class="myData_select">
+                      <option :value="''||null">请选择</option>
                       <option v-for="item in field._configs.staffFieldValues" :key="item.uid" v-text="item.value"
                               :value="item.value"></option>
                     </select>
@@ -192,7 +194,8 @@
                     </el-radio-group>
                     <el-radio-group
                       v-else
-                      v-model="field._configs._staffValues.value">
+                      v-model="field._configs._staffValues.value"
+                      :disabled="!field.isEdit">
                       <el-radio
                         v-for="item in field._configs.staffFieldValues"
                         :key="item.uid"
@@ -291,19 +294,24 @@
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
                     <uploadImage
                       v-if="!field._configs.fileEdit"
-                      :title="field.fieldName" :configs="field._configs" :type="'image'"
+                      :title="field.fieldName" :field="field" :type="'image'"
                       :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
                       <el-button slot="button" type="primary" size="small"
-                                 :disabled="!(field._configs._staffValues.value.length>0)"
+                                 :disabled="!(field._configs._staffValues.value.length>0)||!field.isEdit"
                                  @click="editImg(bodyIdx,partIdx,groupIdx,fieldIdx)">
                         <span>编辑</span>
                       </el-button>
                     </uploadImage>
                     <div v-if="field._configs.fileEdit">
-                      <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)">
+                      <el-button type="danger" size="small"
+                                 @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)"
+                                 :disabled="!field.isEdit">
                         <span>删除</span>
                       </el-button>
-                      <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" size="small">取消</el-button>
+                      <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" :disabled="!field.isEdit"
+                                 size="small">取消
+
+                      </el-button>
                     </div>
 
 
@@ -337,16 +345,17 @@
                     :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`">
                     <uploadImage
                       v-if="!field._configs.fileEdit"
-                      :title="field.fieldName" :configs="field._configs" :type="'file'"
+                      :title="field.fieldName" :field="field" :type="'file'"
                       :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
                       <el-button slot="button" type="primary" size="small"
-                                 :disabled="!(field._configs._staffValues.value.length>0)"
+                                 :disabled="!(field._configs._staffValues.value.length>0)||!field.isEdit"
                                  @click="editImg(bodyIdx,partIdx,groupIdx,fieldIdx)">
                         <span>编辑</span>
                       </el-button>
                     </uploadImage>
                     <div v-if="field._configs.fileEdit">
-                      <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)">
+                      <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)"
+                                 :disabled="!field.isEdit">
                         <span>删除</span>
                       </el-button>
                       <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" size="small">取消</el-button>
@@ -467,7 +476,7 @@
   import utils from '../common/utils'
   import uploadImage from "./uploadImage"
   import fancyBox from 'vue-fancybox';
-  import jobReporter from '../common/emp-one'
+  //  import jobReporter from '../common/emp-one'//选择汇报人弹框，暂时不用
   import {MessageBox, Indicator} from "mint-ui";
   V.use(ElementUI);
   // ====日历组件需求开始====
@@ -714,7 +723,7 @@
           }
         }
       },
-      makeCities(field) {
+      makeCities(field, isInit) {
         this.$nextTick(function () {
           const _hold4query = field._hold4query
           if (_hold4query) {
@@ -727,12 +736,14 @@
                     if (res.code === 200) {
 
                       this.$set(this.confItems, `${_hold4query}_${needQueryField._mark}`, res.result)
-                      this.updateWholeModel(
-                        [
-                          {jname: _hold4query, value: null}
-                        ],
-                        groupIdx
-                      )
+                      if (isInit !== 1) {
+                        this.updateWholeModel(
+                          [
+                            {jname: _hold4query, value: this.confItems[`${_hold4query}_${needQueryField._mark}`][0].id}
+                          ],
+                          groupIdx
+                        )
+                      }
                     }
                   }).catch(res => console.log(res.status, res.statusText, res.url));
                 } else {
@@ -942,7 +953,7 @@
       },
       //编辑操作
       editImg(bodyIdx, partIdx, groupIdx, fieldIdx){
-        console.log(123456789, this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value)
+//        console.log(123456789, this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value)
         V.set(this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs, 'fileEdit', true)
       },
       //取消删除文件
@@ -958,7 +969,7 @@
             i--;
           }
         }
-        console.log(list)
+//        console.log(list)
         this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value = list;
         this.cancelEditImg(bodyIdx, partIdx, groupIdx, fieldIdx);
       },
@@ -1237,6 +1248,19 @@
           this.model.bodies = _.cloneDeep(tmpmodel);
 //          console.log('this.model', this.model)
           this.arrangeVein();
+          this.model.bodies.forEach((body, bodyIdx) => {
+            body.children.forEach((part, partIdx) => {
+              part._children.forEach((group, groupIdx) => {
+                group.forEach((field, fieldIdx) => {
+                  if (field.jname === 'province') {
+                    this.makeCities(field, 1);//第二个参数判断是否是初始化加载
+                  }
+
+//                  field._mark = `${bodyIdx}-${partIdx}-${groupIdx}-${fieldIdx}`;
+                });
+              });
+            });
+          });
           Indicator.close();
         }
       });
@@ -1247,7 +1271,7 @@
       // ====日历组件需求结束====
     },
     components: {
-      jobReporter,
+//      jobReporter,
       uploadImage
     }
   }
@@ -1317,7 +1341,7 @@
     .box-card {
       border: none;
       box-shadow: none;
-      margin-bottom: 35px;
+      margin-bottom: 50px;
     }
     .tab-wrapper {
       height: 32px;
@@ -1355,7 +1379,11 @@
     .employees-func-body {
       .employees-func-part {
         border-bottom: 5px solid rgb(239, 242, 247);
+        &:last-child {
+          border-bottom: none;
+        }
       }
+
       .header-bar {
         padding: 0 20px;
         /*background: #eee;*/
