@@ -59,43 +59,7 @@
                 </span>
                 </div>
                 <template v-for="(field, fieldIdx) in group">
-                  <el-form-item
-                    v-if="field._configs.fieldType === '9' && field.isVisible"
-                    class="text-form-item"
-                    :key="field.uid"
-                    :label="field.fieldName"
-                    :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
-                    :rules="[{
-                    required: (field.isDefault || field.isRequired),
-                    trigger: 'blur',
-                    message: field._configs.fieldHint,
-                    validator: makeValidator(field)
-                  }]">
-                    <el-input
-                      :disabled="!field.isEdit"
-                      v-model.trim="field._configs._staffValues.value"
-                      :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
-                    </el-input>
-                  </el-form-item>
 
-                  <el-form-item
-                    v-if="field._configs.fieldType === '10' && field.isVisible"
-                    class="text-form-item"
-                    :key="field.uid"
-                    :label="field.fieldName"
-                    :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
-                    :rules="[{
-                    required: (field.isDefault || field.isRequired),
-                    trigger: 'blur',
-                    message: field._configs.fieldHint,
-                    validator: makeValidator(field)
-                  }]">
-                    <el-input
-                      :disabled="!field.isEdit"
-                      v-model.trim="field._configs._staffValues.value"
-                      :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
-                    </el-input>
-                  </el-form-item>
 
                   <el-form-item
                     v-if="field._configs.fieldType === '4' && field.jname !== 'reporterJobNumber' && field.isVisible"
@@ -309,8 +273,8 @@
                         <span>删除</span>
                       </el-button>
                       <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" :disabled="!field.isEdit"
-                                 size="small">取消
-
+                                 size="small">
+                        <span>取消</span>
                       </el-button>
                     </div>
 
@@ -381,45 +345,81 @@
                       </div>
                     </div>
                   </el-form-item>
+                  <!--<el-form-item-->
+                  <!--v-if="field._configs.fieldType === '9' && field.isVisible"-->
+                  <!--class="text-form-item"-->
+                  <!--:key="field.uid"-->
+                  <!--:label="field.fieldName"-->
+                  <!--:prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"-->
+                  <!--:rules="[{-->
+                  <!--required: (field.isDefault || field.isRequired),-->
+                  <!--trigger: 'blur',-->
+                  <!--message: field._configs.fieldHint,-->
+                  <!--validator: makeValidator(field)-->
+                  <!--}]">-->
+                  <!--<el-input-->
+                  <!--:disabled="!field.isEdit"-->
+                  <!--v-model.trim="field._configs._staffValues.value"-->
+                  <!--:maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">-->
+                  <!--</el-input>-->
+                  <!--</el-form-item>-->
 
+                  <!--<el-form-item-->
+                  <!--v-if="field._configs.fieldType === '10' && field.isVisible"-->
+                  <!--class="text-form-item"-->
+                  <!--:key="field.uid"-->
+                  <!--:label="field.fieldName"-->
+                  <!--:prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"-->
+                  <!--:rules="[{-->
+                  <!--required: (field.isDefault || field.isRequired),-->
+                  <!--trigger: 'blur',-->
+                  <!--message: field._configs.fieldHint,-->
+                  <!--validator: makeValidator(field)-->
+                  <!--}]">-->
+                  <!--<el-input-->
+                  <!--:disabled="!field.isEdit"-->
+                  <!--v-model.trim="field._configs._staffValues.value"-->
+                  <!--:maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">-->
+                  <!--</el-input>-->
+                  <!--</el-form-item>-->
+                  <!--<el-form-item-->
+                  <!--v-if="field._configs.fieldType === '11'&& field.isVisible"-->
+                  <!--class="text-form-item"-->
+                  <!--:key="field.uid"-->
+                  <!--:label="field.fieldName"-->
+                  <!--:prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"-->
+                  <!--:rules="[{-->
+                  <!--required: (field.isDefault || field.isRequired),-->
+                  <!--trigger: 'blur',-->
+                  <!--message: field._configs.fieldHint,-->
+                  <!--validator: makeValidator(field)-->
+                  <!--}]">-->
+                  <!--<el-input-->
+                  <!--:disabled="!field.isEdit"-->
+                  <!--v-model.trim="field._configs._staffValues.value"-->
+                  <!--:maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">-->
+                  <!--</el-input>-->
+                  <!--</el-form-item>-->
+                  <!--<el-form-item-->
+                  <!--v-if="field._configs.fieldType === '12' && field.isVisible"-->
+                  <!--class="text-form-item"-->
+                  <!--:key="field.uid"-->
+                  <!--:label="field.fieldName"-->
+                  <!--:prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"-->
+                  <!--:rules="[{-->
+                  <!--required: (field.isDefault || field.isRequired),-->
+                  <!--trigger: 'blur',-->
+                  <!--message: field._configs.fieldHint,-->
+                  <!--validator: makeValidator(field)-->
+                  <!--}]">-->
+                  <!--<el-input-->
+                  <!--:disabled="!field.isEdit"-->
+                  <!--v-model.trim="field._configs._staffValues.value"-->
+                  <!--:maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">-->
+                  <!--</el-input>-->
+                  <!--</el-form-item>-->
                   <el-form-item
-                    v-if="field._configs.fieldType === '11' && field.isVisible"
-                    class="text-form-item"
-                    :key="field.uid"
-                    :label="field.fieldName"
-                    :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
-                    :rules="[{
-                    required: (field.isDefault || field.isRequired),
-                    trigger: 'blur',
-                    message: field._configs.fieldHint,
-                    validator: makeValidator(field)
-                  }]">
-                    <el-input
-                      :disabled="!field.isEdit"
-                      v-model.trim="field._configs._staffValues.value"
-                      :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
-                    </el-input>
-                  </el-form-item>
-                  <el-form-item
-                    v-if="field._configs.fieldType === '12' && field.isVisible"
-                    class="text-form-item"
-                    :key="field.uid"
-                    :label="field.fieldName"
-                    :prop="`bodies.${bodyIdx}.children.${partIdx}._children.${groupIdx}.${fieldIdx}._configs._staffValues.value`"
-                    :rules="[{
-                    required: (field.isDefault || field.isRequired),
-                    trigger: 'blur',
-                    message: field._configs.fieldHint,
-                    validator: makeValidator(field)
-                  }]">
-                    <el-input
-                      :disabled="!field.isEdit"
-                      v-model.trim="field._configs._staffValues.value"
-                      :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256">
-                    </el-input>
-                  </el-form-item>
-                  <el-form-item
-                    v-if="field._configs.fieldType === '13' && field.isVisible"
+                    v-if="(field._configs.fieldType === '9'||field._configs.fieldType === '10'||field._configs.fieldType === '11'||field._configs.fieldType === '12'||field._configs.fieldType === '13'||field._configs.fieldType === '15') && field.isVisible"
                     class="text-form-item"
                     :key="field.uid"
                     :label="field.fieldName"
@@ -1341,7 +1341,7 @@
     .box-card {
       border: none;
       box-shadow: none;
-      margin-bottom: 50px;
+      margin-bottom: 35px;
     }
     .tab-wrapper {
       height: 32px;
@@ -1380,7 +1380,8 @@
       .employees-func-part {
         border-bottom: 5px solid rgb(239, 242, 247);
         &:last-child {
-          border-bottom: none;
+          border: none;
+          padding-bottom: 20px;
         }
       }
 
