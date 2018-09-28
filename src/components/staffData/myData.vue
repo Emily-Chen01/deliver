@@ -1528,5 +1528,8 @@
     .dataTitle {
       height: 44px;
     }
+    .el-form-item__error{
+      position: static !important;
+    }
   }
 </style>
