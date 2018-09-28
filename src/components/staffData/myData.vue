@@ -935,7 +935,7 @@
         if (data) {
           this.selectDateTime = moment(data).format(df1);
           this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx]._configs._staffValues.value = this.selectDateTime;
-          var currfield=this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx];
+          let currfield=this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx];
           if(currfield.jname === 'workingFirstTime'){
             this.computeWorkAge(currfield);
           }
