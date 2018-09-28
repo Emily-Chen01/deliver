@@ -226,7 +226,8 @@
                     <el-input
                       v-model.trim="field._configs._staffValues.value"
                       :maxlength="field._configs.fieldSize ? +field._configs.fieldSize : 256"
-                      :disabled="isDisabledByField(field) || !field.isEdit">
+                      :disabled="isDisabledByField(field) || !field.isEdit"
+                      :placeholder="'请输入'+field.fieldName">
                     </el-input>
                   </el-form-item>
                   <el-form-item
@@ -934,6 +935,10 @@
         if (data) {
           this.selectDateTime = moment(data).format(df1);
           this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx]._configs._staffValues.value = this.selectDateTime;
+          var currfield=this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx];
+          if(currfield.jname === 'workingFirstTime'){
+            this.computeWorkAge(currfield);
+          }
         }
       },
       //上传图片文件
@@ -995,7 +1000,7 @@
       //审批人表赋值给汇报上级
       this.$http.get("/api/v1.0/client/findReporter").then(
         response => {
-          if (response.body.code === 200) {
+          if (response.body.code === 200 && response.body.result) {
             this.reporterJobNumberName = response.body.result.NAME;
           }
         },
@@ -1255,7 +1260,9 @@
                   if (field.jname === 'province') {
                     this.makeCities(field, 1);//第二个参数判断是否是初始化加载
                   }
-
+                  if (field.jname === 'workingFirstTime') {
+                    this.computeWorkAge(field);
+                  }
 //                  field._mark = `${bodyIdx}-${partIdx}-${groupIdx}-${fieldIdx}`;
                 });
               });
