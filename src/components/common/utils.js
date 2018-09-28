@@ -907,7 +907,13 @@ const makeValidator = function makeValidator(field, dpds) {
         break;
 
       case '3':
-        pattern = parseString2RegExp(configs.jsValidexp);
+        condition = configs.conditions.join('');
+        if(field.isDefined && condition === '3') {
+          pattern = /^(?:[1-9]\d*|\d)(?:\.\d)?$/;
+        }else {
+          pattern = parseString2RegExp(configs.jsValidexp);
+        }
+        // pattern = parseString2RegExp(configs.jsValidexp);
         val = typeof value === 'string' ? value.trim() : '';
         vall = val.length;
         minl = configs.fieldMinSize || 1;
