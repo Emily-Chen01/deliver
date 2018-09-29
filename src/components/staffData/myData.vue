@@ -341,7 +341,7 @@
                            :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
                            @click="selectImg(field._configs._staffValues.value,index)"></i>
                         <img src="../../assets/ico_document.png" alt="">
-                        <a :href="n.url + `&token=${tokenHeader.token}&mobile=${tokenHeader.mobile}`"
+                        <a :href="n.url + `&openid=${tokenHeader.openId}`"
                            :class="getExtType(n.url)" style="font-size: 14px;">下载</a>
                       </div>
                     </div>
@@ -530,8 +530,8 @@
         confItems: {},
         uploadError: {},
         tokenHeader: {
-          token: sessionStorage.getItem('token'),
-          mobile: sessionStorage.getItem('mobile')
+          charset: "utf-8",
+          openId: this.getCookie("openId")
         },
         perm: {},
         actTab: '',
@@ -935,8 +935,8 @@
         if (data) {
           this.selectDateTime = moment(data).format(df1);
           this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx]._configs._staffValues.value = this.selectDateTime;
-          let currfield=this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx];
-          if(currfield.jname === 'workingFirstTime'){
+          let currfield = this.model.bodies[this.pos.bodyIdx].children[this.pos.partIdx]._children[this.pos.groupIdx][this.pos.fieldIdx];
+          if (currfield.jname === 'workingFirstTime') {
             this.computeWorkAge(currfield);
           }
         }
@@ -1535,7 +1535,7 @@
     .dataTitle {
       height: 44px;
     }
-    .el-form-item__error{
+    .el-form-item__error {
       position: static !important;
     }
   }
