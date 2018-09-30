@@ -341,7 +341,7 @@
                            :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
                            @click="selectImg(field._configs._staffValues.value,index)"></i>
                         <img src="../../assets/ico_document.png" alt="">
-                        <a :href="n.url + `&openid=${tokenHeader.openId}`"
+                        <a :href="n.url.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
                            :class="getExtType(n.url)" style="font-size: 14px;">下载</a>
                       </div>
                     </div>
