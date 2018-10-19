@@ -885,7 +885,7 @@
 
         if (this.isEmail('isEmail', '0')) {
           this.model.mails.forEach((mail, idx) => {
-            postData.approvalMails.push({mail, sort: idx + 1})
+            postData.approvalMails.push({mail:mail.mail, sort: idx + 1})
           });
         }
         this.$http.post('/api/v1.0/client/updateStaffInfo', postData).then(res => {
