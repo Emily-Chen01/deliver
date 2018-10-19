@@ -81,14 +81,14 @@
                               :key="item.id"
                               v-text="item.name"
                               :value="item.id"
-                              :class="{[item.idx]: `dept-item-${item.idx}`}"></option>
+                              :class="`dept-item-${item.idx}`"></option>
                     </select>
                     <select v-else-if="field.isDefined" :disabled="!field.isEdit"
                             v-model="field._configs._staffValues.value"
                             class="myData_select">
                       <option :value="''||null">请选择</option>
                       <option v-for="item in field._configs.staffFieldValues" :key="item.uid" v-text="item.value"
-                              :value="item.value"></option>
+                              :value="item.value" :class=" `dept-item-${item.idx}`"></option>
                     </select>
                   </el-form-item>
                   <el-form-item
@@ -239,7 +239,8 @@
                     required: (field.isDefault || field.isRequired),
                     type: 'array',
                     trigger: 'change',
-                    message: field._configs.fieldHint
+                    message: field._configs.fieldHint,
+                    validator: makeValidator(field)
                   }]">
                     <el-checkbox-group v-model="field._configs._staffValues.value" :disabled="!field.isEdit">
                       <el-checkbox
@@ -1167,36 +1168,37 @@
                     const fieldType = field._configs.fieldType;
                     if (values.length) {
                       values.forEach(item => {
-                        if (typeof (item.term) === 'string' || typeof (item.term) === 'number') {
-                          if (+item.term === idx) {
-                            setvalues.push(item.value);
-                          }
+                        if (+item.term === idx) {
+                          setvalues.push(item.value);
                         }
                       });
-                      if (setvalues.length > 0 && (fieldType === '7' || fieldType === '8')) {
-                        let arr = [];
-                        setvalues.forEach(item => {
-                          let img_url = item;
-                          // 创建对象
-                          let img = new Image();
-                          // 改变图片的src
-                          img.src = img_url;
-                          // 加载完成执行
-                          arr.push({
-                            width: img.width,
-                            height: img.height,
-                            url: item,
-                            selected: false
-                          })
-                        });
-                        return {
-                          value: arr,
-                          term: 0
-                        }
-                      } else if (setvalues.length > 1) {
-                        return {
-                          value: setvalues,
-                          term: 0
+
+                      if (+fieldType >= 6 && +fieldType <= 8) {
+                        if (setvalues.length > 0 && (fieldType === '7' || fieldType === '8')) {
+                          let arr = [];
+                          setvalues.forEach(item => {
+                            let img_url = item;
+                            // 创建对象
+                            let img = new Image();
+                            // 改变图片的src
+                            img.src = img_url;
+                            // 加载完成执行
+                            arr.push({
+                              width: img.width,
+                              height: img.height,
+                              url: item,
+                              selected: false
+                            })
+                          });
+                          return {
+                            value: arr,
+                            term: 0
+                          }
+                        } else {
+                          return {
+                            value: setvalues,
+                            term: 0
+                          }
                         }
                       } else {
                         return {
@@ -1204,6 +1206,7 @@
                           term: 0
                         }
                       }
+
                     } else {
                       if (+fieldType >= 4 && +fieldType <= 6) {
                         field._configs.staffFieldValues.forEach(item => {
@@ -1218,10 +1221,12 @@
                           term: 0
                         }
                       } else {
+
                         return {
                           value: dftvalues[0] || null,
                           term: 0
                         }
+
                       }
                     }
                   }(field, idx)
@@ -1269,6 +1274,7 @@
             });
           });
           Indicator.close();
+          console.log(this.model)
         }
       });
       // ====日历组件需求开始====
@@ -1292,6 +1298,47 @@
     .vam {
       vertical-align: middle;
     }
+    /*.el-select-dropdown,*/
+    /*.el-menu {*/
+      // .dept-item-1,
+      // .dept-item-2,
+      // .dept-item-3,
+      // .dept-item-4,
+      // .dept-item-5,
+      // .dept-item-6 {
+      //   padding-right: 2.4em;
+      // }
+      .dept-item-2,
+      .dept-item-3,
+      .dept-item-4,
+      .dept-item-5,
+      .dept-item-6 {
+        &::before {
+          display: inline-block;
+          text-align: right;
+          padding-right: 0.3em;
+          content: '\2514';
+          color: #ccc;
+          // content: '\2514';
+        }
+      }
+      .dept-item-2::before {
+        width: 1em;
+        // padding-left: 22px;
+      }
+      .dept-item-3::before {
+        width: 2em;
+      }
+      .dept-item-4::before {
+        width: 3em;
+      }
+      .dept-item-5::before {
+        width: 4em;
+      }
+      .dept-item-6::before {
+        width: 5em;
+      }
+    /*}*/
     // 复写lable原有样式
     .YD_image_list {
       line-height: normal;
