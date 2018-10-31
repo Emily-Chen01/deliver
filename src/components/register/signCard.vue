@@ -197,7 +197,9 @@
       changeList(indexX){
         switch (indexX) {
           case 0:
-            this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
+            this.setCookie('leaveType', indexX, 365);
+            this.$router.push({path: '/leave'});
+            /*this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
               if (response.body.code === 200) {
                 if (response.body.result.length === 0) { //此处设置的是在pc端关闭了考勤给出提示关闭了
                   MessageBox('', '您的申请功能已经被管理员关闭了');
@@ -208,7 +210,7 @@
               }
             }, response => {
               console.log('error callback');
-            });
+            });*/
             break;
           case 1:
             this.$router.push({path: '/attendanceRecord'});

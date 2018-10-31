@@ -8,110 +8,312 @@
         <div @click="changeShow(-1)"><span>我的申请</span></div>
       </mt-tab-item>
     </mt-navbar>
+    <div style="height: 30px">{{tmpnumber}}</div>
     <mt-tab-container v-model="selected" class="leave-main">
       <mt-tab-container-item id="1" class="leave-main-box">
-        <div class="leave-main-box-apply">
-          <div class="leave-main-box-apply-left icon-stars">申请分类</div>
-          <div class="leave-main-box-apply-center">
+        <div class="leavebox">
+          <div class="leaveboxlft icon-stars">申请分类</div>
+          <div class="leaveboxcen">
             <select v-model="selectedDataApply" @change="shengqingclick">
               <option v-for="option in applyTypeArray" :value="option.type" v-text="option.name"></option>
             </select>
           </div>
         </div>
-        <div class="leave-main-box-apply" v-if="changeApply">
-          <div class="leave-main-box-apply-left icon-stars">假期分类</div>
-          <div class="leave-main-box-apply-center">
-            <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday==='选择假期类型'}"
-                    @change="qingjiaclick(selectedDataHoliday)">
-              <option>选择假期类型</option>
-              <option v-for="option in holidayTypeArray" :value="option"
-                      v-text="option.NAME"></option>
-            </select>
-          </div>
-        </div>
-        <div class="leave-main-box-apply" v-if="changeApply && (selectHoliday.TYPE===0||selectHoliday.TYPE===13)">
-          <div class="leave-main-box-apply-left">剩余假期</div>
-          <div class="leave-main-box-apply-center">
-            <span align="left" class="colorA6" v-text="selectHoliday.DAYS+(selectHoliday.TYPE===0?' 天':' 小时')"></span>
-          </div>
-        </div>
-        <div v-if="selectedDataApply!==3">
-          <div class="leave-main-box-apply">
-            <div class="leave-main-box-apply-left icon-stars">开始时间</div>
-            <div class="leave-main-box-apply-center" @click="openPicker(0)">
-            <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"
-                  :class="{'colorA6':!startTimeValue}"></span>
+
+        <div v-for="(item,index) in fields" :key="index">
+          <!--单行文本 type为0-->
+          <div v-if="item.fieldType=='0'" class="leavebox">
+            <div class="leaveboxlft icon-stars">11 {{item.fieldName}}</div>
+            <div class="leaveboxcen">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr">
             </div>
-          </div>
-          <div class="leave-main-box-apply">
-            <div class="leave-main-box-apply-left icon-stars">结束时间</div>
-            <div class="leave-main-box-apply-center" @click="openPicker(1)">
-              <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"
-                    :class="{'colorA6':!endTimeValue}"></span>
-            </div>
-          </div>
-        </div>
-        <div v-if="selectedDataApply===3">
-          <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
-            <h4 align="left" class="fc1 pr">
-              <span v-text="'第'+overtimeNum(applyIndex)+'段加班申请'"></span>
-              <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
-            </h4>
-            <div class="pl30">
-              <div class="leave-main-box-apply">
-                <div class="leave-main-box-apply-left icon-stars">开始时间</div>
-                <div class="leave-main-box-apply-center">
-            <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
-                  :class="{'colorA6':!apply.startTime}" @click="openPicker(0,applyIndex)"></span>
-                </div>
-              </div>
-              <div class="leave-main-box-apply">
-                <div class="leave-main-box-apply-left icon-stars">结束时间</div>
-                <div class="leave-main-box-apply-center">
-              <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
-                    :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex)"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="mt10">
-            <mt-button type="primary"
-                       @click.native="addTime()">
-              <span> +添加新的加班时间段</span>
-            </mt-button>
           </div>
 
+          <!--多行文本 type为1-->
+          <div v-if="item.fieldType=='1'" class="leaveboxText">
+            <div class="leaveboxText-top icon-stars">{{item.fieldName}}</div>
+            <textarea v-model="item.value" :placeholder="item.fieldDescr"></textarea>
+          </div>
+
+          <!--数字 type为2-->
+          <div v-if="item.fieldType=='2'" class="leavebox">
+            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
+            <div class="leaveboxcen">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr">
+            </div>
+          </div>
+
+          <!--单选按钮 type为3-->
+
+          <!--复选框 type为4-->
+          <div v-if="item.fieldType=='4'" class="forgetclock">
+            <p>{{item.fieldDescr}}</p>
+            <p>
+              <el-checkbox-group v-model="attendtimelist">
+                <el-checkbox v-for="item in attendtime || []" :key="item" :label="item">
+                  <span>{{item}}</span>
+                </el-checkbox>
+              </el-checkbox-group>
+            </p>
+          </div>
+          <!--下拉菜单 type为5-->
+          <!--请假和外出类型-->
+          <div v-if="item.fieldType=='5'" class="leavebox">
+            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
+            <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
+              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                      @change="qingjiaclick(selectedDataHoliday, index)">
+                <option>{{item.fieldHint}}</option>
+                <option v-for="option in holidayTypeArray" :value="option"
+                        v-text="option.NAME"></option>
+              </select>
+            </div>
+            <div class="leaveboxcen" v-if="item.fieldName == '外出类型'">
+              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                      @change="waichuclick(selectedDataHoliday, index)">
+                <option>{{item.fieldHint}}</option>
+                <option v-for="option in outsideObj" :value="option"
+                        v-text="option.name"></option>
+              </select>
+            </div>
+            <!--<div class="leaveboxcen" v-if="item.fieldName == '外出类型'">
+              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                      @change="qingjiaclick(selectedDataHoliday, index)">
+                <option>{{item.fieldHint}}</option>
+                <option v-for="option in outsideObj" :value="option"
+                        v-text="option.name"></option>
+              </select>
+            </div>-->
+          </div>
+
+          <!--日期 type为6-->
+          <div v-if="item.fieldType=='6'" class="leavebox">
+            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
+
+            <div class="leaveboxcen" @click="openPicker(item.term, 0, item.fieldType, index)">
+            <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
+                  :class="{'colorA6':!item.value}"></span>
+            </div>
+          </div>
+          <!--日期区间 type为7-->
+          <!--<div v-if="item.fieldType=='7'">
+            <div class="mt10">
+              <h4 align="left" class="fc1 pr" v-if="item.sortnumtmp == 0">
+                <span v-text="'第'+overtimeNum(item.term)+'段'+item.fieldName"></span>
+                <span v-if="item.term>0" class="leave-main-box-del" @click="deleteTime(item.term)">+</span>
+              </h4>
+              <div class="pl30">
+                <div class="leavebox">
+                  <div class="leaveboxlft icon-stars">{{ item.sortnumtmp == 0 ? '开始时间' : '结束时间'}}</div>
+                  <div class="leaveboxcen">
+            <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
+                  :class="{'colorA6':!item.value}" @click="openPicker(item.term, item.sortnumtmp, item.fieldType, index)"></span>
+                  </div>
+                  &lt;!&ndash;<div class="leaveboxcen">
+            <span align="left" v-text="item.value"
+                  :class="{'colorA6':!item.value}" @click="openPicker(item.term, item.sortnumtmp, item.fieldType, index)"></span>
+                  </div>&ndash;&gt;
+                </div>
+              </div>
+            </div>
+            <div class="mt10" v-if="(item.term == periodnum-1) && item.sortnumtmp == 1">
+              <mt-button type="primary"
+                         @click.native="addTime()">
+                <span> +添加新的加班时间段</span>
+              </mt-button>
+            </div>
+          </div>-->
+
+          <!--返回多个日期时间段时，默认只去最后一个-->
+          <div v-if="item.fieldType=='7' && perioduid == item.uid">
+            <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
+              <h4 align="left" class="fc1 pr">
+                <span v-text="'第'+overtimeNum(applyIndex)+'段加班申请'"></span>
+                <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
+              </h4>
+              <div class="pl30">
+                <div class="leavebox">
+                  <div class="leaveboxlft icon-stars">开始时间</div>
+                  <div class="leaveboxcen">
+              <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
+                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index)"></span>
+                    <!--term, sortnum, fieldType, index-->
+                  </div>
+                </div>
+                <div class="leavebox">
+                  <div class="leaveboxlft icon-stars">结束时间</div>
+                  <div class="leaveboxcen">
+                <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
+                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index)"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt10">
+              <mt-button type="primary"
+                         @click.native="addTime()">
+                <span> +添加时间 </span>
+                <!--<span v-if="item.code=='leaveTime'"> +添加事假时间</span>-->
+                <!--<span v-if="item.code=='outTime'"> +添加新的加班时间段</span>-->
+              </mt-button>
+            </div>
+          </div>
+
+
+          <!--附件 type为8-->
+          <div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
+            <div class="" style="height: 10px;background: #dedede;"></div>
+            <el-upload
+              action="/api/v1.0/client/upload"
+              name="files"
+              :show-file-list="false"
+              :headers="tokenHeader"
+              :on-success="passportUrlOk"
+              :before-upload="beforePassportUrl">
+              <div class="leavebox-upload"
+                   :style="{'background-image': 'url('+(applyData.image ? applyData.image : imgSrc.shenFenIconShowCamera)+')'}"></div>
+            </el-upload>
+            <p v-show="passportUrlErrFlag">
+              请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+          </div>
         </div>
-        <div class="leave-main-box-applyImg" v-if="updateImage">
-          <el-upload
-            action="/api/v1.0/client/upload"
-            name="files"
-            :show-file-list="false"
-            :headers="tokenHeader"
-            :on-success="passportUrlOk"
-            :before-upload="beforePassportUrl">
-            <div class="leave-main-box-apply-upload"
-                 :style="{'background-image': 'url('+(applyData.image ? applyData.image : imgSrc.shenFenIconShowCamera)+')'}"></div>
-          </el-upload>
-          <p v-show="passportUrlErrFlag">
-            请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+        <div class="leavebox">
+          <div class="leaveboxlft icon-stars">审批对象</div>
+          <div class="leaveboxcen">
+            <!--<mt-button size="small" class="leave-main-content-btn" type="primary">
+              <span>选择审批人</span>
+            </mt-button>-->
+
+            <!--选择下一级审批人-->
+
+            <!--typeof b === 'object' && !isNaN(b.length)-->
+            <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length == undefined">{{approvalTypeObj.NAME}}</div>
+            <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length > 0">
+              <el-popover
+                placement="top-start"
+                width="400"
+                trigger="click" class="popoverPerson">
+                <div class="approveperson">
+                  <div class="persontit">请选择下一级审批人</div>
+                  <div class="personcont">
+                    <el-table :data="approvalTypeObj" @row-click="selectperson()" align="center" class="persontable" style="width: 100%">
+                      <el-table-column prop="NAME" label="姓名"></el-table-column>
+                      <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                      <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                    </el-table>
+                  </div>
+                </div>
+                <mt-button slot="reference" size="small" type="primary" class="btnattend">
+                  <span>选择审批人</span>
+                </mt-button>
+              </el-popover>
+
+            </div>
+
+          </div>
         </div>
-        <div class="leave-main-box-applyText">
-          <div class="leave-main-box-applyText-top icon-stars">申请内容</div>
-          <textarea placeholder="#请输入文字(不超过50字)" v-model="applyData.remarks"></textarea>
+
+        <!--原来页面的表单，先注释-->
+        <div style="display: none;">
+          <div style="height: 350px;border:1px solid #dedede"></div>
+          <div class="leavebox" v-if="changeApply">
+            <div class="leaveboxlft icon-stars">假期分类</div>
+            <div class="leaveboxcen">
+              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday==='选择假期类型'}"
+                      @change="qingjiaclick(selectedDataHoliday)">
+                <option>选择假期类型</option>
+                <option v-for="option in holidayTypeArray" :value="option"
+                        v-text="option.NAME"></option>
+              </select>
+            </div>
+          </div>
+          <div class="leavebox" v-if="changeApply && (selectHoliday.TYPE===0||selectHoliday.TYPE===13)">
+            <div class="leaveboxlft">剩余假期</div>
+            <div class="leaveboxcen">
+              <span align="left" class="colorA6" v-text="selectHoliday.DAYS+(selectHoliday.TYPE===0?' 天':' 小时')"></span>
+            </div>
+          </div>
+          <div v-if="selectedDataApply!==3">
+            <div class="leavebox">
+              <div class="leaveboxlft icon-stars">开始时间</div>
+              <div class="leaveboxcen" @click="openPicker(0)">
+              <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"
+                    :class="{'colorA6':!startTimeValue}"></span>
+              </div>
+            </div>
+            <div class="leavebox">
+              <div class="leaveboxlft icon-stars">结束时间</div>
+              <div class="leaveboxcen" @click="openPicker(1)">
+                <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"
+                      :class="{'colorA6':!endTimeValue}"></span>
+              </div>
+            </div>
+          </div>
+          <div v-if="selectedDataApply===3">
+            <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
+              <h4 align="left" class="fc1 pr">
+                <span v-text="'第'+overtimeNum(applyIndex)+'段加班申请'"></span>
+                <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
+              </h4>
+              <div class="pl30">
+                <div class="leavebox">
+                  <div class="leaveboxlft icon-stars">开始时间</div>
+                  <div class="leaveboxcen">
+              <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
+                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0,applyIndex)"></span>
+                  </div>
+                </div>
+                <div class="leavebox">
+                  <div class="leaveboxlft icon-stars">结束时间</div>
+                  <div class="leaveboxcen">
+                <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
+                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex)"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt10">
+              <mt-button type="primary"
+                         @click.native="addTime()">
+                <span> +添加新的加班时间段</span>
+              </mt-button>
+            </div>
+
+          </div>
+          <div class="leaveboxImg" v-if="updateImage">
+            <el-upload
+              action="/api/v1.0/client/upload"
+              name="files"
+              :show-file-list="false"
+              :headers="tokenHeader"
+              :on-success="passportUrlOk"
+              :before-upload="beforePassportUrl">
+              <div class="leavebox-upload"
+                   :style="{'background-image': 'url('+(applyData.image ? applyData.image : imgSrc.shenFenIconShowCamera)+')'}"></div>
+            </el-upload>
+            <p v-show="passportUrlErrFlag">
+              请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+          </div>
+          <div class="leaveboxText">
+            <div class="leaveboxText-top icon-stars">申请内容</div>
+            <textarea placeholder="#请输入文字(不超过50字)" v-model="applyData.remarks"></textarea>
+          </div>
+          <div class="leavebox" v-if="approvalTypeObj">
+            <div class="leaveboxlft"
+                 v-text="approvalTypeObj.WAY==='1'?'审批人':(approvalTypeObj.WAY==='2'?'审批邮箱':'')"></div>
+            <div class="leaveboxcen" v-text="approvalTypeObj.NAME"></div>
+          </div>
         </div>
-        <div class="leave-main-box-apply" v-if="approvalTypeObj">
-          <div class="leave-main-box-apply-left"
-               v-text="approvalTypeObj.WAY==='1'?'审批人':(approvalTypeObj.WAY==='2'?'审批邮箱':'')"></div>
-          <div class="leave-main-box-apply-center" v-text="approvalTypeObj.NAME"></div>
-        </div>
-        <div class="leave-main-box-applyBtn">
-          <mt-button type="primary" class="leave-main-box-applyBtn-btn"
+
+        <div class="leaveboxBtn">
+          <mt-button type="primary" class="leaveboxBtn-btn"
                      @click.native="handerDataSubmit()">
             <span>提交</span>
           </mt-button>
         </div>
       </mt-tab-container-item>
+
+      <!--我的申请-->
       <mt-tab-container-item id="2" class="leave-main-applyInfo">
         <mt-navbar v-model="selectInfo" class="leave-header">
           <mt-tab-item id="a">
@@ -128,6 +330,7 @@
           </mt-tab-item>
         </mt-navbar>
         <div class="leave-main-content">
+          <!--原来显示内容-->
           <div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
             <div class="leave-main-content-top">
               <h3 class="leave-main-content-title">
@@ -186,6 +389,7 @@
               </mt-button>
             </div>
           </div>
+
           <div class="myApplyNo" v-if="searchApplyRecord.length===0">
             <span>没有数据</span>
           </div>
@@ -214,6 +418,8 @@
         <span>我知道啦</span>
       </div>
     </mt-popup>
+
+
     <mt-datetime-picker
       type="datetime"
       ref="picker0"
@@ -238,6 +444,7 @@
       @confirm="handleConfirmEnd"
     >
     </mt-datetime-picker>
+
   </div>
 </template>
 <script>
@@ -245,8 +452,7 @@
   import utils from '@/components/utils'
   import moment from 'moment'
 
-
-  let df = 'YYYY/MM/DD HH:mm';
+  let df = 'YYYY-MM-DD HH:mm';
 
   export default {
     data(){
@@ -262,7 +468,7 @@
         popupVisible: false, // 查看图片弹框
         selectedDataApply: 0, //选择的申请类型
         applyTypeArray: [], //申请分类
-        selectedDataHoliday: '选择假期类型', // 选择的假期类型
+        selectedDataHoliday: '请选择假期类型', // 选择的假期类型
         holidayTypeArray: [], // 假期类型列表
         selectHoliday: {},
         imgSrc: {
@@ -277,22 +483,86 @@
         startTimeValue1: new Date(),  //初始化日历插件
         endTimeValue: '',  //结束时间value
         endTimeValue1: new Date(),//初始化日历插件
-        searchApplyRecord: [], //搜索申请记录
+        // searchApplyRecord: [], //搜索申请记录
+        searchApplyRecord: [
+          {
+            name: 'test',
+            sname: '加班申请',
+            status: 0,
+            time: [
+              {
+                startTime: '2018-10-24 9:00',
+                endTime: '2018-10-24 12:00'
+              },
+              {
+                startTime: '2018-10-25 9:00',
+                endTime: '2018-10-25 12:00'
+              }
+            ],
+            configType: '3',
+            overworkTime: true,
+            workTime: '2',
+            days: '5',
+            remarks: '有事需要请假',
+            category: '1',
+            image: '',
+            uid: '123456',
+            email: '12121212@qq.com'
+          },
+          {
+            name: 'test',
+            sname: '加班申请',
+            status: '审批中',
+            time: [
+              {
+                startTime: '2018-10-24 9:00',
+                endTime: '2018-10-24 12:00'
+              },
+              {
+                startTime: '2018-10-25 9:00',
+                endTime: '2018-10-25 12:00'
+              }
+            ],
+            configType: '3',
+            overworkTime: true,
+            workTime: '2',
+            days: '5',
+            remarks: '有事需要请假',
+            category: '1',
+            image: '',
+            uid: '123456',
+            email: '12121212@qq.com'
+          }
+        ], //搜索申请记录
         leaveSuccess: false, //成功显示的弹框
         alertMessage: '',//提交弹框文字，显示提交状态
         alertSuccessImage: false,//显示提交状态
         codeSuccess: '',//点击我知道了进行状态判断跳转
         applyData: {
-          approvalConfigUid: '',//申请分类
-          leaveUid: '',// 假期类型uid
-          startTime: '', //开始时间value
-          endTime: '', //结束时间value
-          image: '',//附件
-          remarks: '',//备注
-          category: '',//审批人类型
-//          currentApprover:'',//审批人uid
-//          email:'',//审批人邮箱
+          approvalTypeUid: '',  //申请类型Uid
+          approvalConfigUid: '',  //具体流程的uid
+          leaveUid: '',  //假期类型uid (非必填)
+          category: '',  //审批人类型
+          currentApprover:'',  //审批人uid
+          email:'',  //审批人邮箱
+          approvalValues:[
+            {
+              approvalFieldUid: '',  //申请模板字段uid
+              value: '',  //填写的值
+              term: '',  //多段的填写0开始 第一段申请时间，默认写0
+              sortnum: '0'  //时间段开始时间0，结束时间1   默认写0
+            }
+          ]
         },
+        approvalValues:[
+          {
+            approvalFieldUid: '',  //申请模板字段uid
+            value: '',  //填写的值
+            term: '',  //多段的填写0开始 第一段申请时间，默认写0
+            sortnum: '0'  //时间段开始时间0，结束时间1   默认写0
+          }
+        ],
+        approvalValuestmp: [],
         applyWorkRef: [//加班时间段
           {
             startTime: '',
@@ -300,38 +570,245 @@
           }
         ],
         pos: '',//记录加班时间段的位置
+        fieldsdata: {},
+        fields: [],
+        checked1: true,
+        checked2: false,
+        tableData: [{
+          name: '测试',
+          mobile: '13212121212',
+          department: '技术部',
+          job: '技术'
+        },{
+          name: '测试',
+          mobile: '13212121212',
+          department: '技术部',
+          job: '技术'
+        },{
+          name: '测试',
+          mobile: '13212121212',
+          department: '技术部',
+          job: '技术'
+        },{
+          name: '测试',
+          mobile: '13212121212',
+          department: '技术部',
+          job: '技术'
+        }],
+        attendtime: [],  //忘记打卡时间
+        attendtimelist: ['18:00'],
+        periodnum: 0,
+        perioduid: '',
+        tmpnumber: "1",
+        outsideObj: []
       };
     },
     created: function () {
-      this.$http.get('/api/v1.0/client/findValidConfigs').then(response => { //查询申请类型列表
+      //查询申请类型列表
+      this.$http.get('/api/v1.0/client/queryApprovalType').then(response => {
         if (response.body.code === 200) {
           this.applyTypeArray = response.body.result;
+          console.log(this.applyTypeArray);
           this.selectedDataApply = parseInt(this.getCookie('leaveType'));
           this.shengqingclick();
+          // this.selectedDataApply = 3;
         }
       }, response => {
-//        console.log('error callback');
+        console.log('error callback');
       });
 
-      this.$http.get('/api/v1.0/client/findReporter').then(response => { //审批人列表
-        this.approvalTypeObj = response.body.result;
+      //审批人列表
+//       this.$http.get('/api/v1.0/client/findReporter').then(response => {
+//         this.approvalTypeObj = response.body.result;
+//       }, response => {
+// //        console.log('error callback');
+//       });
+
+      //获取忘记打卡时间列表
+      this.$http.get('/api/v1.0/client/queryAttendTime').then(response => {
+        this.attendtime = response.body.result;
+        // for(let i = 0; i < this.attendtime.length; i++){
+        //   this.attendtime[i].checktime = false;
+        // }
       }, response => {
-//        console.log('error callback');
+        console.log('error callback');
       });
-      this.$http.get('/api/v1.0/client/findValidLeaves').then(response => { //假期分类
+
+      this.attendtime = [ '9:00', '18:00'];
+      console.log(this.attendtime);
+
+      //假期分类
+      this.$http.get('/api/v1.0/client/findValidLeaves').then(response => {
+        this.holidayTypeArray = response.body.result;
+      }, response => {
+        console.log('假期分类 error callback');
+      });
+
+      /*this.$http.get('/api/v1.0/client/queryApprovalType').then(response => { //查看审批类型
         this.holidayTypeArray = response.body.result;
       }, response => {
 //        console.log('假期分类 error callback');
-      });
+      });*/
+
+      // this.approvalform();
+
     },
     watch: {},
     methods: {
+      // 选择审批人
+      selectperson(){
+
+      },
+      //根据审批类型返回的审批表单
+      shengqingclick(){
+        console.log(this.selectedDataApply);
+        // this.selectedDataApply = 2;
+
+        let state = false;
+        for (let i = 0; i < this.applyTypeArray.length; i++) {
+          if (this.selectedDataApply === this.applyTypeArray[i].type) {
+            this.applyData.approvalTypeUid = this.applyTypeArray[i].uid;   //申请分类类型的uid
+            state = true;
+          }
+        }
+        if (!state) {
+          this.selectedDataApply = this.applyTypeArray[0].type;
+          this.applyData.approvalTypeUid = this.applyTypeArray[0].uid;
+        }
+
+        this.$http.get('/api/v1.0/client/queryApprovalForm/'+this.selectedDataApply).then(response => {
+          if (response.body.code === 200) {
+            this.fieldsdata = response.body.result;
+            let configType = response.body.result.configType;
+            this.approvalperson(configType);
+            this.applyData.approvalConfigUid = response.body.result.uid;  //具体流程的uid
+
+            //处理提交的表单数据格式
+            let approvalValues = [];
+            let periodnum = 0;
+            this.fields = [];
+            this.applyWorkRef = [];
+            for( let i = 0; i < this.fieldsdata.fields.length; i++){
+              let item = this.fieldsdata.fields[i];
+              if(this.selectedDataApply=='2' && item.defaultType == '43'){
+                this.approvaloutside(item.defaultType);
+              }
+              if(item.fieldType == '7'){
+                let itemtmp = {};
+                this.perioduid = item.uid;
+                this.applyWorkRef.push({
+                  startTime: '',
+                  endTime: '',
+                  uid: item.uid
+                });
+
+
+                /*for(let j = 0; j < 2; j++){
+                  // item.approvalValues = approvalValues;
+                  // itemtmp = item;
+
+                  itemtmp = {
+                    accountUid : item.accountUid,
+                    approvalConfigUid : item.approvalConfigUid,
+                    approvalFieldValue : item.approvalFieldValue,
+                    approvalFieldValues : item.approvalFieldValues,
+                    approvalValues : item.approvalValues,
+                    code : item.code,
+                    companyUid : item.companyUid,
+                    conditions : item.conditions,
+                    datetimeType : item.datetimeType,
+                    defaultType : item.defaultType,
+                    fieldDescr : item.fieldDescr,
+                    fieldHint : item.fieldHint,
+                    fieldLimit : item.fieldLimit,
+                    fieldMinSize : item.fieldMinSize,
+                    fieldName : item.fieldName,
+                    fieldSize : item.fieldSize,
+                    fieldType : item.fieldType,
+                    fileAttribute : item.fileAttribute,
+                    isDefault : item.isDefault,
+                    isRequired : item.isRequired,
+                    javaValidexp : item.javaValidexp,
+                    jsValidexp : item.jsValidexp,
+                    numberLimit : item.numberLimit,
+                    orientation : item.orientation,
+                    sortnum : item.sortnum,
+                    uid : item.uid,
+                    sortnumtmp : j,
+                    term : periodnum
+                  };
+                  // itemtmp.term = periodnum;
+                  // itemtmp.sortnum = j;
+                  this.fields.push(itemtmp);
+                }
+                console.log(345);
+                console.log(this.fields);
+                periodnum++;*/
+
+                this.fields.push(item);
+              }else{
+                item.term = 0;
+                item.sortnumtmp = 0;
+                this.fields.push(item);
+              }
+            }
+            this.periodnum = periodnum;
+            console.log(this.fields);
+            console.log(this.applyWorkRef);
+            console.log(55555);
+
+            // this.approvalValues = approvalValues;
+            // console.log(approvalValues);
+          }
+        }, response => {
+//        console.log('error callback');
+        });
+      },
+      //获取审批人列表
+      approvalperson(configType){
+        this.$http.get('/api/v1.0/client/findReporter/'+configType).then(response => {
+          let data = response.body.result;
+          console.log("data.length="+data.length);
+
+          this.approvalTypeObj = data;
+          // this.applyData.applicant = data.UID;   //申请人uid
+          this.applyData.category = data.WAY;
+          if(data.WAY == '1'){
+            this.applyData.currentApprover = data.UID;
+          }
+
+          var a=[];
+          var b={};
+          typeof a === 'object' && !isNaN(a.length)//true 数组
+          typeof b === 'object' && !isNaN(b.length)//false 对象
+
+        }, response => {
+          //console.log('error callback');
+        });
+      },
+      //获取外出类型列表
+      approvaloutside(configType){
+        this.$http.get('/api/v1.0/common/config/'+configType).then(response => {
+          let data = response.body.result;
+          this.outsideObj = data;
+          console.log(this.outsideObj);
+          // this.applyData.applicant = data.UID;   //申请人uid
+          // this.applyData.category = data.WAY;
+          // if(data.WAY == '1'){
+          //   this.applyData.currentApprover = data.UID;
+          // }
+        }, response => {
+          //console.log('error callback');
+        });
+      },
       //添加加班时间段
       addTime(){
         this.applyWorkRef.push({
           startTime: '',
           endTime: '',
+          uid: this.perioduid
         });
+
       },
       //删除加班时间段
       deleteTime(num){
@@ -339,23 +816,29 @@
       },
       // 开始时间格式化
       handleConfirmStart(data){
-        if (data) {
-          if (this.selectedDataApply === 3) {
-            this.applyWorkRef[this.pos].startTime = moment(data).format(df);
-          } else {
-            this.startTimeValue = moment(data).format(df);
-          }
+        // if (data) {
+        //   this.fields[this.pos].value =  moment(data).format(df);
+        //   this.tmpnumber = 2;
+        // }
+
+        if (this.fieldTypecurr === '7') {
+          this.applyWorkRef[this.pos].startTime = moment(data).format(df);
+        } else if(this.fieldTypecurr === '6'){
+          this.startTimeValue = moment(data).format(df);
         }
+
       },
       // 结束时间格式化
       handleConfirmEnd(data){
-        if (data) {
-          if (this.selectedDataApply === 3) {
-            this.applyWorkRef[this.pos].endTime = moment(data).format(df);
-          } else {
-            this.endTimeValue = moment(data).format(df);
-          }
+        // if (data) {
+        //   this.fields[this.pos].value =  moment(data).format(df);
+        //   this.tmpnumber = 2;
+        // }
 
+        if (this.fieldTypecurr === '7') {
+          this.applyWorkRef[this.pos].endTime = moment(data).format(df);
+        } else if(this.fieldTypecurr === '6'){
+          this.endTimeValue = moment(data).format(df);
         }
       },
       //审批状态
@@ -378,10 +861,76 @@
         return status;
       },
       // 日历样式
-      openPicker(type, pos) {
+      // openPicker(term, sortnum, fieldType, index) {
+      openPicker(type, pos, fieldType, index) {
+        // this.pos = index;
+        // if(sortnum == 0){
+        //   let displaytime = this.fields[index].value;
+        //   this.startTimeValue1 = displaytime ? displaytime : new Date();
+        //   this.$refs.picker0.open();
+        //   console.log("我是picker0");
+        // }else if(sortnum == 1){
+        //   let displaytime = this.fields[index].value;
+        //   this.endTimeValue1 = displaytime ? displaytime : new Date();
+        //   this.$refs.picker1.open();
+        //   console.log("我是picker1");
+        // }
+
         this.pos = pos;
-        if (type === 0) {
-          if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].startTime) {
+        this.fieldTypecurr = fieldType;
+        if(fieldType == '6'){
+            let displaytime = this.fields[index].value;
+            this.startTimeValue1 = displaytime ? displaytime : new Date();
+            this.$refs.picker0.open();
+        }else if(fieldType == '7'){
+          if(type == 0){
+            if(this.applyWorkRef[this.pos].startTime){
+              this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
+            }else{
+              this.startTimeValue1 = new Date();
+            }
+            this.$refs.picker0.open();
+          }else if(type == 1){
+            if(this.applyWorkRef[this.pos].endTime){
+              this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
+            }else{
+              this.endTimeValue1 = new Date();
+            }
+            this.$refs.picker1.open();
+          }
+        }
+
+
+        /*if (type === 0) {
+          if (fieldType == '7' && this.applyWorkRef[this.pos].startTime) {
+            this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
+          } else if (fieldType == '6') {
+            this.startTimeValue1 = new Date();
+          } else {
+            this.startTimeValue1 = this.startTimeValue ? this.startTimeValue : new Date();
+          }
+          this.$refs.picker0.open();
+        } else {
+          if (this.applyWorkRef[this.pos].endTime) {
+            this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
+          } else if (this.selectedDataApply === 3) {
+            this.endTimeValue1 = new Date();
+          } else {
+            this.endTimeValue1 = this.endTimeValue ? this.endTimeValue : new Date();
+          }
+          this.$refs.picker1.open();
+        }*/
+
+
+        /*if (type === 0) {
+          // if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].startTime) {
+          //   this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
+          // } else if (this.selectedDataApply === 3) {
+          //   this.startTimeValue1 = new Date();
+          // } else {
+          //   this.startTimeValue1 = this.startTimeValue ? this.startTimeValue : new Date();
+          // }
+          if (this.applyWorkRef[this.pos].startTime) {
             this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
           } else if (this.selectedDataApply === 3) {
             this.startTimeValue1 = new Date();
@@ -390,7 +939,7 @@
           }
           this.$refs.picker0.open();
         } else {
-          if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].endTime) {
+          if (this.applyWorkRef[this.pos].endTime) {
             this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
           } else if (this.selectedDataApply === 3) {
             this.endTimeValue1 = new Date();
@@ -398,7 +947,7 @@
             this.endTimeValue1 = this.endTimeValue ? this.endTimeValue : new Date();
           }
           this.$refs.picker1.open();
-        }
+        }*/
       },
       // 加班段数格式化
       overtimeNum(num){
@@ -406,7 +955,8 @@
         return arr[num];
       },
       changeShow(val){ //查看申请记录
-        this.$http.post('/api/v1.0/client/findApplys', {
+        // this.$http.post('/api/v1.0/client/findApplys', {
+        this.$http.post('/api/v1.0/queryOwnApplys', {
           status: val,
           pageSize: 100,
           pageNumber: 1
@@ -422,12 +972,69 @@
       //提交申请
       handerDataSubmit(){
         Indicator.open('正在提交申请...');
+        let approvalValues = [];
+        for( let i = 0; i < this.fields.length; i++){
+          let item = this.fields[i];
+          if(item.fieldType != "7"){
+            approvalValues.push({
+              approvalFieldUid : item.uid,
+              value : item.value,
+              term : item.term,
+              sortnum : item.sortnumtmp
+            });
+          }
+        }
+
+        let periodarr = [];
+        for(let i = 0; i < this.applyWorkRef.length; i++){
+          let item = this.applyWorkRef[i];
+          for(let j = 0; j < 2; j++){
+            let timecurr;
+            if(j == 0){
+              timecurr = item.startTime;
+            }else if(j == 1){
+              timecurr = item.endTime;
+            }
+            periodarr.push({
+              approvalFieldUid : item.uid,
+              value : timecurr,
+              term : i,
+              sortnum : j
+            });
+          }
+        }
+        this.applyData.approvalValues = approvalValues.concat(periodarr);
+        this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
+          Indicator.close();//申请提交成功
+          this.codeSuccess = response.body.code;
+          // this.leaveSuccess = true;
+          // if (response.body.code === 200) {
+          //   this.alertSuccessImage = true;
+          //   this.alertMessage = response.body.message;
+          // } else {
+          //   this.alertSuccessImage = false;
+          //   this.alertMessage = response.body.message
+          // }
+        }, response => {
+//          console.log('error callback');
+        });
+
+
+        /*// 表单验证
+        let applyData = this.applyData;
+        let selectedDataApply = this.selectedDataApply;
+        if(selectedDataApply == '0'){ //请假
+          if(applyData.leaveUid == ''){
+            console.log("请选择请假类型");
+          }
+        }
+        return false;
         if (this.selectedDataApply === 3) {
           this.applyData.applyWorkRef = this.applyWorkRef.map((item, index) => {
             return {
               startTime: new Date(item.startTime).getTime(),
               endTime: new Date(item.endTime).getTime(),
-              sort: index,
+              sortnum: index,
             };
           });
         } else {
@@ -457,11 +1064,11 @@
           }
         }, response => {
 //          console.log('error callback');
-        });
+        });*/
       },
 
       // 选择申请分类
-      shengqingclick(){ //初始是选中一个select然后进行参数选中为了提交用
+      /*shengqingclick(){ //初始是选中一个select然后进行参数选中为了提交用
         this.updateImage = true; //上传图片按钮是否隐藏 true显示false隐藏
         this.changeApply = false; //假期类型隐藏
         let state = false;
@@ -481,9 +1088,15 @@
         if (this.selectedDataApply === 3) {
           this.updateImage = false; //上传图片隐藏
         }
-      },
-      qingjiaclick(value){
+      },*/
+      qingjiaclick(value, index){
         this.applyData.leaveUid = value.LEAVE_INFO_UID;
+        this.fields[index].value = value.LEAVE_INFO_UID;
+        this.selectHoliday = value;
+      },
+      waichuclick(value, index){
+        // this.applyData.leaveUid = value.LEAVE_INFO_UID;
+        this.fields[index].value = value.name;
         this.selectHoliday = value;
       },
       // 打开查看附件弹框
@@ -637,7 +1250,7 @@
       padding-top: 44px;
       .leave-main-box {
         padding: 0 15px 15px;
-        .leave-main-box-apply-left:before {
+        .leaveboxlft:before {
           content: '';
           margin-right: 10px;
         }
@@ -653,20 +1266,20 @@
           right: 0;
           top: 0;
         }
-        .leave-main-box-apply {
+        .leavebox {
           position: relative;
           overflow: hidden;
           height: 50px;
           line-height: 50px;
           font-size: 15px;
           border-bottom: 1px solid #d2dce6;
-          .leave-main-box-apply-left {
+          .leaveboxlft {
             width: 120px;
             font-weight: bold;
             color: #457aa3;
             text-align: left;
           }
-          .leave-main-box-apply-center {
+          .leaveboxcen {
             position: absolute;
             top: 0;
             box-sizing: border-box;
@@ -703,10 +1316,10 @@
             }
           }
         }
-        .leave-main-box-applyImg {
+        .leaveboxImg {
           padding: 10px 0 5px;
           border-bottom: 1px solid #d2dce6;
-          .leave-main-box-apply-upload {
+          .leavebox-upload {
             width: 180px;
             height: 120px;
             background-size: 100% 100%;
@@ -717,11 +1330,11 @@
             color: red;
           }
         }
-        .leave-main-box-applyText {
+        .leaveboxText {
           padding-bottom: 10px;
           border-bottom: 1px solid #d2dce6;
           font-size: 15px;
-          .leave-main-box-applyText-top {
+          .leaveboxText-top {
             text-align: left;
             padding: 10px 0;
             color: #457aa3;
@@ -739,10 +1352,10 @@
             resize: none;
           }
         }
-        .leave-main-box-applyBtn {
+        .leaveboxBtn {
           margin-top: 20px;
           width: 100%;
-          .leave-main-box-applyBtn-btn {
+          .leaveboxBtn-btn {
             width: 80%;
             font-size: 15px;
           }
@@ -901,6 +1514,48 @@
         font-size: 14px;
         border-radius: 4px;
       }
+    }
+  }
+
+  .forgetclock{
+    p{
+      text-align: left;
+      font-size: 14px;
+      &:nth-child(1){
+        padding: 10px 0;
+      }
+    }
+  }
+  .leaveboxImg{
+    border: none;
+  }
+  .inputtext{
+    border:none;
+    outline: none;
+    height: 25px;
+  }
+  .mint-button--normal{
+    height: 33px;
+  }
+  .approveperson{
+    .persontit{
+      font-size: 12px;
+      padding: 10px 0;
+      text-align: center;
+    }
+    .personcont{
+      .persontable{
+        font-size: 12px;
+      }
+    }
+  }
+
+  .mint-button-text{
+    font-size: 14px;
+  }
+  .leave-main-box{
+    .fc1{
+      font-size: 14px;
     }
   }
 </style>

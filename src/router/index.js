@@ -10,6 +10,8 @@ import leave from "@/components/leaves/leave"
 import notice from "@/components/notice/notice"
 import noticeDetails from "@/components/notice/details"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
+import attendanceEdit from "@/components/SignIn/attendanceEdit"
+import approveDetail from "@/components/myApprove/approveDetail"
 import mySalary from "@/components/SignIn/mySalary"
 import binding from "@/components/binding/binding"
 import task from "@/components/task/task"
@@ -69,6 +71,14 @@ export default new Router({
     {
       path: '/attendanceRecord',  //我的考勤
       component: attendanceRecord
+    },
+    {
+      path: '/attendanceEdit',  //我的考勤
+      component: attendanceEdit
+    },
+    {
+      path: '/approveDetail',  //审批考勤异常详情
+      component: approveDetail
     },
     {
       path: '/mySalary',  //我的工资条
