@@ -23,7 +23,7 @@
         <div v-for="(item,index) in fields" :key="index">
           <!--单行文本 type为0-->
           <div v-if="item.fieldType=='0'" class="leavebox">
-            <div class="leaveboxlft icon-stars">11 {{item.fieldName}}</div>
+            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
             <div class="leaveboxcen">
               <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr">
             </div>
