@@ -50,8 +50,8 @@
             <p>{{item.fieldDescr}}</p>
             <p>
               <el-checkbox-group v-model="attendtimelist">
-                <el-checkbox v-for="item in attendtime || []" :key="item" :label="item">
-                  <span>{{item}}</span>
+                <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
+                  <span v-model="item.value">{{list}}</span>
                 </el-checkbox>
               </el-checkbox-group>
             </p>
@@ -76,21 +76,12 @@
                         v-text="option.name"></option>
               </select>
             </div>
-            <!--<div class="leaveboxcen" v-if="item.fieldName == '外出类型'">
-              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                      @change="qingjiaclick(selectedDataHoliday, index)">
-                <option>{{item.fieldHint}}</option>
-                <option v-for="option in outsideObj" :value="option"
-                        v-text="option.name"></option>
-              </select>
-            </div>-->
           </div>
 
           <!--日期 type为6-->
           <div v-if="item.fieldType=='6'" class="leavebox">
             <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
-
-            <div class="leaveboxcen" @click="openPicker(item.term, 0, item.fieldType, index)">
+            <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index)">
             <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
                   :class="{'colorA6':!item.value}"></span>
             </div>
@@ -137,7 +128,6 @@
                   <div class="leaveboxcen">
               <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
                     :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index)"></span>
-                    <!--term, sortnum, fieldType, index-->
                   </div>
                 </div>
                 <div class="leavebox">
@@ -171,7 +161,7 @@
               :on-success="passportUrlOk"
               :before-upload="beforePassportUrl">
               <div class="leavebox-upload"
-                   :style="{'background-image': 'url('+(applyData.image ? applyData.image : imgSrc.shenFenIconShowCamera)+')'}"></div>
+                   :style="{'background-image': 'url('+(item.value ? item.value : imgSrc.shenFenIconShowCamera)+')'}"></div>
             </el-upload>
             <p v-show="passportUrlErrFlag">
               请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
@@ -189,14 +179,15 @@
             <!--typeof b === 'object' && !isNaN(b.length)-->
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length == undefined">{{approvalTypeObj.NAME}}</div>
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length > 0">
+              <span @click="showperson == true">{{selectperData}}</span>
               <el-popover
                 placement="top-start"
                 width="400"
-                trigger="click" class="popoverPerson">
+                trigger="click" class="popoverPerson" v-model="showperson">
                 <div class="approveperson">
                   <div class="persontit">请选择下一级审批人</div>
                   <div class="personcont">
-                    <el-table :data="approvalTypeObj" @row-click="selectperson()" align="center" class="persontable" style="width: 100%">
+                    <el-table :data="approvalTypeObj" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
                       <el-table-column prop="NAME" label="姓名"></el-table-column>
                       <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
                       <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
@@ -330,8 +321,37 @@
           </mt-tab-item>
         </mt-navbar>
         <div class="leave-main-content">
-          <!--原来显示内容-->
+          <!--现在显示的内容-->
           <div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
+            <div class="leave-main-content-top">
+              <h3 class="leave-main-content-title">
+                <span class="leave-main-content-title-left">审批申请（{{item.name}}）</span>
+                <span class="leave-main-content-title-right">{{applyState(item.status)}}</span>
+              </h3>
+            </div>
+            <div class="leave-main-content-Info">
+              <div class="marginTop10" v-for="list in item.approvalFields">
+                <div v-if="list.fieldType != '7'">
+                  <h3>{{list.fieldName}}：</h3>
+                  <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+                </div>
+                <!--日期时间段-->
+                <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
+                  <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+                  <p>{{detail.startTime}}至{{detail.endTime}}</p>
+                </div>
+              </div>
+
+            </div>
+            <div class="leave-main-content-append leave-main-content-append1 " v-if="item.status===0">
+              <mt-button size="small" class="leave-main-content-btn" type="primary" @click="revokes(item.uid)">
+                <span>撤回申请</span>
+              </mt-button>
+            </div>
+          </div>
+
+          <!--原来显示内容-->
+          <!--<div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
             <div class="leave-main-content-top">
               <h3 class="leave-main-content-title">
                 <span class="leave-main-content-title-left"
@@ -362,7 +382,7 @@
               </div>
               <div v-if="!(item.configType===3)" class="marginTop10">
                 <h3>申请时长</h3>
-                <p><span v-text="item.days ? item.days : '--'"></span></p>
+                <p><span v-text="item.days ? item.days : '&#45;&#45;'"></span></p>
               </div>
               <div class="marginTop10">
                 <h3>事由</h3>
@@ -388,7 +408,7 @@
                 <span>撤回申请</span>
               </mt-button>
             </div>
-          </div>
+          </div>-->
 
           <div class="myApplyNo" v-if="searchApplyRecord.length===0">
             <span>没有数据</span>
@@ -483,57 +503,7 @@
         startTimeValue1: new Date(),  //初始化日历插件
         endTimeValue: '',  //结束时间value
         endTimeValue1: new Date(),//初始化日历插件
-        // searchApplyRecord: [], //搜索申请记录
-        searchApplyRecord: [
-          {
-            name: 'test',
-            sname: '加班申请',
-            status: 0,
-            time: [
-              {
-                startTime: '2018-10-24 9:00',
-                endTime: '2018-10-24 12:00'
-              },
-              {
-                startTime: '2018-10-25 9:00',
-                endTime: '2018-10-25 12:00'
-              }
-            ],
-            configType: '3',
-            overworkTime: true,
-            workTime: '2',
-            days: '5',
-            remarks: '有事需要请假',
-            category: '1',
-            image: '',
-            uid: '123456',
-            email: '12121212@qq.com'
-          },
-          {
-            name: 'test',
-            sname: '加班申请',
-            status: '审批中',
-            time: [
-              {
-                startTime: '2018-10-24 9:00',
-                endTime: '2018-10-24 12:00'
-              },
-              {
-                startTime: '2018-10-25 9:00',
-                endTime: '2018-10-25 12:00'
-              }
-            ],
-            configType: '3',
-            overworkTime: true,
-            workTime: '2',
-            days: '5',
-            remarks: '有事需要请假',
-            category: '1',
-            image: '',
-            uid: '123456',
-            email: '12121212@qq.com'
-          }
-        ], //搜索申请记录
+        searchApplyRecord: [], //搜索申请记录
         leaveSuccess: false, //成功显示的弹框
         alertMessage: '',//提交弹框文字，显示提交状态
         alertSuccessImage: false,//显示提交状态
@@ -600,7 +570,9 @@
         periodnum: 0,
         perioduid: '',
         tmpnumber: "1",
-        outsideObj: []
+        outsideObj: [],
+        showperson: false,  //是否显示选择审批人弹框
+        selectperData: ''
       };
     },
     created: function () {
@@ -634,9 +606,6 @@
         console.log('error callback');
       });
 
-      this.attendtime = [ '9:00', '18:00'];
-      console.log(this.attendtime);
-
       //假期分类
       this.$http.get('/api/v1.0/client/findValidLeaves').then(response => {
         this.holidayTypeArray = response.body.result;
@@ -656,14 +625,12 @@
     watch: {},
     methods: {
       // 选择审批人
-      selectperson(){
-
+      selectperson(row, event, column){
+        this.selectperData = row.NAME;
+        this.showperson = false;
       },
       //根据审批类型返回的审批表单
       shengqingclick(){
-        console.log(this.selectedDataApply);
-        // this.selectedDataApply = 2;
-
         let state = false;
         for (let i = 0; i < this.applyTypeArray.length; i++) {
           if (this.selectedDataApply === this.applyTypeArray[i].type) {
@@ -701,50 +668,6 @@
                   endTime: '',
                   uid: item.uid
                 });
-
-
-                /*for(let j = 0; j < 2; j++){
-                  // item.approvalValues = approvalValues;
-                  // itemtmp = item;
-
-                  itemtmp = {
-                    accountUid : item.accountUid,
-                    approvalConfigUid : item.approvalConfigUid,
-                    approvalFieldValue : item.approvalFieldValue,
-                    approvalFieldValues : item.approvalFieldValues,
-                    approvalValues : item.approvalValues,
-                    code : item.code,
-                    companyUid : item.companyUid,
-                    conditions : item.conditions,
-                    datetimeType : item.datetimeType,
-                    defaultType : item.defaultType,
-                    fieldDescr : item.fieldDescr,
-                    fieldHint : item.fieldHint,
-                    fieldLimit : item.fieldLimit,
-                    fieldMinSize : item.fieldMinSize,
-                    fieldName : item.fieldName,
-                    fieldSize : item.fieldSize,
-                    fieldType : item.fieldType,
-                    fileAttribute : item.fileAttribute,
-                    isDefault : item.isDefault,
-                    isRequired : item.isRequired,
-                    javaValidexp : item.javaValidexp,
-                    jsValidexp : item.jsValidexp,
-                    numberLimit : item.numberLimit,
-                    orientation : item.orientation,
-                    sortnum : item.sortnum,
-                    uid : item.uid,
-                    sortnumtmp : j,
-                    term : periodnum
-                  };
-                  // itemtmp.term = periodnum;
-                  // itemtmp.sortnum = j;
-                  this.fields.push(itemtmp);
-                }
-                console.log(345);
-                console.log(this.fields);
-                periodnum++;*/
-
                 this.fields.push(item);
               }else{
                 item.term = 0;
@@ -753,12 +676,10 @@
               }
             }
             this.periodnum = periodnum;
-            console.log(this.fields);
-            console.log(this.applyWorkRef);
-            console.log(55555);
+            // console.log(this.fields);
+            // console.log(this.applyWorkRef);
+            // console.log(55555);
 
-            // this.approvalValues = approvalValues;
-            // console.log(approvalValues);
           }
         }, response => {
 //        console.log('error callback');
@@ -768,19 +689,12 @@
       approvalperson(configType){
         this.$http.get('/api/v1.0/client/findReporter/'+configType).then(response => {
           let data = response.body.result;
-          console.log("data.length="+data.length);
-
           this.approvalTypeObj = data;
           // this.applyData.applicant = data.UID;   //申请人uid
           this.applyData.category = data.WAY;
           if(data.WAY == '1'){
             this.applyData.currentApprover = data.UID;
           }
-
-          var a=[];
-          var b={};
-          typeof a === 'object' && !isNaN(a.length)//true 数组
-          typeof b === 'object' && !isNaN(b.length)//false 对象
 
         }, response => {
           //console.log('error callback');
@@ -791,12 +705,6 @@
         this.$http.get('/api/v1.0/common/config/'+configType).then(response => {
           let data = response.body.result;
           this.outsideObj = data;
-          console.log(this.outsideObj);
-          // this.applyData.applicant = data.UID;   //申请人uid
-          // this.applyData.category = data.WAY;
-          // if(data.WAY == '1'){
-          //   this.applyData.currentApprover = data.UID;
-          // }
         }, response => {
           //console.log('error callback');
         });
@@ -816,29 +724,20 @@
       },
       // 开始时间格式化
       handleConfirmStart(data){
-        // if (data) {
-        //   this.fields[this.pos].value =  moment(data).format(df);
-        //   this.tmpnumber = 2;
-        // }
-
         if (this.fieldTypecurr === '7') {
           this.applyWorkRef[this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.startTimeValue = moment(data).format(df);
+          this.fields[this.pos].value =  moment(data).format(df);
+          this.tmpnumber = 2;
         }
-
       },
       // 结束时间格式化
       handleConfirmEnd(data){
-        // if (data) {
-        //   this.fields[this.pos].value =  moment(data).format(df);
-        //   this.tmpnumber = 2;
-        // }
-
         if (this.fieldTypecurr === '7') {
           this.applyWorkRef[this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.endTimeValue = moment(data).format(df);
+          this.fields[this.pos].value =  moment(data).format(df);
+          this.tmpnumber = 2;
         }
       },
       //审批状态
@@ -861,24 +760,11 @@
         return status;
       },
       // 日历样式
-      // openPicker(term, sortnum, fieldType, index) {
       openPicker(type, pos, fieldType, index) {
-        // this.pos = index;
-        // if(sortnum == 0){
-        //   let displaytime = this.fields[index].value;
-        //   this.startTimeValue1 = displaytime ? displaytime : new Date();
-        //   this.$refs.picker0.open();
-        //   console.log("我是picker0");
-        // }else if(sortnum == 1){
-        //   let displaytime = this.fields[index].value;
-        //   this.endTimeValue1 = displaytime ? displaytime : new Date();
-        //   this.$refs.picker1.open();
-        //   console.log("我是picker1");
-        // }
-
         this.pos = pos;
         this.fieldTypecurr = fieldType;
         if(fieldType == '6'){
+            console.log(1234);
             let displaytime = this.fields[index].value;
             this.startTimeValue1 = displaytime ? displaytime : new Date();
             this.$refs.picker0.open();
@@ -899,78 +785,18 @@
             this.$refs.picker1.open();
           }
         }
-
-
-        /*if (type === 0) {
-          if (fieldType == '7' && this.applyWorkRef[this.pos].startTime) {
-            this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
-          } else if (fieldType == '6') {
-            this.startTimeValue1 = new Date();
-          } else {
-            this.startTimeValue1 = this.startTimeValue ? this.startTimeValue : new Date();
-          }
-          this.$refs.picker0.open();
-        } else {
-          if (this.applyWorkRef[this.pos].endTime) {
-            this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
-          } else if (this.selectedDataApply === 3) {
-            this.endTimeValue1 = new Date();
-          } else {
-            this.endTimeValue1 = this.endTimeValue ? this.endTimeValue : new Date();
-          }
-          this.$refs.picker1.open();
-        }*/
-
-
-        /*if (type === 0) {
-          // if ((this.selectedDataApply === 3) && this.applyWorkRef[this.pos].startTime) {
-          //   this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
-          // } else if (this.selectedDataApply === 3) {
-          //   this.startTimeValue1 = new Date();
-          // } else {
-          //   this.startTimeValue1 = this.startTimeValue ? this.startTimeValue : new Date();
-          // }
-          if (this.applyWorkRef[this.pos].startTime) {
-            this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
-          } else if (this.selectedDataApply === 3) {
-            this.startTimeValue1 = new Date();
-          } else {
-            this.startTimeValue1 = this.startTimeValue ? this.startTimeValue : new Date();
-          }
-          this.$refs.picker0.open();
-        } else {
-          if (this.applyWorkRef[this.pos].endTime) {
-            this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
-          } else if (this.selectedDataApply === 3) {
-            this.endTimeValue1 = new Date();
-          } else {
-            this.endTimeValue1 = this.endTimeValue ? this.endTimeValue : new Date();
-          }
-          this.$refs.picker1.open();
-        }*/
       },
       // 加班段数格式化
       overtimeNum(num){
         let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
         return arr[num];
       },
-      changeShow(val){ //查看申请记录
-        // this.$http.post('/api/v1.0/client/findApplys', {
-        this.$http.post('/api/v1.0/queryOwnApplys', {
-          status: val,
-          pageSize: 100,
-          pageNumber: 1
-        }).then(response => { //查询请假接口
-          if (response.body.code === 200) {
-            this.searchApplyRecord = response.body.result;
-          }
-        }, response => {
-//          console.log('error callback');
-        });
-
-      },
       //提交申请
       handerDataSubmit(){
+
+        // this.showMsg("数据出错", 1);
+        // return false;
+
         Indicator.open('正在提交申请...');
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
@@ -1007,14 +833,14 @@
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
-          // this.leaveSuccess = true;
-          // if (response.body.code === 200) {
-          //   this.alertSuccessImage = true;
-          //   this.alertMessage = response.body.message;
-          // } else {
-          //   this.alertSuccessImage = false;
-          //   this.alertMessage = response.body.message
-          // }
+          this.leaveSuccess = true;
+          if (response.body.code === 200) {
+            this.alertSuccessImage = true;
+            this.alertMessage = response.body.message;
+          } else {
+            this.alertSuccessImage = false;
+            this.alertMessage = response.body.message
+          }
         }, response => {
 //          console.log('error callback');
         });
@@ -1066,36 +892,12 @@
 //          console.log('error callback');
         });*/
       },
-
-      // 选择申请分类
-      /*shengqingclick(){ //初始是选中一个select然后进行参数选中为了提交用
-        this.updateImage = true; //上传图片按钮是否隐藏 true显示false隐藏
-        this.changeApply = false; //假期类型隐藏
-        let state = false;
-        for (let i = 0; i < this.applyTypeArray.length; i++) {
-          if (this.selectedDataApply === this.applyTypeArray[i].type) {
-            this.applyData.approvalConfigUid = this.applyTypeArray[i].uid;
-            state = true;
-          }
-        }
-        if (!state) {
-          this.selectedDataApply = this.applyTypeArray[0].type;
-          this.applyData.approvalConfigUid = this.applyTypeArray[0].uid;
-        }
-        if (this.selectedDataApply === 0) { //请假
-          this.changeApply = true; //假期类型显示
-        }
-        if (this.selectedDataApply === 3) {
-          this.updateImage = false; //上传图片隐藏
-        }
-      },*/
       qingjiaclick(value, index){
         this.applyData.leaveUid = value.LEAVE_INFO_UID;
-        this.fields[index].value = value.LEAVE_INFO_UID;
+        this.fields[index].value = value.NAME;
         this.selectHoliday = value;
       },
       waichuclick(value, index){
-        // this.applyData.leaveUid = value.LEAVE_INFO_UID;
         this.fields[index].value = value.name;
         this.selectHoliday = value;
       },
@@ -1124,7 +926,14 @@
       // 上传图片成功
       passportUrlOk(res, file) {
         if (res.code === 200) {
-          this.applyData.image = res.result;
+          // this.applyData.image = res.result;
+
+          for(let i = 0; i< this.fields.length; i++){
+            let item = this.fields[i];
+            if(item.fieldType == '8'){
+              item.value = res.result;
+            }
+          }
         }
       },
       // 上传图片前验证
@@ -1137,6 +946,54 @@
           this.passportUrlErrFlag = true;
         }
         return isImage && isInSize;
+      },
+      //查看申请记录
+      changeShow(val){
+        if(val == -1){
+          val = '';
+        }
+        this.$http.post('/api/v1.0/client/queryOwnApplys', {
+          status: val,
+          pageSize: 5,
+          pageNumber: 1
+        }).then(response => { //查询请假接口
+          if (response.body.code === 200) {
+            let data = response.body.result.list;
+            for(let i = 0; i < data.length; i++){
+              let item = data[i];
+              for(let j = 0; j < item.approvalFields.length; j++){
+                let list = item.approvalFields[j];
+                if(list.fieldType == '7'){
+                  let timearr = [];
+                  let number = Math.floor(list.approvalValues.length/2);
+                  if(parseInt(list.approvalValues[0].term) > 0){
+                    number = parseInt(list.approvalValues[0].term) + number;
+                  }
+                  for(let m = 0; m < number; m++){
+                    let timeobj = {
+                      startTime: '',
+                      endTime: ''
+                    };
+                    for(let n = 0; n < list.approvalValues.length; n++){
+                      let detail = list.approvalValues[n];
+                      if(detail.term == m && detail.sortnum == 0){
+                        timeobj.startTime = detail.value;
+                      }else if(detail.term == m && detail.sortnum == 1){
+                        timeobj.endTime = detail.value;
+                        timearr.push(timeobj);
+                      }
+                    }
+                  }
+                  list.periodarr = timearr;
+                }
+              }
+            }
+            this.searchApplyRecord = data;
+
+          }
+        }, response => {
+//          console.log('error callback');
+        });
       },
       //撤回申请
       revokes(uid){
@@ -1164,6 +1021,19 @@
           }
         });
         return time;
+      },
+      showMsg(msg, number){
+        this.leaveSuccess = true;
+        if(number == 1){
+          this.alertSuccessImage = true;
+        }else if(number == -1){
+          this.alertSuccessImage = false;
+        }
+        this.alertMessage = msg;
+        let that = this;
+        setTimeout(() => {
+          that.leaveSuccess = false;
+        },1500);
       }
     },
     components: {},
