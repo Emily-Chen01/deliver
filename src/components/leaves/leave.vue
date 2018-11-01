@@ -954,7 +954,7 @@
         }
         this.$http.post('/api/v1.0/client/queryOwnApplys', {
           status: val,
-          pageSize: 5,
+          pageSize: 100,
           pageNumber: 1
         }).then(response => { //查询请假接口
           if (response.body.code === 200) {
