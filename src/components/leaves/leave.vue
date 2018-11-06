@@ -25,21 +25,21 @@
           <div v-if="item.fieldType=='0'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
-              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
             </div>
           </div>
 
           <!--多行文本 type为1-->
           <div v-if="item.fieldType=='1'" class="leaveboxText">
             <div class="leaveboxText-top" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
-            <textarea v-model="item.value" :placeholder="item.fieldDescr"></textarea>
+            <textarea v-model="item.value" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256"></textarea>
           </div>
 
           <!--数字 type为2-->
           <div v-if="item.fieldType=='2'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
-              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
             </div>
           </div>
 
@@ -48,7 +48,7 @@
             <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
             <p>
               <el-radio-group v-model="confItemsval[item.uid]">
-                <el-radio v-for="list in confItems[item.uid] || []"  :key="list.value" :label="list.value" :class="{'checkblock':item.orientation==1}">
+                <el-radio v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
                   <span>{{list.value}}</span>
                 </el-radio>
               </el-radio-group>
@@ -67,7 +67,7 @@
               </el-checkbox-group>-->
 
               <el-checkbox-group v-model="confItemsval[item.uid]">
-                <el-checkbox v-for="list in confItems[item.uid] || []"  :key="list.value" :label="list.value" :class="{'checkblock':item.orientation==1}">
+                <el-checkbox v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
                   <span>{{list.value}}</span>
                 </el-checkbox>
               </el-checkbox-group>
@@ -321,15 +321,98 @@
           </mt-tab-item>
         </mt-navbar>
         <div class="leave-main-content">
+
+          <!--新增加考勤异常申请-->
+          <div class="approve-main-content-wrapper attendance" style="display: none;">
+            <div class="approve-main-content-top">
+              <h3 class="approve-main-content-title">
+                <span class="approve-main-content-title-left">审批申请（8月份异常考勤申请）</span>
+                <span class="approve-main-content-title-right">审批中</span>
+              </h3>
+            </div>
+            <div class="approve-main-content-Info attendcont">
+              <div class="attendtop">申请人：张三(CI11570)</div>
+              <div class="attendttit">原始数据</div>
+              <div class="attendDetail">
+                <p>本月异常考勤累计时间</p>
+                <p>
+                  <span>迟到累计：2次（共3工时）</span>
+                  <span>事假累计: 10天(共80工时)</span>
+                </p>
+                <p>
+                  <span>早退累计：2次（共3工时）</span>
+                  <span>病假累计: 10天(共80工时)</span>
+                </p>
+                <p>
+                  <span class="spanlft">旷工累计: 10天(共80工时)</span>
+                  <span class="spanlft">产假累计: 10天(共80工时)</span>
+                </p>
+                <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
+                <p>工作日加班累计时长：0.5天(共4小时)</p>
+                <p>周末加班累计时长：0.5天(共4小时)</p>
+                <p>法定假日加班累计时长：0.5天(共4小时)</p>
+              </div>
+              <div class="attendttit">修订后数据</div>
+              <div class="attendDetail">
+                <p>本月异常考勤累计时间</p>
+                <p>
+                  <span>迟到累计：2次（共3工时）</span>
+                  <span>事假累计: 10天(共80工时)</span>
+                </p>
+                <p>
+                  <span>早退累计：2次（共3工时）</span>
+                  <span>病假累计: 10天(共80工时)</span>
+                </p>
+                <p>
+                  <span class="spanlft">旷工累计: 10天(共80工时)</span>
+                  <span class="spanlft">产假累计: 10天(共80工时)</span>
+                </p>
+                <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
+                <p>工作日加班累计时长：0.5天(共4小时)</p>
+                <p>周末加班累计时长：0.5天(共4小时)</p>
+                <p>法定假日加班累计时长：0.5天(共4小时)</p>
+              </div>
+              <div class="btnlookdet">
+                <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail()">
+                  <span>查看详情</span>
+                </mt-button>
+              </div>
+
+            </div>
+            <div class="approve-main-content-append approve-main-content-append1 ">
+              <div class="approve-main-content-btnBox">
+                <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass('uid',1)">
+                  <span>通过</span>
+                </mt-button>
+              </div>
+              <div class="approve-main-content-btnBox">
+                <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass('uid',2)">
+                  <span>拒绝并修改</span>
+                </mt-button>
+              </div>
+            </div>
+            <div class="approve-main-content-append approve-main-content-append1 plr15 fs13">
+              <p>
+                <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
+              </p>
+              <p>
+                <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
+              </p>
+            </div>
+          </div>
+
           <!--现在显示的内容-->
           <div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
             <div class="leave-main-content-top">
               <h3 class="leave-main-content-title">
-                <span class="leave-main-content-title-left">审批申请（{{item.name}}）</span>
+                <span class="leave-main-content-title-left" v-if="item.approvalType != -1">审批申请（{{item.name}}）</span>
+                <span class="leave-main-content-title-left" v-if="item.approvalType == -1">审批申请（{{item.abnormalAttendApproval.attendReport.month}}月份{{item.name}}申请）</span>
                 <span class="leave-main-content-title-right">{{applyState(item.status)}}</span>
               </h3>
             </div>
-            <div class="leave-main-content-Info">
+
+            <!--普通申请-->
+            <div class="leave-main-content-Info" v-if="item.approvalType != -1">
               <div class="marginTop10" v-for="list in item.approvalFields">
                 <div v-if="list.fieldType != '7'">
                   <h3>{{list.fieldName}}：</h3>
@@ -341,14 +424,73 @@
                   <p>{{detail.startTime}}至{{detail.endTime}}</p>
                 </div>
               </div>
+            </div>
+
+            <!--异常考勤申请-->
+            <div class="approve-main-content-Info attendcont" v-if="item.approvalType == -1">
+              <div class="attendtop">申请人：张三(CI11570)</div>
+              <div class="attendttit">原始数据</div>
+              <div class="attendDetail">
+                <p>本月异常考勤累计时间</p>
+                <p>
+                  <span>迟到累计：{{item.abnormalAttendApproval.attendReport.belateTimes}}次（共{{item.abnormalAttendApproval.attendReport.belateTotal}}工时）</span>
+                  <span>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</span>
+                  <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</span>
+                </p>
+                <p>
+                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+                </p>
+                <p>
+                  <span class="spanlft">产假累计: 10天(共80工时)</span>
+                </p>
+                <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
+                <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertime}}小时)</p>
+                <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertime}}小时)</p>
+                <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertime}}小时)</p>
+              </div>
+
+
+              <div class="attendttit">修订后数据</div>
+              <div class="attendDetail">
+                <p>本月异常考勤累计时间</p>
+                <p>
+                  <span>迟到累计：{{item.abnormalAttendApproval.newAttendReport.belateTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.belateTotal}}工时）</span>
+                  <span>事假累计: 10天(共80工时)</span>
+                </p>
+                <p>
+                  <span>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</span>
+                  <span>病假累计: 10天(共80工时)</span>
+                </p>
+                <p>
+                  <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</span>
+                  <span class="spanlft">产假累计: 10天(共80工时)</span>
+                </p>
+                <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
+                <p>
+                  <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+                </p>
+
+                <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}小时)</p>
+                <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}小时)</p>
+                <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}小时)</p>
+              </div>
+              <div class="btnlookdet">
+                <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail()">
+                  <span>查看详情</span>
+                </mt-button>
+              </div>
 
             </div>
+
             <div class="leave-main-content-append leave-main-content-append1 " v-if="item.status===0">
               <mt-button size="small" class="leave-main-content-btn" type="primary" @click="revokes(item.uid)">
                 <span>撤回申请</span>
               </mt-button>
             </div>
           </div>
+
+
+
 
           <!--原来显示内容-->
           <!--<div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
@@ -826,29 +968,37 @@
         // console.log(this.applyWorkRef);
         // return false;
 
-        // Indicator.open('正在提交申请...');
+        Indicator.open('正在提交申请...');
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
           let item = this.fields[i];
 
           //验证数据
-          if(item.fieldType == "0"){ //单行文本
-            console.log(item.value);
-
+          /*if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2" || item.fieldType == "6"){ //单行文本、多行文本、数字
             if(item.value == '' || item.value ==undefined){
-              this.showMsg("请填写单行文本",-1);
+              this.showMsg(item.fieldHint,-1);
               return false;
             }
-          }else if(item.fieldType == "1"){ //多行文本
-            console.log(item.value);
-            if(item.value == '' || item.value ==undefined){
-              this.showMsg("请填写多行文本",-1);
+          }else if(item.fieldType == "3" || item.fieldType == "4" || item.fieldType == "5"){ //多行文本
+            if(this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0){
+              this.showMsg(item.fieldHint,-1);
               return false;
             }
-          }
+          }else if(item.fieldType == "7"){ //日期和日期时间段
+            if(this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == ''){
+              this.showMsg(item.fieldHint,-1);
+              return false;
+            }
+
+          }else if(item.fieldType == "8"){ //附件
+            if(this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0){
+              this.showMsg(item.fieldHint,-1);
+              return false;
+            }
+          }*/
 
 
-          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType")){
+          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType" || item.code =="leaveType")){
             approvalValues.push({
               approvalFieldUid : item.uid,
               value : item.value,
@@ -874,10 +1024,6 @@
               }
             }
           }
-
-
-
-
 
         }
 
@@ -906,7 +1052,7 @@
         console.log(this.applyData);
         console.log(33333);
 
-        return false;
+        // return false;
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
@@ -1080,6 +1226,9 @@
             }
             // this.searchApplyRecord = data;
             this.searchApplyRecord = this.searchApplyRecord.concat(data);
+            console.log(12345);
+
+            console.log(this.searchApplyRecord);
 
             let that = this;
             window.onscroll = function() {
@@ -1166,6 +1315,9 @@
       getScrollHeight(){
         return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
       },
+      gotodetail(){
+        this.$router.push({path: '/attendanceEdit'});
+      }
 
     },
     components: {},
@@ -1565,5 +1717,130 @@
   .checkblock{
     display: block;
     margin: 5px 0 10px 0 !important;
+  }
+
+  .approve-main-content-wrapper {
+    margin-bottom: 12px;
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid #d3dce6;
+    border-radius: 4px;
+    font-size: 13px;
+    .approve-main-content-top {
+      height: 35px;
+      background-color: #d3dde7;
+      .approve-main-content-title {
+        overflow: hidden;
+        margin: 0;
+        height: 35px;
+        line-height: 35px;
+        text-align: left;
+        font-size: 14px;
+        color: #1f2d3d;
+        .approve-main-content-title-left {
+          margin-left: 10px;
+          margin-top: 10px;
+          padding-left: 4px;
+          height: 14px;
+          line-height: 14px;
+          float: left;
+          border-left: 2px solid #1f2d3d;
+        }
+        .approve-main-content-title-right {
+          float: right;
+          margin-right: 15px;
+        }
+      }
+    }
+    .approve-main-content-Info {
+      box-sizing: border-box;
+      padding: 15px;
+      background-color: #ffffff;
+      text-align: left;
+      h3, p {
+        font-size: 14px;
+        line-height: 16px;
+
+      }
+      h3 {
+        color: #20a0ff;
+      }
+      p {
+        margin-top: 5px;
+        color: #324057;
+      }
+      .marginTop10 {
+        margin-top: 10px;
+      }
+    }
+    .approve-main-content-append {
+      box-sizing: border-box;
+      background-color: #ffffff;
+      text-align: left;
+      h3 {
+        display: inline-block;
+        font-size: 14px;
+        color: #20a0ff;
+      }
+      .approve-main-content-btnBox {
+        display: inline-block;
+        width: 40%;
+        .approve-main-content-btn {
+          height: 22px;
+          font-size: 12px;
+        }
+      }
+    }
+    .approve-main-content-append1 {
+      border-top: 1px solid #d3dce6;
+      padding: 10px 0;
+      text-align: center;
+    }
+  }
+  .approve-main-content-Info{
+    &.attendcont{
+      box-sizing: border-box;
+      padding: 15px;
+      background-color: #ffffff;
+      text-align: left;
+      .attendtop{
+        text-align: center;
+        font-size: 14px;
+      }
+      .attendttit{
+        font-size: 12px;
+      }
+      .attendDetail{
+        background: #F2F2F2;
+        margin: 15px 0;
+        font-size: 12px;
+        padding: 5px 8px;
+        p{
+          text-align: left;
+          line-height: 25px;
+          font-size: 12px;
+          &:after{content:"";display: block;height: 0;clear: both;}
+          span{
+            display: inline-block;
+            width: 50%;
+            font-size: 12px;
+            &:nth-child(1){
+              float:left;
+            }
+            &:nth-child(1){
+              float:left;
+            }
+          }
+        }
+      }
+      .btnlookdet{
+        text-align: center;
+        .btnlookattend{
+          font-size: 14px;
+          width: 100px;
+          height: 30px;
+        }
+      }
+    }
   }
 </style>

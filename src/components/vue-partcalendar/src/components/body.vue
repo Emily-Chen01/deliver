@@ -18,6 +18,7 @@
         <div class="">外出</div>
       </div>
     </div>-->
+
     <div class="weeks">
       <strong class="week" v-for="week in weekNames">{{week}}</strong>
     </div>
@@ -36,11 +37,15 @@
                :class="{'today' : day.isToday,
               'todayBg':convertTime(day.date)===convertTime(currentDay),
               'clickDay':currentDay===day.date,
-              'not-cur-month' : !day.isCurMonth}">
-            <p class="day-number">{{day.monthDay}}</p>
+              'dayabnormal': connectTime.hasAbnormal.join(',').indexOf(day.isdayformat)!='-1',
+              'dayapply': connectTime.hasApply.join(',').indexOf(day.isdayformat)!='-1',
+              'not-cur-month' : !day.isCurMonth}" v-if="connectTime.hasAbnormal">
+            <p class="day-number">{{day.monthDay}} </p>
           </div>
         </div>
       </div>
+
+
 
       <!-- absolute so we can make dynamic td -->
       <div class="dates-events">
@@ -87,6 +92,8 @@
 </template>
 <script type="text/babel">
   import dateFunc from './dateFunc'
+  import moment from 'moment'
+  let df3 = 'YYYY-MM-DD';
 
   export default {
     props: {
@@ -106,6 +113,7 @@
         item.end = item.end || item.start;
       })
       // this.events = events
+
     },
     data () {
       return {
@@ -160,6 +168,7 @@
         return ''
       },
       getCalendar () {
+
         // calculate 2d-array of each month
         // first day of this month
         let now = new Date();// today
@@ -187,8 +196,9 @@
               isCurMonth: startDate.getMonth() == current.getMonth(),
               weekDay: perDay,
               date: new Date(startDate),
-              events: this.slotEvents(startDate)
-            })
+              events: this.slotEvents(startDate),
+              isdayformat: moment(startDate).format(df3)
+            });
 
             startDate.setDate(startDate.getDate() + 1)
             // if (startDate.toDateString() == endDate.toDateString()) {
@@ -339,17 +349,20 @@
           .day-number {
             margin: 0 auto;
             margin-top: 10px;
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
-            border-radius: 50%;
+            /*width: 24px;*/
+            /*height: 24px;*/
+            /*line-height: 24px;*/
+            width: 30px;
+            height: 20px;
+            line-height: 20px;
+            /*border-radius: 50%;*/
           }
           &.today {
             .day-number {
-              width: 20px;
+              width: 30px;
               height: 20px;
               line-height: 20px;
-              border: 2px solid rgb(33, 160, 253);
+              /*border: 2px solid rgb(33, 160, 253);*/
             }
           }
           &.todayBg {
@@ -368,6 +381,42 @@
             .day-number {
               color: rgba(0, 0, 0, 0.24);
               opacity: 0;
+            }
+          }
+          &.dayabnormal{
+            .day-number {
+              background-color: #429BD5;
+              color: rgb(255, 255, 255);
+              position: relative;
+              &::before{
+                content: "";
+                display: block;
+                width: 7px;
+                height: 7px;
+                background: red;
+                border-radius: 50%;
+                position: absolute;
+                right: 5px;
+                top: -2px;
+              }
+            }
+          }
+          &.dayapply{
+            .day-number {
+              background-color: #00CCCC;
+              color: rgb(255, 255, 255);
+              position: relative;
+              &::before{
+                content: "";
+                display: block;
+                width: 7px;
+                height: 7px;
+                background: red;
+                border-radius: 50%;
+                position: absolute;
+                right: 5px;
+                top: -2px;
+              }
             }
           }
         }

@@ -3,7 +3,7 @@
     <mt-header title="8月份考勤修订"></mt-header>
     <div class="attendDetail">
       <p>本月异常考勤累计时间</p>
-      <p>
+      <!--<p>
         <span>迟到累计：2次（共3工时）</span>
         <span>事假累计: 10天(共80工时)</span>
       </p>
@@ -18,7 +18,20 @@
       <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
       <p>工作日加班累计时长：0.5天(共4小时)</p>
       <p>周末加班累计时长：0.5天(共4小时)</p>
-      <p>法定假日加班累计时长：0.5天(共4小时)</p>
+      <p>法定假日加班累计时长：0.5天(共4小时)</p>-->
+
+      <p>
+        <span>迟到累计：{{attendReport.belateTimes}}次（共{{attendReport.belateTotal}}工时）</span>
+        <span>早退累计：{{attendReport.leaveearlyTimes}}次（共{{attendReport.leaveearlyTotal}}工时）</span>
+        <span class="spanlft">旷工累计: {{attendReport.absentTimes}}天(共{{attendReport.absentTotal}}工时)</span>
+      </p>
+      <p>
+        <span v-for="list in attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+      </p>
+      <p>工作日加班累计时长：{{attendReport.dayOvertimeDays}}天(共{{attendReport.dayOvertime}}小时)</p>
+      <p>周末加班累计时长：{{attendReport.weekendOvertimeDays}}天(共{{attendReport.weekendOvertime}}小时)</p>
+      <p>法定假日加班累计时长：{{attendReport.holidayOvertimeDays}}天(共{{attendReport.holidayOvertime}}小时)</p>
+
     </div>
 
     <full-calendar
@@ -29,8 +42,8 @@
     ></full-calendar>
 
     <div class="abnormalattend">
-      <p>异常考勤日期：2018-08-11（工作日）</p>
-      <p>异常考勤状态：迟到</p>
+      <p>异常考勤日期：{{daycurrent}}<span v-if="duration">（{{duration.dateStatus}}）</span></p>
+      <p>异常考勤状态：<span v-if="duration">{{duration.durationstatus}}</span></p>
     </div>
     <div class="reviseapply">
       <div class="revisetop">
@@ -38,7 +51,7 @@
       </div>
       <div class="revisecont">
         <div class="revisecontone" v-show="showRevise">
-          <p>考勤状态: 忘打卡</p>
+          <!--<p>考勤状态: 忘打卡</p>
           <p>
             <span>是否有加班：是</span>
             <span>加班时长: 3小时</span>
@@ -48,7 +61,22 @@
             <mt-button type="primary" class="btnattend">
               <span>提交全部考勤修订内容</span>
             </mt-button>
+          </div>-->
+
+          <div class="leavecontInfo">
+            <div class="marginTop10" v-for="list in searchApplyRecord.approvalFields">
+              <div v-if="list.fieldType != '7'">
+                <h3>{{list.fieldName}}：</h3>
+                <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+              </div>
+              <!--日期时间段-->
+              <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
+                <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+                <p>{{detail.startTime}}至{{detail.endTime}}</p>
+              </div>
+            </div>
           </div>
+
         </div>
         <div class="reviseconttwo" v-show="!showRevise">
           <div class="reviseitem">
@@ -185,6 +213,7 @@
   let df = 'YYYY/MM/DD HH:mm';
   let df1 = 'YYYY/MM';
   let df2 = 'YYYY/MM/DD';
+  let df3 = 'YYYY-MM-DD';
 
   export default {
 //    abnormal=异常   normal=正常   leave=请假   这个定的值是封装在日历里面定义好的颜色
@@ -204,16 +233,16 @@
         ],
         punchState: {},//选中日期打卡信息展示
         oldDayClick: '',//已经选中的日期
-        duration: null,//选中日期当日工时
+        duration: {},//选中日期当日工时
         tozhang: '', //上班打卡状态
         downzhang: '',  //下班打卡状态
         connectTime: {
-          chidao: '',   //迟到数量
-          zaotui: '',//早退数量
-          kuanggong: '',//旷工数量
-          waichu: '',//外出数量
-          totalTime: '',//今日工时数量
-          state: true,//判断是否显示这些数量值
+          // chidao: '',   //迟到数量
+          // zaotui: '',//早退数量
+          // kuanggong: '',//旷工数量
+          // waichu: '',//外出数量
+          // totalTime: '',//今日工时数量
+          // state: true,//判断是否显示这些数量值
         },
         toSapnTime: '', // 上班时间
         downSapnTime: '', // 下班时间
@@ -241,13 +270,54 @@
           mobile: '13212121212',
           department: '技术部',
           job: '技术'
-        }]
+        }],
+        hasAbnormal: [],
+        datePunchCardLogs: [],
+        daycurrent: '',
+        searchApplyRecord: [],
+        attendReport: []
       }
     },
     created: function () {
       //初始化查询当月考勤省略 由于 changeMonth会执行查询这个月的数据展示
+
+      //获取考勤详情数据
+      // let param = {
+      //   date: moment(day).format(df2)
+      // };
+
+      this.getDetail();
+
     },
     methods: {
+      getDetail() {
+        let uid = '980d32843ee04f2d98c0582873b0100b';
+        this.$http.get('/api/v1.0/client/queryApplyDetail/'+uid).then(response => { //点击查看当天考勤
+          if (response.body.code === 200) {
+            let data = response.body.result;
+            this.hasAbnormal = data.abnormalAttendApproval.hasAbnormal;
+            this.datePunchCardLogs = data.abnormalAttendApproval.datePunchCardLogs;
+            this.dateApplys = data.abnormalAttendApproval.dateApplys;
+            this.attendReport = data.abnormalAttendApproval.attendReport;
+
+            this.connectTime = data.abnormalAttendApproval;
+
+
+            // this.connectTime.hasAbnormal.push('2018-11-08');
+            // this.connectTime.hasAbnormal.push('2018-11-12');
+            // this.connectTime.hasAbnormal.push('2018-11-18');
+            // this.connectTime.hasApply.push('2018-11-21');
+            // this.connectTime.hasApply.push('2018-11-22');
+            // this.connectTime.hasApply.push('2018-11-24');
+
+            console.log(this.connectTime);
+            console.log(this.hasAbnormal);
+            console.log(this.datePunchCardLogs);
+
+          }
+        }, response => {
+        });
+      },
       editapply () {
         this.showRevise = false;
       },
@@ -262,25 +332,90 @@
         //再此处调用每一次日期的接口 进行传值
         //点击当天进行查询打卡状态开始
         //格式化时间开始
-        if (this.oldDayClick !== moment(day).format(df2)) {
-          this.oldDayClick = moment(day).format(df2);
-          let param = {
-            date: moment(day).format(df2)
-          };
-          this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
-            if (response.body.code === 200) {
-              this.punchState = response.body.result;
-              this.duration = null;
-              for (let i = 0; i < this.punchState.data.length; i++) {
-                this.duration += this.punchState.data[i].duration;
+
+        let newday = moment(day).format(df3);
+        this.daycurrent = newday;
+        this.duration = this.datePunchCardLogs[newday];
+        if(this.duration){
+          let durationstatus = '';
+          if(this.duration.isAbsent == true){
+            durationstatus = '旷工';
+          }else{
+            if(this.duration.isBelate == true && this.duration.isLeaveearly == true){
+              durationstatus = '迟到/早退';
+            }else{
+              if(this.duration.isBelate == true){
+                durationstatus = '迟到/早退';
               }
-              if (typeof(this.duration) === 'number') {
-                this.duration = parseFloat(this.duration.toFixed(2));
+              if(this.duration.isLeaveearly == true){
+                durationstatus = '迟到/早退';
               }
             }
-          }, response => {
-          });
+          }
+          this.duration.durationstatus = durationstatus;
         }
+
+
+        let dateApplys = this.dateApplys[newday];
+        // console.log(this.dateApplys);
+        // console.log(this.dateApplys[newday]);
+        // console.log(this.dateApplys[newday][0].approvalFields);
+        // console.log(dateApplys);
+        // console.log(dateApplys[0].approvalFields);
+        // console.log(5555);
+        if(dateApplys){
+          for(let j = 0; j < dateApplys[0].approvalFields.length; j++){
+            let list = dateApplys[0].approvalFields[j];
+            if(list.fieldType == '7'){
+              let timearr = [];
+              if(list.approvalValues.length > 0){
+                let number = Math.floor(list.approvalValues.length/2);
+                if(parseInt(list.approvalValues[0].term) > 0){
+                  number = parseInt(list.approvalValues[0].term) + number;
+                }
+                for(let m = 0; m < number; m++){
+                  let timeobj = {
+                    startTime: '',
+                    endTime: ''
+                  };
+                  for(let n = 0; n < list.approvalValues.length; n++){
+                    let detail = list.approvalValues[n];
+                    if(detail.term == m && detail.sortnum == 0){
+                      timeobj.startTime = detail.value;
+                    }else if(detail.term == m && detail.sortnum == 1){
+                      timeobj.endTime = detail.value;
+                      timearr.push(timeobj);
+                    }
+                  }
+                }
+                list.periodarr = timearr;
+              }
+            }
+          }
+          this.searchApplyRecord = dateApplys[0];
+        }
+        console.log(this.searchApplyRecord);
+
+
+        // if (this.oldDayClick !== moment(day).format(df2)) {
+        //   this.oldDayClick = moment(day).format(df2);
+        //   let param = {
+        //     date: moment(day).format(df2)
+        //   };
+        //   this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
+        //     if (response.body.code === 200) {
+        //       this.punchState = response.body.result;
+        //       this.duration = null;
+        //       for (let i = 0; i < this.punchState.data.length; i++) {
+        //         this.duration += this.punchState.data[i].duration;
+        //       }
+        //       if (typeof(this.duration) === 'number') {
+        //         this.duration = parseFloat(this.duration.toFixed(2));
+        //       }
+        //     }
+        //   }, response => {
+        //   });
+        // }
       },
       changeMonth (start, end, currentStart, current) {
         let param = {
@@ -393,6 +528,11 @@
           }
         }
         return show;
+      },
+      // 加班段数格式化
+      overtimeNum(num){
+        let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+        return arr[num];
       }
     },
     components: {
@@ -412,6 +552,7 @@
       p{
         text-align: left;
         line-height: 25px;
+        &::after{content:"";display: block;height: 0;clear: both;}
         span{
           display: inline-block;
           width: 50%;
@@ -705,4 +846,24 @@
       }
     }
   }
+
+  .leavecontInfo{
+    font-size: 14px;
+    line-height: 16px;
+    .marginTop10{
+      margin-top: 10px;
+    }
+    h3{
+      font-size: 14px;
+      color: #20a0ff;
+    }
+    p{
+      margin-top: 5px;
+      color: #324057;
+      padding: 0 !important;
+      line-height: 16px !important;
+      font-size: 14px !important;
+    }
+  }
+
 </style>
