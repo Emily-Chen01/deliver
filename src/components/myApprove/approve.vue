@@ -1,15 +1,124 @@
 <template>
   <div id="approve-wrapper">
     <mt-navbar v-model="selectInfo" class="approve-header">
-      <!--<mt-tab-item id="a">-->
-      <!--<div @click="changeShow()"><span>待处理审批</span></div>-->
-      <!--</mt-tab-item>-->
+      <mt-tab-item id="a">
+        <div @click="changeShow('0')"><span>待处理审批</span></div>
+      </mt-tab-item>
       <mt-tab-item id="b">
-        <div @click="changeShow()"><span>已处理审批</span></div>
+        <div @click="changeShow('1')"><span>已处理审批</span></div>
       </mt-tab-item>
     </mt-navbar>
     <div class="approve-main-content">
+
       <div class="approve-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
+        <div class="approve-main-content-top">
+          <h3 class="approve-main-content-title">
+                <!--<span class="approve-main-content-title-left"-->
+                      <!--v-text="item.name+'申请'+(item.leaveName ? item.leaveName:'')"></span>-->
+            <!--<span class="approve-main-content-title-right"-->
+                  <!--v-text="applyState(item.status)"></span>-->
+            <span class="approve-main-content-title-left">审批申请（{{item.name}}）</span>
+            <span class="approve-main-content-title-right">{{applyState(item.status)}}</span>
+          </h3>
+        </div>
+        <div class="approve-main-content-Info">
+          <!--<div>
+            <h3>申请人</h3>
+            <p v-text="item.applyer">测试</p>
+          </div>
+          <div class="marginTop10">
+            <h3>当前审批人</h3>
+            <p v-text="item.approvaler">测试测试</p>
+          </div>-->
+
+          <div>
+            <h3>申请人</h3>
+            <p>测试</p>
+          </div>
+          <div class="marginTop10">
+            <h3>当前审批人</h3>
+            <p>测试测试</p>
+          </div>
+
+          <div class="marginTop10" v-for="list in item.approvalFields">
+            <div v-if="list.fieldType != '7'">
+              <h3>{{list.fieldName}}：</h3>
+              <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+            </div>
+            <!--日期时间段-->
+            <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
+              <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+              <p>{{detail.startTime}}至{{detail.endTime}}</p>
+            </div>
+          </div>
+
+
+          <!--<div v-if="item.time&&item.time.length>0" class="marginTop10"
+               v-for="(overTime,overIndex) in item.time" :key="overIndex">
+            <h3 v-text="'第'+overtimeNum(overIndex)+'段时间起止时间'"></h3>
+            <p>
+              <span v-text="datefmt(overTime.startTime)"></span> 至 <span v-text="datefmt(overTime.endTime)"></span>
+            </p>
+          </div>
+          <div v-if="!(item.time&&item.time.length>0)" class="marginTop10">
+            <h3>起止日期</h3>
+            <p>
+              <span v-text="datefmt(item.startTime)"></span> 至 <span v-text="datefmt(item.endTime)"></span>
+            </p>
+          </div>
+          <div v-if="item.configType===3 && item.overworkTime" class="marginTop10">
+            <h3>加班时长</h3>
+            <p><span>平日加班：</span><span v-text="queryOverworkTime(item.workTime,0)+'小时'"></span></p>
+            <p><span>周末加班：</span><span v-text="queryOverworkTime(item.workTime,1)+'小时'"></span></p>
+            <p><span>节假日加班：</span><span v-text="queryOverworkTime(item.workTime,2)+'小时'"></span></p>
+          </div>
+          <div v-if="!(item.configType===3)" class="marginTop10">
+            <h3>申请时长</h3>
+            <p><span v-text="item.days ? item.days : '&#45;&#45;'"></span></p>
+          </div>
+          <div class="marginTop10">
+            <h3>事由</h3>
+            <p v-text="item.remarks "></p>
+          </div>
+          <div v-if="item.why" class="marginTop10">
+            <h3>拒绝原因</h3>
+            <p v-text="item.why"></p>
+          </div>
+          <div class="approve-main-content-append marginTop10" v-if="item.image">
+            <h3>附件内容：</h3>
+            <div class="approve-main-content-btnBox">
+              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="lookImages(item.image)">
+                <span>查看附件</span>
+              </mt-button>
+            </div>
+          </div>
+        </div>-->
+          <div class="approve-main-content-append approve-main-content-append1 marginTop10" v-if="item.status===0">
+            <div class="approve-main-content-btnBox">
+              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass(item.uid,1)">
+                <span>通过</span>
+              </mt-button>
+            </div>
+            <div class="approve-main-content-btnBox">
+              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass(item.uid,2)">
+                <span>拒绝</span>
+              </mt-button>
+            </div>
+          </div>
+          <div class="approve-main-content-append approve-main-content-append1 plr15 fs13" v-if="item.status===3">
+            <p>
+              <span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511)        已通过</span>
+            </p>
+            <p>
+              <span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511)        已通过</span>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!--原来显示的内容-->
+      <!--<div class="approve-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
         <div class="approve-main-content-top">
           <h3 class="approve-main-content-title">
                 <span class="approve-main-content-title-left"
@@ -48,7 +157,7 @@
           </div>
           <div v-if="!(item.configType===3)" class="marginTop10">
             <h3>申请时长</h3>
-            <p><span v-text="item.days ? item.days : '--'"></span></p>
+            <p><span v-text="item.days ? item.days : '&#45;&#45;'"></span></p>
           </div>
           <div class="marginTop10">
             <h3>事由</h3>
@@ -87,7 +196,8 @@
             <span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511)        已通过</span>
           </p>
         </div>
-      </div>
+      </div>-->
+
       <div class="myApplyNo" v-if="searchApplyRecord.length===0">
         <span>没有数据</span>
       </div>
@@ -229,7 +339,7 @@
       };
     },
     created: function () {
-      this.changeShow()
+      this.changeShow('0');
     },
     watch: {},
     methods: {
@@ -262,6 +372,52 @@
         return arr[num];
       },
       changeShow(val){ //查看审批信息
+        this.$http.post('/api/v1.0/client/queryOtherApplys', {
+          status: val,
+          pageSize: 100,
+          pageNumber: 1
+        }).then(response => {
+          if (response.body.code === 200) {
+            // this.searchApplyRecord = response.body.result;
+            let data = response.body.result.list;
+            for(let i = 0; i < data.length; i++){
+              let item = data[i];
+              for(let j = 0; j < item.approvalFields.length; j++){
+                let list = item.approvalFields[j];
+                if(list.fieldType == '7'){
+                  let timearr = [];
+                  let number = Math.floor(list.approvalValues.length/2);
+                  if(parseInt(list.approvalValues[0].term) > 0){
+                    number = parseInt(list.approvalValues[0].term) + number;
+                  }
+                  for(let m = 0; m < number; m++){
+                    let timeobj = {
+                      startTime: '',
+                      endTime: ''
+                    };
+                    for(let n = 0; n < list.approvalValues.length; n++){
+                      let detail = list.approvalValues[n];
+                      if(detail.term == m && detail.sortnum == 0){
+                        timeobj.startTime = detail.value;
+                      }else if(detail.term == m && detail.sortnum == 1){
+                        timeobj.endTime = detail.value;
+                        timearr.push(timeobj);
+                      }
+                    }
+                  }
+                  list.periodarr = timearr;
+                }
+              }
+            }
+            this.searchApplyRecord = data;
+
+          }
+        }, response => {
+//          console.log('error callback');
+        });
+      },
+      /*changeShow(val){ //查看审批信息
+        // this.$http.get('/api/v1.0/client/approval/findComplete').then(response => { //查询请假接口
         this.$http.get('/api/v1.0/client/approval/findComplete').then(response => { //查询请假接口
           if (response.body.code === 200) {
             this.searchApplyRecord = response.body.result;
@@ -269,7 +425,7 @@
         }, response => {
 //          console.log('error callback');
         });
-      },
+      },*/
       // 打开查看附件弹框
       lookImages(imgSrc){
         if (imgSrc) this.popImgSrc = imgSrc;

@@ -23,7 +23,7 @@
         <div v-for="(item,index) in fields" :key="index">
           <!--单行文本 type为0-->
           <div v-if="item.fieldType=='0'" class="leavebox">
-            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
               <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr">
             </div>
@@ -31,35 +31,53 @@
 
           <!--多行文本 type为1-->
           <div v-if="item.fieldType=='1'" class="leaveboxText">
-            <div class="leaveboxText-top icon-stars">{{item.fieldName}}</div>
+            <div class="leaveboxText-top" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <textarea v-model="item.value" :placeholder="item.fieldDescr"></textarea>
           </div>
 
           <!--数字 type为2-->
           <div v-if="item.fieldType=='2'" class="leavebox">
-            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
               <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr">
             </div>
           </div>
 
           <!--单选按钮 type为3-->
+          <div v-if="item.fieldType=='3'" class="forgetclock">
+            <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
+            <p>
+              <el-radio-group v-model="confItemsval[item.uid]">
+                <el-radio v-for="list in confItems[item.uid] || []"  :key="list.value" :label="list.value" :class="{'checkblock':item.orientation==1}">
+                  <span>{{list.value}}</span>
+                </el-radio>
+              </el-radio-group>
+            </p>
+          </div>
 
           <!--复选框 type为4-->
           <div v-if="item.fieldType=='4'" class="forgetclock">
-            <p>{{item.fieldDescr}}</p>
+            <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
             <p>
-              <el-checkbox-group v-model="attendtimelist">
+              <!--忘记打卡时间-->
+              <!--<el-checkbox-group v-model="attendtimelist">
                 <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
                   <span v-model="item.value">{{list}}</span>
+                </el-checkbox>
+              </el-checkbox-group>-->
+
+              <el-checkbox-group v-model="confItemsval[item.uid]">
+                <el-checkbox v-for="list in confItems[item.uid] || []"  :key="list.value" :label="list.value" :class="{'checkblock':item.orientation==1}">
+                  <span>{{list.value}}</span>
                 </el-checkbox>
               </el-checkbox-group>
             </p>
           </div>
+
           <!--下拉菜单 type为5-->
           <!--请假和外出类型-->
           <div v-if="item.fieldType=='5'" class="leavebox">
-            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
               <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
                       @change="qingjiaclick(selectedDataHoliday, index)">
@@ -68,7 +86,7 @@
                         v-text="option.NAME"></option>
               </select>
             </div>
-            <div class="leaveboxcen" v-if="item.fieldName == '外出类型'">
+            <div class="leaveboxcen" v-if="item.code == 'outType'">
               <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
                       @change="waichuclick(selectedDataHoliday, index)">
                 <option>{{item.fieldHint}}</option>
@@ -76,46 +94,28 @@
                         v-text="option.name"></option>
               </select>
             </div>
+
+            <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
+              <!--:class="{'colorA6':confItemsval[item.uid]===confItems[item.uid][0] && item.fieldDescr}"-->
+              <select v-model="confItemsval[item.uid]" :class="{'colorA6': item.fieldDescr}">
+                <option>{{item.fieldDescr}}</option>
+                <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
+              </select>
+            </div>
+
           </div>
 
           <!--日期 type为6-->
           <div v-if="item.fieldType=='6'" class="leavebox">
-            <div class="leaveboxlft icon-stars">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index)">
             <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
                   :class="{'colorA6':!item.value}"></span>
             </div>
           </div>
-          <!--日期区间 type为7-->
-          <!--<div v-if="item.fieldType=='7'">
-            <div class="mt10">
-              <h4 align="left" class="fc1 pr" v-if="item.sortnumtmp == 0">
-                <span v-text="'第'+overtimeNum(item.term)+'段'+item.fieldName"></span>
-                <span v-if="item.term>0" class="leave-main-box-del" @click="deleteTime(item.term)">+</span>
-              </h4>
-              <div class="pl30">
-                <div class="leavebox">
-                  <div class="leaveboxlft icon-stars">{{ item.sortnumtmp == 0 ? '开始时间' : '结束时间'}}</div>
-                  <div class="leaveboxcen">
-            <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
-                  :class="{'colorA6':!item.value}" @click="openPicker(item.term, item.sortnumtmp, item.fieldType, index)"></span>
-                  </div>
-                  &lt;!&ndash;<div class="leaveboxcen">
-            <span align="left" v-text="item.value"
-                  :class="{'colorA6':!item.value}" @click="openPicker(item.term, item.sortnumtmp, item.fieldType, index)"></span>
-                  </div>&ndash;&gt;
-                </div>
-              </div>
-            </div>
-            <div class="mt10" v-if="(item.term == periodnum-1) && item.sortnumtmp == 1">
-              <mt-button type="primary"
-                         @click.native="addTime()">
-                <span> +添加新的加班时间段</span>
-              </mt-button>
-            </div>
-          </div>-->
 
-          <!--返回多个日期时间段时，默认只去最后一个-->
+          <!--日期区间 type为7-->
+          <!--返回多个日期时间段时，默认只取最后一个-->
           <div v-if="item.fieldType=='7' && perioduid == item.uid">
             <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
               <h4 align="left" class="fc1 pr">
@@ -124,14 +124,14 @@
               </h4>
               <div class="pl30">
                 <div class="leavebox">
-                  <div class="leaveboxlft icon-stars">开始时间</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">开始时间</div>
                   <div class="leaveboxcen">
               <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
                     :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index)"></span>
                   </div>
                 </div>
                 <div class="leavebox">
-                  <div class="leaveboxlft icon-stars">结束时间</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">结束时间</div>
                   <div class="leaveboxcen">
                 <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
                       :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index)"></span>
@@ -139,7 +139,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt10">
+            <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">
               <mt-button type="primary"
                          @click.native="addTime()">
                 <span> +添加时间 </span>
@@ -572,7 +572,13 @@
         tmpnumber: "1",
         outsideObj: [],
         showperson: false,  //是否显示选择审批人弹框
-        selectperData: ''
+        selectperData: '',
+        pagenum: 1,
+        totalpages: '',
+        currentval: '',
+        valuearray: [],
+        confItems: {},
+        confItemsval: {},
       };
     },
     created: function () {
@@ -669,6 +675,22 @@
                   uid: item.uid
                 });
                 this.fields.push(item);
+              }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
+                item.term = 0;
+                item.sortnumtmp = 0;
+                item.valuearray = [],item.valuearray2 = [];
+                item.valuearray.push(item.approvalFieldValues[0].value);
+                this.valuearray = item.valuearray;
+
+                this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
+                this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
+                this.fields.push(item);
+
+                // console.log(this.confItems);
+                // console.log(this.confItemsval);
+                // console.log(222);
+                // console.log(this.fields);
+
               }else{
                 item.term = 0;
                 item.sortnumtmp = 0;
@@ -691,9 +713,11 @@
           let data = response.body.result;
           this.approvalTypeObj = data;
           // this.applyData.applicant = data.UID;   //申请人uid
-          this.applyData.category = data.WAY;
+          this.applyData.category = data.WAY;   // 审批人类型,1或者2
           if(data.WAY == '1'){
             this.applyData.currentApprover = data.UID;
+          }else if(data.WAY == '2'){
+            this.applyData.email = data.NAME;
           }
 
         }, response => {
@@ -705,6 +729,7 @@
         this.$http.get('/api/v1.0/common/config/'+configType).then(response => {
           let data = response.body.result;
           this.outsideObj = data;
+          console.log(this.outsideObj);
         }, response => {
           //console.log('error callback');
         });
@@ -727,7 +752,7 @@
         if (this.fieldTypecurr === '7') {
           this.applyWorkRef[this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.fields[this.pos].value =  moment(data).format(df);
+          this.fields[this.posIndex].value =  moment(data).format(df);
           this.tmpnumber = 2;
         }
       },
@@ -736,7 +761,7 @@
         if (this.fieldTypecurr === '7') {
           this.applyWorkRef[this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.fields[this.pos].value =  moment(data).format(df);
+          this.fields[this.posIndex].value =  moment(data).format(df);
           this.tmpnumber = 2;
         }
       },
@@ -762,6 +787,7 @@
       // 日历样式
       openPicker(type, pos, fieldType, index) {
         this.pos = pos;
+        this.posIndex = index;
         this.fieldTypecurr = fieldType;
         if(fieldType == '6'){
             console.log(1234);
@@ -797,20 +823,65 @@
         // this.showMsg("数据出错", 1);
         // return false;
 
-        Indicator.open('正在提交申请...');
+        // console.log(this.applyWorkRef);
+        // return false;
+
+        // Indicator.open('正在提交申请...');
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
           let item = this.fields[i];
-          if(item.fieldType != "7"){
+
+          //验证数据
+          if(item.fieldType == "0"){ //单行文本
+            console.log(item.value);
+
+            if(item.value == '' || item.value ==undefined){
+              this.showMsg("请填写单行文本",-1);
+              return false;
+            }
+          }else if(item.fieldType == "1"){ //多行文本
+            console.log(item.value);
+            if(item.value == '' || item.value ==undefined){
+              this.showMsg("请填写多行文本",-1);
+              return false;
+            }
+          }
+
+
+          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType")){
             approvalValues.push({
               approvalFieldUid : item.uid,
               value : item.value,
               term : item.term,
               sortnum : item.sortnumtmp
             });
+          }else{
+            if(item.fieldType == "3" || (item.fieldType == "5" && item.code != "outType")){  //单选框
+              approvalValues.push({
+                approvalFieldUid : item.uid,
+                value : this.confItemsval[item.uid],
+                term : 0,
+                sortnum : 0
+              });
+            }else if(item.fieldType == "4"){  //多选框
+              for(let j = 0; j < this.confItemsval[item.uid].length; j++){
+                approvalValues.push({
+                  approvalFieldUid : item.uid,
+                  value : this.confItemsval[item.uid][j],
+                  term : 0,
+                  sortnum : j
+                });
+              }
+            }
           }
+
+
+
+
+
         }
 
+        //处理item.fieldType="7"日期时间段的数据
         let periodarr = [];
         for(let i = 0; i < this.applyWorkRef.length; i++){
           let item = this.applyWorkRef[i];
@@ -829,7 +900,13 @@
             });
           }
         }
+        console.log(approvalValues);
         this.applyData.approvalValues = approvalValues.concat(periodarr);
+
+        console.log(this.applyData);
+        console.log(33333);
+
+        return false;
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
@@ -839,7 +916,7 @@
             this.alertMessage = response.body.message;
           } else {
             this.alertSuccessImage = false;
-            this.alertMessage = response.body.message
+            this.alertMessage = response.body.message;
           }
         }, response => {
 //          console.log('error callback');
@@ -893,11 +970,15 @@
         });*/
       },
       qingjiaclick(value, index){
+        console.log("我是请假类型");
+        console.log(value);
+
         this.applyData.leaveUid = value.LEAVE_INFO_UID;
         this.fields[index].value = value.NAME;
         this.selectHoliday = value;
       },
       waichuclick(value, index){
+        console.log(value);
         this.fields[index].value = value.name;
         this.selectHoliday = value;
       },
@@ -952,43 +1033,69 @@
         if(val == -1){
           val = '';
         }
+        if(this.currentval != val){
+          this.searchApplyRecord = [];
+          this.currentval = val;
+          this.pagenum = 1;
+        }
+
         this.$http.post('/api/v1.0/client/queryOwnApplys', {
           status: val,
-          pageSize: 5,
-          pageNumber: 1
-        }).then(response => { //查询请假接口
+          pageSize: 20,
+          pageNumber: this.pagenum
+        }).then(response => { //查询申请接口
           if (response.body.code === 200) {
             let data = response.body.result.list;
+            this.totalpages = response.body.result.pages;
             for(let i = 0; i < data.length; i++){
               let item = data[i];
               for(let j = 0; j < item.approvalFields.length; j++){
                 let list = item.approvalFields[j];
                 if(list.fieldType == '7'){
                   let timearr = [];
-                  let number = Math.floor(list.approvalValues.length/2);
-                  if(parseInt(list.approvalValues[0].term) > 0){
-                    number = parseInt(list.approvalValues[0].term) + number;
-                  }
-                  for(let m = 0; m < number; m++){
-                    let timeobj = {
-                      startTime: '',
-                      endTime: ''
-                    };
-                    for(let n = 0; n < list.approvalValues.length; n++){
-                      let detail = list.approvalValues[n];
-                      if(detail.term == m && detail.sortnum == 0){
-                        timeobj.startTime = detail.value;
-                      }else if(detail.term == m && detail.sortnum == 1){
-                        timeobj.endTime = detail.value;
-                        timearr.push(timeobj);
+                  if(list.approvalValues.length > 0){
+                    let number = Math.floor(list.approvalValues.length/2);
+                    if(parseInt(list.approvalValues[0].term) > 0){
+                      number = parseInt(list.approvalValues[0].term) + number;
+                    }
+                    for(let m = 0; m < number; m++){
+                      let timeobj = {
+                        startTime: '',
+                        endTime: ''
+                      };
+                      for(let n = 0; n < list.approvalValues.length; n++){
+                        let detail = list.approvalValues[n];
+                        if(detail.term == m && detail.sortnum == 0){
+                          timeobj.startTime = detail.value;
+                        }else if(detail.term == m && detail.sortnum == 1){
+                          timeobj.endTime = detail.value;
+                          timearr.push(timeobj);
+                        }
                       }
                     }
+                    list.periodarr = timearr;
                   }
-                  list.periodarr = timearr;
                 }
               }
             }
-            this.searchApplyRecord = data;
+            // this.searchApplyRecord = data;
+            this.searchApplyRecord = this.searchApplyRecord.concat(data);
+
+            let that = this;
+            window.onscroll = function() {
+              if(that.getScrollTop() + that.getClientHeight() >= that.getScrollHeight()) {
+                // console.log('下拉刷新了');
+                // console.log("pagenum="+that.pagenum);
+                // console.log("totalpages="+that.totalpages);
+                that.pagenum++;
+                if(that.pagenum > that.totalpages){
+                  return false;
+                }else{
+                  that.changeShow(val);
+                }
+              }
+            }
+
 
           }
         }, response => {
@@ -1034,7 +1141,32 @@
         setTimeout(() => {
           that.leaveSuccess = false;
         },1500);
-      }
+      },
+      //获取滚动条当前的位置
+      getScrollTop(){
+        var scrollTop = 0;
+        if(document.documentElement && document.documentElement.scrollTop) {
+          scrollTop = document.documentElement.scrollTop;
+        } else if(document.body) {
+          scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+      },
+      //获取当前可视范围的高度
+      getClientHeight(){
+        var clientHeight = 0;
+        if(document.body.clientHeight && document.documentElement.clientHeight) {
+          clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+        } else {
+          clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+        }
+        return clientHeight;
+      },
+      //获取文档完整的高度
+      getScrollHeight(){
+        return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      },
+
     },
     components: {},
   }
@@ -1395,6 +1527,8 @@
         padding: 10px 0;
       }
     }
+    border-bottom: 1px solid #d2dce6;
+    padding: 0 0 10px 0;
   }
   .leaveboxImg{
     border: none;
@@ -1427,5 +1561,9 @@
     .fc1{
       font-size: 14px;
     }
+  }
+  .checkblock{
+    display: block;
+    margin: 5px 0 10px 0 !important;
   }
 </style>
