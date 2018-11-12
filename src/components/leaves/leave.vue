@@ -116,7 +116,7 @@
           <div v-if="item.fieldType=='7' && perioduid == item.uid">
             <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
               <h4 align="left" class="fc1 pr">
-                <span v-text="'第'+overtimeNum(applyIndex)+'段加班申请'"></span>
+                <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
                 <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
               </h4>
               <div class="pl30">
@@ -715,7 +715,6 @@
       this.$http.get('/api/v1.0/client/queryApprovalType').then(response => {
         if (response.body.code === 200) {
           this.applyTypeArray = response.body.result;
-          console.log(this.applyTypeArray);
           this.selectedDataApply = parseInt(this.getCookie('leaveType'));
           this.shengqingclick();
           // this.selectedDataApply = 3;
@@ -816,11 +815,6 @@
                 this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
                 this.fields.push(item);
 
-                // console.log(this.confItems);
-                // console.log(this.confItemsval);
-                // console.log(222);
-                // console.log(this.fields);
-
               }else{
                 item.term = 0;
                 item.sortnumtmp = 0;
@@ -828,9 +822,6 @@
               }
             }
             this.periodnum = periodnum;
-            // console.log(this.fields);
-            // console.log(this.applyWorkRef);
-            // console.log(55555);
 
           }
         }, response => {
@@ -841,19 +832,22 @@
       approvalperson(configType){
         this.$http.get('/api/v1.0/client/findReporter/'+configType).then(response => {
           let data = response.body.result;
-          this.approvalTypeObj = data;
-          // this.applyData.applicant = data.UID;   //申请人uid
-
-
-          if(configType == 0){//自动流程
-            this.applyData.category = data.WAY;   // 审批人类型,1或者2
-            if(data.WAY == '1'){
-              this.applyData.currentApprover = data.UID;
-            }else if(data.WAY == '2'){
-              this.applyData.email = data.NAME;
+          if(response.body.result != null){
+            this.approvalTypeObj = data;
+            if(configType == 0){//自动流程
+              this.applyData.category = data.WAY;   // 审批人类型,1或者2
+              if(data.WAY == '1'){
+                this.applyData.currentApprover = data.UID;
+              }else if(data.WAY == '2'){
+                this.applyData.email = data.NAME;
+              }
+            }else if(configType == 1){//自由
+              this.applyData.category = '1';
+              this.applyData.email = '';
             }
-          }else if(configType == 1){//自由
-            this.applyData.category = '1';
+          }else{
+            this.applyData.currentApprover = '';
+            this.applyData.category = '';
             this.applyData.email = '';
           }
 
@@ -866,7 +860,6 @@
         this.$http.get('/api/v1.0/common/config/'+configType).then(response => {
           let data = response.body.result;
           this.outsideObj = data;
-          console.log(this.outsideObj);
         }, response => {
           //console.log('error callback');
         });
@@ -927,7 +920,6 @@
         this.posIndex = index;
         this.fieldTypecurr = fieldType;
         if(fieldType == '6'){
-            console.log(1234);
             let displaytime = this.fields[index].value;
             this.startTimeValue1 = displaytime ? displaytime : new Date();
             this.$refs.picker0.open();
@@ -956,12 +948,7 @@
       },
       //提交申请
       handerDataSubmit(){
-
         // this.showMsg("数据出错", 1);
-        // return false;
-
-        // console.log(this.applyWorkRef);
-        // return false;
 
         Indicator.open('正在提交申请...');
         let approvalValues = [];
@@ -1044,13 +1031,7 @@
             });
           }
         }
-        console.log(approvalValues);
         this.applyData.approvalValues = approvalValues.concat(periodarr);
-
-        console.log(this.applyData);
-        console.log(33333);
-
-        // return false;
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
@@ -1114,15 +1095,11 @@
         });*/
       },
       qingjiaclick(value, index){
-        console.log("我是请假类型");
-        console.log(value);
-
         this.applyData.leaveUid = value.LEAVE_INFO_UID;
         this.fields[index].value = value.NAME;
         this.selectHoliday = value;
       },
       waichuclick(value, index){
-        console.log(value);
         this.fields[index].value = value.name;
         this.selectHoliday = value;
       },
@@ -1222,11 +1199,7 @@
                 }
               }
             }
-            // this.searchApplyRecord = data;
             this.searchApplyRecord = this.searchApplyRecord.concat(data);
-            console.log(12345);
-
-            console.log(this.searchApplyRecord);
 
             let that = this;
             window.onscroll = function() {
@@ -1314,7 +1287,7 @@
         return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
       },
       gotodetail(uid){
-        this.$router.push({path: '/attendanceEdit', query: {uid: uid} });
+        this.$router.push({path: '/attendanceEdit', query: {uid: uid, frompage: '1'} });
       }
 
     },

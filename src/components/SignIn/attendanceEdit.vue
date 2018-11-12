@@ -42,18 +42,22 @@
     ></full-calendar>
 
     <div class="abnormalattend">
+      <p v-if="currentStatus == '2'">原始数据</p>
       <p>异常考勤日期：{{daycurrent}}<span v-if="duration">（{{duration.dateStatus}}）</span></p>
       <p>异常考勤状态：<span v-if="duration">{{duration.durationstatus}}</span></p>
     </div>
     <div class="reviseapply">
-      <div class="revisetop">
+      <div class="revisetop" v-if="currentStatus != '2'">
         修订申请<span class="editapply" @click="editapply()">修改申请</span>
+      </div>
+      <div class="revisetop" v-if="currentStatus == '2'">
+        修订数据
       </div>
       <div class="revisecont">
         <div class="revisecontone" v-show="showRevise">
           <!--显示考勤数据申请记录，有多个数据-->
-          <div class="leavecontInfo" v-if="searchApplyRecord.length > 0" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px solid red;margin-bottom: 15px;padding-bottom: 10px;">
-              第{{index}}个申请记录
+          <div class="leavecontInfo" v-if="searchApplyRecord.length > 0" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 10px;">
+              <!--第{{index}}个申请记录-->
               <div class="marginTop10" v-for="list in detail.approvalFields">
                 <div v-if="list.fieldType != '7'">
                   <h3>{{list.fieldName}}：</h3>
@@ -68,40 +72,55 @@
           </div>
           <div v-if="searchApplyRecord.length == 0" style="padding: 100px;text-align: center;font-size: 12px;">当前无考勤修订申请</div>
 
+          <div class="attendbutton" v-if="currentStatus == '2'">
+            <mt-button slot="reference" type="default" class="btnagree" @click="isPass(approveAllData, 2)">
+              <span>拒绝并退回修改</span>
+            </mt-button>
+            <mt-button slot="reference" type="primary" class="btnrefuse" @click="isPass(approveAllData, 1)">
+              <span>通过</span>
+            </mt-button>
+          </div>
+
           <!--选择下一级审批人-->
-          <div>
-            <el-popover
-              placement="top-start"
-              width="400"
-              trigger="click" class="popoverPerson">
-              <div class="approveperson">
-                <div class="persontit">请选择下一级审批人</div>
-                <div class="personcont">
-                  <el-table :data="tableData" align="center" class="persontable" style="width: 100%">
-                    <el-table-column prop="name" label="姓名"></el-table-column>
-                    <el-table-column prop="mobile" label="手机号" width="150"></el-table-column>
-                    <el-table-column prop="department" label="部门"></el-table-column>
-                    <el-table-column prop="job" label="职位"></el-table-column>
-                  </el-table>
-                </div>
-              </div>
-              <mt-button slot="reference" type="primary" class="btnattend" @click="saverevise()">
+          <div v-if="currentStatus == '1'">
+            <div v-if="(typeof approvalTypeObjtwo === 'object') && approvalTypeObjtwo.length == undefined">
+              <mt-button slot="reference" type="primary" class="btnattend" @click="savereviseone()">
                 <span>提交全部考勤修订内容</span>
               </mt-button>
-            </el-popover>
+            </div>
+            <div v-if="(typeof approvalTypeObjtwo === 'object') && approvalTypeObjtwo.length > 0">
+              <el-popover
+                placement="top-start"
+                width="400"
+                trigger="click" class="popoverPerson" v-model="showpersontwo">
+                <div class="approveperson">
+                  <div class="persontit">请选择下一级审批人</div>
+                  <div class="personcont">
+                    <el-table :data="approvalTypeObjtwo" @row-click="saverevisetwo" align="center" class="persontable" style="width: 100%">
+                      <el-table-column prop="NAME" label="姓名"></el-table-column>
+                      <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                      <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                    </el-table>
+                  </div>
+                </div>
+                <mt-button slot="reference" type="primary" class="btnattend" @click="savereviseone()">
+                  <span>提交全部考勤修订内容</span>
+                </mt-button>
+              </el-popover>
+            </div>
           </div>
         </div>
 
         <!--修改申请表单内容，有多个数据-->
         <div class="reviseconttwo" v-show="!showRevise">
-          <div class="leave-main-box" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px solid red;margin-bottom: 15px;padding-bottom: 10px;">
+          <div class="leave-main-box" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 20px;">
 
-            这是第{{index}}个申请表单
+            <!--这是第{{index}}个申请表单-->
             <div class="leavebox">
               <div class="leaveboxlft icon-stars">考勤状态</div>
               <div class="leaveboxcen">
-                <select v-model="selectedDataApply" @change="shengqingclick(detail.approvalType, index)">
-                  <option v-for="option in applyTypeArray" :value="option.type" v-text="option.name"></option>
+                <select v-model="selectedDataApply[index]" @change="shengqingclick(detail.approvalType, index)">
+                  <option v-for="option in applyTypeArray" :value="option.type">{{option.name}}</option>
                 </select>
               </div>
             </div>
@@ -170,16 +189,14 @@
                   <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
                           @change="qingjiaclick(selectedDataHoliday, index)">
                     <option>{{item.fieldHint}}</option>
-                    <option v-for="option in holidayTypeArray" :value="option"
-                            v-text="option.NAME"></option>
+                    <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
                   </select>
                 </div>
                 <div class="leaveboxcen" v-if="item.code == 'outType'">
                   <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
                           @change="waichuclick(selectedDataHoliday, index)">
                     <option>{{item.fieldHint}}</option>
-                    <option v-for="option in outsideObj" :value="option"
-                            v-text="option.name"></option>
+                    <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
                   </select>
                 </div>
 
@@ -312,6 +329,64 @@
       </div>
     </div>
 
+    <!--是否有下一级审批-->
+    <div v-show="hasNextperson">
+      <div class="mint-msgbox-wrapper" style="position: absolute; z-index: 1001 !important;">
+        <div class="mint-msgbox" style="">
+          <div class="mint-msgbox-header">
+            <div class="mint-msgbox-title">提示</div>
+          </div>
+          <div class="mint-msgbox-content">
+            <div class="mint-msgbox-message">是否有下一级审批？</div>
+            <div class="mint-msgbox-input" style="display: none;">
+              <input placeholder="" type="text">
+              <div class="mint-msgbox-errormsg" style="visibility: hidden;"></div>
+            </div>
+          </div>
+          <div class="mint-msgbox-btns">
+            <!--<button class="mint-msgbox-btn mint-msgbox-cancel " >选择下一级审批人</button>-->
+            <div style="display: inline-block;width: 50%;" v-if="(typeof approvalTypeObjtwo === 'object') && approvalTypeObjtwo.length > 0">
+              <el-popover
+                placement="top-start"
+                width="400"
+                trigger="click" class="popoverPerson" v-model="showperson">
+                <div class="approveperson">
+                  <div class="persontit">请选择下一级审批人</div>
+                  <div class="personcont" v-if="approvalTypeObjtwo">
+                    <el-table :data="approvalTypeObjtwo" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
+                      <el-table-column prop="NAME" label="姓名"></el-table-column>
+                      <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                      <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                    </el-table>
+                  </div>
+                </div>
+                <button slot="reference" type="primary" class="mint-msgbox-btn mint-msgbox-cancel " style="width: 100%;">
+                  <span>选择下一级审批人</span>
+                </button>
+              </el-popover>
+            </div>
+            <button @click="noNextperson()" class="mint-msgbox-btn mint-msgbox-confirm ">无下一级审批</button>
+          </div>
+
+        </div>
+      </div>
+      <div class="v-modal" style="z-index: 1000 !important;"></div>
+    </div>
+
+    <!--成功提示弹框-->
+    <mt-popup
+      v-model="leaveSuccess"
+      class="image-Success"
+      :closeOnClickModal="false">
+      <div class="image-box">
+        <img :src="alertSuccessImage ? imgSrc.ico_success : imgSrc.ico_error"/>
+      </div>
+      <p v-text="alertMessage"></p>
+      <div @click="closeAlert" class="image-btn">
+        <span>我知道啦</span>
+      </div>
+    </mt-popup>
+
     <!--日期组件-->
     <mt-datetime-picker
       type="datetime"
@@ -414,6 +489,7 @@
         datePunchCardLogs: [],
         daycurrent: '',
         searchApplyRecord: [],
+        searchApplyRecordAll: {},
         attendReport: [],
         //申请表单数据
         applyData: {
@@ -481,6 +557,7 @@
         tmpnumber: "1",
         outsideObj: [],
         showperson: false,  //是否显示选择审批人弹框
+        showpersontwo: false,  //是否显示选择审批人弹框
         selectperData: '',
         pagenum: 1,
         totalpages: '',
@@ -490,7 +567,8 @@
         confItemsval: {},
         popImgSrc: '', // 查看的图片
         popupVisible: false, // 查看图片弹框
-        selectedDataApply: 0, //选择的申请类型
+        // selectedDataApply: 0, //选择的申请类型
+        selectedDataApply: ['0'], //选择的申请类型,多个申请类型
         applyTypeArray: [], //申请分类
         applyTypeArrayAll: {},
         selectedDataHoliday: '请选择假期类型', // 选择的假期类型
@@ -504,6 +582,7 @@
         changeApply: true, // 是否显示假期分类
         updateImage: true, //上传图片按钮是否隐藏
         approvalTypeObj: {}, // 审批人
+        approvalTypeObjtwo: {}, // 审批人
         startTimeValue: '', //开始时间value
         startTimeValue1: new Date(),  //初始化日历插件
         endTimeValue: '',  //结束时间value
@@ -553,8 +632,11 @@
         record: [],
         uid: '',
         approveAllData: {},
+        showperson: false,
+        configType: '', //审批人类型
         tmpdata: '',
-
+        currentStatus: '',
+        hasNextperson: false, //是否有下一级审批人
       }
     },
     created: function () {
@@ -578,6 +660,8 @@
       getDetail() {
         // let uid = 'a54c99be935b441788159dd99f7d6a98';
         let uid = this.$route.query.uid;
+        let frompage = this.$route.query.frompage;
+        this.currentStatus = frompage;
         this.$http.get('/api/v1.0/client/queryApplyDetail/'+uid).then(response => { //点击查看当天考勤
           if (response.body.code === 200) {
             let data = response.body.result;
@@ -591,8 +675,11 @@
             this.$http.get('/api/v1.0/client/queryApprovalForm/'+response.body.result.approvalType).then(response => {
               if (response.body.code === 200) {
                 this.fieldsdata = response.body.result;
+                let approvalType = response.body.result.approvalType;
                 let configType = response.body.result.configType;
-                this.approvalperson(configType);
+                // configType = 1;
+                this.configType = configType; //审批人类型
+                this.approvalperson(configType,approvalType);
               }
             }, response => {
             });
@@ -612,7 +699,24 @@
       saverevisetmp(){
         this.showRevise = true;
       },
-      saverevise () {
+      savereviseone () {
+        // 提交this.configType
+        if(this.configType == 1){
+          this.showpersontwo = true;
+        }else{
+          this.showpersontwo = false;
+          this.saverevisethree();
+        }
+      },
+      saverevisetwo(row, event, column){
+        this.approveAllData.category = '1';
+        this.approveAllData.currentApprover = row.UID;
+        this.approveAllData.email = '';
+        this.showpersontwo = false;
+        this.saverevisethree(); //提交
+      },
+      saverevisethree () {
+
         //处理申请表单的数据
         // this.applys = data;
         var applys2=[
@@ -638,12 +742,18 @@
             ]
           }];
 
+        // this.record = this.searchApplyRecord;
+        // let record = this.searchApplyRecord;
 
-        // this.searchApplyRecord  所有数据
-        this.record = this.searchApplyRecord;
-        let record = this.searchApplyRecord;
-        console.log("需要保存的数据");
-        console.log(record);
+        let arrdata = [];
+        var obj = this.searchApplyRecordAll;
+        for(let key in obj) {
+          arrdata = arrdata.concat(obj[key]);
+        }
+        this.record = arrdata;
+        let record = arrdata;
+        console.log(111111111111);
+        console.log(this.record);
 
         let applys = [];
         let approvalValues = [];
@@ -671,8 +781,10 @@
             }else{
               // list.fieldType == "3" || (list.fieldType == "5" && list.code != "outType"
               if(list.fieldType == "3" || list.fieldType == "5"){  //单选框
-                if(list.fieldType == "5"){
-                  console.log(this.confItemsval[list.uid]);
+                if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
+                  // console.log(111111);
+                  // console.log(this.confItemsval[list.uid][0]);
+
                   approvalValues.push({
                     approvalFieldUid : list.uid,
                     value : this.confItemsval[list.uid][0],
@@ -680,6 +792,8 @@
                     sortnum : 0
                   });
                 }else{
+                  // console.log(222222);
+                  // console.log(this.confItemsval[list.uid] || this.confItemsval[list.uid][0]);
                   approvalValues.push({
                     approvalFieldUid : list.uid,
                     value : this.confItemsval[list.uid] || this.confItemsval[list.uid][0],
@@ -732,26 +846,15 @@
               }
 
             }
-
           }
-
-
-
-
-          console.log(888888);
-          console.log(approvalValues);
-
           applys.push({
             uid:item.uid,                // 里面小的提交的考勤的审批id
             approvalTypeUid:item.approvalTypeUid,   // 申请类型Uid
             approvalConfigUid:item.approvalConfigUid, // 具体流程的uid
-            leaveUid:"",          // 假期uid
+            leaveUid:item.leaveUid,          // 假期uid
             approvalValues: approvalValues
           });
         }
-        console.log(55555);
-        console.log(applys);
-
 
         let applysAllparams = {
           uid: this.approveAllData.uid,                // 异常考勤的审批uid
@@ -762,25 +865,22 @@
           attendPeroid: this.approveAllData.attendPeroid,
           applys:applys
         };
+        // console.log("提交考勤异常申请数据————————");
         console.log(applysAllparams);
-
-        // approveAllData
-
+        console.log(this.dateApplys);
         // return false;
+
         this.$http.post('/api/v1.0/client/abnormalApply', applysAllparams).then(response => { //提交请假申请
-
-          console.log("提交成功");
-
           // Indicator.close();//申请提交成功
-          // this.codeSuccess = response.body.code;
-          // this.leaveSuccess = true;
-          // if (response.body.code === 200) {
-          //   this.alertSuccessImage = true;
-          //   this.alertMessage = response.body.message;
-          // } else {
-          //   this.alertSuccessImage = false;
-          //   this.alertMessage = response.body.message;
-          // }
+          this.codeSuccess = response.body.code;
+          this.leaveSuccess = true;
+          if (response.body.code === 200) {
+            this.alertSuccessImage = true;
+            this.alertMessage = response.body.message;
+          } else {
+            this.alertSuccessImage = false;
+            this.alertMessage = response.body.message;
+          }
         }, response => {
 //          console.log('error callback');
         });
@@ -818,11 +918,20 @@
           this.duration.durationstatus = durationstatus;
         }
 
+        this.selectedDataApply = [];
+
         //显示当日申请记录，可能有多个申请
         let dateApplys = this.dateApplys[newday];
         if(dateApplys && dateApplys.length > 0){
           for(let i = 0; i < dateApplys.length; i++){
             let applyItem = dateApplys[i];
+
+            if(dateApplys.length > 0){
+              this.selectedDataApply.push(applyItem.approvalType);
+            }else{
+              this.selectedDataApply['0'];
+            }
+
             for(let j = 0; j < dateApplys[i].approvalFields.length; j++){
               let list = dateApplys[i].approvalFields[j];
               if(list.fieldType == '7'){
@@ -1077,8 +1186,11 @@
           }
           this.searchApplyRecord = dateApplys;
         }
-        console.log(333333);
-        console.log(this.searchApplyRecord);
+        // this.searchApplyRecordAll.push(this.searchApplyRecord);
+        if(dateApplys!=undefined){
+          this.$set(this.searchApplyRecordAll, newday.toString(), dateApplys);
+        }
+        // console.log(this.searchApplyRecordAll);
 
         // this.shengqingclick(approvalType);
 
@@ -1116,8 +1228,6 @@
           }
           this.searchApplyRecord = dateApplys[0];
         }*/
-        console.log(12345678);
-        console.log(this.searchApplyRecord);
 
         // this.shengqingclick(approvalType);
 
@@ -1266,9 +1376,10 @@
         this.$http.get('/api/v1.0/client/queryApprovalType').then(response => {
           if (response.body.code === 200) {
             this.applyTypeArray = response.body.result;
-            console.log(this.applyTypeArray);
-            this.selectedDataApply = parseInt(this.getCookie('leaveType'));
-            // this.shengqingclick();
+            // this.selectedDataApply = parseInt(this.getCookie('leaveType'));
+
+            this.selectedDatafirst = parseInt(this.getCookie('leaveType'));
+            this.shengqingclick('0', -1);
           }
         }, response => {
           console.log('error callback');
@@ -1293,31 +1404,43 @@
         this.selectperData = row.NAME;
         this.showperson = false;
       },
+      // 选择审批人
+      selectpersontwo(row, event, column){
+        // this.selectperData = row.NAME;
+
+        this.approveAllData.category = '1';
+        this.approveAllData.currentApprover = row.UID;
+        this.approveAllData.email = '';
+
+        this.showpersontwo = false;
+      },
       //根据审批类型返回的审批表单
       // approvalType, isEdit
       shengqingclick(approvalType, index){
         this.posIndex = index;  //当前是第几个申请记录
-
         // this.selectedDataApply = approvalType;  //申请分类类型
         let state = false;
         for (let i = 0; i < this.applyTypeArray.length; i++) {
-          if (this.selectedDataApply === this.applyTypeArray[i].type) {
+          if (this.selectedDataApply[index] === this.applyTypeArray[i].type) {
             this.applyData.approvalTypeUid = this.applyTypeArray[i].uid;   //申请分类类型的uid
             state = true;
           }
         }
         if (!state) {
-          this.selectedDataApply = this.applyTypeArray[0].type;
+          this.selectedDataApply[index] = this.applyTypeArray[0].type;
           this.applyData.approvalTypeUid = this.applyTypeArray[0].uid;
         }
 
+        if(index == -1){
+          index = 0;
+        }
+
         // this.selectedDataApply = approvalType;
-        this.$http.get('/api/v1.0/client/queryApprovalForm/'+this.selectedDataApply).then(response => {
+        this.$http.get('/api/v1.0/client/queryApprovalForm/'+this.selectedDataApply[index]).then(response => {
           if (response.body.code === 200) {
-            console.log("queryApprovalForm/的值是："+this.selectedDataApply);
             this.fieldsdata = response.body.result;
             let configType = response.body.result.configType;
-            this.approvalperson(configType);
+            this.approvalperson(configType, this.selectedDataApply[index]);
             this.applyData.approvalConfigUid = response.body.result.uid;  //具体流程的uid
 
             //处理提交的表单数据格式
@@ -1327,7 +1450,7 @@
             this.applyWorkRef = [];
             for( let i = 0; i < this.fieldsdata.fields.length; i++){
               let item = this.fieldsdata.fields[i];
-              if(this.selectedDataApply=='2' && item.defaultType == '43'){
+              if(this.selectedDataApply[index]=='2' && item.defaultType == '43'){
                 this.approvaloutside(item.defaultType);
               }
               if(item.fieldType == '7'){
@@ -1344,8 +1467,6 @@
                   uid: item.uid
                 }];
                 this.$set(this.applyWorkRefAll, item.uid.toString(), timearr);
-                console.log(5555555555);
-                console.log(this.applyWorkRefAll);
                 this.fields.push(item);
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
                 item.term = 0;
@@ -1365,12 +1486,8 @@
               }
             }
             this.periodnum = periodnum;
-            console.log(this.fields);
-
             this.fieldsdata.approvalFields= this.fields;
             this.searchApplyRecord[index] = this.fieldsdata;
-            console.log("————————————————————————");
-            console.log(this.searchApplyRecord);
 
           }
         }, response => {
@@ -1378,21 +1495,30 @@
         });
       },
       //获取审批人列表
-      approvalperson(configType){
+      approvalperson(configType, approvalType){
         this.$http.get('/api/v1.0/client/findReporter/'+configType).then(response => {
           let data = response.body.result;
-          this.approvalTypeObj = data;
-          // this.applyData.applicant = data.UID;   //申请人uid
-          this.applyData.category = data.WAY;   // 审批人类型,1或者2
-          this.approveAllData.category = data.WAY;
-          if(data.WAY == '1'){
-            this.applyData.currentApprover = data.UID;
-            this.approveAllData.currentApprover = data.UID;
-            this.approveAllData.email = '';
-          }else if(data.WAY == '2'){
-            this.applyData.email = data.NAME;
-            this.approveAllData.currentApprover = '';
-            this.approveAllData.email = data.UID;
+          if(configType == '0'){
+            this.approvalTypeObj = data;
+            // this.applyData.applicant = data.UID;   //申请人uid
+            this.applyData.category = data.WAY;   // 审批人类型,1或者2
+            this.approveAllData.category = data.WAY;
+            if(data.WAY == '1'){
+              this.applyData.currentApprover = data.UID;
+              this.approveAllData.currentApprover = data.UID;
+              this.approveAllData.email = '';
+            }else if(data.WAY == '2'){
+              this.applyData.email = data.NAME;
+              this.approveAllData.currentApprover = '';
+              this.approveAllData.email = data.UID;
+            }
+          }else if(configType == '1'){
+            if(approvalType == '-1'){
+              this.approveAllData.category = 1;
+              this.approvalTypeObjtwo = data;
+            }else{
+              this.approvalTypeObj = data;
+            }
           }
 
         }, response => {
@@ -1404,8 +1530,6 @@
         this.$http.get('/api/v1.0/common/config/'+configType).then(response => {
           let data = response.body.result;
           this.outsideObj = data;
-          console.log(this.outsideObj);
-          console.log(1111111111111111111);
         }, response => {
           //console.log('error callback');
         });
@@ -1425,8 +1549,6 @@
       },
       // 开始时间格式化
       handleConfirmStart(data){
-        console.log("开始时间格式化");
-
         if (this.fieldTypecurr === '7') {
           // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
           this.applyWorkRefAll[this.uid][this.pos].startTime = moment(data).format(df);
@@ -1437,8 +1559,6 @@
       },
       // 结束时间格式化
       handleConfirmEnd(data){
-        console.log("结束时间格式化");
-
         if (this.fieldTypecurr === '7') {
           // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
           this.applyWorkRefAll[this.uid][this.pos].endTime = moment(data).format(df);
@@ -1454,7 +1574,6 @@
         this.posIndex = index;
         this.fieldTypecurr = fieldType;
         if(fieldType == '6'){
-          console.log(1234);
           let displaytime = this.fields[index].value;
           this.startTimeValue1 = displaytime ? displaytime : new Date();
           this.$refs.picker0.open();
@@ -1483,13 +1602,6 @@
       },
       //提交申请
       handerDataSubmit(){
-
-        // this.showMsg("数据出错", 1);
-        // return false;
-
-        // console.log(this.applyWorkRef);
-        // return false;
-
         Indicator.open('正在提交申请...');
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
@@ -1568,13 +1680,7 @@
             });
           }
         }
-        console.log(approvalValues);
         this.applyData.approvalValues = approvalValues.concat(periodarr);
-
-        console.log(this.applyData);
-        console.log(33333);
-
-        return false;
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
@@ -1592,15 +1698,14 @@
 
       },
       qingjiaclick(value, index){
-        console.log("我是请假类型");
-        console.log(value);
+        // this.applyData.leaveUid = value.LEAVE_INFO_UID;
+        // this.fields[index].value = value.NAME;
 
-        this.applyData.leaveUid = value.LEAVE_INFO_UID;
-        this.fields[index].value = value.NAME;
+        this.searchApplyRecord[index].leaveUid = value.LEAVE_INFO_UID;
+
         this.selectHoliday = value;
       },
       waichuclick(value, index){
-        console.log(value);
         this.fields[index].value = value.name;
         this.selectHoliday = value;
       },
@@ -1649,6 +1754,98 @@
           this.passportUrlErrFlag = true;
         }
         return isImage && isInSize;
+      },
+      //通过或拒绝
+      isPass(item, type){
+        // MessageBox('提示', '操作成功');
+        // return false;
+
+        let url, text;
+        if (type === 1) {//通过
+          url = '/api/v1.0/client/agree';
+          text = '是否同意当前审批？';
+        } else if (type = 2) {//拒绝
+          url = '/api/v1.0/client/refuse/' + item.uid;
+          text = '是否拒绝当前审批？';
+        }
+        MessageBox.confirm(text, '提示').then(action => {
+
+          console.log("同意审批");
+
+          // Indicator.open('正在处理中...');
+          let arr = [];
+          arr.push(item.uid);
+          if (type === 1) {//通过
+            if(this.configType == '1'){  //0 是自动,  1 是自由
+              // this.currentItem = item;
+              this.hasNextperson = true;
+              // this.approvalperson(item.configType);
+            }else if(this.configType == '0'){  //自动审批
+              let params = {
+                // applyUid: item.uid,  //申请uid
+                applyUids: arr,  //申请uid
+                status: 1, //状态（0待审批，1同意，3拒绝）
+                nextApprover: "", //下一个审批人uid 自定义流程使用
+                flowWhy: item.why, //原因
+                // currentLoginUser: item.parentUid //当前登录人uid 用于判断是否是管理员审批
+              };
+              this.$http.post(url, params).then(response => { //提交请假申请
+                // Indicator.close();
+                if (response.body.code === 200) {
+                  MessageBox('提示', '操作成功');
+                  this.$router.push({path: '/approve' });
+                } else {
+                  MessageBox('提示', '操作失败');
+                }
+              }, response => {
+//                console.log('error callback');
+              });
+            }
+
+          } else if (type = 2) {//拒绝
+            this.$http.get(url).then(response => { //提交请假申请
+              // Indicator.close();
+              if (response.body.code === 200) {
+                MessageBox('提示', '操作成功');
+                this.$router.push({path: '/approve' });
+              } else {
+                MessageBox('提示', '操作失败');
+              }
+            }, response => {
+//          console.log('error callback');
+            });
+          }
+
+
+        });
+      },
+      // 选择审批人
+      selectperson(row, event, column){
+        this.selectperData = row.NAME;
+        this.hasNextperson = false;
+        this.showperson = false;
+
+        let arr = [];
+        arr.push(this.approveAllData.uid);
+        let params = {
+          applyUids: arr,  //申请uid
+          status: 0, //状态（0待审批，1同意，3拒绝）
+          nextApprover: row.UID, //下一个审批人uid 自定义流程使用
+          flowWhy: this.approveAllData.why, //原因
+        };
+        let url = '/api/v1.0/client/agree';
+        this.$http.post(url, params).then(response => { //提交请假申请
+          // Indicator.close();
+          if (response.body.code === 200) {
+            this.changeShow('0');
+            MessageBox('提示', '操作成功');
+          } else {
+            MessageBox('提示', '操作失败');
+          }
+        }, response => {
+//          console.log('error callback');
+        });
+
       },
     },
     components: {
@@ -2125,4 +2322,48 @@
     color:red !important;
   }
 
+  .image-Success {
+    box-sizing: border-box;
+    width: 250px;
+    padding: 15px;
+    border-radius: 4px;
+    .image-box {
+      margin: 0 auto;
+      width: 34px;
+      height: 34px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    p {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 20px;
+      color: #1f2d3d;
+    }
+    .image-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 0 10px;
+      height: 36px;
+      line-height: 36px;
+      background-color: #20a2ff;
+      color: #ffffff;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+  }
+  .attendbutton{
+    padding: 0 0 20px 0;
+    &:after{content:"";height: 0;display: block;clear:both;}
+    .btnagree{
+      width: 45%;
+      float: left;
+    }
+    .btnrefuse{
+      width: 45%;
+      float: right;
+    }
+  }
 </style>

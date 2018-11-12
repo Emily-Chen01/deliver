@@ -480,18 +480,18 @@
                   margin: 0 2px;
                 }
                 .normalStyle {
-                  background: rgb(32, 161, 255);
+                  /*background: rgb(32, 161, 255);*/
                 }
 
                 .abnormalStyle {
-                  background: rgb(255, 204, 0);
+                  /*background: rgb(255, 204, 0);*/
                 }
 
                 .leaveStyle {
-                  background: rgb(102, 204, 0);
+                  /*background: rgb(102, 204, 0);*/
                 }
                 .holidayStyle {
-                  background-color: #ff4949;
+                  /*background-color: #ff4949;*/
                 }
               }
             }

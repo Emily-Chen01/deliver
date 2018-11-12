@@ -13,86 +13,90 @@
       <div class="approve-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
         <div class="approve-main-content-top">
           <h3 class="approve-main-content-title">
-                <!--<span class="approve-main-content-title-left"-->
-                      <!--v-text="item.name+'申请'+(item.leaveName ? item.leaveName:'')"></span>-->
-            <!--<span class="approve-main-content-title-right"-->
-                  <!--v-text="applyState(item.status)"></span>-->
-            <span class="approve-main-content-title-left">审批申请（{{item.name}}）</span>
+            <span class="approve-main-content-title-left" v-if="item.approvalType != -1">审批申请（{{item.name}}）</span>
+            <span class="approve-main-content-title-left" v-if="item.approvalType == -1">审批申请（{{item.abnormalAttendApproval.attendReport.month}}月份{{item.name}}申请）</span>
             <span class="approve-main-content-title-right">{{applyState(item.status)}}</span>
           </h3>
         </div>
         <div class="approve-main-content-Info">
-          <!--<div>
-            <h3>申请人</h3>
-            <p v-text="item.applyer">测试</p>
-          </div>
-          <div class="marginTop10">
-            <h3>当前审批人</h3>
-            <p v-text="item.approvaler">测试测试</p>
-          </div>-->
 
-          <div>
+          <div v-if="item.approvalType != -1">
             <h3>申请人</h3>
-            <p>测试</p>
+            <p>{{item.staffName}}（{{item.jobNumber}}）</p>
           </div>
-          <div class="marginTop10">
+          <div class="marginTop10" v-if="item.approvalType != -1">
             <h3>当前审批人</h3>
             <p>测试测试</p>
           </div>
 
-          <div class="marginTop10" v-for="list in item.approvalFields">
-            <div v-if="list.fieldType != '7'">
-              <h3>{{list.fieldName}}：</h3>
-              <p v-for="detail in list.approvalValues">{{detail.value}}</p>
-            </div>
-            <!--日期时间段-->
-            <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
-              <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
-              <p>{{detail.startTime}}至{{detail.endTime}}</p>
+          <!--普通审批-->
+          <div class="leave-main-content-Info" v-if="item.approvalType != -1">
+            <div class="marginTop10" v-for="list in item.approvalFields">
+              <div v-if="list.fieldType != '7'">
+                <h3>{{list.fieldName}}：</h3>
+                <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+              </div>
+              <!--日期时间段-->
+              <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
+                <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+                <p>{{detail.startTime}}至{{detail.endTime}}</p>
+              </div>
             </div>
           </div>
 
+          <div class="approve-main-content-Info attendcont" v-if="item.approvalType == -1" style="padding: 0;">
+            <div class="attendtop">申请人：{{item.staffName}}({{item.jobNumber}})</div>
+            <div class="attendttit">原始数据</div>
+            <div class="attendDetail">
+              <p>本月异常考勤累计时间</p>
+              <p>
+                <span>迟到累计：{{item.abnormalAttendApproval.attendReport.belateTimes}}次（共{{item.abnormalAttendApproval.attendReport.belateTotal}}工时）</span>
+                <span>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</span>
+                <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</span>
+              </p>
+              <p>
+                <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+              </p>
+              <!--<p>-->
+                <!--<span class="spanlft">产假累计: 10天(共80工时)</span>-->
+              <!--</p>-->
+              <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
+              <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertime}}小时)</p>
+              <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertime}}小时)</p>
+              <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertime}}小时)</p>
+            </div>
 
-          <!--<div v-if="item.time&&item.time.length>0" class="marginTop10"
-               v-for="(overTime,overIndex) in item.time" :key="overIndex">
-            <h3 v-text="'第'+overtimeNum(overIndex)+'段时间起止时间'"></h3>
-            <p>
-              <span v-text="datefmt(overTime.startTime)"></span> 至 <span v-text="datefmt(overTime.endTime)"></span>
-            </p>
-          </div>
-          <div v-if="!(item.time&&item.time.length>0)" class="marginTop10">
-            <h3>起止日期</h3>
-            <p>
-              <span v-text="datefmt(item.startTime)"></span> 至 <span v-text="datefmt(item.endTime)"></span>
-            </p>
-          </div>
-          <div v-if="item.configType===3 && item.overworkTime" class="marginTop10">
-            <h3>加班时长</h3>
-            <p><span>平日加班：</span><span v-text="queryOverworkTime(item.workTime,0)+'小时'"></span></p>
-            <p><span>周末加班：</span><span v-text="queryOverworkTime(item.workTime,1)+'小时'"></span></p>
-            <p><span>节假日加班：</span><span v-text="queryOverworkTime(item.workTime,2)+'小时'"></span></p>
-          </div>
-          <div v-if="!(item.configType===3)" class="marginTop10">
-            <h3>申请时长</h3>
-            <p><span v-text="item.days ? item.days : '&#45;&#45;'"></span></p>
-          </div>
-          <div class="marginTop10">
-            <h3>事由</h3>
-            <p v-text="item.remarks "></p>
-          </div>
-          <div v-if="item.why" class="marginTop10">
-            <h3>拒绝原因</h3>
-            <p v-text="item.why"></p>
-          </div>
-          <div class="approve-main-content-append marginTop10" v-if="item.image">
-            <h3>附件内容：</h3>
-            <div class="approve-main-content-btnBox">
-              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="lookImages(item.image)">
-                <span>查看附件</span>
+            <div class="attendttit">修订后数据</div>
+            <div class="attendDetail">
+              <p>本月异常考勤累计时间</p>
+              <p>
+                <span>迟到累计：{{item.abnormalAttendApproval.newAttendReport.belateTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.belateTotal}}工时）</span>
+                <span>事假累计: 10天(共80工时)</span>
+              </p>
+              <p>
+                <span>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</span>
+                <span>病假累计: 10天(共80工时)</span>
+              </p>
+              <p>
+                <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</span>
+                <span class="spanlft">产假累计: 10天(共80工时)</span>
+              </p>
+              <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
+              <p>
+                <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+              </p>
+
+              <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}小时)</p>
+              <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}小时)</p>
+              <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}小时)</p>
+            </div>
+            <div class="btnlookdet" style="margin-bottom:10px;">
+              <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail(item.uid)">
+                <span>查看详情</span>
               </mt-button>
             </div>
           </div>
-        </div>-->
+
           <div class="approve-main-content-append approve-main-content-append1 marginTop10" v-if="item.status===0">
             <div class="approve-main-content-btnBox">
               <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass(item, 1)">
@@ -105,13 +109,14 @@
               </mt-button>
             </div>
           </div>
+
           <div class="approve-main-content-append approve-main-content-append1 plr15 fs13" v-if="item.status===3">
-            <p>
-              <span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511)        已通过</span>
+            <p v-for="list in item.applyFlows">
+              <span>{{datefmt(new Date(list.flowTime))}}</span><span>&nbsp;&nbsp;&nbsp;审批人:{{list.flowApproverName}}(CI11511)&nbsp;&nbsp;&nbsp;{{applyState(list.flowStatus)}}</span>
             </p>
-            <p>
-              <span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511)        已通过</span>
-            </p>
+            <!--<p>-->
+              <!--<span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511) {{applyState(item.status)}}</span>-->
+            <!--</p>-->
           </div>
 
         </div>
@@ -199,11 +204,89 @@
       </div>-->
 
       <div class="myApplyNo" v-if="searchApplyRecord.length===0">
-        <span @click="isPass(1,1)">没有数据</span>
+        <span>没有数据</span>
       </div>
 
       <!--新增加考勤异常申请-->
-      <div class="approve-main-content-wrapper attendance">
+      <div class="approve-main-content-wrapper attendance" style="display: none;">
+        <div class="approve-main-content-top">
+          <h3 class="approve-main-content-title">
+            <span class="approve-main-content-title-left">审批申请（8月份异常考勤申请）</span>
+            <span class="approve-main-content-title-right">审批中</span>
+          </h3>
+        </div>
+        <div class="approve-main-content-Info attendcont">
+          <div class="attendtop">申请人：张三(CI11570)</div>
+          <div class="attendttit">原始数据</div>
+          <div class="attendDetail">
+            <p>本月异常考勤累计时间</p>
+            <p>
+              <span>迟到累计：2次（共3工时）</span>
+              <span>事假累计: 10天(共80工时)</span>
+            </p>
+            <p>
+              <span>早退累计：2次（共3工时）</span>
+              <span>病假累计: 10天(共80工时)</span>
+            </p>
+            <p>
+              <span class="spanlft">旷工累计: 10天(共80工时)</span>
+              <span class="spanlft">产假累计: 10天(共80工时)</span>
+            </p>
+            <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
+            <p>工作日加班累计时长：0.5天(共4小时)</p>
+            <p>周末加班累计时长：0.5天(共4小时)</p>
+            <p>法定假日加班累计时长：0.5天(共4小时)</p>
+          </div>
+          <div class="attendttit">修订后数据</div>
+          <div class="attendDetail">
+            <p>本月异常考勤累计时间</p>
+            <p>
+              <span>迟到累计：2次（共3工时）</span>
+              <span>事假累计: 10天(共80工时)</span>
+            </p>
+            <p>
+              <span>早退累计：2次（共3工时）</span>
+              <span>病假累计: 10天(共80工时)</span>
+            </p>
+            <p>
+              <span class="spanlft">旷工累计: 10天(共80工时)</span>
+              <span class="spanlft">产假累计: 10天(共80工时)</span>
+            </p>
+            <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
+            <p>工作日加班累计时长：0.5天(共4小时)</p>
+            <p>周末加班累计时长：0.5天(共4小时)</p>
+            <p>法定假日加班累计时长：0.5天(共4小时)</p>
+          </div>
+          <div class="btnlookdet">
+            <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail()">
+              <span>查看详情</span>
+            </mt-button>
+          </div>
+
+        </div>
+        <div class="approve-main-content-append approve-main-content-append1 ">
+          <div class="approve-main-content-btnBox">
+            <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass('uid',1)">
+              <span>通过</span>
+            </mt-button>
+          </div>
+          <div class="approve-main-content-btnBox">
+            <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass('uid',2)">
+              <span>拒绝并修改</span>
+            </mt-button>
+          </div>
+        </div>
+        <div class="approve-main-content-append approve-main-content-append1 plr15 fs13">
+          <p>
+            <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
+          </p>
+          <p>
+            <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
+          </p>
+        </div>
+      </div>
+
+      <!--<div class="approve-main-content-wrapper attendance">
         <div class="approve-main-content-top">
           <h3 class="approve-main-content-title">
                 <span class="approve-main-content-title-left">审批申请（8月份异常考勤申请）</span>
@@ -279,7 +362,7 @@
             <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
           </p>
         </div>
-      </div>
+      </div>-->
 
     </div>
 
@@ -473,8 +556,8 @@
         });
       },
       //查看详情
-      gotodetail(){
-        this.$router.push({path: '/approveDetail'});
+      gotodetail(uid){
+        this.$router.push({path: '/attendanceEdit', query: {uid: uid, frompage: '2'} });
       },
       //审批状态
       applyState(state){
@@ -569,6 +652,13 @@
       datefmt(str) {
         if (str) return moment(str).format(df);
         else return '';
+      },
+      datetimestamp(str) {
+        if (str){
+          return moment(str).format(df);
+        }else {
+          return '';
+        }
       },
       //提交成功的弹框
       closeAlert(){
