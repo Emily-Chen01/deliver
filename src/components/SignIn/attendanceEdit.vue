@@ -223,10 +223,10 @@
               <!--返回多个日期时间段时，默认只取最后一个-->
                 <!--&& perioduid == item.uid-->
               <div v-if="item.fieldType=='7'">
-                <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex">
+                <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex" style="position: relative;">
                   <h4 align="left" class="fc1 pr">
-                    <span v-text="'第'+overtimeNum(applyIndex)+'段加班申请'"></span>
-                    <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
+                    <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
+                    <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid)">+</span>
                   </h4>
                   <div class="pl30">
                     <div class="leavebox">
@@ -247,7 +247,7 @@
                 </div>
                 <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">
                   <mt-button type="primary"
-                             @click.native="addTime()">
+                             @click.native="addTime(item.uid)">
                     <span> +添加时间 </span>
                     <!--<span v-if="item.code=='leaveTime'"> +添加事假时间</span>-->
                     <!--<span v-if="item.code=='outTime'"> +添加新的加班时间段</span>-->
@@ -315,7 +315,7 @@
 
           <div class="revisebtm">
             <div class="revisebtmlft">
-              <mt-button type="default" class="btncancel" @click="showRevise = true">
+              <mt-button type="default" class="btncancel" @click="btncancel()">
                 <span>取消</span>
               </mt-button>
             </div>
@@ -366,6 +366,30 @@
               </el-popover>
             </div>
             <button @click="noNextperson()" class="mint-msgbox-btn mint-msgbox-confirm ">无下一级审批</button>
+          </div>
+
+        </div>
+      </div>
+      <div class="v-modal" style="z-index: 1000 !important;"></div>
+    </div>
+
+    <!--是否保存-->
+    <div v-show="hasSave">
+      <div class="mint-msgbox-wrapper" style="position: absolute; z-index: 1001 !important;">
+        <div class="mint-msgbox" style="">
+          <div class="mint-msgbox-header">
+            <div class="mint-msgbox-title">提示</div>
+          </div>
+          <div class="mint-msgbox-content">
+            <div class="mint-msgbox-message">您当前修订的内容尚未保存，是否保存？</div>
+            <div class="mint-msgbox-input" style="display: none;">
+              <input placeholder="" type="text">
+              <div class="mint-msgbox-errormsg" style="visibility: hidden;"></div>
+            </div>
+          </div>
+          <div class="mint-msgbox-btns">
+            <button class="mint-msgbox-btn mint-msgbox-cancel" @click="savereviseNot()">不保存</button>
+            <button @click="saverevisetmp()" class="mint-msgbox-btn mint-msgbox-confirm ">保存修订内容</button>
           </div>
 
         </div>
@@ -433,6 +457,7 @@
 //    abnormal=异常   normal=正常   leave=请假   这个定的值是封装在日历里面定义好的颜色
     data(){
       return {
+        hasSave: false,
         checked: true,
         checked1: true,
         checked2: true,
@@ -637,6 +662,7 @@
         tmpdata: '',
         currentStatus: '',
         hasNextperson: false, //是否有下一级审批人
+        isSaveState: true
       }
     },
     created: function () {
@@ -695,9 +721,21 @@
       },
       editapply () {
         this.showRevise = false;
+        this.isSaveState = false;
+      },
+      btncancel(){
+        this.showRevise = true;
+        this.isSaveState = true; //不保存
       },
       saverevisetmp(){
+        this.isSaveState = true;  //判断是否保存
         this.showRevise = true;
+        this.hasSave = false;
+      },
+      savereviseNot(){
+        this.showRevise = true;
+        this.isSaveState = true; //不保存
+        this.hasSave = false;
       },
       savereviseone () {
         // 提交this.configType
@@ -895,6 +933,10 @@
         //再此处调用每一次日期的接口 进行传值
         //点击当天进行查询打卡状态开始
         //格式化时间开始
+
+        if(!this.isSaveState){
+          this.hasSave = true;
+        }
 
         let newday = moment(day).format(df3);
         this.daycurrent = newday;
@@ -1535,17 +1577,17 @@
         });
       },
       //添加加班时间段
-      addTime(){
-        this.applyWorkRef.push({
+      addTime(uid){
+        this.applyWorkRefAll[uid.toString()].push({
           startTime: '',
           endTime: '',
-          uid: this.perioduid
+          uid: uid
         });
 
       },
       //删除加班时间段
-      deleteTime(num){
-        this.applyWorkRef.splice(num, 1);
+      deleteTime(num, uid){
+        this.applyWorkRefAll[uid.toString()].splice(num, 1);
       },
       // 开始时间格式化
       handleConfirmStart(data){
@@ -2195,7 +2237,7 @@
       display: inline-block;
       position: absolute;
       right: 0;
-      top: 0;
+      top: 10px;
     }
     .leavebox {
       position: relative;
@@ -2300,6 +2342,7 @@
   }
   .leave-main-box .fc1{
     color: #457aa3;
+    padding-top: 10px;
   }
   .mint-button--normal {
     height: 33px;
