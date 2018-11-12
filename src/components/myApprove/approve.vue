@@ -95,12 +95,12 @@
         </div>-->
           <div class="approve-main-content-append approve-main-content-append1 marginTop10" v-if="item.status===0">
             <div class="approve-main-content-btnBox">
-              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass(item.uid,1)">
+              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass(item, 1)">
                 <span>通过</span>
               </mt-button>
             </div>
             <div class="approve-main-content-btnBox">
-              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass(item.uid,2)">
+              <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass(item, 2)">
                 <span>拒绝</span>
               </mt-button>
             </div>
@@ -199,7 +199,7 @@
       </div>-->
 
       <div class="myApplyNo" v-if="searchApplyRecord.length===0">
-        <span>没有数据</span>
+        <span @click="isPass(1,1)">没有数据</span>
       </div>
 
       <!--新增加考勤异常申请-->
@@ -281,10 +281,53 @@
         </div>
       </div>
 
-
-
-
     </div>
+
+
+    <!--是否有下一级审批-->
+    <div v-show="hasNextperson">
+      <div class="mint-msgbox-wrapper" style="position: absolute; z-index: 1001 !important;">
+        <div class="mint-msgbox" style="">
+          <div class="mint-msgbox-header">
+            <div class="mint-msgbox-title">提示</div>
+          </div>
+          <div class="mint-msgbox-content">
+            <div class="mint-msgbox-message">是否有下一级审批？</div>
+            <div class="mint-msgbox-input" style="display: none;">
+              <input placeholder="" type="text">
+              <div class="mint-msgbox-errormsg" style="visibility: hidden;"></div>
+            </div>
+          </div>
+          <div class="mint-msgbox-btns">
+            <!--<button class="mint-msgbox-btn mint-msgbox-cancel " >选择下一级审批人</button>-->
+            <div style="display: inline-block;width: 50%;">
+              <el-popover
+                placement="top-start"
+                width="400"
+                trigger="click" class="popoverPerson" v-model="showperson">
+                <div class="approveperson">
+                  <div class="persontit">请选择下一级审批人</div>
+                  <div class="personcont" v-if="approvalTypeObj">
+                    <el-table :data="approvalTypeObj" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
+                      <el-table-column prop="NAME" label="姓名"></el-table-column>
+                      <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                      <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                    </el-table>
+                  </div>
+                </div>
+                <button slot="reference" type="primary" class="mint-msgbox-btn mint-msgbox-cancel " style="width: 100%;">
+                  <span>选择下一级审批人</span>
+                </button>
+              </el-popover>
+            </div>
+            <button @click="noNextperson()" class="mint-msgbox-btn mint-msgbox-confirm ">无下一级审批</button>
+          </div>
+
+        </div>
+      </div>
+      <div class="v-modal" style="z-index: 1000 !important;"></div>
+    </div>
+
     <div class="imagePopup-box">
       <mt-popup
         v-model="popupVisible"
@@ -311,6 +354,7 @@
 </template>
 <script>
   import {DatetimePicker, Navbar, TabItem, Popup, Indicator, MessageBox} from 'mint-ui';
+  import ElementUI from 'element-ui'
   import utils from '@/components/utils'
   import moment from 'moment'
 
@@ -324,7 +368,7 @@
 //          charset: 'utf-8',
 //          openId: this.getCookie('openId')
 //        },
-        selectInfo: 'b', // 申请分类的nav
+        selectInfo: 'a', // 申请分类的nav
         popImgSrc: '', // 查看的图片
         popupVisible: false, // 查看图片弹框
         imgSrc: {
@@ -336,13 +380,98 @@
         alertMessage: '',//提交弹框文字，显示提交状态
         alertSuccessImage: false,//显示提交状态
         codeSuccess: '',//点击我知道了进行状态判断跳转
+        hasNextperson: true,
+        approvalTypeObj: [],
+        applyData:{},
+        approveAllData:{},
+        selectperData:'',
+        showperson: false,  //是否显示选择审批人弹框
+        hasNextperson: false, //是否有下一级审批人
+        currentItem: {}
       };
     },
     created: function () {
       this.changeShow('0');
+      // this.approvalperson('1');
     },
     watch: {},
     methods: {
+      //无下一级审批人，然后同意申请
+      noNextperson(){
+        let arr = [];
+        arr.push(this.currentItem.uid);
+        let params = {
+          applyUids: arr,  //申请uid
+          status: 1, //状态（0待审批，1同意，3拒绝）
+          nextApprover: '', //下一个审批人uid 自定义流程使用
+          flowWhy: this.currentItem.why, //原因
+        };
+        let url = '/api/v1.0/client/agree';
+        this.$http.post(url, params).then(response => { //提交请假申请
+          // Indicator.close();
+          this.hasNextperson = false;
+          if (response.body.code === 200) {
+            this.changeShow('0');
+            MessageBox('提示', '操作成功');
+          } else {
+            MessageBox('提示', '操作失败');
+          }
+        }, response => {
+//          console.log('error callback');
+        });
+      },
+      // 选择审批人
+      selectperson(row, event, column){
+        this.selectperData = row.NAME;
+        this.hasNextperson = false;
+        this.showperson = false;
+
+        let arr = [];
+        arr.push(this.currentItem.uid);
+        let params = {
+          applyUids: arr,  //申请uid
+          status: 0, //状态（0待审批，1同意，3拒绝）
+          nextApprover: row.UID, //下一个审批人uid 自定义流程使用
+          flowWhy: this.currentItem.why, //原因
+        };
+        let url = '/api/v1.0/client/agree';
+        this.$http.post(url, params).then(response => { //提交请假申请
+          // Indicator.close();
+          if (response.body.code === 200) {
+            this.changeShow('0');
+            MessageBox('提示', '操作成功');
+          } else {
+            MessageBox('提示', '操作失败');
+          }
+        }, response => {
+//          console.log('error callback');
+        });
+
+      },
+      //获取审批人列表
+      approvalperson(configType){
+        this.$http.get('/api/v1.0/client/findReporter/'+configType).then(response => {
+          let data = response.body.result;
+          this.approvalTypeObj = data;
+          console.log(111111111);
+          console.log(this.approvalTypeObj);
+          // this.applyData.applicant = data.UID;   //申请人uid
+          // this.applyData.category = data.WAY;   // 审批人类型,1或者2
+          // this.approveAllData.category = data.WAY;
+          // if(data.WAY == '1'){
+          //   this.applyData.currentApprover = data.UID;
+          //   this.approveAllData.currentApprover = data.UID;
+          //   this.approveAllData.email = '';
+          // }else if(data.WAY == '2'){
+          //   this.applyData.email = data.NAME;
+          //   this.approveAllData.currentApprover = '';
+          //   this.approveAllData.email = data.UID;
+          // }
+
+        }, response => {
+          //console.log('error callback');
+        });
+      },
       //查看详情
       gotodetail(){
         this.$router.push({path: '/approveDetail'});
@@ -384,7 +513,7 @@
               let item = data[i];
               for(let j = 0; j < item.approvalFields.length; j++){
                 let list = item.approvalFields[j];
-                if(list.fieldType == '7'){
+                if(list.fieldType == '7' && list.approvalValues.length > 0){
                   let timearr = [];
                   let number = Math.floor(list.approvalValues.length/2);
                   if(parseInt(list.approvalValues[0].term) > 0){
@@ -449,28 +578,62 @@
         }
       },
       //通过或拒绝
-      isPass(uid, type){
+      isPass(item, type){
         let url, text;
         if (type === 1) {//通过
-          url = '/api/v1.0/client/revokeApply/' + uid
+          url = '/api/v1.0/client/agree';
           text = '是否同意当前审批？';
         } else if (type = 2) {//拒绝
-          url = '/api/v1.0/client/revokeApply/' + uid
+          url = '/api/v1.0/client/refuse/' + item.uid;
           text = '是否拒绝当前审批？';
         }
         MessageBox.confirm(text, '提示').then(action => {
-          Indicator.open('正在处理中...');
-          this.$http.get(url).then(response => { //提交请假申请
-            Indicator.close();
-            if (response.body.code === 200) {
-              this.changeShow(-1);
-              MessageBox('提示', '操作成功');
-            } else {
-              MessageBox('提示', '操作失败');
+
+          // Indicator.open('正在处理中...');
+          let arr = [];
+          arr.push(item.uid);
+          if (type === 1) {//通过
+            if(item.configType == '1'){  //0 是自动,  1 是自由
+              this.currentItem = item;
+              this.hasNextperson = true;
+              this.approvalperson(item.configType);
+            }else if(item.configType == '0'){  //自动审批
+              let params = {
+                // applyUid: item.uid,  //申请uid
+                applyUids: arr,  //申请uid
+                status: 1, //状态（0待审批，1同意，3拒绝）
+                nextApprover: "", //下一个审批人uid 自定义流程使用
+                flowWhy: item.why, //原因
+                // currentLoginUser: item.parentUid //当前登录人uid 用于判断是否是管理员审批
+              };
+              this.$http.post(url, params).then(response => { //提交请假申请
+                // Indicator.close();
+                if (response.body.code === 200) {
+                  this.changeShow(-1);
+                  MessageBox('提示', '操作成功');
+                } else {
+                  MessageBox('提示', '操作失败');
+                }
+              }, response => {
+//                console.log('error callback');
+              });
             }
-          }, response => {
+
+          } else if (type = 2) {//拒绝
+            this.$http.get(url).then(response => { //提交请假申请
+              // Indicator.close();
+              if (response.body.code === 200) {
+                this.changeShow(-1);
+                MessageBox('提示', '操作成功');
+              } else {
+                MessageBox('提示', '操作失败');
+              }
+            }, response => {
 //          console.log('error callback');
-          });
+            });
+          }
+
+
         });
       },
       //格式化加班时长

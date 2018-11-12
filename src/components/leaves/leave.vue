@@ -60,13 +60,13 @@
             <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
             <p>
               <!--忘记打卡时间-->
-              <!--<el-checkbox-group v-model="attendtimelist">
+              <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code=='punchTime'">
                 <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
                   <span v-model="item.value">{{list}}</span>
                 </el-checkbox>
-              </el-checkbox-group>-->
+              </el-checkbox-group>
 
-              <el-checkbox-group v-model="confItemsval[item.uid]">
+              <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code!='punchTime'">
                 <el-checkbox v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
                   <span>{{list.value}}</span>
                 </el-checkbox>
@@ -80,7 +80,7 @@
             <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
               <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                      @change="qingjiaclick(selectedDataHoliday, index)">
+                      @change="qingjiaclick(selectedDataHoliday, index)" placeholder="selectedDataHoliday">
                 <option>{{item.fieldHint}}</option>
                 <option v-for="option in holidayTypeArray" :value="option"
                         v-text="option.NAME"></option>
@@ -94,15 +94,12 @@
                         v-text="option.name"></option>
               </select>
             </div>
-
             <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
-              <!--:class="{'colorA6':confItemsval[item.uid]===confItems[item.uid][0] && item.fieldDescr}"-->
-              <select v-model="confItemsval[item.uid]" :class="{'colorA6': item.fieldDescr}">
+              <select v-model="confItemsval[item.uid]" :class="{'colorA6': item.fieldDescr}" :placeholder="item.fieldDescr">
                 <option>{{item.fieldDescr}}</option>
                 <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
               </select>
             </div>
-
           </div>
 
           <!--日期 type为6-->
@@ -143,8 +140,6 @@
               <mt-button type="primary"
                          @click.native="addTime()">
                 <span> +添加时间 </span>
-                <!--<span v-if="item.code=='leaveTime'"> +添加事假时间</span>-->
-                <!--<span v-if="item.code=='outTime'"> +添加新的加班时间段</span>-->
               </mt-button>
             </div>
           </div>
@@ -170,13 +165,7 @@
         <div class="leavebox">
           <div class="leaveboxlft icon-stars">审批对象</div>
           <div class="leaveboxcen">
-            <!--<mt-button size="small" class="leave-main-content-btn" type="primary">
-              <span>选择审批人</span>
-            </mt-button>-->
-
             <!--选择下一级审批人-->
-
-            <!--typeof b === 'object' && !isNaN(b.length)-->
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length == undefined">{{approvalTypeObj.NAME}}</div>
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length > 0">
               <span @click="showperson == true">{{selectperData}}</span>
@@ -198,14 +187,12 @@
                   <span>选择审批人</span>
                 </mt-button>
               </el-popover>
-
             </div>
-
           </div>
         </div>
 
         <!--原来页面的表单，先注释-->
-        <div style="display: none;">
+        <!--<div style="display: none;">
           <div style="height: 350px;border:1px solid #dedede"></div>
           <div class="leavebox" v-if="changeApply">
             <div class="leaveboxlft icon-stars">假期分类</div>
@@ -294,7 +281,7 @@
                  v-text="approvalTypeObj.WAY==='1'?'审批人':(approvalTypeObj.WAY==='2'?'审批邮箱':'')"></div>
             <div class="leaveboxcen" v-text="approvalTypeObj.NAME"></div>
           </div>
-        </div>
+        </div>-->
 
         <div class="leaveboxBtn">
           <mt-button type="primary" class="leaveboxBtn-btn"
@@ -373,11 +360,10 @@
                 <p>法定假日加班累计时长：0.5天(共4小时)</p>
               </div>
               <div class="btnlookdet">
-                <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail()">
+                <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail(item.uid)">
                   <span>查看详情</span>
                 </mt-button>
               </div>
-
             </div>
             <div class="approve-main-content-append approve-main-content-append1 ">
               <div class="approve-main-content-btnBox">
@@ -475,7 +461,7 @@
                 <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}小时)</p>
               </div>
               <div class="btnlookdet">
-                <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail()">
+                <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail(item.uid)">
                   <span>查看详情</span>
                 </mt-button>
               </div>
@@ -615,6 +601,7 @@
   import moment from 'moment'
 
   let df = 'YYYY-MM-DD HH:mm';
+  let df2 = 'YYYY-MM-DD';
 
   export default {
     data(){
@@ -775,6 +762,7 @@
       // 选择审批人
       selectperson(row, event, column){
         this.selectperData = row.NAME;
+        this.applyData.currentApprover = row.UID;
         this.showperson = false;
       },
       //根据审批类型返回的审批表单
@@ -855,11 +843,18 @@
           let data = response.body.result;
           this.approvalTypeObj = data;
           // this.applyData.applicant = data.UID;   //申请人uid
-          this.applyData.category = data.WAY;   // 审批人类型,1或者2
-          if(data.WAY == '1'){
-            this.applyData.currentApprover = data.UID;
-          }else if(data.WAY == '2'){
-            this.applyData.email = data.NAME;
+
+
+          if(configType == 0){//自动流程
+            this.applyData.category = data.WAY;   // 审批人类型,1或者2
+            if(data.WAY == '1'){
+              this.applyData.currentApprover = data.UID;
+            }else if(data.WAY == '2'){
+              this.applyData.email = data.NAME;
+            }
+          }else if(configType == 1){//自由
+            this.applyData.category = '1';
+            this.applyData.email = '';
           }
 
         }, response => {
@@ -894,7 +889,7 @@
         if (this.fieldTypecurr === '7') {
           this.applyWorkRef[this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.fields[this.posIndex].value =  moment(data).format(df);
+          this.fields[this.posIndex].value =  moment(data).format(df2);
           this.tmpnumber = 2;
         }
       },
@@ -903,7 +898,7 @@
         if (this.fieldTypecurr === '7') {
           this.applyWorkRef[this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.fields[this.posIndex].value =  moment(data).format(df);
+          this.fields[this.posIndex].value =  moment(data).format(df2);
           this.tmpnumber = 2;
         }
       },
@@ -998,7 +993,7 @@
           }*/
 
 
-          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType" || item.code =="leaveType")){
+          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType" || item.code =="leaveType" || item.fieldName=='请假类型' || item.fieldName=='外出类型')){
             approvalValues.push({
               approvalFieldUid : item.uid,
               value : item.value,
@@ -1013,14 +1008,17 @@
                 term : 0,
                 sortnum : 0
               });
-            }else if(item.fieldType == "4"){  //多选框
+            }else if(item.fieldType == "4"){  //多选框(并且不是忘记打卡的情况)
+            // && item.code!='punchTime'
               for(let j = 0; j < this.confItemsval[item.uid].length; j++){
-                approvalValues.push({
-                  approvalFieldUid : item.uid,
-                  value : this.confItemsval[item.uid][j],
-                  term : 0,
-                  sortnum : j
-                });
+                if(this.confItemsval[item.uid][j] != '' && this.confItemsval[item.uid][j] != null){
+                  approvalValues.push({
+                    approvalFieldUid : item.uid,
+                    value : this.confItemsval[item.uid][j],
+                    term : 0,
+                    sortnum : j
+                  });
+                }
               }
             }
           }
@@ -1315,8 +1313,8 @@
       getScrollHeight(){
         return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
       },
-      gotodetail(){
-        this.$router.push({path: '/attendanceEdit'});
+      gotodetail(uid){
+        this.$router.push({path: '/attendanceEdit', query: {uid: uid} });
       }
 
     },
