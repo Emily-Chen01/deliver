@@ -23,21 +23,21 @@
         <div v-for="(item,index) in fields" :key="index">
           <!--单行文本 type为0-->
           <div v-if="item.fieldType=='0'" class="leavebox">
-            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
-              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" :disabled="item.code=='lengthTime'">
             </div>
           </div>
 
           <!--多行文本 type为1-->
           <div v-if="item.fieldType=='1'" class="leaveboxText">
-            <div class="leaveboxText-top" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+            <div class="leaveboxText-top" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <textarea v-model="item.value" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256"></textarea>
           </div>
 
           <!--数字 type为2-->
           <div v-if="item.fieldType=='2'" class="leavebox">
-            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
               <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
             </div>
@@ -45,7 +45,7 @@
 
           <!--单选按钮 type为3-->
           <div v-if="item.fieldType=='3'" class="forgetclock">
-            <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
+            <p :class="{'icon-stars':item.isRequired==true}">{{item.fieldDescr}}</p>
             <p>
               <el-radio-group v-model="confItemsval[item.uid]">
                 <el-radio v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
@@ -57,7 +57,7 @@
 
           <!--复选框 type为4-->
           <div v-if="item.fieldType=='4'" class="forgetclock">
-            <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
+            <p :class="{'icon-stars':item.isRequired==true}">{{item.fieldDescr}}</p>
             <p>
               <!--忘记打卡时间-->
               <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code=='punchTime'">
@@ -77,7 +77,7 @@
           <!--下拉菜单 type为5-->
           <!--请假和外出类型-->
           <div v-if="item.fieldType=='5'" class="leavebox">
-            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
               <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
                       @change="qingjiaclick(selectedDataHoliday, index)" placeholder="selectedDataHoliday">
@@ -104,7 +104,7 @@
 
           <!--日期 type为6-->
           <div v-if="item.fieldType=='6'" class="leavebox">
-            <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+            <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index)">
             <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
                   :class="{'colorA6':!item.value}"></span>
@@ -121,14 +121,14 @@
               </h4>
               <div class="pl30">
                 <div class="leavebox">
-                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">开始时间</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">开始时间</div>
                   <div class="leaveboxcen">
               <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
                     :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index)"></span>
                   </div>
                 </div>
                 <div class="leavebox">
-                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">结束时间</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">结束时间</div>
                   <div class="leaveboxcen">
                 <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
                       :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index)"></span>
@@ -146,6 +146,70 @@
 
 
           <!--附件 type为8-->
+          <!--<div v-if="item.fieldType=='8'" class="leaveboxImg">
+            <uploadImage
+              v-if="!item.fileEdit"
+              :title="item.fieldName" :field="item" :type="'file'"
+              :position="{index}" @update="updateImgFile">
+              <el-button slot="button" type="primary" size="small"
+                         :disabled="!(item.value.length>0)"
+                         @click="editImg(index)">
+                <span>编辑</span>
+              </el-button>
+            </uploadImage>
+            <div v-if="item.fileEdit">
+              <el-button type="danger" size="small" @click="deleteFile(index)"
+                         :disabled="!field.isEdit">
+                <span>删除</span>
+              </el-button>
+              <el-button @click="cancelEditImg(index)" size="small">取消</el-button>
+            </div>
+            <div class="YD_image_list">
+              <div class="YD_image_list_item"
+                   v-for="(n, index) in item._staffValues.value"
+                   v-fancybox-thumbnail="[40, 40]" :data-index="index">
+                <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
+                   :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                   @click="selectImg(item._staffValues.value,index)"></i>
+                <img src="../../assets/ico_document.png" alt="">
+                <a :href="n.url.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                   :class="getExtType(n.url)" style="font-size: 14px;">下载</a>
+              </div>
+            </div>
+
+
+            &lt;!&ndash;<uploadImage
+              v-if="!field._configs.fileEdit"
+              :title="field.fieldName" :field="field" :type="'file'"
+              :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
+              <el-button slot="button" type="primary" size="small"
+                         :disabled="!(field._configs._staffValues.value.length>0)||!field.isEdit"
+                         @click="editImg(bodyIdx,partIdx,groupIdx,fieldIdx)">
+                <span>编辑</span>
+              </el-button>
+            </uploadImage>
+            <div v-if="field._configs.fileEdit">
+              <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)"
+                         :disabled="!field.isEdit">
+                <span>删除</span>
+              </el-button>
+              <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" size="small">取消</el-button>
+            </div>
+            <div class="YD_image_list">
+              <div class="YD_image_list_item"
+                   v-for="(n, index) in field._configs._staffValues.value"
+                   v-fancybox-thumbnail="[40, 40]" :data-index="index">
+                <i v-if="field._configs.fileEdit" class="bg-img YD_image_list_item_icon"
+                   :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                   @click="selectImg(field._configs._staffValues.value,index)"></i>
+                <img src="../../assets/ico_document.png" alt="">
+                <a :href="n.url.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                   :class="getExtType(n.url)" style="font-size: 14px;">下载</a>
+              </div>
+            </div>&ndash;&gt;
+          </div>-->
+
+          <!--原来上传图片样式-->
           <div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
             <div class="" style="height: 10px;background: #dedede;"></div>
             <el-upload
@@ -171,15 +235,15 @@
               <span @click="showperson == true">{{selectperData}}</span>
               <el-popover
                 placement="top-start"
-                width="400"
-                trigger="click" class="popoverPerson" v-model="showperson">
+                trigger="click" class="popoverPerson" v-model="showperson" style="width: 100%">
                 <div class="approveperson">
                   <div class="persontit">请选择下一级审批人</div>
                   <div class="personcont">
                     <el-table :data="approvalTypeObj" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
                       <el-table-column prop="NAME" label="姓名"></el-table-column>
-                      <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                      <el-table-column prop="MOBILE" label="手机号"></el-table-column>
                       <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                      <el-table-column prop="POSITION" label="职位"></el-table-column>
                     </el-table>
                   </div>
                 </div>
@@ -597,7 +661,9 @@
 </template>
 <script>
   import {DatetimePicker, Navbar, TabItem, Popup, Indicator, MessageBox} from 'mint-ui';
+  import V from 'vue'
   import utils from '@/components/utils'
+  import uploadImage from "./uploadImage"
   import moment from 'moment'
 
   let df = 'YYYY-MM-DD HH:mm';
@@ -708,6 +774,7 @@
         valuearray: [],
         confItems: {},
         confItemsval: {},
+        uploadImagelist:{} //附件内容
       };
     },
     created: function () {
@@ -950,61 +1017,64 @@
       handerDataSubmit(){
         // this.showMsg("数据出错", 1);
 
-        Indicator.open('正在提交申请...');
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
           let item = this.fields[i];
 
           //验证数据
           /*if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2" || item.fieldType == "6"){ //单行文本、多行文本、数字
-            if(item.value == '' || item.value ==undefined){
+            if((item.value == '' || item.value ==undefined) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
           }else if(item.fieldType == "3" || item.fieldType == "4" || item.fieldType == "5"){ //多行文本
-            if(this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0){
+            if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
           }else if(item.fieldType == "7"){ //日期和日期时间段
-            if(this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == ''){
+            if((this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == '') && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
-
           }else if(item.fieldType == "8"){ //附件
-            if(this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0){
+            if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
           }*/
 
-
           if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType" || item.code =="leaveType" || item.fieldName=='请假类型' || item.fieldName=='外出类型')){
-            approvalValues.push({
-              approvalFieldUid : item.uid,
-              value : item.value,
-              term : item.term,
-              sortnum : item.sortnumtmp
-            });
-          }else{
-            if(item.fieldType == "3" || (item.fieldType == "5" && item.code != "outType")){  //单选框
+            if(item.value != '' && item.value != null && item.value != undefined){
               approvalValues.push({
                 approvalFieldUid : item.uid,
-                value : this.confItemsval[item.uid],
-                term : 0,
-                sortnum : 0
+                value : item.value,
+                term : item.term,
+                sortnum : item.sortnumtmp
               });
+            }
+          }else{
+            if(item.fieldType == "3" || (item.fieldType == "5" && item.code != "outType")){  //单选框
+              if(item.value != '' && item.value != null && item.value != undefined) {
+                approvalValues.push({
+                  approvalFieldUid: item.uid,
+                  value: this.confItemsval[item.uid],
+                  term: 0,
+                  sortnum: 0
+                });
+              }
             }else if(item.fieldType == "4"){  //多选框(并且不是忘记打卡的情况)
             // && item.code!='punchTime'
-              for(let j = 0; j < this.confItemsval[item.uid].length; j++){
-                if(this.confItemsval[item.uid][j] != '' && this.confItemsval[item.uid][j] != null){
-                  approvalValues.push({
-                    approvalFieldUid : item.uid,
-                    value : this.confItemsval[item.uid][j],
-                    term : 0,
-                    sortnum : j
-                  });
+              if(this.confItemsval[item.uid].length > 0){
+                for(let j = 0; j < this.confItemsval[item.uid].length; j++){
+                  if(this.confItemsval[item.uid][j] != '' && this.confItemsval[item.uid][j] != null){
+                    approvalValues.push({
+                      approvalFieldUid : item.uid,
+                      value : this.confItemsval[item.uid][j],
+                      term : 0,
+                      sortnum : j
+                    });
+                  }
                 }
               }
             }
@@ -1032,6 +1102,7 @@
           }
         }
         this.applyData.approvalValues = approvalValues.concat(periodarr);
+        Indicator.open('正在提交申请...');
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
@@ -1229,6 +1300,9 @@
           this.$http.get('/api/v1.0/client/revokeApply/' + uid).then(response => { //提交请假申请
             Indicator.close();
             if (response.body.code === 200) {
+              this.searchApplyRecord = [];
+              this.currentval = -1;
+              this.pagenum = 1;
               this.changeShow(-1);
               MessageBox('提示', '撤回成功');
             } else {
@@ -1288,10 +1362,53 @@
       },
       gotodetail(uid){
         this.$router.push({path: '/attendanceEdit', query: {uid: uid, frompage: '1'} });
-      }
+      },
+      //上传图片文件
+      updateImgFile(data){
+        this.model.bodies[data.position.bodyIdx].children[data.position.partIdx]._children[data.position.groupIdx][data.position.fieldIdx]._configs._staffValues.value.push(
+          {
+            selected: false,
+            url: data.url,
+            width: 0,
+            height: 0
+          }
+        );
+      },
+      //查看图片
+      queryImg(e, list){
+        fancyBox(e.target, list);
+      },
+      //编辑操作
+      editImg(bodyIdx, partIdx, groupIdx, fieldIdx){
+//        console.log(123456789, this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value)
+        V.set(this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs, 'fileEdit', true)
+      },
+      //取消删除文件
+      cancelEditImg(bodyIdx, partIdx, groupIdx, fieldIdx){
+        V.set(this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs, 'fileEdit', false);
+      },
+      //编辑状态，删除文件
+      deleteFile(bodyIdx, partIdx, groupIdx, fieldIdx){
+        let list = this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value;
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].selected) {
+            list.splice(i, 1);
+            i--;
+          }
+        }
+//        console.log(list)
+        this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value = list;
+        this.cancelEditImg(bodyIdx, partIdx, groupIdx, fieldIdx);
+      },
+      //选择删除的文件
+      selectImg(list, i){
+        V.set(list[i], 'selected', !list[i].selected)
+      },
 
     },
-    components: {},
+    components: {
+      uploadImage
+    },
   }
 </script>
 
@@ -1660,6 +1777,7 @@
     border:none;
     outline: none;
     height: 25px;
+    background: none;
   }
   .mint-button--normal{
     height: 33px;
@@ -1814,4 +1932,11 @@
       }
     }
   }
+
+  /*.approveperson{
+    .el-table .cell, .el-table th>div{
+      padding: 0 5px;
+    }
+  }*/
+
 </style>
