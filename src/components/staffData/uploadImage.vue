@@ -18,14 +18,6 @@
       请上传正确的照片(格式为 {{errType}}，体积小于 {{parseInt(field._configs.numberLimit / 1000)}} 兆，图片不超过{{field._configs.fieldSize}}个)</p>
     <p class="uploadErrorTip" v-if="uploadErrFlag && type==='file'">
       请上传正确的文件(格式为 {{errType}}，体积小于 {{parseInt(field._configs.numberLimit / 1000)}} 兆，文件不超过{{field._configs.fieldSize}}个)</p>
-
-    <div style="border:1px solid #dedede;margin: 20px;">
-      <p style="border-bottom:1px solid red;">child: {{child}}</p>
-      <p style="border-bottom:1px solid red;">title: {{title}}</p>
-      <p style="border-bottom:1px solid red;">position: {{position}}</p>
-      <p style="border-bottom:1px solid red;">field: {{field}}</p>
-      <p style="border-bottom:1px solid red;">type: {{type}}</p>
-    </div>
   </div>
 
 
