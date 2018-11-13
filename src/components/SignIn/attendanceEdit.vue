@@ -91,15 +91,15 @@
             <div v-if="(typeof approvalTypeObjtwo === 'object') && approvalTypeObjtwo.length > 0">
               <el-popover
                 placement="top-start"
-                width="400"
-                trigger="click" class="popoverPerson" v-model="showpersontwo">
+                trigger="click" class="popoverPerson" v-model="showpersontwo" style="width: 100%">
                 <div class="approveperson">
                   <div class="persontit">请选择下一级审批人</div>
                   <div class="personcont">
                     <el-table :data="approvalTypeObjtwo" @row-click="saverevisetwo" align="center" class="persontable" style="width: 100%">
                       <el-table-column prop="NAME" label="姓名"></el-table-column>
-                      <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                      <el-table-column prop="MOBILE" label="手机号"></el-table-column>
                       <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                      <el-table-column prop="POSITION" label="职位"></el-table-column>
                     </el-table>
                   </div>
                 </div>
@@ -283,15 +283,15 @@
                   <span @click="showperson == true">{{selectperData}}</span>
                   <el-popover
                     placement="top-start"
-                    width="400"
-                    trigger="click" class="popoverPerson" v-model="showperson">
+                    trigger="click" class="popoverPerson" v-model="showperson" style="width: 100%">
                     <div class="approveperson">
                       <div class="persontit">请选择下一级审批人</div>
                       <div class="personcont">
                         <el-table :data="approvalTypeObj" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
                           <el-table-column prop="NAME" label="姓名"></el-table-column>
-                          <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                          <el-table-column prop="MOBILE" label="手机号"></el-table-column>
                           <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                          <el-table-column prop="POSITION" label="职位"></el-table-column>
                         </el-table>
                       </div>
                     </div>
@@ -684,9 +684,11 @@
       },
       //获取考勤详情数据
       getDetail() {
-        // let uid = 'a54c99be935b441788159dd99f7d6a98';
         let uid = this.$route.query.uid;
         let frompage = this.$route.query.frompage;
+        if(frompage == '' || frompage == null || frompage == undefined){
+          frompage = '1';
+        }
         this.currentStatus = frompage;
         this.$http.get('/api/v1.0/client/queryApplyDetail/'+uid).then(response => { //点击查看当天考勤
           if (response.body.code === 200) {
