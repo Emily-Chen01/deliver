@@ -1052,23 +1052,25 @@
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
           let item = this.fields[i];
-
+          console.log(111);
           //验证数据
-          if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2" || item.fieldType == "6"){ //单行文本、多行文本、数字
-            if((item.value == '' || item.value ==undefined) && item.isRequired){
-              this.showMsg(item.fieldHint,-1);
-              return false;
-            }
-
-            if((item.fieldType == "0" || item.fieldType == "1") && item.fieldName != "时长（小时）" && (!item.isDefault)){
-              if ( !textPattern[item.conditions.join('')].test(item.value) ) {
+          if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2"){ //单行文本、多行文本、数字
+            if(item.value == '' || item.value ==undefined){
+              if(item.isRequired){ //必填
                 this.showMsg(item.fieldHint,-1);
                 return false;
               }
-            }else if(item.fieldType == "2" && (!item.isDefault)){ //数字
-              if ( !textPattern[3].test(item.value) ) {
-                this.showMsg(item.fieldHint,-1);
-                return false;
+            }else{
+              if((item.fieldType == "0" || item.fieldType == "1") && item.fieldName != "时长（小时）" && (!item.isDefault)){
+                if ( !textPattern[item.conditions.join('')].test(item.value) ) {
+                  this.showMsg(item.fieldHint,-1);
+                  return false;
+                }
+              }else if(item.fieldType == "2" && (!item.isDefault)){ //数字
+                if ( !textPattern[3].test(item.value) ) {
+                  this.showMsg(item.fieldHint,-1);
+                  return false;
+                }
               }
             }
 
@@ -1091,6 +1093,11 @@
             }
 
 
+          }else if(item.fieldType == "6"){
+            if((item.value == '' || item.value ==undefined) && item.isRequired){
+              this.showMsg(item.fieldHint,-1);
+              return false;
+            }
           }else if(item.fieldType == "7"){ //日期和日期时间段
             if((this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == '') && item.isRequired){
               this.showMsg(item.fieldHint,-1);

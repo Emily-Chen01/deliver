@@ -519,7 +519,8 @@
           // Indicator.close();
           this.hasNextperson = false;
           if (response.body.code === 200) {
-            this.changeShow('0');
+            this.changeShow('1');
+            this.selectInfo = 'b';
             MessageBox('提示', '操作成功');
           } else {
             MessageBox('提示', '操作失败');
@@ -543,10 +544,12 @@
           flowWhy: this.currentItem.why, //原因
         };
         let url = '/api/v1.0/client/agree';
+        Indicator.open('正在处理中...');
         this.$http.post(url, params).then(response => { //提交请假申请
-          // Indicator.close();
+          Indicator.close();
           if (response.body.code === 200) {
-            this.changeShow('0');
+            this.changeShow('1');
+            this.selectInfo = 'b';
             MessageBox('提示', '操作成功');
           } else {
             MessageBox('提示', '操作失败');
@@ -703,8 +706,6 @@
           text = '是否拒绝当前审批？';
         }
         MessageBox.confirm(text, '提示').then(action => {
-
-          // Indicator.open('正在处理中...');
           let arr = [];
           arr.push(item.uid);
           if (type === 1) {//通过
@@ -721,10 +722,12 @@
                 flowWhy: item.why, //原因
                 // currentLoginUser: item.parentUid //当前登录人uid 用于判断是否是管理员审批
               };
+              Indicator.open('正在处理中...');
               this.$http.post(url, params).then(response => { //提交请假申请
-                // Indicator.close();
+                Indicator.close();
                 if (response.body.code === 200) {
-                  this.changeShow('0');
+                  this.changeShow('1');
+                  this.selectInfo = 'b';
                   MessageBox('提示', '操作成功');
                 } else {
                   MessageBox('提示', '操作失败');
@@ -735,10 +738,12 @@
             }
 
           } else if (type = 2) {//拒绝
+            Indicator.open('正在处理中...');
             this.$http.get(url).then(response => { //提交请假申请
-              // Indicator.close();
+              Indicator.close();
               if (response.body.code === 200) {
-                this.changeShow('0');
+                this.changeShow('1');
+                this.selectInfo = 'b';
                 MessageBox('提示', '操作成功');
               } else {
                 MessageBox('提示', '操作失败');
