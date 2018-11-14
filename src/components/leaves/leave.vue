@@ -45,7 +45,7 @@
 
           <!--单选按钮 type为3-->
           <div v-if="item.fieldType=='3'" class="forgetclock">
-            <p :class="{'icon-stars':item.isRequired==true}">{{item.fieldDescr}}</p>
+            <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
             <p>
               <el-radio-group v-model="confItemsval[item.uid]">
                 <el-radio v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
@@ -57,7 +57,7 @@
 
           <!--复选框 type为4-->
           <div v-if="item.fieldType=='4'" class="forgetclock">
-            <p :class="{'icon-stars':item.isRequired==true}">{{item.fieldDescr}}</p>
+            <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
             <p>
               <!--忘记打卡时间-->
               <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code=='punchTime'">
@@ -1084,7 +1084,7 @@
                 return false;
               }
             }else{
-              if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
+              if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid] == undefined) && item.isRequired){
                 this.showMsg(item.fieldHint,-1);
                 return false;
               }
@@ -2025,6 +2025,10 @@
         }
       }
     }
+  }
+  .bluebold{
+    font-weight: bold;
+    color: #457aa3;
   }
 
   /*.approveperson{

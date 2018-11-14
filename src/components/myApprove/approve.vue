@@ -42,6 +42,15 @@
                 <p>{{detail.startTime}}至{{detail.endTime}}</p>
               </div>
             </div>
+            <!--加班时显示加班时长-->
+            <div class="marginTop10" v-if="item.approvalType == 3">
+              <h3>累计加班时长：</h3>
+              <div v-for="detail in item.workOvertimeHistories">
+                <p v-if="detail.type=='0'">平日加班:{{detail.time}}小时</p>
+                <p v-if="detail.type=='1'">周末加班:{{detail.time}}小时</p>
+                <p v-if="detail.type=='2'">假日加班:{{detail.time}}小时</p>
+              </div>
+            </div>
           </div>
 
           <div class="approve-main-content-Info attendcont" v-if="item.approvalType == -1" style="padding: 0;">
@@ -109,8 +118,8 @@
               </mt-button>
             </div>
           </div>
-
-          <div class="approve-main-content-append approve-main-content-append1 plr15 fs13" v-if="item.status===3">
+          <!--v-if="item.status===3"-->
+          <div class="approve-main-content-append approve-main-content-append1 plr15 fs13">
             <p v-for="list in item.applyFlows">
               <span>{{datefmt(new Date(list.flowTime))}}</span><span>&nbsp;&nbsp;&nbsp;审批人:{{list.flowApproverName}}({{list.jobNumber}})&nbsp;&nbsp;&nbsp;{{applyState(list.flowStatus)}}</span>
             </p>
@@ -903,6 +912,7 @@
           border-top: 1px solid #d3dce6;
           padding: 10px 0;
           text-align: center;
+          margin-top:10px;
         }
       }
       .myApplyNo {
