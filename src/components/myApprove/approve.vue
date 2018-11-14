@@ -26,7 +26,7 @@
           </div>
           <div class="marginTop10" v-if="item.approvalType != -1">
             <h3>当前审批人</h3>
-            <p>测试测试</p>
+            <p>{{item.applyFlows[item.applyFlows.length-1].flowApproverName}}</p>
           </div>
 
           <!--普通审批-->
@@ -112,7 +112,7 @@
 
           <div class="approve-main-content-append approve-main-content-append1 plr15 fs13" v-if="item.status===3">
             <p v-for="list in item.applyFlows">
-              <span>{{datefmt(new Date(list.flowTime))}}</span><span>&nbsp;&nbsp;&nbsp;审批人:{{list.flowApproverName}}(CI11511)&nbsp;&nbsp;&nbsp;{{applyState(list.flowStatus)}}</span>
+              <span>{{datefmt(new Date(list.flowTime))}}</span><span>&nbsp;&nbsp;&nbsp;审批人:{{list.flowApproverName}}({{list.jobNumber}})&nbsp;&nbsp;&nbsp;{{applyState(list.flowStatus)}}</span>
             </p>
             <!--<p>-->
               <!--<span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511) {{applyState(item.status)}}</span>-->
@@ -208,7 +208,7 @@
       </div>
 
       <!--新增加考勤异常申请-->
-      <div class="approve-main-content-wrapper attendance" style="display: none;">
+      <!--<div class="approve-main-content-wrapper attendance" style="display: none;">
         <div class="approve-main-content-top">
           <h3 class="approve-main-content-title">
             <span class="approve-main-content-title-left">审批申请（8月份异常考勤申请）</span>
@@ -284,7 +284,7 @@
             <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
           </p>
         </div>
-      </div>
+      </div>-->
 
       <!--<div class="approve-main-content-wrapper attendance">
         <div class="approve-main-content-top">
@@ -386,15 +386,15 @@
             <div style="display: inline-block;width: 50%;">
               <el-popover
                 placement="top-start"
-                width="400"
-                trigger="click" class="popoverPerson" v-model="showperson">
-                <div class="approveperson">
+                trigger="click" class="popoverPerson" v-model="showperson" style="width: 100%;">
+                <div class="approveperson" style="height: 300px;overflow-y: auto;">
                   <div class="persontit">请选择下一级审批人</div>
                   <div class="personcont" v-if="approvalTypeObj">
                     <el-table :data="approvalTypeObj" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
                       <el-table-column prop="NAME" label="姓名"></el-table-column>
-                      <el-table-column prop="MOBILE" label="手机号" width="150"></el-table-column>
+                      <el-table-column prop="MOBILE" label="手机号"></el-table-column>
                       <el-table-column prop="DEPT_NAME" label="部门"></el-table-column>
+                      <el-table-column prop="POSITION" label="职位"></el-table-column>
                     </el-table>
                   </div>
                 </div>
@@ -470,12 +470,28 @@
         selectperData:'',
         showperson: false,  //是否显示选择审批人弹框
         hasNextperson: false, //是否有下一级审批人
-        currentItem: {}
+        currentItem: {},
+        currentval: '0'
       };
     },
     created: function () {
       this.changeShow('0');
       // this.approvalperson('1');
+
+      // let that = this;
+      // window.onscroll = function() {
+      //   if(that.getScrollTop() + that.getClientHeight() >= that.getScrollHeight()) {
+      //     that.pagenum++;
+      //     console.log('下拉刷新了');
+      //     console.log("pagenum="+that.pagenum);
+      //     console.log("totalpages="+that.totalpages);
+      //     if(that.pagenum > that.totalpages){
+      //       return false;
+      //     }else{
+      //       that.changeShow(that.currentval, 2);
+      //     }
+      //   }
+      // }
     },
     watch: {},
     methods: {
@@ -699,7 +715,7 @@
               this.$http.post(url, params).then(response => { //提交请假申请
                 // Indicator.close();
                 if (response.body.code === 200) {
-                  this.changeShow(-1);
+                  this.changeShow('0');
                   MessageBox('提示', '操作成功');
                 } else {
                   MessageBox('提示', '操作失败');
@@ -713,7 +729,7 @@
             this.$http.get(url).then(response => { //提交请假申请
               // Indicator.close();
               if (response.body.code === 200) {
-                this.changeShow(-1);
+                this.changeShow('0');
                 MessageBox('提示', '操作成功');
               } else {
                 MessageBox('提示', '操作失败');

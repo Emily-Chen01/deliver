@@ -5,7 +5,7 @@
         <span>填写申请</span>
       </mt-tab-item>
       <mt-tab-item id="2">
-        <div @click="changeShow(-1)"><span>我的申请</span></div>
+        <div @click="changeShow(-1, 3)"><span>我的申请</span></div>
       </mt-tab-item>
     </mt-navbar>
     <div style="height: 30px">{{tmpnumber}}</div>
@@ -25,7 +25,7 @@
           <div v-if="item.fieldType=='0'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
-              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" :disabled="item.code=='lengthTime'">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" :disabled="item.code=='lengthTime' || item.fieldName=='时长（小时）'">
             </div>
           </div>
 
@@ -79,17 +79,17 @@
           <div v-if="item.fieldType=='5'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
-              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldDescr}"
                       @change="qingjiaclick(selectedDataHoliday, index)" placeholder="selectedDataHoliday">
-                <option>{{item.fieldHint}}</option>
+                <option>{{item.fieldDescr}}</option>
                 <option v-for="option in holidayTypeArray" :value="option"
                         v-text="option.NAME"></option>
               </select>
             </div>
             <div class="leaveboxcen" v-if="item.code == 'outType'">
-              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                      @change="waichuclick(selectedDataHoliday, index)">
-                <option>{{item.fieldHint}}</option>
+              <select v-model="selectedDataHolidaytwo" :class="{'colorA6':selectedDataHolidaytwo===item.fieldDescr}"
+                      @change="waichuclick(selectedDataHolidaytwo, index)">
+                <option>{{item.fieldDescr}}</option>
                 <option v-for="option in outsideObj" :value="option"
                         v-text="option.name"></option>
               </select>
@@ -236,7 +236,7 @@
               <el-popover
                 placement="top-start"
                 trigger="click" class="popoverPerson" v-model="showperson" style="width: 100%">
-                <div class="approveperson">
+                <div class="approveperson" style="height: 300px;overflow-y: auto;">
                   <div class="persontit">请选择下一级审批人</div>
                   <div class="personcont">
                     <el-table :data="approvalTypeObj" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
@@ -359,22 +359,22 @@
       <mt-tab-container-item id="2" class="leave-main-applyInfo">
         <mt-navbar v-model="selectInfo" class="leave-header">
           <mt-tab-item id="a">
-            <div @click="changeShow(-1)"><span>全部</span></div>
+            <div @click="changeShow(-1, 1)"><span>全部</span></div>
           </mt-tab-item>
           <mt-tab-item id="b">
-            <div @click="changeShow(0)"><span>审核中</span></div>
+            <div @click="changeShow(0, 1)"><span>审核中</span></div>
           </mt-tab-item>
           <mt-tab-item id="c">
-            <div @click="changeShow(1)"><span>已通过</span></div>
+            <div @click="changeShow(1, 1)"><span>已通过</span></div>
           </mt-tab-item>
           <mt-tab-item id="d">
-            <div @click="changeShow(2)"><span>未通过</span></div>
+            <div @click="changeShow(2, 1)"><span>未通过</span></div>
           </mt-tab-item>
         </mt-navbar>
         <div class="leave-main-content">
 
           <!--新增加考勤异常申请-->
-          <div class="approve-main-content-wrapper attendance" style="display: none;">
+          <!--<div class="approve-main-content-wrapper attendance" style="display: none;">
             <div class="approve-main-content-top">
               <h3 class="approve-main-content-title">
                 <span class="approve-main-content-title-left">审批申请（8月份异常考勤申请）</span>
@@ -449,7 +449,7 @@
                 <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
               </p>
             </div>
-          </div>
+          </div>-->
 
           <!--现在显示的内容-->
           <div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
@@ -478,7 +478,7 @@
 
             <!--异常考勤申请-->
             <div class="approve-main-content-Info attendcont" v-if="item.approvalType == -1">
-              <div class="attendtop">申请人：张三(CI11570)</div>
+              <div class="attendtop">申请人：{{item.staffName}}({{item.jobNumber}})</div>
               <div class="attendttit">原始数据</div>
               <div class="attendDetail">
                 <p>本月异常考勤累计时间</p>
@@ -662,12 +662,16 @@
 <script>
   import {DatetimePicker, Navbar, TabItem, Popup, Indicator, MessageBox} from 'mint-ui';
   import V from 'vue'
+  import utilsValid from '../common/utils'
   import utils from '@/components/utils'
   import uploadImage from "./uploadImage"
   import moment from 'moment'
 
   let df = 'YYYY-MM-DD HH:mm';
   let df2 = 'YYYY-MM-DD';
+  const textPattern = utilsValid.textPattern; //验证文本
+  const idNumberPattern = utilsValid.idNumberPattern;
+
 
   export default {
     data(){
@@ -683,7 +687,8 @@
         popupVisible: false, // 查看图片弹框
         selectedDataApply: 0, //选择的申请类型
         applyTypeArray: [], //申请分类
-        selectedDataHoliday: '请选择假期类型', // 选择的假期类型
+        selectedDataHoliday: '请假类型根据不同人员拥有假期自动展示', // 选择的假期类型
+        selectedDataHolidaytwo: '请选择外出类型', // 选择的外出类型
         holidayTypeArray: [], // 假期类型列表
         selectHoliday: {},
         imgSrc: {
@@ -770,7 +775,7 @@
         selectperData: '',
         pagenum: 1,
         totalpages: '',
-        currentval: '',
+        currentval: '-1',
         valuearray: [],
         confItems: {},
         confItemsval: {},
@@ -821,6 +826,22 @@
       });*/
 
       // this.approvalform();
+
+
+      let that = this;
+      window.onscroll = function() {
+        if(that.getScrollTop() + that.getClientHeight() >= that.getScrollHeight()) {
+          that.pagenum++;
+          // console.log('下拉刷新了');
+          // console.log("pagenum="+that.pagenum);
+          // console.log("totalpages="+that.totalpages);
+          if(that.pagenum > that.totalpages){
+            return false;
+          }else{
+            that.changeShow(that.currentval, 2);
+          }
+        }
+      }
 
     },
     watch: {},
@@ -1022,22 +1043,49 @@
           let item = this.fields[i];
 
           //验证数据
-          /*if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2" || item.fieldType == "6"){ //单行文本、多行文本、数字
+          if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2" || item.fieldType == "6"){ //单行文本、多行文本、数字
             if((item.value == '' || item.value ==undefined) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
-          }else if(item.fieldType == "3" || item.fieldType == "4" || item.fieldType == "5"){ //多行文本
+
+            if((item.fieldType == "0" || item.fieldType == "1") && item.fieldName != "时长（小时）" && (!item.isDefault)){
+              if ( !textPattern[item.conditions.join('')].test(item.value) ) {
+                this.showMsg(item.fieldHint,-1);
+                return false;
+              }
+            }else if(item.fieldType == "2" && (!item.isDefault)){ //数字
+              if ( !textPattern[3].test(item.value) ) {
+                this.showMsg(item.fieldHint,-1);
+                return false;
+              }
+            }
+
+          }else if(item.fieldType == "3" || item.fieldType == "4"){ //多行文本
             if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
+          }else if(item.fieldType == "5"){ //下拉选框（请假类型和外出类型）
+            if(item.code == 'leaveType' || item.code == 'outType'){
+              if((item.value == '' || item.value ==undefined) && item.isRequired){
+                this.showMsg(item.fieldHint,-1);
+                return false;
+              }
+            }else{
+              if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
+                this.showMsg(item.fieldHint,-1);
+                return false;
+              }
+            }
+
+
           }else if(item.fieldType == "7"){ //日期和日期时间段
             if((this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == '') && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
-          }else if(item.fieldType == "8"){ //附件
+          }/*else if(item.fieldType == "8"){ //附件
             if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
@@ -1221,19 +1269,29 @@
         return isImage && isInSize;
       },
       //查看申请记录
-      changeShow(val){
-        if(val == -1){
-          val = '';
-        }
+      changeShow(val, type){
         if(this.currentval != val){
           this.searchApplyRecord = [];
           this.currentval = val;
           this.pagenum = 1;
         }
+        if(type == 1){
+          this.searchApplyRecord = [];
+          this.currentval = val;
+          this.pagenum = 1;
+        }else if(type == 3){
+          this.searchApplyRecord = [];
+          this.currentval = val;
+          this.pagenum = 1;
+          this.selectInfo = 'a';
+        }
 
+        if(val == -1){
+          val = '';
+        }
         this.$http.post('/api/v1.0/client/queryOwnApplys', {
           status: val,
-          pageSize: 20,
+          pageSize: 5,
           pageNumber: this.pagenum
         }).then(response => { //查询申请接口
           if (response.body.code === 200) {
@@ -1272,20 +1330,22 @@
             }
             this.searchApplyRecord = this.searchApplyRecord.concat(data);
 
-            let that = this;
+            /*let that = this;
             window.onscroll = function() {
               if(that.getScrollTop() + that.getClientHeight() >= that.getScrollHeight()) {
-                // console.log('下拉刷新了');
-                // console.log("pagenum="+that.pagenum);
-                // console.log("totalpages="+that.totalpages);
-                that.pagenum++;
+
+                ++that.pagenum;
+                console.log('下拉刷新了');
+                console.log("pagenum="+that.pagenum);
+                console.log("totalpages="+that.totalpages);
                 if(that.pagenum > that.totalpages){
                   return false;
                 }else{
                   that.changeShow(val);
                 }
+
               }
-            }
+            }*/
 
 
           }
