@@ -81,7 +81,7 @@
             <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
               <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldDescr}"
                       @change="qingjiaclick(selectedDataHoliday, index)" placeholder="selectedDataHoliday">
-                <option>{{item.fieldDescr}}</option>
+                <!--<option>{{item.fieldDescr}}</option>-->
                 <option v-for="option in holidayTypeArray" :value="option"
                         v-text="option.NAME"></option>
               </select>
@@ -89,14 +89,16 @@
             <div class="leaveboxcen" v-if="item.code == 'outType'">
               <select v-model="selectedDataHolidaytwo" :class="{'colorA6':selectedDataHolidaytwo===item.fieldDescr}"
                       @change="waichuclick(selectedDataHolidaytwo, index)">
-                <option>{{item.fieldDescr}}</option>
+                <!--<option>{{item.fieldDescr}}</option>-->
                 <option v-for="option in outsideObj" :value="option"
                         v-text="option.name"></option>
               </select>
             </div>
             <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
-              <select v-model="confItemsval[item.uid]" :class="{'colorA6': item.fieldDescr}" :placeholder="item.fieldDescr">
-                <option>{{item.fieldDescr}}</option>
+              <!--:placeholder="item.fieldDescr"-->
+              <!--:class="{'colorA6': item.fieldDescr}"-->
+              <select v-model="confItemsval[item.uid]" :placeholder="'请选择'">
+                <!--<option>{{item.fieldDescr}}</option>-->
                 <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
               </select>
             </div>
@@ -472,6 +474,15 @@
                 <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
                   <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
                   <p>{{detail.startTime}}至{{detail.endTime}}</p>
+                </div>
+              </div>
+              <!--加班时显示加班时长-->
+              <div class="marginTop10" v-if="item.approvalType == 3">
+                <h3>累计加班时长：</h3>
+                <div v-for="detail in item.workOvertimeHistories">
+                  <p v-if="detail.type=='0'">平日加班:{{detail.time}}小时</p>
+                  <p v-if="detail.type=='1'">周末加班:{{detail.time}}小时</p>
+                  <p v-if="detail.type=='2'">假日加班:{{detail.time}}小时</p>
                 </div>
               </div>
             </div>
@@ -1092,7 +1103,7 @@
             }
           }*/
 
-          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType" || item.code =="leaveType" || item.fieldName=='请假类型' || item.fieldName=='外出类型')){
+          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && item.fieldType != "5"){
             if(item.value != '' && item.value != null && item.value != undefined){
               approvalValues.push({
                 approvalFieldUid : item.uid,
@@ -1102,8 +1113,8 @@
               });
             }
           }else{
-            if(item.fieldType == "3" || (item.fieldType == "5" && item.code != "outType")){  //单选框
-              if(item.value != '' && item.value != null && item.value != undefined) {
+            if(item.fieldType == "3"){  //单选框
+              if(this.confItemsval[item.uid] != '' && this.confItemsval[item.uid] != null && this.confItemsval[item.uid] != undefined) {
                 approvalValues.push({
                   approvalFieldUid: item.uid,
                   value: this.confItemsval[item.uid],
@@ -1123,6 +1134,26 @@
                       sortnum : j
                     });
                   }
+                }
+              }
+            }else if(item.fieldType == "5"){ //下拉菜单
+              if(item.code == 'leaveType' || item.code == 'outType' || item.fieldName=='请假类型' || item.fieldName=='外出类型'){
+                if(item.value != '' && item.value != null && item.value != undefined) {
+                  approvalValues.push({
+                    approvalFieldUid: item.uid,
+                    value: item.value,
+                    term: 0,
+                    sortnum: 0
+                  });
+                }
+              }else{
+                if(this.confItemsval[item.uid] != '' && this.confItemsval[item.uid] != null && this.confItemsval[item.uid] != undefined) {
+                  approvalValues.push({
+                    approvalFieldUid: item.uid,
+                    value: this.confItemsval[item.uid],
+                    term: 0,
+                    sortnum: 0
+                  });
                 }
               }
             }
@@ -1150,6 +1181,9 @@
           }
         }
         this.applyData.approvalValues = approvalValues.concat(periodarr);
+        // console.log(555);
+        // console.log(this.applyData);
+
         Indicator.open('正在提交申请...');
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
