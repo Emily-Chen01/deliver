@@ -284,7 +284,7 @@
                   <el-popover
                     placement="top-start"
                     trigger="click" class="popoverPerson" v-model="showperson" style="width: 100%">
-                    <div class="approveperson">
+                    <div class="approveperson" style="height: 300px;overflow-y: auto;">
                       <div class="persontit">请选择下一级审批人</div>
                       <div class="personcont">
                         <el-table :data="approvalTypeObj" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
@@ -350,7 +350,7 @@
                 placement="top-start"
                 width="400"
                 trigger="click" class="popoverPerson" v-model="showperson">
-                <div class="approveperson">
+                <div class="approveperson" style="height: 300px;overflow-y: auto;">
                   <div class="persontit">请选择下一级审批人</div>
                   <div class="personcont" v-if="approvalTypeObjtwo">
                     <el-table :data="approvalTypeObjtwo" @row-click="selectperson" align="center" class="persontable" style="width: 100%">
