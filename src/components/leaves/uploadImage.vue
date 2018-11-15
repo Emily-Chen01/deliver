@@ -1,11 +1,15 @@
 <template>
   <div>
     <div style="display: inline-block">
+      <!--<el-upload action="/api/v1.0/client/upload" name="files" :show-file-list="false" :headers="tokenHeader"-->
+                 <!--:on-success="staffPhoUrlOk"-->
+                 <!--:before-upload="beforeStaffPhoUrl"-->
+                 <!--:disabled="!field.isEdit">-->
+        <!--<el-button type="primary" size="small" :disabled="!field.isEdit">-->
       <el-upload action="/api/v1.0/client/upload" name="files" :show-file-list="false" :headers="tokenHeader"
                  :on-success="staffPhoUrlOk"
-                 :before-upload="beforeStaffPhoUrl"
-                 :disabled="!field.isEdit">
-        <el-button type="primary" size="small" :disabled="!field.isEdit">
+                 :before-upload="beforeStaffPhoUrl">
+        <el-button type="primary" size="small">
         <span>
           <i class="el-icon-upload"></i>
           <span v-text="'上传'+title"></span>
@@ -14,21 +18,13 @@
       </el-upload>
     </div>
     <slot name="button"></slot>
-    <p class="uploadErrorTip" v-if="uploadErrFlag && type==='image'">
-      请上传正确的照片(格式为 {{errType}}，体积小于 {{parseInt(field._configs.numberLimit / 1000)}} 兆，图片不超过{{field._configs.fieldSize}}个)</p>
-    <p class="uploadErrorTip" v-if="uploadErrFlag && type==='file'">
-      请上传正确的文件(格式为 {{errType}}，体积小于 {{parseInt(field._configs.numberLimit / 1000)}} 兆，文件不超过{{field._configs.fieldSize}}个)</p>
-
-    <div style="border:1px solid #dedede;margin: 20px;">
-      <p style="border-bottom:1px solid red;">child: {{child}}</p>
-      <p style="border-bottom:1px solid red;">title: {{title}}</p>
-      <p style="border-bottom:1px solid red;">position: {{position}}</p>
-      <p style="border-bottom:1px solid red;">field: {{field}}</p>
-      <p style="border-bottom:1px solid red;">type: {{type}}</p>
+    <div style="display: none;">
+      <p class="uploadErrorTip" v-if="uploadErrFlag && type==0 " style="display: none !important;">
+        请上传正确的照片(格式为 {{errType}}，体积小于 {{parseInt(field.numberLimit / 1000)}} 兆，图片不超过{{field.fieldSize}}个)</p>
+      <p class="uploadErrorTip" v-if="uploadErrFlag && type==1 " style="display: none !important;">
+        请上传正确的文件(格式为 {{errType}}，体积小于 {{parseInt(field.numberLimit / 1000)}} 兆，文件不超过{{field.fieldSize}}个)</p>
     </div>
   </div>
-
-
 
 </template>
 
@@ -81,16 +77,26 @@
       },
       beforeStaffPhoUrl(file) {
 //        console.log('wertyu', this.configs)
+//         console.log("file");
+//         console.log(file);
+
         let errType = '';
         let backValue;
         let condition = null;
-        let isFieldSize = this.field._configs._staffValues.value.length < this.field._configs.fieldSize;
-        if (this.field._configs.conditions && this.field._configs.conditions.length) {
+
+        let isFieldSize;
+        if(this.field.fieldSize != null && this.field.fieldSize != '' && this.field.fieldSize != 'null'){
+          isFieldSize = this.field.approvalValues.length < this.field.fieldSize;
+        }else{
+          isFieldSize = true;
+        }
+
+        if (this.field.conditions && this.field.conditions.length) {
           condition = '-'
         }
-        let isInSize = utils.isInSize(file, this.field._configs.numberLimit / 1000);
-        if (this.type === 'image') {
-          this.field._configs.conditions.forEach((item, i) => {
+        let isInSize = utils.isInSize(file, this.field.numberLimit / 1000);
+        if (this.type == 0) { //上传图片
+          this.field.conditions.forEach((item, i) => {
             condition += this.picPatt[item] + '-';
             if (i !== 0) {
               errType += '、' + this.picFormatsMap[item];
@@ -104,8 +110,8 @@
           } else {
             backValue = false;
           }
-        } else if (this.type === 'file') {
-          this.field._configs.conditions.forEach((item, i) => {
+        } else if (this.type == 1 ) {  //上传文件
+          this.field.conditions.forEach((item, i) => {
             condition += this.docPatt[item] + '-';
             if (i !== 0) {
               errType += '、' + this.docFormatsMap[item];
@@ -122,13 +128,22 @@
         } else {
           backValue = false;
         }
+        console.log(123);
         if (backValue) {
           this.uploadErrFlag = false;
         } else {
           this.uploadErrFlag = true;
+          this.$emit("updateerror", {
+            errType: errType,
+            numberLimit: parseInt(this.field.numberLimit / 1000),
+            fieldSize: this.field.fieldSize,
+            type: this.type,
+            fieldHint: this.field.fieldHint
+          });
         }
         this.errType = errType;
         return backValue;
+
       }
 
     }

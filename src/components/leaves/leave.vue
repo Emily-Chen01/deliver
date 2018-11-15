@@ -8,7 +8,7 @@
         <div @click="changeShow(-1, 3)"><span>我的申请</span></div>
       </mt-tab-item>
     </mt-navbar>
-    <div style="height: 30px">{{tmpnumber}}</div>
+    <div style="height: 30px;display: none;">{{tmpnumber}}</div>
     <mt-tab-container v-model="selected" class="leave-main">
       <mt-tab-container-item id="1" class="leave-main-box">
         <div class="leavebox">
@@ -117,8 +117,9 @@
           <!--返回多个日期时间段时，默认只取最后一个-->
           <div v-if="item.fieldType=='7' && perioduid == item.uid">
             <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
-              <h4 align="left" class="fc1 pr">
-                <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
+              <h4 align="left" class="fc1 pr" :class="{'icon-stars':item.isRequired==true}">
+                <span v-if="item.code!='outTime'" v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
+                <span v-if="item.code=='outTime'">{{item.fieldName}}</span>
                 <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
               </h4>
               <div class="pl30">
@@ -148,71 +149,58 @@
 
 
           <!--附件 type为8-->
-          <!--<div v-if="item.fieldType=='8'" class="leaveboxImg">
-            <uploadImage
-              v-if="!item.fileEdit"
-              :title="item.fieldName" :field="item" :type="'file'"
-              :position="{index}" @update="updateImgFile">
-              <el-button slot="button" type="primary" size="small"
-                         :disabled="!(item.value.length>0)"
-                         @click="editImg(index)">
-                <span>编辑</span>
-              </el-button>
-            </uploadImage>
-            <div v-if="item.fileEdit">
-              <el-button type="danger" size="small" @click="deleteFile(index)"
-                         :disabled="!field.isEdit">
-                <span>删除</span>
-              </el-button>
-              <el-button @click="cancelEditImg(index)" size="small">取消</el-button>
-            </div>
-            <div class="YD_image_list">
-              <div class="YD_image_list_item"
-                   v-for="(n, index) in item._staffValues.value"
-                   v-fancybox-thumbnail="[40, 40]" :data-index="index">
-                <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
-                   :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
-                   @click="selectImg(item._staffValues.value,index)"></i>
-                <img src="../../assets/ico_document.png" alt="">
-                <a :href="n.url.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
-                   :class="getExtType(n.url)" style="font-size: 14px;">下载</a>
+          <div v-if="item.fieldType=='8'" class="leavebox leaveboxImg">
+            <div class="leaveboxImglft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
+            <div class="leaveboxImgrgt uploadpictext" @click="openPicker(0, 0, item.fieldType, index)">
+              <uploadImage
+                v-if="!item.fileEdit"
+                :title="item.fieldName" :field="item" :type="item.fileAttribute"
+                :position="{index}" @update="updateImgFile" @updateerror="showUpdateError">
+                <el-button slot="button" type="primary" size="small"
+                           @click="editImg(index)" :disabled="!(item.approvalValues.length>0)">
+                  <span>编辑</span>
+                </el-button>
+              </uploadImage>
+              <div v-if="item.fileEdit">
+                <!--:disabled="!item.isEdit"-->
+                <el-button type="danger" size="small" @click="deleteFile(index)">
+                  <span>删除{{item.isEdit}}</span>
+                </el-button>
+                <el-button @click="cancelEditImg(index)" size="small">取消</el-button>
+              </div>
+              <!--图片-->
+              <div class="YD_image_list" v-if="item.fileAttribute=='0'">
+                <div class="YD_image_list_item"
+                     v-for="(n, index) in item.approvalValues"
+                     v-fancybox-thumbnail="[n.width, n.height]" :data-index="index">
+                  <img v-if="!item.fileEdit" @click="queryImg($event,item.approvalValues)"
+                       :src="n.url" alt="">
+                  <!--<i v-if="field._configs.fileEdit" class="bg-img ico_select_1" :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"-->
+                  <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
+                  <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
+                     :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                     @click="selectImg(item.approvalValues,index)"></i>
+                  <img v-if="item.fileEdit" :src="n.url" alt="">
+                </div>
+              </div>
+              <!--文件-->
+              <div class="YD_image_list" v-if="item.fileAttribute=='1'">
+                <div class="YD_image_list_item"
+                     v-for="(n, index) in item.approvalValues"
+                     v-fancybox-thumbnail="[40, 40]" :data-index="index">
+                  <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
+                     :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                     @click="selectImg(item.approvalValues,index)"></i>
+                  <img src="../../assets/ico_document.png" alt="">
+                  <a :href="n.url.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                     :class="getExtType(n.url)" style="font-size: 14px;text-decoration: none;">下载</a>
+                </div>
               </div>
             </div>
-
-
-            &lt;!&ndash;<uploadImage
-              v-if="!field._configs.fileEdit"
-              :title="field.fieldName" :field="field" :type="'file'"
-              :position="{bodyIdx,partIdx,groupIdx,fieldIdx}" @update="updateImgFile">
-              <el-button slot="button" type="primary" size="small"
-                         :disabled="!(field._configs._staffValues.value.length>0)||!field.isEdit"
-                         @click="editImg(bodyIdx,partIdx,groupIdx,fieldIdx)">
-                <span>编辑</span>
-              </el-button>
-            </uploadImage>
-            <div v-if="field._configs.fileEdit">
-              <el-button type="danger" size="small" @click="deleteFile(bodyIdx,partIdx,groupIdx,fieldIdx)"
-                         :disabled="!field.isEdit">
-                <span>删除</span>
-              </el-button>
-              <el-button @click="cancelEditImg(bodyIdx,partIdx,groupIdx,fieldIdx)" size="small">取消</el-button>
-            </div>
-            <div class="YD_image_list">
-              <div class="YD_image_list_item"
-                   v-for="(n, index) in field._configs._staffValues.value"
-                   v-fancybox-thumbnail="[40, 40]" :data-index="index">
-                <i v-if="field._configs.fileEdit" class="bg-img YD_image_list_item_icon"
-                   :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
-                   @click="selectImg(field._configs._staffValues.value,index)"></i>
-                <img src="../../assets/ico_document.png" alt="">
-                <a :href="n.url.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
-                   :class="getExtType(n.url)" style="font-size: 14px;">下载</a>
-              </div>
-            </div>&ndash;&gt;
-          </div>-->
+          </div>
 
           <!--原来上传图片样式-->
-          <div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
+          <!--<div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
             <div class="" style="height: 10px;background: #dedede;"></div>
             <el-upload
               action="/api/v1.0/client/upload"
@@ -226,7 +214,7 @@
             </el-upload>
             <p v-show="passportUrlErrFlag">
               请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </div>
+          </div>-->
         </div>
         <div class="leavebox">
           <div class="leaveboxlft icon-stars">审批对象</div>
@@ -466,7 +454,7 @@
             <!--普通申请-->
             <div class="leave-main-content-Info" v-if="item.approvalType != -1">
               <div class="marginTop10" v-for="list in item.approvalFields">
-                <div v-if="list.fieldType != '7'">
+                <div v-if="list.fieldType != '7' && list.fieldType != '8'">
                   <h3>{{list.fieldName}}：</h3>
                   <p v-for="detail in list.approvalValues">{{detail.value}}</p>
                 </div>
@@ -475,6 +463,29 @@
                   <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
                   <p>{{detail.startTime}}至{{detail.endTime}}</p>
                 </div>
+                <!--附件-->
+                <div v-if="list.fieldType == '8'">
+                  <h3>{{list.fieldName}}：</h3>
+                  <!--图片-->
+                  <div class="YD_image_list" v-if="list.fileAttribute=='0'">
+                    <div class="YD_image_list_item"
+                         v-for="(n, index) in list.approvalValues"
+                          :data-index="index">
+                      <img @click="queryImg($event,list.approvalValues)" :src="n.value" alt="">
+                    </div>
+                  </div>
+                  <!--文件-->
+                  <div class="YD_image_list" v-if="list.fileAttribute=='1'">
+                    <div class="YD_image_list_item"
+                         v-for="(n, index) in list.approvalValues"
+                          :data-index="index">
+                      <img src="../../assets/ico_document.png" alt="">
+                      <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                         :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
+                    </div>
+                  </div>
+                </div>
+
               </div>
               <!--加班时显示加班时长-->
               <div class="marginTop10" v-if="item.approvalType == 3">
@@ -676,12 +687,14 @@
   import utilsValid from '../common/utils'
   import utils from '@/components/utils'
   import uploadImage from "./uploadImage"
+  import fancyBox from 'vue-fancybox';
   import moment from 'moment'
 
   let df = 'YYYY-MM-DD HH:mm';
   let df2 = 'YYYY-MM-DD';
   const textPattern = utilsValid.textPattern; //验证文本
   const idNumberPattern = utilsValid.idNumberPattern;
+  const getExtType = utilsValid.getExtType;
 
 
   export default {
@@ -1049,6 +1062,8 @@
       handerDataSubmit(){
         // this.showMsg("数据出错", 1);
 
+        console.log(this.fields);
+
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
           let item = this.fields[i];
@@ -1103,14 +1118,17 @@
               this.showMsg(item.fieldHint,-1);
               return false;
             }
-          }/*else if(item.fieldType == "8"){ //附件
-            if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
-              this.showMsg(item.fieldHint,-1);
-              return false;
+          }else if(item.fieldType == "8"){ //附件
+            if(item.approvalValues.length == 0 || item.approvalValues ==[]){
+              if(item.isRequired){ //必填
+                this.showMsg(item.fieldHint,-1);
+                return false;
+              }
             }
-          }*/
+          }
 
-          if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && item.fieldType != "5"){
+          //处理数据
+          if(item.fieldType != "7" && item.fieldType != "8" && item.fieldType != "3" && item.fieldType != "4" && item.fieldType != "5"){
             if(item.value != '' && item.value != null && item.value != undefined){
               approvalValues.push({
                 approvalFieldUid : item.uid,
@@ -1163,6 +1181,20 @@
                   });
                 }
               }
+            }else if(item.fieldType == "8"){ //附件
+              if(item.approvalValues.length != 0){
+                let picturearr = [];
+                for(let i = 0; i < item.approvalValues.length; i++){
+                  let detail = item.approvalValues[i];
+                  picturearr.push({
+                    approvalFieldUid : item.uid,
+                    value : detail.url,
+                    term : 0,
+                    sortnum : i
+                  });
+                }
+                approvalValues = approvalValues.concat(picturearr);
+              }
             }
           }
 
@@ -1188,8 +1220,9 @@
           }
         }
         this.applyData.approvalValues = approvalValues.concat(periodarr);
-        // console.log(555);
-        // console.log(this.applyData);
+
+        console.log(555);
+        console.log(this.applyData);
 
         Indicator.open('正在提交申请...');
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
@@ -1435,7 +1468,7 @@
         let that = this;
         setTimeout(() => {
           that.leaveSuccess = false;
-        },1500);
+        },2000);
       },
       //获取滚动条当前的位置
       getScrollTop(){
@@ -1466,31 +1499,46 @@
       },
       //上传图片文件
       updateImgFile(data){
-        this.model.bodies[data.position.bodyIdx].children[data.position.partIdx]._children[data.position.groupIdx][data.position.fieldIdx]._configs._staffValues.value.push(
-          {
-            selected: false,
-            url: data.url,
-            width: 0,
-            height: 0
-          }
-        );
+        // console.log(123456);
+        // console.log(data);
+        // console.log(data.position);
+        // console.log(this.fields[data.position.index].approvalValues);
+        this.fields[data.position.index].approvalValues.push({
+          selected: false,
+          url: data.url,
+          width: 0,
+          height: 0
+        });
+        // console.log(3333);
+        // console.log(this.fields[data.position.index]);
+
+      },
+      showUpdateError(data){
+        this.showMsg(data.fieldHint, -1);
       },
       //查看图片
       queryImg(e, list){
         fancyBox(e.target, list);
       },
       //编辑操作
-      editImg(bodyIdx, partIdx, groupIdx, fieldIdx){
+      editImg(index){
+
 //        console.log(123456789, this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value)
-        V.set(this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs, 'fileEdit', true)
+        V.set(this.fields[index], 'fileEdit', true);
+        this.fields[index].fileEdit = true;
+        // console.log(this.fields[index]);
+        // console.log(11111111111);
+
       },
       //取消删除文件
-      cancelEditImg(bodyIdx, partIdx, groupIdx, fieldIdx){
-        V.set(this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs, 'fileEdit', false);
+      cancelEditImg(index){
+        V.set(this.fields[index], 'fileEdit', false);
+        this.fields[index].fileEdit = false;
+        // console.log(this.fields[index]);
       },
       //编辑状态，删除文件
-      deleteFile(bodyIdx, partIdx, groupIdx, fieldIdx){
-        let list = this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value;
+      deleteFile(index){
+        let list = this.fields[index].approvalValues;
         for (let i = 0; i < list.length; i++) {
           if (list[i].selected) {
             list.splice(i, 1);
@@ -1498,14 +1546,14 @@
           }
         }
 //        console.log(list)
-        this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value = list;
-        this.cancelEditImg(bodyIdx, partIdx, groupIdx, fieldIdx);
+        this.fields[index].approvalValues = list;
+        this.cancelEditImg(index);
       },
       //选择删除的文件
       selectImg(list, i){
         V.set(list[i], 'selected', !list[i].selected)
       },
-
+      getExtType,
     },
     components: {
       uploadImage
@@ -2043,5 +2091,64 @@
       padding: 0 5px;
     }
   }*/
+
+  // 复写lable原有样式
+  .YD_image_list {
+    line-height: normal;
+    padding-bottom: 10px;
+    .YD_image_list_item {
+      display: inline-block;
+      position: relative;
+      /*overflow: hidden;*/
+      height: 60px;
+      width: 60px;
+      margin: 2px 5px 0 0;
+      .YD_image_list_item_icon {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .leaveboxImg{
+    &.leavebox{
+      height: auto !important;
+      padding: 0 !important;
+      &:after{content:"";display: block;height: 0;clear: both;}
+      .leaveboxImglft{
+        width: 120px;
+        font-weight: bold;
+        color: #457aa3;
+        text-align: left;
+        float: left;
+      }
+      .leaveboxImgrgt{
+        float: left;
+        box-sizing: border-box;
+        /*padding-left: 120px;*/
+        color: #1f2d3d;
+        text-align: left;
+        display: inline-block;
+        .uploadpictext{
+          margin-top: 10px;
+          line-height: 36px !important;
+          .el-upload{
+            line-height: 36px !important;
+          }
+          span{
+            font-size: 12px !important;
+          }
+        }
+      }
+
+
+    }
+
+
+  }
 
 </style>

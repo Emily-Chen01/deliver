@@ -32,7 +32,7 @@
           <!--普通审批-->
           <div class="leave-main-content-Info" v-if="item.approvalType != -1">
             <div class="marginTop10" v-for="list in item.approvalFields">
-              <div v-if="list.fieldType != '7'">
+              <div v-if="list.fieldType != '7' && list.fieldType != '8'">
                 <h3>{{list.fieldName}}：</h3>
                 <p v-for="detail in list.approvalValues">{{detail.value}}</p>
               </div>
@@ -40,6 +40,28 @@
               <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
                 <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
                 <p>{{detail.startTime}}至{{detail.endTime}}</p>
+              </div>
+              <!--附件-->
+              <div v-if="list.fieldType == '8'">
+                <h3>{{list.fieldName}}：</h3>
+                <!--图片-->
+                <div class="YD_image_list" v-if="list.fileAttribute=='0'">
+                  <div class="YD_image_list_item"
+                       v-for="(n, index) in list.approvalValues"
+                       :data-index="index">
+                    <img @click="queryImg($event,list.approvalValues)" :src="n.value" alt="">
+                  </div>
+                </div>
+                <!--文件-->
+                <div class="YD_image_list" v-if="list.fileAttribute=='1'">
+                  <div class="YD_image_list_item"
+                       v-for="(n, index) in list.approvalValues"
+                       :data-index="index">
+                    <img src="../../assets/ico_document.png" alt="">
+                    <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                       :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
+                  </div>
+                </div>
               </div>
             </div>
             <!--加班时显示加班时长-->
@@ -447,19 +469,21 @@
 <script>
   import {DatetimePicker, Navbar, TabItem, Popup, Indicator, MessageBox} from 'mint-ui';
   import ElementUI from 'element-ui'
+  import utilsValid from '../common/utils'
   import utils from '@/components/utils'
   import moment from 'moment'
 
 
   let df = 'YYYY-MM-DD HH:mm';
+  const getExtType = utilsValid.getExtType;
 
   export default {
     data(){
       return {
-//        tokenHeader: {
-//          charset: 'utf-8',
-//          openId: this.getCookie('openId')
-//        },
+        tokenHeader: {
+           charset: 'utf-8',
+           openId: this.getCookie('openId')
+        },
         selectInfo: 'a', // 申请分类的nav
         popImgSrc: '', // 查看的图片
         popupVisible: false, // 查看图片弹框
@@ -765,7 +789,8 @@
           }
         });
         return time;
-      }
+      },
+      getExtType,
     },
     components: {},
   }
@@ -890,6 +915,7 @@
           p {
             margin-top: 5px;
             color: #324057;
+            text-align: left;
           }
           .marginTop10 {
             margin-top: 10px;
@@ -1026,6 +1052,27 @@
     }
   }
 
-
+  // 复写lable原有样式
+  .YD_image_list {
+    line-height: normal;
+    padding-bottom: 10px;
+    .YD_image_list_item {
+      display: inline-block;
+      position: relative;
+      /*overflow: hidden;*/
+      height: 60px;
+      width: 60px;
+      margin: 2px 5px 0 0;
+      .YD_image_list_item_icon {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
 
 </style>
