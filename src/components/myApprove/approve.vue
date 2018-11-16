@@ -832,7 +832,7 @@
         font-size: 14px;
       }
     }
-    .mint-navbar {
+    .mint-navbar{
       background-color: #26a2ff;
       display: -webkit-box;
       display: -ms-flexbox;
@@ -944,8 +944,12 @@
         .approve-main-content-append1 {
           border-top: 1px solid #d3dce6;
           padding: 10px 0;
-          text-align: center;
+          text-align: left;
           margin-top:10px;
+          p{
+            text-align: left;
+          }
+        }
         }
       }
       .myApplyNo {
