@@ -1,13 +1,12 @@
 <template>
   <div class="attendwhite">
+    <div style="height: 0;display: none;">{{tmpnumber}}</div>
     <mt-header :title="attendReport.month+'月份考勤修订'"></mt-header>
     <div class="attendDetail">
       <p>本月异常考勤累计时间</p>
-      <p>
-        <span>迟到累计：{{attendReport.belateTimes}}次（共{{attendReport.belateTotal}}工时）</span>
-        <span>早退累计：{{attendReport.leaveearlyTimes}}次（共{{attendReport.leaveearlyTotal}}工时）</span>
-        <span class="spanlft">旷工累计: {{attendReport.absentTimes}}天(共{{attendReport.absentTotal}}工时)</span>
-      </p>
+      <p>迟到累计：{{attendReport.belateTimes}}次（共{{attendReport.belateTotal}}工时）</p>
+      <p>早退累计：{{attendReport.leaveearlyTimes}}次（共{{attendReport.leaveearlyTotal}}工时）</p>
+      <p>旷工累计: {{attendReport.absentTimes}}天(共{{attendReport.absentTotal}}工时)</p>
       <p>
         <span v-for="list in attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
       </p>
@@ -133,9 +132,9 @@
               <div v-for="(item,fieldIndex) in detail.approvalFields" :key="fieldIndex">
                 <!--单行文本 type为0-->
                 <div v-if="item.fieldType=='0'" class="leavebox">
-                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
                   <div class="leaveboxcen">
-                    <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
+                    <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" :disabled="item.code=='lengthTime' || item.fieldName=='时长（小时）'">
                   </div>
                 </div>
 
@@ -143,13 +142,13 @@
 
                 <!--多行文本 type为1-->
                 <div v-if="item.fieldType=='1'" class="leaveboxText">
-                  <div class="leaveboxText-top" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxText-top" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
                   <textarea v-model="item.value"  :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256"></textarea>
                 </div>
 
                 <!--数字 type为2-->
                 <div v-if="item.fieldType=='2'" class="leavebox">
-                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
                   <div class="leaveboxcen">
                     <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
                   </div>
@@ -157,7 +156,7 @@
 
                 <!--单选按钮 type为3-->
                 <div v-if="item.fieldType=='3'" class="forgetclock">
-                  <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
+                  <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
                   <p>
                     <el-radio-group v-model="confItemsval[item.uid]">
                       <el-radio v-for="(list, index3) in confItems[item.uid] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
@@ -169,7 +168,7 @@
 
                 <!--复选框 type为4-->
                 <div v-if="item.fieldType=='4'" class="forgetclock">
-                  <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
+                  <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
                   <p>
                     <!--忘记打卡时间-->
                     <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code=='punchTime'">
@@ -189,26 +188,27 @@
                 <!--下拉菜单 type为5-->
                 <!--请假和外出类型-->
                 <div v-if="item.fieldType=='5'" class="leavebox">
-                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
                   <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
                     <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="qingjiaclick(selectedDataHoliday, index)">
-                      <option>{{item.fieldHint}}</option>
+                            @change="qingjiaclick(selectedDataHoliday, index, fieldIndex)">
+                      <!--<option>{{item.fieldHint}}</option>-->
                       <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
                     </select>
                   </div>
                   <div class="leaveboxcen" v-if="item.code == 'outType'">
                     <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="waichuclick(selectedDataHoliday, index)">
-                      <option>{{item.fieldHint}}</option>
+                            @change="waichuclick(selectedDataHoliday, index, fieldIndex)">
+                      <!--<option>{{item.fieldHint}}</option>-->
                       <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
                     </select>
                   </div>
 
                   <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
                     <!--:class="{'colorA6':confItemsval[item.uid]===confItems[item.uid][0] && item.fieldDescr}"-->
-                    <select v-model="confItemsval[item.uid]" :class="{'colorA6': item.fieldDescr}">
-                      <option>{{item.fieldDescr}}</option>
+                    <!--:class="{'colorA6': item.fieldDescr}"-->
+                    <select v-model="confItemsval[item.uid]">
+                      <!--<option>{{item.fieldDescr}}</option>-->
                       <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
                     </select>
                   </div>
@@ -217,7 +217,7 @@
 
                 <!--日期 type为6-->
                 <div v-if="item.fieldType=='6'" class="leavebox">
-                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
                   <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index, item.uid)">
               <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
                     :class="{'colorA6':!item.value}"></span>
@@ -235,14 +235,14 @@
                     </h4>
                     <div class="pl30">
                       <div class="leavebox">
-                        <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">开始时间</div>
+                        <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">开始时间</div>
                         <div class="leaveboxcen">
                 <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
                       :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index, item.uid)"></span>
                         </div>
                       </div>
                       <div class="leavebox">
-                        <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">结束时间</div>
+                        <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">结束时间</div>
                         <div class="leaveboxcen">
                   <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
                         :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index, item.uid)"></span>
@@ -725,7 +725,8 @@
         tmpdata: '',
         currentStatus: '',
         hasNextperson: false, //是否有下一级审批人
-        isSaveState: true
+        isSaveState: true,
+        tmpnumber: "1",
       }
     },
     created: function () {
@@ -799,8 +800,9 @@
           for(let j = 0; j < item.approvalFields.length; j++){
             let list = item.approvalFields[j];
 
+            console.log(123);
             //验证数据
-            /*if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
+            if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
               if(list.value == '' || list.value ==undefined){
                 if(list.isRequired){ //必填
                   this.showMsg(list.fieldHint,-1);
@@ -854,7 +856,15 @@
                   return false;
                 }
               }
-            }*/
+            }
+
+            if(list.approvalValues.length == 0){
+              list.approvalValues.push({
+                value: '',
+                term: 0,
+                sortnum: 0
+              });
+            }
 
             if(list.fieldType == '0'){
               list.approvalValues[0].value = list.value;
@@ -863,19 +873,45 @@
             }else if(list.fieldType == '2'){
               list.approvalValues[0].value = list.value;
             }else if(list.fieldType == '3'){ //单选框
-              list.approvalValues[0].value = this.confItemsval[list.uid][0];
-
+              list.approvalValues[0].value = this.confItemsval[list.uid];
             }else if(list.fieldType == '4'){ //多选框
               for(let m = 0; m < this.confItemsval[list.uid].length; m++){
+                if(list.approvalValues.length < this.confItemsval[list.uid].length){
+                  list.approvalValues.push({
+                    value: '',
+                    term: 0,
+                    sortnum: m
+                  });
+                }
                 list.approvalValues[m].value = this.confItemsval[list.uid][m];
               }
             }else if(list.fieldType == '5'){ //下拉框
-              list.approvalValues[0].value = this.confItemsval[list.uid][0];
+              if(list.code == 'leaveType' || list.code == 'outType'){
+                if(list.value != '' && list.value !=undefined){
+                  list.approvalValues[0].value = list.value;
+                }
+              }else{
+                list.approvalValues[0].value = this.confItemsval[list.uid];
+              }
             }else if(list.fieldType == '6'){
               list.approvalValues[0].value = list.value;
             }else if(list.fieldType == '7'){
               let periodarr = [];
               let tmpapprovalValues;
+              if(!list.isRequired && list.approvalValues.length == 0){ //不是必填
+                list.approvalValues.push(
+                  {
+                    value: '',
+                    term: 0,
+                    sortnum: 0
+                  },
+                  {
+                    value: '',
+                    term: 0,
+                    sortnum: 1
+                  }
+                );
+              }
               if(this.applyWorkRefAll[list.uid].length > 1){
                 tmpapprovalValues = list.approvalValues[0];
               }
@@ -1065,31 +1101,27 @@
                 if(list.fieldType == "3"){
                   approvalValues.push({
                     approvalFieldUid : list.uid,
-                    value : this.confItemsval[list.uid][0],
+                    value : this.confItemsval[list.uid],
                     term : 0,
                     sortnum : 0
                   });
                 }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
-                  // console.log(111111);
-                  // console.log(this.confItemsval[list.uid][0]);
-
-                  approvalValues.push({
-                    approvalFieldUid : list.uid,
-                    value : this.confItemsval[list.uid][0],
-                    term : 0,
-                    sortnum : 0
-                  });
-                }else{
-                  // console.log(222222);
-                  // console.log(this.confItemsval[list.uid] || this.confItemsval[list.uid][0]);
-                  approvalValues.push({
-                    approvalFieldUid : list.uid,
-                    value : this.confItemsval[list.uid] || this.confItemsval[list.uid][0],
-                    term : 0,
-                    sortnum : 0
-                  });
+                  if(list.code == "outType" || list.code == "leaveType"){
+                    approvalValues.push({
+                      approvalFieldUid : list.uid,
+                      value : list.value,
+                      term : 0,
+                      sortnum : 0
+                    });
+                  }else{
+                    approvalValues.push({
+                      approvalFieldUid : list.uid,
+                      value : this.confItemsval[list.uid],
+                      term : 0,
+                      sortnum : 0
+                    });
+                  }
                 }
-
               }else if(list.fieldType == "4"){  //多选框
                 for(let m = 0; m < this.confItemsval[list.uid].length; m++){
                   approvalValues.push({
@@ -1125,12 +1157,6 @@
               }
 
               if(list.fieldType == "8"){
-                  // approvalValues.push({
-                  //   approvalFieldUid : list.uid,
-                  //   value : "http://www.hrsaas.hro.com/upload/201811/c79feb68-98e2-42b3-8d33-dcf00cf372a4.png",
-                  //   term : list.term,
-                  //   sortnum : list.sortnumtmp
-                  // });
                 if(list.approvalFieldValues.length != 0){
                   let picturearr = [];
                   for(let i = 0; i < list.approvalFieldValues.length; i++){
@@ -1271,108 +1297,32 @@
                 list.sortnumtmp = 0;
                 list.valuearray = [],list.valuearray2 = [];
 
-                // let fieldsval =[{
-                //   accountUid: null,
-                //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                //   companyUid: null,
-                //   isDefault: true,
-                //   isDelete: null,
-                //   key: null,
-                //   sortnum: 19,
-                //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                //   value: "多选框数据一一一"
-                // },{
-                //   accountUid: null,
-                //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                //   companyUid: null,
-                //   isDefault: true,
-                //   isDelete: null,
-                //   key: null,
-                //   sortnum: 19,
-                //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                //   value: "多选框数据二二二"
-                // }];
-
-                // if(list.fieldType == "3"){
-                //   // fieldsval =[{
-                //   //   accountUid: null,
-                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                //   //   companyUid: null,
-                //   //   isDefault: true,
-                //   //   isDelete: null,
-                //   //   key: null,
-                //   //   sortnum: 19,
-                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                //   //   value: "单选框数据一一一"
-                //   // },{
-                //   //   accountUid: null,
-                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                //   //   companyUid: null,
-                //   //   isDefault: true,
-                //   //   isDelete: null,
-                //   //   key: null,
-                //   //   sortnum: 19,
-                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                //   //   value: "单选框数据二二二"
-                //   // }];
-                //   if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
-                //     list.valuearray.push(list.approvalFieldValues[0].value);
-                //   }else{
-                //     list.valuearray = ["单选框数据一一一"];
-                //     list.approvalValues = item.approvalValues;
-                //   }
-                // }else if(list.fieldType == "4"){
-                //   // fieldsval =[{
-                //   //   accountUid: null,
-                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                //   //   companyUid: null,
-                //   //   isDefault: true,
-                //   //   isDelete: null,
-                //   //   key: null,
-                //   //   sortnum: 19,
-                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                //   //   value: "多选框数据一一一"
-                //   // },{
-                //   //   accountUid: null,
-                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                //   //   companyUid: null,
-                //   //   isDefault: true,
-                //   //   isDelete: null,
-                //   //   key: null,
-                //   //   sortnum: 19,
-                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                //   //   value: "多选框数据二二二"
-                //   // }];
-                //   if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
-                //     list.valuearray.push(list.approvalFieldValues[0].value);
-                //   }else{
-                //     list.valuearray = ["多选框数据二二二"];
-                //     list.approvalValues = fieldsval;
-                //   }
-                // }else if(list.fieldType == "5"){
-                //   if(list.approvalValues && list.approvalValues.length > 0){
-                //     list.valuearray.push(list.approvalValues[0].value);
-                //   }else{
-                //     list.valuearray = list.approvalValues;
-                //     list.approvalValues = list.approvalValues;
-                //   }
-                //
-                // }
-
-                // this.valuearray = list.valuearray;
-                // approvalFieldValues
-
                 list.valuearray = [],list.valuearray2 = [];
-                list.valuearray.push(list.approvalValues[0].value);
+                // list.valuearray.push(list.approvalValues[0].value);
                 // list.approvalFieldValues = fieldsval;
 
                 // if(list.fieldType == '3'){
                 //   this.$set(this.confItems, list.uid.toString(), list.approvalFieldValues);
                 //   this.$set(this.confItemsval, list.uid.toString(), list.approvalFieldValues[0]);
                 // }else{
-                  this.$set(this.confItems, list.uid.toString(), list.approvalValues);
-                  this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
-                // }
+
+                // approvalValues
+
+                if(list.approvalFieldValues.length > 0 && list.approvalValues.length > 0){
+                  for(let j = 0; j < list.approvalValues.length; j++){
+                    let appfieldval = list.approvalValues[j];
+                    // if(appfieldval.isDefault){
+                      if(list.fieldType == '4'){
+                        list.valuearray.push(appfieldval.value);
+                      }else{
+                        list.valuearray= appfieldval.value;
+                      }
+
+                    // }
+                  }
+                }
+                this.$set(this.confItems, list.uid.toString(), list.approvalFieldValues);
+                this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
 
 
               }else{
@@ -1386,6 +1336,8 @@
             }
           }
           this.searchApplyRecord = dateApplys;
+        }else{
+          this.searchApplyRecord = [];
         }
         // this.searchApplyRecordAll.push(this.searchApplyRecord);
         if(dateApplys!=undefined){
@@ -1670,14 +1622,32 @@
                 this.$set(this.applyWorkRefAll, item.uid.toString(), timearr);
                 this.fields.push(item);
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
+                // item.term = 0;
+                // item.sortnumtmp = 0;
+                // item.valuearray = [],item.valuearray2 = [];
+                // item.valuearray.push(item.approvalFieldValues[0].value);
+                // this.valuearray = item.valuearray;
+                // this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
+                // this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
+                // this.fields.push(item);
+
                 item.term = 0;
                 item.sortnumtmp = 0;
                 item.valuearray = [],item.valuearray2 = [];
-                item.valuearray.push(item.approvalFieldValues[0].value);
-                this.valuearray = item.valuearray;
-
+                if(item.approvalFieldValues.length > 0){
+                  for(let j = 0; j < item.approvalFieldValues.length; j++){
+                    let appfieldval = item.approvalFieldValues[j];
+                    if(appfieldval.isDefault){
+                      if(item.fieldType == '4'){
+                        item.valuearray.push(appfieldval.value);
+                      }else{
+                        item.valuearray= appfieldval.value;
+                      }
+                    }
+                  }
+                }
                 this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
-                this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
+                this.$set(this.confItemsval, item.uid.toString(), item.valuearray); //默认选中的值
                 this.fields.push(item);
 
               }else{
@@ -1898,16 +1868,19 @@
         });
 
       },
-      qingjiaclick(value, index){
+      qingjiaclick(value, index, fieldIndex){
         // this.applyData.leaveUid = value.LEAVE_INFO_UID;
         // this.fields[index].value = value.NAME;
 
         this.searchApplyRecord[index].leaveUid = value.LEAVE_INFO_UID;
-
+        this.searchApplyRecord[index].approvalFields[fieldIndex].value = value.NAME;
         this.selectHoliday = value;
+        // console.log(this.searchApplyRecord);
+        // console.log(value);
       },
       waichuclick(value, index){
-        this.fields[index].value = value.name;
+        this.searchApplyRecord[index].leaveUid = '';
+        this.searchApplyRecord[index].approvalFields[fieldIndex].value = value.name;
         this.selectHoliday = value;
       },
       // 打开查看附件弹框

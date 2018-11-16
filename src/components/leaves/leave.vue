@@ -504,11 +504,9 @@
               <div class="attendttit">原始数据</div>
               <div class="attendDetail">
                 <p>本月异常考勤累计时间</p>
-                <p>
-                  <span>迟到累计：{{item.abnormalAttendApproval.attendReport.belateTimes}}次（共{{item.abnormalAttendApproval.attendReport.belateTotal}}工时）</span>
-                  <span>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</span>
-                  <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</span>
-                </p>
+                <p>迟到累计：{{item.abnormalAttendApproval.attendReport.belateTimes}}次（共{{item.abnormalAttendApproval.attendReport.belateTotal}}工时）</p>
+                <p>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</p>
+                <p>旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</p>
                 <p>
                   <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
                 </p>
@@ -920,14 +918,32 @@
                 });
                 this.fields.push(item);
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
+                // item.term = 0;
+                // item.sortnumtmp = 0;
+                // item.valuearray = [],item.valuearray2 = [];
+                // item.valuearray.push(item.approvalFieldValues[0].value);
+                // this.valuearray = item.valuearray;
+                // this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
+                // this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
+                // this.fields.push(item);
+
                 item.term = 0;
                 item.sortnumtmp = 0;
                 item.valuearray = [],item.valuearray2 = [];
-                item.valuearray.push(item.approvalFieldValues[0].value);
-                this.valuearray = item.valuearray;
-
+                if(item.approvalFieldValues.length > 0){
+                  for(let j = 0; j < item.approvalFieldValues.length; j++){
+                    let appfieldval = item.approvalFieldValues[j];
+                    if(appfieldval.isDefault){
+                      if(item.fieldType == '4'){
+                        item.valuearray.push(appfieldval.value);
+                      }else{
+                        item.valuearray= appfieldval.value;
+                      }
+                    }
+                  }
+                }
                 this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
-                this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
+                this.$set(this.confItemsval, item.uid.toString(), item.valuearray); //默认选中的值
                 this.fields.push(item);
 
               }else{
@@ -1095,6 +1111,11 @@
             }
 
           }else if(item.fieldType == "3" || item.fieldType == "4"){ //多行文本
+            if(this.confItemsval[item.uid] == '' && item.isRequired){
+              this.showMsg(item.fieldHint,-1);
+              return false;
+            }
+          }else if(item.fieldType == "4"){
             if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
@@ -1106,7 +1127,7 @@
                 return false;
               }
             }else{
-              if((this.confItemsval[item.uid] == [] || this.confItemsval[item.uid] == undefined) && item.isRequired){
+              if((this.confItemsval[item.uid] == '' || this.confItemsval[item.uid] == undefined) && item.isRequired){
                 this.showMsg(item.fieldHint,-1);
                 return false;
               }
@@ -1147,7 +1168,7 @@
               if(this.confItemsval[item.uid] != '' && this.confItemsval[item.uid] != null && this.confItemsval[item.uid] != undefined) {
                 approvalValues.push({
                   approvalFieldUid: item.uid,
-                  value: this.confItemsval[item.uid][0],
+                  value: this.confItemsval[item.uid],
                   term: 0,
                   sortnum: 0
                 });
@@ -1180,7 +1201,7 @@
                 if(this.confItemsval[item.uid] != '' && this.confItemsval[item.uid] != null && this.confItemsval[item.uid] != undefined) {
                   approvalValues.push({
                     approvalFieldUid: item.uid,
-                    value: this.confItemsval[item.uid][0],
+                    value: this.confItemsval[item.uid],
                     term: 0,
                     sortnum: 0
                   });
