@@ -1,25 +1,8 @@
 <template>
   <div class="attendwhite">
-    <mt-header title="8月份考勤修订"></mt-header>
+    <mt-header :title="attendReport.month+'月份考勤修订'"></mt-header>
     <div class="attendDetail">
       <p>本月异常考勤累计时间</p>
-      <!--<p>
-        <span>迟到累计：2次（共3工时）</span>
-        <span>事假累计: 10天(共80工时)</span>
-      </p>
-      <p>
-        <span>早退累计：2次（共3工时）</span>
-        <span>病假累计: 10天(共80工时)</span>
-      </p>
-      <p>
-        <span class="spanlft">旷工累计: 10天(共80工时)</span>
-        <span class="spanlft">产假累计: 10天(共80工时)</span>
-      </p>
-      <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
-      <p>工作日加班累计时长：0.5天(共4小时)</p>
-      <p>周末加班累计时长：0.5天(共4小时)</p>
-      <p>法定假日加班累计时长：0.5天(共4小时)</p>-->
-
       <p>
         <span>迟到累计：{{attendReport.belateTimes}}次（共{{attendReport.belateTotal}}工时）</span>
         <span>早退累计：{{attendReport.leaveearlyTimes}}次（共{{attendReport.leaveearlyTotal}}工时）</span>
@@ -28,9 +11,9 @@
       <p>
         <span v-for="list in attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
       </p>
-      <p>工作日加班累计时长：{{attendReport.dayOvertimeDays}}天(共{{attendReport.dayOvertime}}小时)</p>
-      <p>周末加班累计时长：{{attendReport.weekendOvertimeDays}}天(共{{attendReport.weekendOvertime}}小时)</p>
-      <p>法定假日加班累计时长：{{attendReport.holidayOvertimeDays}}天(共{{attendReport.holidayOvertime}}小时)</p>
+      <p>工作日加班累计时长：{{attendReport.dayOvertime}}天(共{{attendReport.dayOvertimeDays}}小时)</p>
+      <p>周末加班累计时长：{{attendReport.weekendOvertime}}天(共{{attendReport.weekendOvertimeDays}}小时)</p>
+      <p>法定假日加班累计时长：{{attendReport.holidayOvertime}}天(共{{attendReport.holidayOvertimeDays}}小时)</p>
 
     </div>
 
@@ -59,7 +42,7 @@
           <div class="leavecontInfo" v-if="searchApplyRecord.length > 0" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 10px;">
               <!--第{{index}}个申请记录-->
               <div class="marginTop10" v-for="list in detail.approvalFields">
-                <div v-if="list.fieldType != '7'">
+                <div v-if="list.fieldType != '7' && list.fieldType != '8'">
                   <h3>{{list.fieldName}}：</h3>
                   <p v-for="detail in list.approvalValues">{{detail.value}}</p>
                 </div>
@@ -67,6 +50,28 @@
                 <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
                   <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
                   <p>{{detail.startTime}}至{{detail.endTime}}</p>
+                </div>
+                <!--附件-->
+                <div v-if="list.fieldType == '8'">
+                  <h3>{{list.fieldName}}：</h3>
+                  <!--图片-->
+                  <div class="YD_image_list" v-if="list.fileAttribute=='0'">
+                    <div class="YD_image_list_item"
+                         v-for="(n, picindex) in list.approvalValues"
+                         :data-index="picindex">
+                      <img @click="queryImg($event,list.approvalValues)" :src="n.value" alt="">
+                    </div>
+                  </div>
+                  <!--文件-->
+                  <div class="YD_image_list" v-if="list.fileAttribute=='1'">
+                    <div class="YD_image_list_item"
+                         v-for="(n, picindex) in list.approvalValues"
+                         :data-index="picindex">
+                      <img src="../../assets/ico_document.png" alt="">
+                      <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                         :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
+                    </div>
+                  </div>
                 </div>
               </div>
           </div>
@@ -125,154 +130,205 @@
               </div>
             </div>
             <div class="attendcont" style="position: relative;">
-              <div v-for="(item,index) in detail.approvalFields" :key="index">
-              <!--单行文本 type为0-->
-              <div v-if="item.fieldType=='0'" class="leavebox">
-                <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
-                <div class="leaveboxcen">
-                  <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
-                </div>
-              </div>
-
-                <!--:value="searchApplyRecord.approvalFields[index].approvalValues[0].value"-->
-
-              <!--多行文本 type为1-->
-              <div v-if="item.fieldType=='1'" class="leaveboxText">
-                <div class="leaveboxText-top" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
-                <textarea v-model="item.value"  :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256"></textarea>
-              </div>
-
-              <!--数字 type为2-->
-              <div v-if="item.fieldType=='2'" class="leavebox">
-                <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
-                <div class="leaveboxcen">
-                  <input v-model="item.approvalValues[0].value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
-                </div>
-              </div>
-
-              <!--单选按钮 type为3-->
-              <div v-if="item.fieldType=='3'" class="forgetclock">
-                <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
-                <p>
-                  <el-radio-group v-model="confItemsval[item.uid]">
-                    <el-radio v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
-                      <span>{{list.value}}</span>
-                    </el-radio>
-                  </el-radio-group>
-                </p>
-              </div>
-
-              <!--复选框 type为4-->
-              <div v-if="item.fieldType=='4'" class="forgetclock">
-                <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
-                <p>
-                  <!--忘记打卡时间-->
-                  <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code=='punchTime'">
-                    <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
-                      <span v-model="item.value">{{list}}</span>
-                    </el-checkbox>
-                  </el-checkbox-group>
-
-                  <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code!='punchTime'">
-                    <el-checkbox v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
-                      <span>{{list.value}}</span>
-                    </el-checkbox>
-                  </el-checkbox-group>
-                </p>
-              </div>
-
-              <!--下拉菜单 type为5-->
-              <!--请假和外出类型-->
-              <div v-if="item.fieldType=='5'" class="leavebox">
-                <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
-                <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
-                  <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                          @change="qingjiaclick(selectedDataHoliday, index)">
-                    <option>{{item.fieldHint}}</option>
-                    <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
-                  </select>
-                </div>
-                <div class="leaveboxcen" v-if="item.code == 'outType'">
-                  <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                          @change="waichuclick(selectedDataHoliday, index)">
-                    <option>{{item.fieldHint}}</option>
-                    <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
-                  </select>
+              <div v-for="(item,fieldIndex) in detail.approvalFields" :key="fieldIndex">
+                <!--单行文本 type为0-->
+                <div v-if="item.fieldType=='0'" class="leavebox">
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxcen">
+                    <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
+                  </div>
                 </div>
 
-                <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
-                  <!--:class="{'colorA6':confItemsval[item.uid]===confItems[item.uid][0] && item.fieldDescr}"-->
-                  <select v-model="confItemsval[item.uid]" :class="{'colorA6': item.fieldDescr}">
-                    <option>{{item.fieldDescr}}</option>
-                    <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
-                  </select>
+                  <!--:value="searchApplyRecord.approvalFields[index].approvalValues[0].value"-->
+
+                <!--多行文本 type为1-->
+                <div v-if="item.fieldType=='1'" class="leaveboxText">
+                  <div class="leaveboxText-top" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <textarea v-model="item.value"  :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256"></textarea>
                 </div>
 
-              </div>
-
-              <!--日期 type为6-->
-              <div v-if="item.fieldType=='6'" class="leavebox">
-                <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
-                <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index, item.uid)">
-            <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
-                  :class="{'colorA6':!item.value}"></span>
+                <!--数字 type为2-->
+                <div v-if="item.fieldType=='2'" class="leavebox">
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxcen">
+                    <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
+                  </div>
                 </div>
-              </div>
 
-              <!--日期区间 type为7-->
-              <!--返回多个日期时间段时，默认只取最后一个-->
-                <!--&& perioduid == item.uid-->
-              <div v-if="item.fieldType=='7'">
-                <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex" style="position: relative;">
-                  <h4 align="left" class="fc1 pr">
-                    <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
-                    <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid)">+</span>
-                  </h4>
-                  <div class="pl30">
-                    <div class="leavebox">
-                      <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">开始时间</div>
-                      <div class="leaveboxcen">
-              <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
-                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index, item.uid)"></span>
+                <!--单选按钮 type为3-->
+                <div v-if="item.fieldType=='3'" class="forgetclock">
+                  <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
+                  <p>
+                    <el-radio-group v-model="confItemsval[item.uid]">
+                      <el-radio v-for="(list, index3) in confItems[item.uid] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
+                        <span>{{list.value}}</span>
+                      </el-radio>
+                    </el-radio-group>
+                  </p>
+                </div>
+
+                <!--复选框 type为4-->
+                <div v-if="item.fieldType=='4'" class="forgetclock">
+                  <p :class="{'icon-stars':item.isDefault==true}">{{item.fieldDescr}}</p>
+                  <p>
+                    <!--忘记打卡时间-->
+                    <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code=='punchTime'">
+                      <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
+                        <span v-model="item.value">{{list}}</span>
+                      </el-checkbox>
+                    </el-checkbox-group>
+
+                    <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code!='punchTime'">
+                      <el-checkbox v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
+                        <span>{{list.value}}</span>
+                      </el-checkbox>
+                    </el-checkbox-group>
+                  </p>
+                </div>
+
+                <!--下拉菜单 type为5-->
+                <!--请假和外出类型-->
+                <div v-if="item.fieldType=='5'" class="leavebox">
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
+                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                            @change="qingjiaclick(selectedDataHoliday, index)">
+                      <option>{{item.fieldHint}}</option>
+                      <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
+                    </select>
+                  </div>
+                  <div class="leaveboxcen" v-if="item.code == 'outType'">
+                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                            @change="waichuclick(selectedDataHoliday, index)">
+                      <option>{{item.fieldHint}}</option>
+                      <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
+                    </select>
+                  </div>
+
+                  <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
+                    <!--:class="{'colorA6':confItemsval[item.uid]===confItems[item.uid][0] && item.fieldDescr}"-->
+                    <select v-model="confItemsval[item.uid]" :class="{'colorA6': item.fieldDescr}">
+                      <option>{{item.fieldDescr}}</option>
+                      <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
+                    </select>
+                  </div>
+
+                </div>
+
+                <!--日期 type为6-->
+                <div v-if="item.fieldType=='6'" class="leavebox">
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index, item.uid)">
+              <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
+                    :class="{'colorA6':!item.value}"></span>
+                  </div>
+                </div>
+
+                <!--日期区间 type为7-->
+                <!--返回多个日期时间段时，默认只取最后一个-->
+                  <!--&& perioduid == item.uid-->
+                <div v-if="item.fieldType=='7'">
+                  <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex" style="position: relative;">
+                    <h4 align="left" class="fc1 pr">
+                      <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
+                      <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid)">+</span>
+                    </h4>
+                    <div class="pl30">
+                      <div class="leavebox">
+                        <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">开始时间</div>
+                        <div class="leaveboxcen">
+                <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
+                      :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index, item.uid)"></span>
+                        </div>
+                      </div>
+                      <div class="leavebox">
+                        <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">结束时间</div>
+                        <div class="leaveboxcen">
+                  <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
+                        :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index, item.uid)"></span>
+                        </div>
                       </div>
                     </div>
-                    <div class="leavebox">
-                      <div class="leaveboxlft" :class="{'icon-stars':item.isDefault==true}">结束时间</div>
-                      <div class="leaveboxcen">
-                <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
-                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index, item.uid)"></span>
+                  </div>
+                  <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">
+                    <mt-button type="primary"
+                               @click.native="addTime(item.uid)">
+                      <span> +添加时间 </span>
+                      <!--<span v-if="item.code=='leaveTime'"> +添加事假时间</span>-->
+                      <!--<span v-if="item.code=='outTime'"> +添加新的加班时间段</span>-->
+                    </mt-button>
+                  </div>
+                </div>
+
+
+                <!--附件 type为8-->
+                <div v-if="item.fieldType=='8'" class="leavebox leaveboxImg">
+                  <div class="leaveboxImglft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxImgrgt uploadpictext" @click="openPicker(0, 0, item.fieldType, index)">
+                    <uploadImage
+                      v-if="!item.fileEdit"
+                      :title="item.fieldName" :field="item" :type="item.fileAttribute"
+                      :position="{index,fieldIndex}" @update="updateImgFile" @updateerror="showUpdateError">
+                      <el-button slot="button" type="primary" size="small"
+                                 @click="editImg(index, fieldIndex)" :disabled="!(item.approvalFieldValues.length>0)">
+                        <span>编辑</span>
+                      </el-button>
+                    </uploadImage>
+                    <div v-if="item.fileEdit">
+                      <!--:disabled="!item.isEdit"-->
+                      <el-button type="danger" size="small" @click="deleteFile(index, fieldIndex)">
+                        <span>删除{{item.isEdit}}</span>
+                      </el-button>
+                      <el-button @click="cancelEditImg(index, fieldIndex)" size="small">取消</el-button>
+                    </div>
+                    <!--图片-->
+                    <div class="YD_image_list" v-if="item.fileAttribute=='0'">
+                      <div class="YD_image_list_item"
+                           v-for="(n, picindex) in item.approvalFieldValues"
+                           v-fancybox-thumbnail="[n.width, n.height]" :data-index="picindex">
+                        <img v-if="!item.fileEdit" @click="queryImg($event,item.approvalFieldValues)"
+                             :src="n.url" alt="">
+                        <!--<i v-if="field._configs.fileEdit" class="bg-img ico_select_1" :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"-->
+                        <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
+                        <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
+                           :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                           @click="selectImg(item.approvalFieldValues,picindex)"></i>
+                        <img v-if="item.fileEdit" :src="n.url" alt="">
+                      </div>
+                    </div>
+                    <!--文件-->
+                    <div class="YD_image_list" v-if="item.fileAttribute=='1'">
+                      <div class="YD_image_list_item"
+                           v-for="(n, picindex) in item.approvalFieldValues"
+                           v-fancybox-thumbnail="[40, 40]" :data-index="index">
+                        <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
+                           :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
+                           @click="selectImg(item.approvalFieldValues,picindex)"></i>
+                        <img src="../../assets/ico_document.png" alt="">
+                        <a :href="n.url.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                           :class="getExtType(n.url)" style="font-size: 14px;text-decoration: none;">下载</a>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">
-                  <mt-button type="primary"
-                             @click.native="addTime(item.uid)">
-                    <span> +添加时间 </span>
-                    <!--<span v-if="item.code=='leaveTime'"> +添加事假时间</span>-->
-                    <!--<span v-if="item.code=='outTime'"> +添加新的加班时间段</span>-->
-                  </mt-button>
-                </div>
-              </div>
 
+                <!--<div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
+                  <div class="" style="height: 10px;background: #dedede;"></div>
+                  <el-upload
+                    action="/api/v1.0/client/upload"
+                    name="files"
+                    :show-file-list="false"
+                    :headers="tokenHeader"
+                    :on-success="passportUrlOk"
+                    :before-upload="beforePassportUrl">
+                    <div class="leavebox-upload"
+                         :style="{'background-image': 'url('+(item.value ? item.value : imgSrc.shenFenIconShowCamera)+')'}"></div>
+                  </el-upload>
+                  <p v-show="passportUrlErrFlag">
+                    请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
+                </div>-->
 
-              <!--附件 type为8-->
-              <div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
-                <div class="" style="height: 10px;background: #dedede;"></div>
-                <el-upload
-                  action="/api/v1.0/client/upload"
-                  name="files"
-                  :show-file-list="false"
-                  :headers="tokenHeader"
-                  :on-success="passportUrlOk"
-                  :before-upload="beforePassportUrl">
-                  <div class="leavebox-upload"
-                       :style="{'background-image': 'url('+(item.value ? item.value : imgSrc.shenFenIconShowCamera)+')'}"></div>
-                </el-upload>
-                <p v-show="passportUrlErrFlag">
-                  请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
               </div>
-            </div>
             </div>
             <div class="leavebox">
               <div class="leaveboxlft icon-stars">审批对象</div>
@@ -446,12 +502,19 @@
 </template>
 <script>
   import {DatetimePicker, Navbar, TabItem, Popup, Indicator, MessageBox} from 'mint-ui';
+  import V from 'vue'
   import fullCalendar from '@/components/vue-partcalendar/src/partCalendar'
+  import utilsValid from '../common/utils'
+  import uploadImage from "../leaves/uploadImage"
+  import fancyBox from 'vue-fancybox';
   import moment from 'moment'
   let df = 'YYYY-MM-DD HH:mm';
   let df1 = 'YYYY/MM';
   let df2 = 'YYYY/MM/DD';
   let df3 = 'YYYY-MM-DD';
+  const textPattern = utilsValid.textPattern; //验证文本
+  const idNumberPattern = utilsValid.idNumberPattern;
+  const getExtType = utilsValid.getExtType;
 
   export default {
 //    abnormal=异常   normal=正常   leave=请假   这个定的值是封装在日历里面定义好的颜色
@@ -730,9 +793,131 @@
         this.isSaveState = true; //不保存
       },
       saverevisetmp(){
+
+        for(let i = 0; i < this.searchApplyRecord.length; i++){
+          let item = this.searchApplyRecord[i];
+          for(let j = 0; j < item.approvalFields.length; j++){
+            let list = item.approvalFields[j];
+
+            //验证数据
+            /*if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
+              if(list.value == '' || list.value ==undefined){
+                if(list.isRequired){ //必填
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }else{
+                if((list.fieldType == "0" || list.fieldType == "1") && list.fieldName != "时长（小时）" && (!list.isDefault)){
+                  if ( !textPattern[list.conditions.join('')].test(list.value) ) {
+                    this.showMsg(list.fieldHint,-1);
+                    return false;
+                  }
+                }else if(list.fieldType == "2" && (!list.isDefault)){ //数字
+                  if ( !textPattern[3].test(list.value) ) {
+                    this.showMsg(list.fieldHint,-1);
+                    return false;
+                  }
+                }
+              }
+
+            }else if(list.fieldType == "3" || list.fieldType == "4"){ //多行文本
+              if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid].length == 0) && list.isRequired){
+                this.showMsg(list.fieldHint,-1);
+                return false;
+              }
+            }else if(list.fieldType == "5"){ //下拉选框（请假类型和外出类型）
+              if(list.code == 'leaveType' || list.code == 'outType'){
+                if((list.value == '' || list.value ==undefined) && list.isRequired){
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }else{
+                if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid] == undefined) && list.isRequired){
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }
+            }else if(list.fieldType == "6"){
+              if((list.value == '' || list.value ==undefined) && list.isRequired){
+                this.showMsg(list.fieldHint,-1);
+                return false;
+              }
+            }else if(list.fieldType == "7"){ //日期和日期时间段
+              if((this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == '') && list.isRequired){
+                this.showMsg(list.fieldHint,-1);
+                return false;
+              }
+            }else if(list.fieldType == "8"){ //附件
+              if(list.approvalFieldValues.length == 0 || list.approvalFieldValues ==[]){
+                if(list.isRequired){ //必填
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }
+            }*/
+
+            if(list.fieldType == '0'){
+              list.approvalValues[0].value = list.value;
+            }else if(list.fieldType == '1'){
+              list.approvalValues[0].value = list.value;
+            }else if(list.fieldType == '2'){
+              list.approvalValues[0].value = list.value;
+            }else if(list.fieldType == '3'){ //单选框
+              list.approvalValues[0].value = this.confItemsval[list.uid][0];
+
+            }else if(list.fieldType == '4'){ //多选框
+              for(let m = 0; m < this.confItemsval[list.uid].length; m++){
+                list.approvalValues[m].value = this.confItemsval[list.uid][m];
+              }
+            }else if(list.fieldType == '5'){ //下拉框
+              list.approvalValues[0].value = this.confItemsval[list.uid][0];
+            }else if(list.fieldType == '6'){
+              list.approvalValues[0].value = list.value;
+            }else if(list.fieldType == '7'){
+              let periodarr = [];
+              let tmpapprovalValues;
+              if(this.applyWorkRefAll[list.uid].length > 1){
+                tmpapprovalValues = list.approvalValues[0];
+              }
+
+              for(let n = 0; n < this.applyWorkRefAll[list.uid].length; n++){
+                let itemtwo = this.applyWorkRefAll[list.uid][n];
+                for(let h = 0; h < 2; h++){
+                  let timecurr,currnum;
+                  if(h == 0){
+                    timecurr = itemtwo.startTime;
+                  }else if(h == 1){
+                    timecurr = itemtwo.endTime;
+                  }
+                  currnum = parseInt((n*2)+h);
+
+                  if(n > 0){
+                    list.approvalValues.push(tmpapprovalValues);
+                    list.approvalValues[currnum].value = timecurr;
+                    list.approvalValues[currnum].term = n;
+                    list.approvalValues[currnum].sortnum = h;
+                  }else{
+                    list.approvalValues[currnum].value = timecurr;
+                  }
+
+                }
+              }
+            }else if(list.fieldType == '8'){
+              list.approvalValues = list.approvalFieldValues;
+            }
+
+          }
+        }
+        this.dateApplys[this.daycurrent] = this.searchApplyRecord;
+
+        // console.log(111111111);
+        // console.log(this.searchApplyRecord);
+        // console.log(this.searchApplyRecordAll);
+
         this.isSaveState = true;  //判断是否保存
         this.showRevise = true;
         this.hasSave = false;
+
       },
       savereviseNot(){
         this.showRevise = true;
@@ -810,6 +995,62 @@
             //   sortnum : list.sortnumtmp
             // });
 
+            /*//验证数据
+            if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
+              if(list.value == '' || list.value ==undefined){
+                if(list.isRequired){ //必填
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }else{
+                if((list.fieldType == "0" || list.fieldType == "1") && list.fieldName != "时长（小时）" && (!list.isDefault)){
+                  if ( !textPattern[list.conditions.join('')].test(list.value) ) {
+                    this.showMsg(list.fieldHint,-1);
+                    return false;
+                  }
+                }else if(list.fieldType == "2" && (!list.isDefault)){ //数字
+                  if ( !textPattern[3].test(list.value) ) {
+                    this.showMsg(list.fieldHint,-1);
+                    return false;
+                  }
+                }
+              }
+
+            }else if(list.fieldType == "3" || list.fieldType == "4"){ //多行文本
+              if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid].length == 0) && list.isRequired){
+                this.showMsg(list.fieldHint,-1);
+                return false;
+              }
+            }else if(list.fieldType == "5"){ //下拉选框（请假类型和外出类型）
+              if(list.code == 'leaveType' || list.code == 'outType'){
+                if((list.value == '' || list.value ==undefined) && list.isRequired){
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }else{
+                if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid] == undefined) && list.isRequired){
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }
+            }else if(list.fieldType == "6"){
+              if((list.value == '' || list.value ==undefined) && list.isRequired){
+                this.showMsg(list.fieldHint,-1);
+                return false;
+              }
+            }else if(list.fieldType == "7"){ //日期和日期时间段
+              if((this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == '') && list.isRequired){
+                this.showMsg(list.fieldHint,-1);
+                return false;
+              }
+            }else if(list.fieldType == "8"){ //附件
+              if(list.approvalFieldValues.length == 0 || list.approvalFieldValues ==[]){
+                if(list.isRequired){ //必填
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }
+            }*/
 
             if(list.fieldType != "7" && list.fieldType != "8" && list.fieldType != "3" && list.fieldType != "4" && (list.fieldType != "5" && list.code != "outType" && list.code !="leaveType")){
               approvalValues.push({
@@ -821,7 +1062,14 @@
             }else{
               // list.fieldType == "3" || (list.fieldType == "5" && list.code != "outType"
               if(list.fieldType == "3" || list.fieldType == "5"){  //单选框
-                if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
+                if(list.fieldType == "3"){
+                  approvalValues.push({
+                    approvalFieldUid : list.uid,
+                    value : this.confItemsval[list.uid][0],
+                    term : 0,
+                    sortnum : 0
+                  });
+                }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
                   // console.log(111111);
                   // console.log(this.confItemsval[list.uid][0]);
 
@@ -877,12 +1125,25 @@
               }
 
               if(list.fieldType == "8"){
-                  approvalValues.push({
-                    approvalFieldUid : list.uid,
-                    value : "http://www.hrsaas.hro.com/upload/201811/c79feb68-98e2-42b3-8d33-dcf00cf372a4.png",
-                    term : list.term,
-                    sortnum : list.sortnumtmp
-                  });
+                  // approvalValues.push({
+                  //   approvalFieldUid : list.uid,
+                  //   value : "http://www.hrsaas.hro.com/upload/201811/c79feb68-98e2-42b3-8d33-dcf00cf372a4.png",
+                  //   term : list.term,
+                  //   sortnum : list.sortnumtmp
+                  // });
+                if(list.approvalFieldValues.length != 0){
+                  let picturearr = [];
+                  for(let i = 0; i < list.approvalFieldValues.length; i++){
+                    let detail = list.approvalFieldValues[i];
+                    picturearr.push({
+                      approvalFieldUid : list.uid,
+                      value : detail.url,
+                      term : 0,
+                      sortnum : i
+                    });
+                  }
+                  approvalValues = approvalValues.concat(picturearr);
+                }
               }
 
             }
@@ -1010,212 +1271,108 @@
                 list.sortnumtmp = 0;
                 list.valuearray = [],list.valuearray2 = [];
 
-                /*let fieldsval =[{
-                  accountUid: null,
-                  approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                  companyUid: null,
-                  isDefault: true,
-                  isDelete: null,
-                  key: null,
-                  sortnum: 19,
-                  uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                  value: "多选框数据一一一"
-                },{
-                  accountUid: null,
-                  approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                  companyUid: null,
-                  isDefault: true,
-                  isDelete: null,
-                  key: null,
-                  sortnum: 19,
-                  uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                  value: "多选框数据二二二"
-                }];
+                // let fieldsval =[{
+                //   accountUid: null,
+                //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
+                //   companyUid: null,
+                //   isDefault: true,
+                //   isDelete: null,
+                //   key: null,
+                //   sortnum: 19,
+                //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
+                //   value: "多选框数据一一一"
+                // },{
+                //   accountUid: null,
+                //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
+                //   companyUid: null,
+                //   isDefault: true,
+                //   isDelete: null,
+                //   key: null,
+                //   sortnum: 19,
+                //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
+                //   value: "多选框数据二二二"
+                // }];
 
-                if(list.fieldType == "3"){
-                  fieldsval =[{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "单选框数据一一一"
-                  },{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "单选框数据二二二"
-                  }];
-                  if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
-                    list.valuearray.push(list.approvalFieldValues[0].value);
-                  }else{
-                    list.valuearray = ["单选框数据一一一"];
-                    list.approvalValues = fieldsval;
-                  }
-                }else if(list.fieldType == "4"){
-                  fieldsval =[{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "多选框数据一一一"
-                  },{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "多选框数据二二二"
-                  }];
-                  if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
-                    list.valuearray.push(list.approvalFieldValues[0].value);
-                  }else{
-                    list.valuearray = ["多选框数据二二二"];
-                    list.approvalValues = fieldsval;
-                  }
-                }else if(list.fieldType == "5"){
-                  fieldsval =[{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "下拉菜单数据一一一"
-                  },{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "下拉菜单数据二二二"
-                  }];
-                  if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
-                    list.valuearray.push(list.approvalFieldValues[0].value);
-                  }else{
-                    list.valuearray = ["下拉菜单数据二二二"];
-                    list.approvalValues = fieldsval;
-                  }
-                }*/
+                // if(list.fieldType == "3"){
+                //   // fieldsval =[{
+                //   //   accountUid: null,
+                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
+                //   //   companyUid: null,
+                //   //   isDefault: true,
+                //   //   isDelete: null,
+                //   //   key: null,
+                //   //   sortnum: 19,
+                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
+                //   //   value: "单选框数据一一一"
+                //   // },{
+                //   //   accountUid: null,
+                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
+                //   //   companyUid: null,
+                //   //   isDefault: true,
+                //   //   isDelete: null,
+                //   //   key: null,
+                //   //   sortnum: 19,
+                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
+                //   //   value: "单选框数据二二二"
+                //   // }];
+                //   if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
+                //     list.valuearray.push(list.approvalFieldValues[0].value);
+                //   }else{
+                //     list.valuearray = ["单选框数据一一一"];
+                //     list.approvalValues = item.approvalValues;
+                //   }
+                // }else if(list.fieldType == "4"){
+                //   // fieldsval =[{
+                //   //   accountUid: null,
+                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
+                //   //   companyUid: null,
+                //   //   isDefault: true,
+                //   //   isDelete: null,
+                //   //   key: null,
+                //   //   sortnum: 19,
+                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
+                //   //   value: "多选框数据一一一"
+                //   // },{
+                //   //   accountUid: null,
+                //   //   approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
+                //   //   companyUid: null,
+                //   //   isDefault: true,
+                //   //   isDelete: null,
+                //   //   key: null,
+                //   //   sortnum: 19,
+                //   //   uid: "37b2e182ff92439f90ea499c6e8bc54f",
+                //   //   value: "多选框数据二二二"
+                //   // }];
+                //   if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
+                //     list.valuearray.push(list.approvalFieldValues[0].value);
+                //   }else{
+                //     list.valuearray = ["多选框数据二二二"];
+                //     list.approvalValues = fieldsval;
+                //   }
+                // }else if(list.fieldType == "5"){
+                //   if(list.approvalValues && list.approvalValues.length > 0){
+                //     list.valuearray.push(list.approvalValues[0].value);
+                //   }else{
+                //     list.valuearray = list.approvalValues;
+                //     list.approvalValues = list.approvalValues;
+                //   }
+                //
+                // }
 
-                let fieldsval =[{
-                  accountUid: null,
-                  approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                  companyUid: null,
-                  isDefault: true,
-                  isDelete: null,
-                  key: null,
-                  sortnum: 19,
-                  uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                  value: "多选框数据一一一"
-                },{
-                  accountUid: null,
-                  approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                  companyUid: null,
-                  isDefault: true,
-                  isDelete: null,
-                  key: null,
-                  sortnum: 19,
-                  uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                  value: "多选框数据二二二"
-                }];
+                // this.valuearray = list.valuearray;
+                // approvalFieldValues
 
-                if(list.fieldType == "3"){
-                  fieldsval =[{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "单选框数据一一一"
-                  },{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "单选框数据二二二"
-                  }];
-                  if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
-                    list.valuearray.push(list.approvalFieldValues[0].value);
-                  }else{
-                    list.valuearray = ["单选框数据一一一"];
-                    list.approvalValues = item.approvalValues;
-                  }
-                }else if(list.fieldType == "4"){
-                  fieldsval =[{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "多选框数据一一一"
-                  },{
-                    accountUid: null,
-                    approvalFieldUid: "455acc84b82a457f952e18483e19c1e8",
-                    companyUid: null,
-                    isDefault: true,
-                    isDelete: null,
-                    key: null,
-                    sortnum: 19,
-                    uid: "37b2e182ff92439f90ea499c6e8bc54f",
-                    value: "多选框数据二二二"
-                  }];
-                  if(list.approvalFieldValues && list.approvalFieldValues.length > 0){
-                    list.valuearray.push(list.approvalFieldValues[0].value);
-                  }else{
-                    list.valuearray = ["多选框数据二二二"];
-                    list.approvalValues = fieldsval;
-                  }
-                }else if(list.fieldType == "5"){
-                  if(list.approvalValues && list.approvalValues.length > 0){
-                    list.valuearray.push(list.approvalValues[0].value);
-                  }else{
-                    list.valuearray = list.approvalValues;
-                    list.approvalValues = list.approvalValues;
-                  }
+                list.valuearray = [],list.valuearray2 = [];
+                list.valuearray.push(list.approvalValues[0].value);
+                // list.approvalFieldValues = fieldsval;
 
-                }
-
-                this.valuearray = list.valuearray;
-                list.approvalFieldValues = fieldsval;
-
-                if(list.fieldType == '3'){
-                  this.$set(this.confItems, list.uid.toString(), list.approvalFieldValues);
-                  this.$set(this.confItemsval, list.uid.toString(), "多选框数据二二二");
-                }else{
-                  this.$set(this.confItems, list.uid.toString(), list.approvalFieldValues);
+                // if(list.fieldType == '3'){
+                //   this.$set(this.confItems, list.uid.toString(), list.approvalFieldValues);
+                //   this.$set(this.confItemsval, list.uid.toString(), list.approvalFieldValues[0]);
+                // }else{
+                  this.$set(this.confItems, list.uid.toString(), list.approvalValues);
                   this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
-                }
+                // }
 
 
               }else{
@@ -1891,9 +2048,69 @@
         });
 
       },
+      showMsg(msg, number){
+        this.leaveSuccess = true;
+        if(number == 1){
+          this.alertSuccessImage = true;
+        }else if(number == -1){
+          this.alertSuccessImage = false;
+        }
+        this.alertMessage = msg;
+        let that = this;
+        setTimeout(() => {
+          that.leaveSuccess = false;
+        },2000);
+      },
+      //上传图片文件
+      updateImgFile(data){
+        console.log(3333);
+        this.searchApplyRecord[data.position.index].approvalFields[data.position.fieldIndex].approvalFieldValues.push({
+          selected: false,
+          url: data.url,
+          value: data.url,
+          width: 0,
+          height: 0
+        });
+        console.log(2222);
+      },
+      showUpdateError(data){
+        this.showMsg(data.fieldHint, -1);
+      },
+      //查看图片
+      queryImg(e, list){
+        fancyBox(e.target, list);
+      },
+      //编辑操作
+      editImg(index, fieldIndex){
+        V.set(this.searchApplyRecord[index].approvalFields[fieldIndex], 'fileEdit', true);
+        this.searchApplyRecord[index].approvalFields[fieldIndex].fileEdit = true;
+      },
+      //取消删除文件
+      cancelEditImg(index, fieldIndex){
+        V.set(this.searchApplyRecord[index].approvalFields[fieldIndex], 'fileEdit', false);
+        this.searchApplyRecord[index].approvalFields[fieldIndex].fileEdit = false;
+      },
+      //编辑状态，删除文件
+      deleteFile(index, fieldIndex){
+        let list = this.searchApplyRecord[index].approvalFields[fieldIndex].approvalFieldValues;
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].selected) {
+            list.splice(i, 1);
+            i--;
+          }
+        }
+        this.searchApplyRecord[index].approvalFields[fieldIndex].approvalFieldValues;
+        this.cancelEditImg(index, fieldIndex);
+      },
+      //选择删除的文件
+      selectImg(list, i){
+        V.set(list[i], 'selected', !list[i].selected)
+      },
+      getExtType,
     },
     components: {
-      fullCalendar
+      fullCalendar,
+      uploadImage
     }
   }
 </script>
@@ -2409,6 +2626,28 @@
     .btnrefuse{
       width: 45%;
       float: right;
+    }
+  }
+  // 复写lable原有样式
+  .YD_image_list {
+    line-height: normal;
+    padding-bottom: 10px;
+    .YD_image_list_item {
+      display: inline-block;
+      position: relative;
+      /*overflow: hidden;*/
+      height: 60px;
+      width: 60px;
+      margin: 2px 5px 0 0;
+      .YD_image_list_item_icon {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 </style>

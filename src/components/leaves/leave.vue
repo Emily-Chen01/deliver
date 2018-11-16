@@ -515,7 +515,10 @@
                 <p>
                   <span class="spanlft">产假累计: 10天(共80工时)</span>
                 </p>
-                <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
+                <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
+                <p>
+                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+                </p>
                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertime}}小时)</p>
                 <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertime}}小时)</p>
                 <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertime}}小时)</p>
@@ -542,9 +545,9 @@
                   <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
                 </p>
 
-                <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}小时)</p>
-                <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}小时)</p>
-                <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}小时)</p>
+                <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}小时)</p>
+                <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}小时)</p>
+                <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}小时)</p>
               </div>
               <div class="btnlookdet">
                 <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail(item.uid)">
@@ -1062,7 +1065,9 @@
       handerDataSubmit(){
         // this.showMsg("数据出错", 1);
 
-        console.log(this.fields);
+        if(this.selectedDataApply != '0'){
+          this.applyData.leaveUid = '';
+        }
 
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
@@ -1142,7 +1147,7 @@
               if(this.confItemsval[item.uid] != '' && this.confItemsval[item.uid] != null && this.confItemsval[item.uid] != undefined) {
                 approvalValues.push({
                   approvalFieldUid: item.uid,
-                  value: this.confItemsval[item.uid],
+                  value: this.confItemsval[item.uid][0],
                   term: 0,
                   sortnum: 0
                 });
@@ -1175,7 +1180,7 @@
                 if(this.confItemsval[item.uid] != '' && this.confItemsval[item.uid] != null && this.confItemsval[item.uid] != undefined) {
                   approvalValues.push({
                     approvalFieldUid: item.uid,
-                    value: this.confItemsval[item.uid],
+                    value: this.confItemsval[item.uid][0],
                     term: 0,
                     sortnum: 0
                   });
@@ -1295,6 +1300,7 @@
       waichuclick(value, index){
         this.fields[index].value = value.name;
         this.selectHoliday = value;
+        this.applyData.leaveUid = '';
       },
       // 打开查看附件弹框
       lookImages(imgSrc){

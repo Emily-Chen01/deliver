@@ -117,9 +117,9 @@
                 <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
               </p>
 
-              <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}小时)</p>
-              <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}小时)</p>
-              <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}小时)</p>
+              <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}小时)</p>
+              <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}小时)</p>
+              <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}小时)</p>
             </div>
             <div class="btnlookdet" style="margin-bottom:10px;">
               <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail(item.uid)">
@@ -542,6 +542,7 @@
         this.$http.post(url, params).then(response => { //提交请假申请
           // Indicator.close();
           this.hasNextperson = false;
+          MessageBox.close();
           if (response.body.code === 200) {
             this.changeShow('1');
             this.selectInfo = 'b';
@@ -563,7 +564,7 @@
         arr.push(this.currentItem.uid);
         let params = {
           applyUids: arr,  //申请uid
-          status: 0, //状态（0待审批，1同意，3拒绝）
+          status: 1, //状态（0待审批，1同意，3拒绝）
           nextApprover: row.UID, //下一个审批人uid 自定义流程使用
           flowWhy: this.currentItem.why, //原因
         };
@@ -571,6 +572,7 @@
         Indicator.open('正在处理中...');
         this.$http.post(url, params).then(response => { //提交请假申请
           Indicator.close();
+          MessageBox.close();
           if (response.body.code === 200) {
             this.changeShow('1');
             this.selectInfo = 'b';
@@ -1069,10 +1071,4 @@
         bottom: 5px;
       }
       img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-
-</style>
+        wi
