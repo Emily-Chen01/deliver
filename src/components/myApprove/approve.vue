@@ -950,7 +950,6 @@
             text-align: left;
           }
         }
-        }
       }
       .myApplyNo {
         width: 100%;
@@ -1075,4 +1074,10 @@
         bottom: 5px;
       }
       img {
-        wi
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+</style>
