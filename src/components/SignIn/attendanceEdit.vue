@@ -116,7 +116,7 @@
 
         <!--修改申请表单内容，有多个数据-->
         <div class="reviseconttwo" v-show="!showRevise">
-          <div class="leave-main-box" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 20px;">
+          <div class="leave-main-box" v-if="detail.status==0" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 20px;">
 
             <!--这是第{{index}}个申请表单-->
             <div class="leavebox">

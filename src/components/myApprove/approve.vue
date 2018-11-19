@@ -942,7 +942,7 @@
         .approve-main-content-append1 {
           border-top: 1px solid #d3dce6;
           padding: 10px 0;
-          text-align: left;
+          text-align: center;
           margin-top:10px;
           p{
             text-align: left;
