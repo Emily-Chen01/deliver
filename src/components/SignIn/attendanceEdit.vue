@@ -13,7 +13,6 @@
       <p>工作日加班累计时长：{{attendReport.dayOvertime}}天(共{{attendReport.dayOvertimeDays}}小时)</p>
       <p>周末加班累计时长：{{attendReport.weekendOvertime}}天(共{{attendReport.weekendOvertimeDays}}小时)</p>
       <p>法定假日加班累计时长：{{attendReport.holidayOvertime}}天(共{{attendReport.holidayOvertimeDays}}小时)</p>
-
     </div>
 
     <full-calendar
@@ -138,8 +137,6 @@
                   </div>
                 </div>
 
-                  <!--:value="searchApplyRecord.approvalFields[index].approvalValues[0].value"-->
-
                 <!--多行文本 type为1-->
                 <div v-if="item.fieldType=='1'" class="leaveboxText">
                   <div class="leaveboxText-top" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
@@ -154,12 +151,72 @@
                   </div>
                 </div>
 
+                <!--&lt;!&ndash;单选按钮 type为3&ndash;&gt;
+                <div v-if="item.fieldType=='3'" class="forgetclock">
+                  <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
+                  <p>
+                    <el-radio-group v-model="confItemsAllval[(index).toString()][item.uid]">
+                      <el-radio v-for="(list, index3) in confItemsAll[(index).toString()][item.uid] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
+                        <span>{{list.value}}</span>
+                      </el-radio>
+                    </el-radio-group>
+                  </p>
+                </div>
+
+                &lt;!&ndash;复选框 type为4&ndash;&gt;
+                <div v-if="item.fieldType=='4'" class="forgetclock">
+                  <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
+                  <p>
+                    &lt;!&ndash;忘记打卡时间&ndash;&gt;
+                    <el-checkbox-group v-model="confItemsAllval[(index).toString()][item.uid]" v-if="item.code=='punchTime'">
+                      <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
+                        <span v-model="item.value">{{list}}</span>
+                      </el-checkbox>
+                    </el-checkbox-group>
+
+                    <el-checkbox-group v-model="confItemsAllval[(index).toString()][item.uid]" v-if="item.code!='punchTime'">
+                      <el-checkbox v-for="(list, index) in confItemsAll[(index).toString()][item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
+                        <span>{{list.value}}</span>
+                      </el-checkbox>
+                    </el-checkbox-group>
+                  </p>
+                </div>
+
+                &lt;!&ndash;下拉菜单 type为5&ndash;&gt;
+                &lt;!&ndash;请假和外出类型&ndash;&gt;
+                <div v-if="item.fieldType=='5'" class="leavebox">
+                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
+                  <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
+                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                            @change="qingjiaclick(selectedDataHoliday, index, fieldIndex)">
+                      &lt;!&ndash;<option>{{item.fieldHint}}</option>&ndash;&gt;
+                      <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
+                    </select>
+                  </div>
+                  <div class="leaveboxcen" v-if="item.code == 'outType'">
+                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                            @change="waichuclick(selectedDataHoliday, index, fieldIndex)">
+                      &lt;!&ndash;<option>{{item.fieldHint}}</option>&ndash;&gt;
+                      <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
+                    </select>
+                  </div>
+
+                  <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
+                    &lt;!&ndash;:class="{'colorA6':confItemsAllval[(index).toString()][item.uid]===confItemsAll[(index).toString()][item.uid][0] && item.fieldDescr}"&ndash;&gt;
+                    &lt;!&ndash;:class="{'colorA6': item.fieldDescr}"&ndash;&gt;
+                    <select v-model="confItemsAllval[(index).toString()][item.uid]">
+                      &lt;!&ndash;<option>{{item.fieldDescr}}</option>&ndash;&gt;
+                      <option v-for="option in confItemsAll[(index).toString()][item.uid]" :value="option.value">{{option.value}}</option>
+                    </select>
+                  </div>
+                </div>-->
+
                 <!--单选按钮 type为3-->
                 <div v-if="item.fieldType=='3'" class="forgetclock">
                   <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
                   <p>
-                    <el-radio-group v-model="confItemsval[item.uid]">
-                      <el-radio v-for="(list, index3) in confItems[item.uid] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
+                    <el-radio-group v-model="confItemsval[(index+item.uid).toString()]">
+                      <el-radio v-for="(list, index3) in confItems[(index+item.uid).toString()] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
                         <span>{{list.value}}</span>
                       </el-radio>
                     </el-radio-group>
@@ -171,14 +228,14 @@
                   <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
                   <p>
                     <!--忘记打卡时间-->
-                    <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code=='punchTime'">
+                    <el-checkbox-group v-model="confItemsval[(index+item.uid).toString()]" v-if="item.code=='punchTime'">
                       <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
                         <span v-model="item.value">{{list}}</span>
                       </el-checkbox>
                     </el-checkbox-group>
 
-                    <el-checkbox-group v-model="confItemsval[item.uid]" v-if="item.code!='punchTime'">
-                      <el-checkbox v-for="(list, index) in confItems[item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
+                    <el-checkbox-group v-model="confItemsval[(index+item.uid).toString()]" v-if="item.code!='punchTime'">
+                      <el-checkbox v-for="(list, index4) in confItems[(index+item.uid).toString()] || []" :label="list.value" :key="index4" :class="{'checkblock':item.orientation==1}">
                         <span>{{list.value}}</span>
                       </el-checkbox>
                     </el-checkbox-group>
@@ -189,30 +246,37 @@
                 <!--请假和外出类型-->
                 <div v-if="item.fieldType=='5'" class="leavebox">
                   <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-                  <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
-                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="qingjiaclick(selectedDataHoliday, index, fieldIndex)">
-                      <!--<option>{{item.fieldHint}}</option>-->
+                  <!--<div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
+                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                            @change="qingjiaclick(confItemsval[qingjiapos], index, fieldIndex, item.uid)">
                       <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
                     </select>
+
                   </div>
                   <div class="leaveboxcen" v-if="item.code == 'outType'">
-                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="waichuclick(selectedDataHoliday, index, fieldIndex)">
-                      <!--<option>{{item.fieldHint}}</option>-->
+                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
+                            @change="waichuclick(confItemsval[(index+item.uid).toString()], index, fieldIndex, item.uid)">
+                      <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
+                    </select>
+                  </div>-->
+
+                  <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
+                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}" @change="qingjiaclick(confItemsval[(index+item.uid).toString()], index, fieldIndex, item.uid)">
+                      <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
+                    </select>
+
+                  </div>
+                  <div class="leaveboxcen" v-if="item.code == 'outType'">
+                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}">
                       <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
                     </select>
                   </div>
 
                   <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
-                    <!--:class="{'colorA6':confItemsval[item.uid]===confItems[item.uid][0] && item.fieldDescr}"-->
-                    <!--:class="{'colorA6': item.fieldDescr}"-->
-                    <select v-model="confItemsval[item.uid]">
-                      <!--<option>{{item.fieldDescr}}</option>-->
-                      <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
+                    <select v-model="confItemsval[(index+item.uid).toString()]">
+                      <option v-for="option in confItems[(index+item.uid).toString()]" :value="option.value">{{option.value}}</option>
                     </select>
                   </div>
-
                 </div>
 
                 <!--日期 type为6-->
@@ -228,10 +292,10 @@
                 <!--返回多个日期时间段时，默认只取最后一个-->
                   <!--&& perioduid == item.uid-->
                 <div v-if="item.fieldType=='7'">
-                  <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex" style="position: relative;">
+                  <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[(index+item.uid).toString()]" :key="applyIndex" style="position: relative;">
                     <h4 align="left" class="fc1 pr">
                       <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
-                      <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid)">+</span>
+                      <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid, index)">+</span>
                     </h4>
                     <div class="pl30">
                       <div class="leavebox">
@@ -250,9 +314,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">
+                  <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && detail.isthingtype==true)">
+                  <!--<div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">-->
                     <mt-button type="primary"
-                               @click.native="addTime(item.uid)">
+                               @click.native="addTime(item.uid, index)">
                       <span> +添加时间 </span>
                       <!--<span v-if="item.code=='leaveTime'"> +添加事假时间</span>-->
                       <!--<span v-if="item.code=='outTime'"> +添加新的加班时间段</span>-->
@@ -264,7 +329,7 @@
                 <!--附件 type为8-->
                 <div v-if="item.fieldType=='8'" class="leavebox leaveboxImg">
                   <div class="leaveboxImglft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-                  <div class="leaveboxImgrgt uploadpictext" @click="openPicker(0, 0, item.fieldType, index)">
+                  <div class="leaveboxImgrgt uploadpictext">
                     <uploadImage
                       v-if="!item.fileEdit"
                       :title="item.fieldName" :field="item" :type="item.fileAttribute"
@@ -653,6 +718,8 @@
         valuearray: [],
         confItems: {},
         confItemsval: {},
+        confItemsALL: {},
+        confItemsALLval: {},
         popImgSrc: '', // 查看的图片
         popupVisible: false, // 查看图片弹框
         // selectedDataApply: 0, //选择的申请类型
@@ -727,7 +794,8 @@
         hasNextperson: false, //是否有下一级审批人
         isSaveState: true,
         tmpnumber: "1",
-        currfieldIndex: ''
+        currfieldIndex: '',
+        qingjiapos: ''
       }
     },
     created: function () {
@@ -745,12 +813,45 @@
     methods: {
       //增加考勤状态
       addApproval() {
-        this.searchApplyRecord.push(this.fields);
+        for( let i = 0; i < this.fields.length; i++) {
+          let item = this.fields[i];
+          if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
+            item.term = 0;
+            item.sortnumtmp = 0;
+            item.valuearray = [],item.valuearray2 = [];
+            let numIndex =this.searchApplyRecord.length;
+            if(item.code == 'punchTime'){ //忘记打卡
+              if(item.approvalValues.length > 0){
+                for(let j = 0; j < list.approvalValues.length; j++){
+                  let appfieldval = list.approvalValues[j];
+                  list.valuearray.push(appfieldval.value);
+                }
+              }
+              // this.$set(this.confItems, list.uid.toString(), list.attendtime);
+              // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
+              this.$set(this.confItems, (numIndex+list.uid).toString(), this.attendtime);
+              this.$set(this.confItemsval, (numIndex+list.uid).toString(), list.valuearray);
+            }else{
+              if(item.approvalFieldValues.length > 0){
+                for(let j = 0; j < item.approvalFieldValues.length; j++){
+                  let appfieldval = item.approvalFieldValues[j];
+                  if(appfieldval.isDefault){
+                    if(item.fieldType == '4'){
+                      item.valuearray.push(appfieldval.value);
+                    }else{
+                      item.valuearray= appfieldval.value;
+                    }
+                  }
+                }
+              }
+              this.$set(this.confItems, (numIndex+item.uid).toString(), item.approvalFieldValues);
+              this.$set(this.confItemsval, (numIndex+item.uid).toString(), item.valuearray); //默认选中的值
+            }
+          }
+        }
 
-        // this.searchApplyRecord = dateApplys;
-        // if(dateApplys!=undefined){
-          this.$set(this.searchApplyRecordAll, this.daycurrent.toString(), this.searchApplyRecord);
-        // }
+        this.searchApplyRecord.push(this.fields);
+        this.$set(this.searchApplyRecordAll, this.daycurrent.toString(), this.searchApplyRecord);
 
       },
       //获取考勤详情数据
@@ -830,18 +931,18 @@
               }
 
             }else if(list.fieldType == "3" || list.fieldType == "4"){ //多行文本
-              if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid].length == 0) && list.isRequired){
+              if((this.confItemsval[(i+list.uid).toString()] == [] || this.confItemsval[(i+list.uid).toString()].length == 0) && list.isRequired){
                 this.showMsg(list.fieldHint,-1);
                 return false;
               }
             }else if(list.fieldType == "5"){ //下拉选框（请假类型和外出类型）
               if(list.code == 'leaveType' || list.code == 'outType'){
-                if((list.value == '' || list.value ==undefined) && list.isRequired){
+                if((this.confItemsval[(i+list.uid).toString()] == [] || this.confItemsval[(i+list.uid).toString()] == undefined) && list.isRequired){
                   this.showMsg(list.fieldHint,-1);
                   return false;
                 }
               }else{
-                if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid] == undefined) && list.isRequired){
+                if((this.confItemsval[(i+list.uid).toString()] == [] || this.confItemsval[(i+list.uid).toString()] == undefined) && list.isRequired){
                   this.showMsg(list.fieldHint,-1);
                   return false;
                 }
@@ -852,7 +953,7 @@
                 return false;
               }
             }else if(list.fieldType == "7"){ //日期和日期时间段
-              if((this.applyWorkRefAll[list.uid][0].startTime == '' || this.applyWorkRefAll[list.uid][0].startTime == '') && list.isRequired){
+              if( this.applyWorkRefAll[(i+list.uid).toString()].length != 0 && (this.applyWorkRefAll[(i+list.uid).toString()][0].startTime == '' || this.applyWorkRefAll[(i+list.uid).toString()][0].startTime == '') && list.isRequired){
                 this.showMsg(list.fieldHint,-1);
                 return false;
               }
@@ -885,25 +986,27 @@
             }else if(list.fieldType == '2'){
               list.approvalValues[0].value = list.value;
             }*/else if(list.fieldType == '3'){ //单选框
-              list.approvalValues[0].value = this.confItemsval[list.uid];
+              list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()];
             }else if(list.fieldType == '4'){ //多选框
-              for(let m = 0; m < this.confItemsval[list.uid].length; m++){
-                if(list.approvalValues.length < this.confItemsval[list.uid].length){
+              for(let m = 0; m < this.confItemsval[(i+list.uid).toString()].length; m++){
+                if(list.approvalValues.length < this.confItemsval[(i+list.uid).toString()].length){
                   list.approvalValues.push({
                     value: '',
                     term: 0,
                     sortnum: m
                   });
                 }
-                list.approvalValues[m].value = this.confItemsval[list.uid][m];
+                list.approvalValues[m].value = this.confItemsval[(i+list.uid).toString()][m];
               }
             }else if(list.fieldType == '5'){ //下拉框
-              if(list.code == 'leaveType' || list.code == 'outType'){
-                if(list.value != '' && list.value !=undefined){
-                  list.approvalValues[0].value = list.value;
-                }
+              if(list.code == 'leaveType'){
+                item.leaveUid = this.confItemsval[(i+list.uid).toString()].LEAVE_INFO_UID;
+                list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()].NAME;
+              }else if(list.code == 'outType'){
+                item.leaveUid = '';
+                list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()].name;
               }else{
-                list.approvalValues[0].value = this.confItemsval[list.uid];
+                list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()];
               }
             }else if(list.fieldType == '6'){
               list.approvalValues[0].value = list.value;
@@ -918,12 +1021,12 @@
                 });
               }
 
-              if(this.applyWorkRefAll[list.uid].length > 1){
+              if(this.applyWorkRefAll[(i+list.uid).toString()].length > 1){
                 tmpapprovalValues = list.approvalValues[0];
               }
 
-              for(let n = 0; n < this.applyWorkRefAll[list.uid].length; n++){
-                let itemtwo = this.applyWorkRefAll[list.uid][n];
+              for(let n = 0; n < this.applyWorkRefAll[(i+list.uid).toString()].length; n++){
+                let itemtwo = this.applyWorkRefAll[(i+list.uid).toString()][n];
                 for(let h = 0; h < 2; h++){
                   let timecurr,currnum;
                   if(h == 0){
@@ -1019,9 +1122,6 @@
         }
         this.record = arrdata;
         let record = arrdata;
-        console.log(111111111111);
-        console.log(this.record);
-
         let applys = [];
         let approvalValues = [];
         for(let i = 0; i < record.length; i++){
@@ -1029,71 +1129,6 @@
           approvalValues = [];
           for(let j = 0; j < item.approvalFields.length; j++){
             let list = item.approvalFields[j];
-            // let approvalValues = list.approvalValues;
-            // approvalValues.push({
-            //   approvalFieldUid : list.uid,
-            //   value : list.value,
-            //   term : list.term,
-            //   sortnum : list.sortnumtmp
-            // });
-
-            /*//验证数据
-            if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
-              if(list.value == '' || list.value ==undefined){
-                if(list.isRequired){ //必填
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }else{
-                if((list.fieldType == "0" || list.fieldType == "1") && list.fieldName != "时长（小时）" && (!list.isDefault)){
-                  if ( !textPattern[list.conditions.join('')].test(list.value) ) {
-                    this.showMsg(list.fieldHint,-1);
-                    return false;
-                  }
-                }else if(list.fieldType == "2" && (!list.isDefault)){ //数字
-                  if ( !textPattern[3].test(list.value) ) {
-                    this.showMsg(list.fieldHint,-1);
-                    return false;
-                  }
-                }
-              }
-
-            }else if(list.fieldType == "3" || list.fieldType == "4"){ //多行文本
-              if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid].length == 0) && list.isRequired){
-                this.showMsg(list.fieldHint,-1);
-                return false;
-              }
-            }else if(list.fieldType == "5"){ //下拉选框（请假类型和外出类型）
-              if(list.code == 'leaveType' || list.code == 'outType'){
-                if((list.value == '' || list.value ==undefined) && list.isRequired){
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }else{
-                if((this.confItemsval[list.uid] == [] || this.confItemsval[list.uid] == undefined) && list.isRequired){
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }
-            }else if(list.fieldType == "6"){
-              if((list.value == '' || list.value ==undefined) && list.isRequired){
-                this.showMsg(list.fieldHint,-1);
-                return false;
-              }
-            }else if(list.fieldType == "7"){ //日期和日期时间段
-              if((this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == '') && list.isRequired){
-                this.showMsg(list.fieldHint,-1);
-                return false;
-              }
-            }else if(list.fieldType == "8"){ //附件
-              if(list.approvalFieldValues.length == 0 || list.approvalFieldValues ==[]){
-                if(list.isRequired){ //必填
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }
-            }*/
-
             if(list.fieldType != "7" && list.fieldType != "8" && list.fieldType != "3" && list.fieldType != "4" && (list.fieldType != "5" && list.code != "outType" && list.code !="leaveType")){
               if(list.value != '' && list.value != null && list.value != undefined){
                 approvalValues.push({
@@ -1104,32 +1139,42 @@
                 });
               }
             }else{
-              // list.fieldType == "3" || (list.fieldType == "5" && list.code != "outType"
               if(list.fieldType == "3" || list.fieldType == "5"){  //单选框
                 if(list.fieldType == "3"){
-                  if(list.value != '' && list.value != null && list.value != undefined) {
+                  if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
                     approvalValues.push({
                       approvalFieldUid: list.uid,
-                      value: this.confItemsval[list.uid],
+                      value: this.confItemsval[(i+list.uid).toString()],
                       term: 0,
                       sortnum: 0
                     });
                   }
                 }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
                   if(list.code == "outType" || list.code == "leaveType"){
-                    if(list.value != '' && list.value != null && list.value != undefined) {
+                    if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
+                      item.leaveUid = this.confItemsval[(i+list.uid).toString()].LEAVE_INFO_UID;
                       approvalValues.push({
                         approvalFieldUid: list.uid,
-                        value: list.value,
+                        value: this.confItemsval[(i+list.uid).toString()].NAME,
+                        term: 0,
+                        sortnum: 0
+                      });
+                    }
+                  }else if(list.code == "leaveType"){
+                    if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
+                      item.leaveUid = '';
+                      approvalValues.push({
+                        approvalFieldUid: list.uid,
+                        value: this.confItemsval[(i+list.uid).toString()].name,
                         term: 0,
                         sortnum: 0
                       });
                     }
                   }else{
-                    if(this.confItemsval[list.uid] != '' && this.confItemsval[list.uid] != null && this.confItemsval[list.uid] != undefined) {
+                    if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
                       approvalValues.push({
                         approvalFieldUid : list.uid,
-                        value : this.confItemsval[list.uid],
+                        value : this.confItemsval[(i+list.uid).toString()],
                         term : 0,
                         sortnum : 0
                       });
@@ -1137,11 +1182,11 @@
                   }
                 }
               }else if(list.fieldType == "4"){  //多选框
-                if(this.confItemsval[list.uid].length > 0) {
-                  for (let m = 0; m < this.confItemsval[list.uid].length; m++) {
+                if(this.confItemsval[(i+list.uid).toString()].length > 0) {
+                  for (let m = 0; m < this.confItemsval[(i+list.uid).toString()].length; m++) {
                     approvalValues.push({
                       approvalFieldUid: list.uid,
-                      value: this.confItemsval[list.uid][m],
+                      value: this.confItemsval[(i+list.uid).toString()][m],
                       term: 0,
                       sortnum: m
                     });
@@ -1152,8 +1197,8 @@
               if(list.fieldType == "7"){
                 //处理item.fieldType="7"日期时间段的数据
                 let periodarr = [];
-                for(let i = 0; i < this.applyWorkRefAll[list.uid].length; i++){
-                  let itemtwo = this.applyWorkRefAll[list.uid][i];
+                for(let i = 0; i < this.applyWorkRefAll[(i+list.uid).toString()].length; i++){
+                  let itemtwo = this.applyWorkRefAll[(i+list.uid).toString()][i];
                   for(let j = 0; j < 2; j++){
                     let timecurr;
                     if(j == 0){
@@ -1212,10 +1257,10 @@
           attendPeroid: this.approveAllData.attendPeroid,
           applys:applys
         };
+
         // console.log("提交考勤异常申请数据————————");
-        console.log(applysAllparams);
-        console.log(this.dateApplys);
-        // return false;
+        // console.log(applysAllparams);
+        // console.log(this.dateApplys);
 
         this.$http.post('/api/v1.0/client/abnormalApply', applysAllparams).then(response => { //提交请假申请
           // Indicator.close();//申请提交成功
@@ -1310,21 +1355,12 @@
                   list.periodarr = timearr;
                   this.applyWorkRef = timearr;
                 }
-                this.$set(this.applyWorkRefAll, list.uid.toString(), timearr);
+                this.$set(this.applyWorkRefAll, (i+list.uid).toString(), timearr);
 
               }else if(list.fieldType == '3' || list.fieldType == '4' || list.fieldType == '5'){
                 list.term = 0;
                 list.sortnumtmp = 0;
                 list.valuearray = [],list.valuearray2 = [];
-
-                // list.valuearray = [],list.valuearray2 = [];
-                // list.valuearray.push(list.approvalValues[0].value);
-                // list.approvalFieldValues = fieldsval;
-
-                // if(list.fieldType == '3'){
-                //   this.$set(this.confItems, list.uid.toString(), list.approvalFieldValues);
-                //   this.$set(this.confItemsval, list.uid.toString(), list.approvalFieldValues[0]);
-                // }else{
 
                 if(list.code == 'punchTime'){ //忘记打卡
                   if(list.approvalValues.length > 0){
@@ -1333,8 +1369,10 @@
                       list.valuearray.push(appfieldval.value);
                     }
                   }
-                  this.$set(this.confItems, list.uid.toString(), list.attendtime);
-                  this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
+                  // this.$set(this.confItems, list.uid.toString(), list.attendtime);
+                  // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
+                  this.$set(this.confItems, (i+list.uid).toString(), list.attendtime);
+                  this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
                 }else{
                   if(list.approvalFieldValues.length > 0 && list.approvalValues.length > 0){
                     for(let j = 0; j < list.approvalValues.length; j++){
@@ -1346,15 +1384,20 @@
                       }
                     }
                   }
-                  this.$set(this.confItems, list.uid.toString(), list.approvalFieldValues);
-                  this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
+                  // list.confItems = list.approvalFieldValues;
+                  // list.confItemsval = list.valuearray;
+
+                  this.$set(this.confItems, (i+list.uid).toString(), list.approvalFieldValues);
+                  this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
+
+                  // console.log((j+list.uid).toString());
+                  // console.log(56789);
+                  // console.log(this.confItems);
+                  // console.log(this.confItemsval);
+                  // this.confItems[list.uid.toString()] = list.approvalFieldValues;
+                  // this.confItemsval[list.uid.toString()] = list.valuearray;
+
                 }
-
-
-                console.log(111);
-                console.log(this.confItems);
-                console.log(this.confItemsval);
-
 
               }else{
                 if(list.approvalValues.length){
@@ -1362,79 +1405,31 @@
                 }
                 list.term = 0;
                 list.sortnumtmp = 0;
-
               }
+
             }
+
+            // console.log("confItemsALL123");
+            this.$set(this.confItemsALL, (i).toString(), this.confItems);
+            this.$set(this.confItemsALLval, (i).toString(), this.confItemsval);
+            // console.log(this.confItemsALL);
+
           }
+
           this.searchApplyRecord = dateApplys;
+
+          // let that =this;
+          // setTimeout(function () {
+          //   this.searchApplyRecord = dateApplys;
+          //   console.log(12323233232);
+          // },3000);
+
         }else{
           this.searchApplyRecord = [];
         }
-        // this.searchApplyRecordAll.push(this.searchApplyRecord);
         if(dateApplys!=undefined){
           this.$set(this.searchApplyRecordAll, newday.toString(), dateApplys);
         }
-        // console.log(this.searchApplyRecordAll);
-
-        // this.shengqingclick(approvalType);
-
-
-        //这里暂时不用
-        /*let approvalType = dateApplys[0].approvalType;
-        if(dateApplys){
-          for(let j = 0; j < dateApplys[0].approvalFields.length; j++){
-            let list = dateApplys[0].approvalFields[j];
-            if(list.fieldType == '7'){
-              let timearr = [];
-              if(list.approvalValues.length > 0){
-                let number = Math.floor(list.approvalValues.length/2);
-                if(parseInt(list.approvalValues[0].term) > 0){
-                  number = parseInt(list.approvalValues[0].term) + number;
-                }
-                for(let m = 0; m < number; m++){
-                  let timeobj = {
-                    startTime: '',
-                    endTime: ''
-                  };
-                  for(let n = 0; n < list.approvalValues.length; n++){
-                    let detail = list.approvalValues[n];
-                    if(detail.term == m && detail.sortnum == 0){
-                      timeobj.startTime = detail.value;
-                    }else if(detail.term == m && detail.sortnum == 1){
-                      timeobj.endTime = detail.value;
-                      timearr.push(timeobj);
-                    }
-                  }
-                }
-                list.periodarr = timearr;
-              }
-            }
-          }
-          this.searchApplyRecord = dateApplys[0];
-        }*/
-
-        // this.shengqingclick(approvalType);
-
-
-        // if (this.oldDayClick !== moment(day).format(df2)) {
-        //   this.oldDayClick = moment(day).format(df2);
-        //   let param = {
-        //     date: moment(day).format(df2)
-        //   };
-        //   this.$http.post('/api/v1.0/client/findDatePunchCardLog', param).then(response => { //点击查看当天考勤
-        //     if (response.body.code === 200) {
-        //       this.punchState = response.body.result;
-        //       this.duration = null;
-        //       for (let i = 0; i < this.punchState.data.length; i++) {
-        //         this.duration += this.punchState.data[i].duration;
-        //       }
-        //       if (typeof(this.duration) === 'number') {
-        //         this.duration = parseFloat(this.duration.toFixed(2));
-        //       }
-        //     }
-        //   }, response => {
-        //   });
-        // }
       },
       changeMonth (start, end, currentStart, current) {
         let param = {
@@ -1563,7 +1558,7 @@
             // this.selectedDataApply = parseInt(this.getCookie('leaveType'));
 
             this.selectedDatafirst = parseInt(this.getCookie('leaveType'));
-            this.shengqingclick('0', -1);
+            // this.shengqingclick('0', -1);
           }
         }, response => {
           console.log('error callback');
@@ -1603,6 +1598,7 @@
       shengqingclick(approvalType, index){
         this.posIndex = index;  //当前是第几个申请记录
         // this.selectedDataApply = approvalType;  //申请分类类型
+        let currIndex = index;
         let state = false;
         for (let i = 0; i < this.applyTypeArray.length; i++) {
           if (this.selectedDataApply[index] === this.applyTypeArray[i].type) {
@@ -1650,7 +1646,8 @@
                   endTime: '',
                   uid: item.uid
                 }];
-                this.$set(this.applyWorkRefAll, item.uid.toString(), timearr);
+                let numIndex =this.searchApplyRecord.length-1;
+                this.$set(this.applyWorkRefAll, (numIndex+item.uid).toString(), timearr);
                 this.fields.push(item);
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
                 // item.term = 0;
@@ -1665,20 +1662,46 @@
                 item.term = 0;
                 item.sortnumtmp = 0;
                 item.valuearray = [],item.valuearray2 = [];
-                if(item.approvalFieldValues.length > 0){
-                  for(let j = 0; j < item.approvalFieldValues.length; j++){
-                    let appfieldval = item.approvalFieldValues[j];
-                    if(appfieldval.isDefault){
-                      if(item.fieldType == '4'){
-                        item.valuearray.push(appfieldval.value);
-                      }else{
-                        item.valuearray= appfieldval.value;
+                let numIndex = parseInt(this.searchApplyRecord.length-1);
+                console.log("numIndex11="+ numIndex);
+                console.log(this.searchApplyRecord);
+                console.log("numIndex="+numIndex);
+                if(item.code == 'punchTime'){ //忘记打卡
+                  if(item.approvalValues.length > 0){
+                    for(let j = 0; j < item.approvalValues.length; j++){
+                      let appfieldval = item.approvalValues[j];
+                      item.valuearray.push(appfieldval.value);
+                    }
+                  }
+                  // this.$set(this.confItems, list.uid.toString(), list.attendtime);
+                  // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
+                  console.log("numIndex22="+ numIndex);
+                  this.$set(this.confItems, (numIndex+item.uid).toString(), this.attendtime);
+                  this.$set(this.confItemsval, (numIndex+item.uid).toString(), item.valuearray);
+                }else{
+                  if(item.approvalFieldValues.length > 0){
+                    for(let j = 0; j < item.approvalFieldValues.length; j++){
+                      let appfieldval = item.approvalFieldValues[j];
+                      if(appfieldval.isDefault){
+                        if(item.fieldType == '4'){
+                          item.valuearray.push(appfieldval.value);
+                        }else{
+                          item.valuearray= appfieldval.value;
+                        }
                       }
                     }
                   }
+                  // this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
+                  // this.$set(this.confItemsval, item.uid.toString(), item.valuearray); //默认选中的值
+
+                  this.$set(this.confItems, (numIndex+item.uid).toString(), item.approvalFieldValues);
+                  this.$set(this.confItemsval, (numIndex+item.uid).toString(), item.valuearray); //默认选中的值
+                  console.log(this.confItems);
+                  console.log(this.confItemsval);
                 }
-                this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
-                this.$set(this.confItemsval, item.uid.toString(), item.valuearray); //默认选中的值
+
+                // item.confItems = item.approvalFieldValues;
+                // item.confItemsval = item.valuearray;
                 this.fields.push(item);
 
               }else{
@@ -1690,6 +1713,10 @@
             this.periodnum = periodnum;
             this.fieldsdata.approvalFields= this.fields;
             this.searchApplyRecord[index] = this.fieldsdata;
+
+            console.log(11111111111111);
+            console.log(this.searchApplyRecord.length);
+            console.log(this.searchApplyRecord);
 
           }
         }, response => {
@@ -1737,8 +1764,8 @@
         });
       },
       //添加加班时间段
-      addTime(uid){
-        this.applyWorkRefAll[uid.toString()].push({
+      addTime(uid, index){
+        this.applyWorkRefAll[(index+uid).toString()].push({
           startTime: '',
           endTime: '',
           uid: uid
@@ -1746,28 +1773,35 @@
 
       },
       //删除加班时间段
-      deleteTime(num, uid){
-        this.applyWorkRefAll[uid.toString()].splice(num, 1);
+      deleteTime(num, uid, index){
+        this.applyWorkRefAll[(index+uid).toString()].splice(num, 1);
       },
       // 开始时间格式化
       handleConfirmStart(data){
         if (this.fieldTypecurr === '7') {
           // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
-          this.applyWorkRefAll[this.uid][this.pos].startTime = moment(data).format(df);
+          this.applyWorkRefAll[(this.posIndex+this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
           this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
           this.tmpnumber = 2;
         }
+        console.log(this.applyWorkRefAll);
+        console.log("this.uid="+this.uid);
+        console.log("this.pos="+this.pos);
+
       },
       // 结束时间格式化
       handleConfirmEnd(data){
         if (this.fieldTypecurr === '7') {
           // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
-          this.applyWorkRefAll[this.uid][this.pos].endTime = moment(data).format(df);
+          this.applyWorkRefAll[(this.posIndex+this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
           this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
           this.tmpnumber = 2;
         }
+        console.log(this.applyWorkRefAll);
+        console.log("this.uid="+this.uid);
+        console.log("this.pos="+this.pos);
       },
       //日历样式
       openPicker(type, pos, fieldType, index, fieldIndex, uid) {
@@ -1782,15 +1816,15 @@
           this.$refs.picker0.open();
         }else if(fieldType == '7'){
           if(type == 0){
-            if(this.applyWorkRefAll[this.uid][this.pos].startTime){
-              this.startTimeValue1 = this.applyWorkRefAll[this.uid][this.pos].startTime;
+            if(this.applyWorkRefAll[(index+this.uid).toString()][this.pos].startTime){
+              this.startTimeValue1 = this.applyWorkRefAll[(index+this.uid).toString()][this.pos].startTime;
             }else{
               this.startTimeValue1 = new Date();
             }
             this.$refs.picker0.open();
           }else if(type == 1){
-            if(this.applyWorkRefAll[this.uid][this.pos].endTime){
-              this.endTimeValue1 = this.applyWorkRefAll[this.uid][this.pos].endTime;
+            if(this.applyWorkRefAll[(index+this.uid).toString()][this.pos].endTime){
+              this.endTimeValue1 = this.applyWorkRefAll[(index+this.uid).toString()][this.pos].endTime;
             }else{
               this.endTimeValue1 = new Date();
             }
@@ -1817,7 +1851,7 @@
               return false;
             }
           }else if(item.fieldType == "3" || item.fieldType == "4" || item.fieldType == "5"){ //多行文本
-            if(this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0){
+            if(this.confItemsAllval[(index).toString()][item.uid] == [] || this.confItemsAllval[(index).toString()][item.uid].length == 0){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
@@ -1828,7 +1862,7 @@
             }
 
           }else if(item.fieldType == "8"){ //附件
-            if(this.confItemsval[item.uid] == [] || this.confItemsval[item.uid].length == 0){
+            if(this.confItemsAllval[(index).toString()][item.uid] == [] || this.confItemsAllval[(index).toString()][item.uid].length == 0){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
@@ -1846,15 +1880,15 @@
             if(item.fieldType == "3" || (item.fieldType == "5" && item.code != "outType")){  //单选框
               approvalValues.push({
                 approvalFieldUid : item.uid,
-                value : this.confItemsval[item.uid],
+                value : this.confItemsAllval[(i).toString()][item.uid],
                 term : 0,
                 sortnum : 0
               });
             }else if(item.fieldType == "4"){  //多选框
-              for(let j = 0; j < this.confItemsval[item.uid].length; j++){
+              for(let j = 0; j < this.confItemsAllval[(i).toString()][item.uid].length; j++){
                 approvalValues.push({
                   approvalFieldUid : item.uid,
-                  value : this.confItemsval[item.uid][j],
+                  value : this.confItemsAllval[(i).toString()][item.uid][j],
                   term : 0,
                   sortnum : j
                 });
@@ -1900,21 +1934,38 @@
         });
 
       },
-      qingjiaclick(value, index, fieldIndex){
-        // this.applyData.leaveUid = value.LEAVE_INFO_UID;
-        // this.fields[index].value = value.NAME;
+      qingjiaclick(value, index, fieldIndex, uid){
+        if(value.TYPE == '6'){
+          this.searchApplyRecord[index].isthingtype = true;
+        }else{
+          this.searchApplyRecord[index].isthingtype = false;
+        }
 
-        this.searchApplyRecord[index].leaveUid = value.LEAVE_INFO_UID;
-        this.searchApplyRecord[index].approvalFields[fieldIndex].value = value.NAME;
-        this.selectHoliday = value;
-        // console.log(this.searchApplyRecord);
         // console.log(value);
+        // this.qingjiapos = (index+uid).toString();
+        // if(value){
+        //   this.confItemsval[this.qingjiapos] = value.NAME;
+        //   this.searchApplyRecord[index].leaveUid = value.LEAVE_INFO_UID;
+        //   this.searchApplyRecord[index].approvalFields[fieldIndex].value = value.NAME;
+        //   this.selectHoliday = value;
+        // }
+        //
+        // console.log(this.confItemsval);
+        // console.log(this.searchApplyRecord);
+
       },
-      waichuclick(value, index, fieldIndex){
-        this.searchApplyRecord[index].leaveUid = '';
-        this.searchApplyRecord[index].approvalFields[fieldIndex].value = value.name;
-        this.selectHoliday = value;
-      },
+      /*waichuclick(value, index, fieldIndex, uid){
+        if(value){
+          this.searchApplyRecord[index].leaveUid = '';
+          this.searchApplyRecord[index].approvalFields[fieldIndex].value = value.name;
+          // this.confItemsval[(index+uid).toString()] = value.name;
+
+          this.qingjiapos = (index+uid).toString();
+          this.confItemsval[this.qingjiapos] = value.name;
+          this.selectHoliday = value;
+        }
+
+      },*/
       // 打开查看附件弹框
       lookImages(imgSrc){
         if (imgSrc) this.popImgSrc = imgSrc;
@@ -1975,9 +2026,6 @@
           text = '是否拒绝当前审批？';
         }
         MessageBox.confirm(text, '提示').then(action => {
-
-          console.log("同意审批");
-
           // Indicator.open('正在处理中...');
           let arr = [];
           arr.push(item.uid);
@@ -2068,7 +2116,6 @@
       },
       //上传图片文件
       updateImgFile(data){
-        console.log(3333);
         this.searchApplyRecord[data.position.index].approvalFields[data.position.fieldIndex].approvalFieldValues.push({
           selected: false,
           url: data.url,
@@ -2076,7 +2123,6 @@
           width: 0,
           height: 0
         });
-        console.log(2222);
       },
       showUpdateError(data){
         this.showMsg(data.fieldHint, -1);
