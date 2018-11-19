@@ -1,5 +1,5 @@
 <template>
-  <div class="attendwhite">
+  <div class="attendwhite" id="attendwhitewrap">
     <div style="height: 0;display: none;">{{tmpnumber}}</div>
     <mt-header :title="attendReport.month+'月份考勤修订'"></mt-header>
     <div class="attendDetail">
@@ -2166,9 +2166,24 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .attendwhite{
     background: #fff;
+    // 复写mint ui 组件
+    .picker-items {
+      display: block;
+      width: 100%;
+      font-size: 12px !important;
+      .picker-slot {
+        flex: none !important;
+        display: inline-block;
+        width: 20%;
+        font-size: 12px !important;
+      }
+      .picker-item{
+        font-size:12px !important;
+      }
+    }
     .attendDetail{
       background: #F2F2F2;
       margin: 15px 20px;
@@ -2311,12 +2326,7 @@
         }
       }
     }
-
   }
-
-  /*.popoverPerson{*/
-    /**/
-  /*}*/
 
   .approveperson{
     .persontit{
@@ -2336,13 +2346,6 @@
     width: 80%;
     margin: 0 auto 20px auto;
   }
-
-  /*
-
-
-  */
-
-
 
 
   .egStates {
@@ -2618,21 +2621,6 @@
     height: 33px;
     margin: 10px auto 0 auto;
     display: block;
-  }
-  // 复写mint ui 组件
-  .picker-items {
-    display: block;
-    width: 100%;
-    .picker-slot {
-      flex: none !important;
-      display: inline-block;
-      width: 20%;
-      font-size: 12px !important;
-    }
-  }
-  .leave-main-box .picker-item{
-    font-size:12px !important;
-    color:red !important;
   }
 
   .image-Success {
