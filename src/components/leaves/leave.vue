@@ -2178,4 +2178,10 @@
 
   }
 
+  #leave-wrapper{
+    .inputtext{
+      height: 48px;
+      width: 98%;
+    }
+  }
 </style>

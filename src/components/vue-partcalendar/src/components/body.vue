@@ -191,7 +191,7 @@
         let endDate = new Date(this.connectTime.endTime);
         let endDateStamp = endDate.getTime();
 
-        for (let perWeek = 0; perWeek < 5; perWeek++) {   //原来是perWeek < 6，这里改成perWeek < 5
+        for (let perWeek = 0; perWeek < 6; perWeek++) {   //原来是perWeek < 6，这里改成perWeek < 5
 
           let week = [];
           let startDateStamp;
