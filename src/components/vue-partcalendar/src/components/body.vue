@@ -174,7 +174,10 @@
         let now = new Date();// today
         let current = new Date(this.currentDate);
 
-        let startDate = dateFunc.getStartDate(current);// 1st day of this month
+        // let startDate = dateFunc.getStartDate(current);// 1st day of this month
+
+        let startDate = new Date(this.connectTime.startTime);
+        let startfirstStamp = startDate.getTime();
 
         let curWeekDay = startDate.getDay();
 
@@ -185,15 +188,30 @@
         startDate.setDate(startDate.getDate() + diff);
         let calendar = [];
 
+        let endDate = new Date(this.connectTime.endTime);
+        let endDateStamp = endDate.getTime();
+
         for (let perWeek = 0; perWeek < 5; perWeek++) {   //原来是perWeek < 6，这里改成perWeek < 5
 
-          let week = []
+          let week = [];
+          let startDateStamp;
 
           for (let perDay = 0; perDay < 7; perDay++) {
+            // week.push({
+            //   monthDay: startDate.getDate(),
+            //   isToday: now.toDateString() == startDate.toDateString(),
+            //   isCurMonth: startDate.getMonth() == current.getMonth(),
+            //   weekDay: perDay,
+            //   date: new Date(startDate),
+            //   events: this.slotEvents(startDate),
+            //   isdayformat: moment(startDate).format(df3)
+            // });
+
+            startDateStamp = startDate.getTime();
             week.push({
               monthDay: startDate.getDate(),
               isToday: now.toDateString() == startDate.toDateString(),
-              isCurMonth: startDate.getMonth() == current.getMonth(),
+              isCurMonth: startDateStamp >= startfirstStamp && startDateStamp <= endDateStamp,
               weekDay: perDay,
               date: new Date(startDate),
               events: this.slotEvents(startDate),
@@ -380,7 +398,7 @@
           &.not-cur-month {
             .day-number {
               color: rgba(0, 0, 0, 0.24);
-              opacity: 0;
+              /*opacity: 0;*/
             }
           }
           &.dayabnormal{
