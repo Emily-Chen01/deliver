@@ -107,7 +107,7 @@
           <!--日期 type为6-->
           <div v-if="item.fieldType=='6'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-            <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index)">
+            <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index, item.uid)">
             <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
                   :class="{'colorA6':!item.value}"></span>
             </div>
@@ -115,33 +115,33 @@
 
           <!--日期区间 type为7-->
           <!--返回多个日期时间段时，默认只取最后一个-->
-          <div v-if="item.fieldType=='7' && perioduid == item.uid">
-            <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
+          <div v-if="item.fieldType=='7'">
+            <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex">
               <h4 align="left" class="fc1 pr" :class="{'icon-stars':item.isRequired==true}">
                 <span v-if="item.code!='outTime'" v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
                 <span v-if="item.code=='outTime'">{{item.fieldName}}</span>
-                <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
+                <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid)">+</span>
               </h4>
               <div class="pl30">
                 <div class="leavebox">
                   <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">开始时间</div>
                   <div class="leaveboxcen">
               <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
-                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index)"></span>
+                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index, item.uid)"></span>
                   </div>
                 </div>
                 <div class="leavebox">
                   <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">结束时间</div>
                   <div class="leaveboxcen">
                 <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
-                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index)"></span>
+                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index, item.uid)"></span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">
               <mt-button type="primary"
-                         @click.native="addTime()">
+                         @click.native="addTime(item.uid)">
                 <span> +添加时间 </span>
               </mt-button>
             </div>
@@ -151,7 +151,7 @@
           <!--附件 type为8-->
           <div v-if="item.fieldType=='8'" class="leavebox leaveboxImg">
             <div class="leaveboxImglft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-            <div class="leaveboxImgrgt uploadpictext" @click="openPicker(0, 0, item.fieldType, index)">
+            <div class="leaveboxImgrgt uploadpictext">
               <uploadImage
                 v-if="!item.fileEdit"
                 :title="item.fieldName" :field="item" :type="item.fileAttribute"
@@ -759,6 +759,7 @@
             endTime: '',
           }
         ],
+        applyWorkRefAll: {},
         pos: '',//记录加班时间段的位置
         fieldsdata: {},
         fields: [],
@@ -788,7 +789,7 @@
         attendtime: [],  //忘记打卡时间
         attendtimelist: ['18:00'],
         periodnum: 0,
-        perioduid: '',
+        // perioduid: '',
         tmpnumber: "1",
         outsideObj: [],
         showperson: false,  //是否显示选择审批人弹框
@@ -905,22 +906,24 @@
               }
               if(item.fieldType == '7'){
                 let itemtmp = {};
-                this.perioduid = item.uid;
+                // this.perioduid = item.uid;
                 this.applyWorkRef.push({
                   startTime: '',
                   endTime: '',
                   uid: item.uid
                 });
+                let timearr = [];
+                timearr.push({
+                  startTime: '',
+                  endTime: '',
+                  uid: item.uid
+                });
                 this.fields.push(item);
+                this.$set(this.applyWorkRefAll, (item.uid).toString(), timearr);
+                console.log(333);
+                console.log(this.applyWorkRefAll);
+
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
-                // item.term = 0;
-                // item.sortnumtmp = 0;
-                // item.valuearray = [],item.valuearray2 = [];
-                // item.valuearray.push(item.approvalFieldValues[0].value);
-                // this.valuearray = item.valuearray;
-                // this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
-                // this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
-                // this.fields.push(item);
 
                 item.term = 0;
                 item.sortnumtmp = 0;
@@ -991,22 +994,29 @@
         });
       },
       //添加加班时间段
-      addTime(){
-        this.applyWorkRef.push({
+      addTime(uid){
+        // this.applyWorkRef.push({
+        //   startTime: '',
+        //   endTime: '',
+        //   uid: this.perioduid
+        // });
+        this.applyWorkRefAll[(uid).toString()].push({
           startTime: '',
           endTime: '',
-          uid: this.perioduid
+          uid: uid
         });
 
       },
       //删除加班时间段
-      deleteTime(num){
-        this.applyWorkRef.splice(num, 1);
+      deleteTime(num, uid){
+        // this.applyWorkRef.splice(num, 1);
+        this.applyWorkRefAll[(uid).toString()].splice(num, 1);
       },
       // 开始时间格式化
       handleConfirmStart(data){
         if (this.fieldTypecurr === '7') {
-          this.applyWorkRef[this.pos].startTime = moment(data).format(df);
+          // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
+          this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
           this.fields[this.posIndex].value =  moment(data).format(df2);
           this.tmpnumber = 2;
@@ -1015,7 +1025,8 @@
       // 结束时间格式化
       handleConfirmEnd(data){
         if (this.fieldTypecurr === '7') {
-          this.applyWorkRef[this.pos].endTime = moment(data).format(df);
+          // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
+          this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
           this.fields[this.posIndex].value =  moment(data).format(df2);
           this.tmpnumber = 2;
@@ -1041,7 +1052,8 @@
         return status;
       },
       // 日历样式
-      openPicker(type, pos, fieldType, index) {
+      openPicker(type, pos, fieldType, index, uid) {
+        this.uid = uid;
         this.pos = pos;
         this.posIndex = index;
         this.fieldTypecurr = fieldType;
@@ -1051,15 +1063,15 @@
             this.$refs.picker0.open();
         }else if(fieldType == '7'){
           if(type == 0){
-            if(this.applyWorkRef[this.pos].startTime){
-              this.startTimeValue1 = this.applyWorkRef[this.pos].startTime;
+            if(this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime){
+              this.startTimeValue1 = this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime;
             }else{
               this.startTimeValue1 = new Date();
             }
             this.$refs.picker0.open();
           }else if(type == 1){
-            if(this.applyWorkRef[this.pos].endTime){
-              this.endTimeValue1 = this.applyWorkRef[this.pos].endTime;
+            if(this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime){
+              this.endTimeValue1 = this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime;
             }else{
               this.endTimeValue1 = new Date();
             }
@@ -1135,7 +1147,7 @@
               return false;
             }
           }else if(item.fieldType == "7"){ //日期和日期时间段
-            if((this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == '') && item.isRequired){
+            if((this.applyWorkRefAll[(item.uid).toString()][0].startTime == '' || this.applyWorkRefAll[(item.uid).toString()][0].startTime == '') && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
@@ -1202,6 +1214,27 @@
                   });
                 }
               }
+            }else if(item.fieldType == "7"){
+              //处理item.fieldType="7"日期时间段的数据
+              let periodarr = [];
+              for(let i = 0; i < this.applyWorkRefAll[(item.uid).toString()].length; i++){
+                let detail = this.applyWorkRefAll[(item.uid).toString()][i];
+                for(let j = 0; j < 2; j++){
+                  let timecurr;
+                  if(j == 0){
+                    timecurr = detail.startTime;
+                  }else if(j == 1){
+                    timecurr = detail.endTime;
+                  }
+                  periodarr.push({
+                    approvalFieldUid : item.uid,
+                    value : timecurr,
+                    term : i,
+                    sortnum : j
+                  });
+                }
+              }
+              approvalValues = approvalValues.concat(periodarr);
             }else if(item.fieldType == "8"){ //附件
               if(item.approvalValues.length != 0){
                 let picturearr = [];
@@ -1221,27 +1254,7 @@
 
         }
 
-        //处理item.fieldType="7"日期时间段的数据
-        let periodarr = [];
-        for(let i = 0; i < this.applyWorkRef.length; i++){
-          let item = this.applyWorkRef[i];
-          for(let j = 0; j < 2; j++){
-            let timecurr;
-            if(j == 0){
-              timecurr = item.startTime;
-            }else if(j == 1){
-              timecurr = item.endTime;
-            }
-            periodarr.push({
-              approvalFieldUid : item.uid,
-              value : timecurr,
-              term : i,
-              sortnum : j
-            });
-          }
-        }
-        this.applyData.approvalValues = approvalValues.concat(periodarr);
-
+        this.applyData.approvalValues = approvalValues;
         console.log(555);
         console.log(this.applyData);
 

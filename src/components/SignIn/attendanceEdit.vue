@@ -829,7 +829,8 @@
         isSaveState: true,
         tmpnumber: "1",
         currfieldIndex: '',
-        qingjiapos: ''
+        qingjiapos: '',
+        currApprovalConfigUid: ''
       }
     },
     created: function () {
@@ -926,6 +927,7 @@
                 this.fieldsdata = response.body.result;
                 let approvalType = response.body.result.approvalType;
                 let configType = response.body.result.configType;
+                this.currApprovalConfigUid = response.body.result.uid;
                 // configType = 1;
                 this.configType = configType; //审批人类型
                 this.approvalperson(configType,approvalType);
@@ -1133,7 +1135,6 @@
         this.saverevisethree(); //提交
       },
       saverevisethree () {
-        console.log(1234);
 
         //处理申请表单的数据
         let arrdata = [];
@@ -1172,23 +1173,24 @@
                     });
                   }
                 }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
+                  console.log(1111);
+                  let qingjiaval = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()];
                   if(list.code == "leaveType"){
-                    console.log(1111);
-                    if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
+                    if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
                       // item.leaveUid = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].LEAVE_INFO_UID;
                       approvalValues.push({
                         approvalFieldUid: list.uid,
-                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()],
+                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].NAME,
                         term: 0,
                         sortnum: 0
                       });
                     }
                   }else if(list.code == "outType"){
-                    if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
+                    if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
                       item.leaveUid = '';
                       approvalValues.push({
                         approvalFieldUid: list.uid,
-                        value: this.confItemsval[(item.daycurrent+i+list.uid).toString()],
+                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].name,
                         term: 0,
                         sortnum: 0
                       });
@@ -1285,6 +1287,7 @@
         let applysAllparams = {
           uid: this.approveAllData.uid,                // 异常考勤的审批uid
           approvalTypeUid: this.approveAllData.approvalTypeUid,   // 申请类型Uid
+          approvalConfigUid: this.currApprovalConfigUid,  //异常考勤-1类型的uid
           category: this.approveAllData.category,          // 0或者1
           currentApprover: this.approveAllData.currentApprover,   // 0 填写上级审批人uid
           email:this.approveAllData.email,             // 1 填写邮箱
@@ -1413,6 +1416,28 @@
                   this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), list.attendtime);
                   this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
 
+                }else if(list.code == 'leaveType'){
+                  let qingjiaval;
+                  if(list.approvalValues.length > 0){
+                    qingjiaval = list.approvalValues[0].value;
+                    let daycurrentStr = (this.daycurrent).toString();
+                    this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), { NAME: qingjiaval});
+                  }
+
+                  // this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
+
+                  // if(list.code == 'leaveType'){
+                  //   item.leaveUid = this.confItemsval[(this.daycurrent+i+list.uid).toString()].LEAVE_INFO_UID;
+                  //   list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].NAME;
+                  // }
+                }else if(list.code == 'outType'){
+                  let qingjiaval;
+                  if(list.approvalValues.length > 0){
+                    qingjiaval = list.approvalValues[0].value;
+                    let daycurrentStr = (this.daycurrent).toString();
+                    this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), { name: qingjiaval});
+                  }
+
                 }else{
                   if(list.approvalFieldValues.length > 0 && list.approvalValues.length > 0){
                     for(let j = 0; j < list.approvalValues.length; j++){
@@ -1429,6 +1454,7 @@
                   // this.$set(this.confItems, (i+list.uid).toString(), list.approvalFieldValues);
                   // this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
 
+                  // console.log(2222);
                   let daycurrentStr = (this.daycurrent).toString();
                   this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), list.approvalFieldValues);
                   this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
@@ -1938,11 +1964,14 @@
 
       },
       qingjiaclick(value, index, fieldIndex, uid){
-        if(value.TYPE == '6'){
-          this.searchApplyRecord[index].isthingtype = true;
-        }else{
-          this.searchApplyRecord[index].isthingtype = false;
+        if(value){
+          if(value.TYPE == '6'){
+            this.searchApplyRecord[index].isthingtype = true;
+          }else{
+            this.searchApplyRecord[index].isthingtype = false;
+          }
         }
+
       },
       // 打开查看附件弹框
       lookImages(imgSrc){
