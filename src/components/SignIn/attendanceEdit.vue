@@ -2,7 +2,7 @@
   <div class="attendwhite" id="attendwhitewrap">
     <div style="height: 0;display: none;">{{tmpnumber}}</div>
     <mt-header :title="attendReport.month+'月份考勤修订'"></mt-header>
-    <div class="attendttit" v-if="newAttendReport.toString()!='{}' " style="padding-top: 10px;">原始数据</div>
+    <div class="attendttit" v-if="newAttendReport!=null && newAttendReport!='null' " style="padding-top: 10px;">原始数据</div>
     <div class="attendDetail">
       <p>本月异常考勤累计时间</p>
       <p>迟到累计：{{attendReport.belateTimes}}次（共{{attendReport.belateTotal}}工时）</p>
@@ -15,8 +15,8 @@
       <p>周末加班累计时长：{{attendReport.weekendOvertime}}天(共{{attendReport.weekendOvertimeDays}}小时)</p>
       <p>法定假日加班累计时长：{{attendReport.holidayOvertime}}天(共{{attendReport.holidayOvertimeDays}}小时)</p>
     </div>
-    <div class="attendttit" v-if="newAttendReport.toString()!='{}' ">修订后数据</div>
-    <div class="attendDetail" v-if="newAttendReport.toString()!='{}' ">
+    <div class="attendttit" v-if="newAttendReport!=null && newAttendReport!='null' ">修订后数据</div>
+    <div class="attendDetail" v-if="newAttendReport!=null && newAttendReport!='null' ">
       <p>本月异常考勤累计时间</p>
       <p>迟到累计：{{newAttendReport.belateTimes}}次（共{{newAttendReport.belateTotal}}工时）</p>
       <p>早退累计：{{newAttendReport.leaveearlyTimes}}次（共{{newAttendReport.leaveearlyTotal}}工时）</p>
@@ -42,7 +42,7 @@
       <p>异常考勤状态：<span v-if="duration">{{duration.durationstatus}}</span></p>
     </div>
     <div class="reviseapply">
-      <div class="revisetop" v-if="currentStatus != '2'">
+      <div class="revisetop" v-if="currentStatus != '2' && (approveAllData.status == '' || approveAllData.status == 3) && approveAllData.status != 0">
         修订申请<span class="editapply" @click="editapply()">修改申请</span>
       </div>
       <div class="revisetop" v-if="currentStatus == '2'">
@@ -107,7 +107,7 @@
           </div>
 
           <!--选择下一级审批人-->
-          <div v-if="currentStatus == '1'">
+          <div v-if="currentStatus == '1' && (approveAllData.status == '' || approveAllData.status == 3) && approveAllData.status != 0">
             <div v-if="(typeof approvalTypeObjtwo === 'object') && approvalTypeObjtwo.length == undefined">
               <mt-button slot="reference" type="primary" class="btnattend" @click="savereviseone()">
                 <span>提交全部考勤修订内容</span>
