@@ -84,12 +84,8 @@
               <p>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</p>
               <p>旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</p>
               <p>
-                <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+                <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
               </p>
-              <!--<p>-->
-                <!--<span class="spanlft">产假累计: 10天(共80工时)</span>-->
-              <!--</p>-->
-              <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
               <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertime}}小时)</p>
               <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertime}}小时)</p>
               <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertime}}小时)</p>
@@ -98,23 +94,12 @@
             <div class="attendttit">修订后数据</div>
             <div class="attendDetail">
               <p>本月异常考勤累计时间</p>
+              <p>迟到累计：{{item.abnormalAttendApproval.newAttendReport.belateTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.belateTotal}}工时）</p>
+              <p>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</p>
+              <p>旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</p>
               <p>
-                <span>迟到累计：{{item.abnormalAttendApproval.newAttendReport.belateTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.belateTotal}}工时）</span>
-                <span>事假累计: 10天(共80工时)</span>
+                <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
               </p>
-              <p>
-                <span>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</span>
-                <span>病假累计: 10天(共80工时)</span>
-              </p>
-              <p>
-                <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</span>
-                <span class="spanlft">产假累计: 10天(共80工时)</span>
-              </p>
-              <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
-              <p>
-                <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
-              </p>
-
               <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}小时)</p>
               <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}小时)</p>
               <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}小时)</p>
@@ -141,7 +126,7 @@
           <!--v-if="item.status===3"-->
           <div class="approve-main-content-append approve-main-content-append1 plr15 fs13">
             <p v-for="list in item.applyFlows">
-              <span>{{datefmt(new Date(list.flowTime))}}</span><span>&nbsp;&nbsp;&nbsp;审批人:{{list.flowApproverName}}({{list.jobNumber}})&nbsp;&nbsp;&nbsp;{{applyState(list.flowStatus)}}</span>
+              <span v-if="list.flowStatus!=0">{{datefmt(new Date(list.flowTime))}}&nbsp;&nbsp;&nbsp;</span><span>审批人:{{list.flowApproverName}}<span v-if="list.jobNumber!='' && list.jobNumber==null && list.jobNumber!='null' && list.jobNumber!=undefined">({{list.jobNumber}})</span>&nbsp;&nbsp;&nbsp;{{applyState(list.flowStatus)}}</span>
             </p>
             <!--<p>-->
               <!--<span v-text="datefmt(new Date())"></span><span> 审批人:刘佳安(CI11511) {{applyState(item.status)}}</span>-->

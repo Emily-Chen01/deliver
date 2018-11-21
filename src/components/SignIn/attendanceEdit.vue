@@ -2,17 +2,31 @@
   <div class="attendwhite" id="attendwhitewrap">
     <div style="height: 0;display: none;">{{tmpnumber}}</div>
     <mt-header :title="attendReport.month+'月份考勤修订'"></mt-header>
+    <div class="attendttit" v-if="newAttendReport.toString()!='{}' " style="padding-top: 10px;">原始数据</div>
     <div class="attendDetail">
       <p>本月异常考勤累计时间</p>
       <p>迟到累计：{{attendReport.belateTimes}}次（共{{attendReport.belateTotal}}工时）</p>
       <p>早退累计：{{attendReport.leaveearlyTimes}}次（共{{attendReport.leaveearlyTotal}}工时）</p>
       <p>旷工累计: {{attendReport.absentTimes}}天(共{{attendReport.absentTotal}}工时)</p>
       <p>
-        <span v-for="list in attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+        <span v-for="list in attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
       </p>
       <p>工作日加班累计时长：{{attendReport.dayOvertime}}天(共{{attendReport.dayOvertimeDays}}小时)</p>
       <p>周末加班累计时长：{{attendReport.weekendOvertime}}天(共{{attendReport.weekendOvertimeDays}}小时)</p>
       <p>法定假日加班累计时长：{{attendReport.holidayOvertime}}天(共{{attendReport.holidayOvertimeDays}}小时)</p>
+    </div>
+    <div class="attendttit" v-if="newAttendReport.toString()!='{}' ">修订后数据</div>
+    <div class="attendDetail" v-if="newAttendReport.toString()!='{}' ">
+      <p>本月异常考勤累计时间</p>
+      <p>迟到累计：{{newAttendReport.belateTimes}}次（共{{newAttendReport.belateTotal}}工时）</p>
+      <p>早退累计：{{newAttendReport.leaveearlyTimes}}次（共{{newAttendReport.leaveearlyTotal}}工时）</p>
+      <p>旷工累计: {{newAttendReport.absentTimes}}天(共{{newAttendReport.absentTotal}}工时)</p>
+      <p>
+        <span v-for="list in newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
+      </p>
+      <p>工作日加班累计时长：{{newAttendReport.dayOvertime}}天(共{{newAttendReport.dayOvertimeDays}}小时)</p>
+      <p>周末加班累计时长：{{newAttendReport.weekendOvertime}}天(共{{newAttendReport.weekendOvertimeDays}}小时)</p>
+      <p>法定假日加班累计时长：{{newAttendReport.holidayOvertime}}天(共{{newAttendReport.holidayOvertimeDays}}小时)</p>
     </div>
 
     <full-calendar
@@ -39,12 +53,20 @@
           <!--显示考勤数据申请记录，有多个数据-->
           <div class="leavecontInfo" v-if="searchApplyRecord.length > 0" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 10px;">
               <!--第{{index}}个申请记录-->
+            <div class="marginTop10">
+              <h3>考勤状态：</h3>
+              <p>{{detail.name}}</p>
+            </div>
               <div class="marginTop10" v-for="list in detail.approvalFields">
                 <div v-if="list.fieldType != '7' && list.fieldType != '8'">
                   <h3>{{list.fieldName}}：</h3>
                   <p v-for="detail in list.approvalValues">{{detail.value}}</p>
                 </div>
                 <!--日期时间段-->
+                <!--<div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
+                  <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+                  <p>{{detail.startTime}}至{{detail.endTime}}</p>
+                </div>-->
                 <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
                   <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
                   <p>{{detail.startTime}}至{{detail.endTime}}</p>
@@ -75,7 +97,7 @@
           </div>
           <div v-if="searchApplyRecord.length == 0" style="padding: 100px;text-align: center;font-size: 12px;">当前无考勤修订申请</div>
 
-          <div class="attendbutton" v-if="currentStatus == '2'">
+          <div class="attendbutton" v-if="currentStatus == '2' && approveAllData.status != 1 && approveAllData.status != 2">
             <mt-button slot="reference" type="default" class="btnagree" @click="isPass(approveAllData, 2)">
               <span>拒绝并退回修改</span>
             </mt-button>
@@ -216,8 +238,8 @@
                 <div v-if="item.fieldType=='3'" class="forgetclock">
                   <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
                   <p>
-                    <el-radio-group v-model="confItemsval[(index+item.uid).toString()]">
-                      <el-radio v-for="(list, index3) in confItems[(index+item.uid).toString()] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
+                    <el-radio-group v-model="confItemsval[(daycurrent+index+item.uid).toString()]">
+                      <el-radio v-for="(list, index3) in confItems[(daycurrent+index+item.uid).toString()] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
                         <span>{{list.value}}</span>
                       </el-radio>
                     </el-radio-group>
@@ -229,14 +251,14 @@
                   <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
                   <p>
                     <!--忘记打卡时间-->
-                    <el-checkbox-group v-model="confItemsval[(index+item.uid).toString()]" v-if="item.code=='punchTime'">
+                    <el-checkbox-group v-model="confItemsval[(daycurrent+index+item.uid).toString()]" v-if="item.code=='punchTime'">
                       <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
                         <span v-model="item.value">{{list}}</span>
                       </el-checkbox>
                     </el-checkbox-group>
 
-                    <el-checkbox-group v-model="confItemsval[(index+item.uid).toString()]" v-if="item.code!='punchTime'">
-                      <el-checkbox v-for="(list, index4) in confItems[(index+item.uid).toString()] || []" :label="list.value" :key="index4" :class="{'checkblock':item.orientation==1}">
+                    <el-checkbox-group v-model="confItemsval[(daycurrent+index+item.uid).toString()]" v-if="item.code!='punchTime'">
+                      <el-checkbox v-for="(list, index4) in confItems[(daycurrent+index+item.uid).toString()] || []" :label="list.value" :key="index4" :class="{'checkblock':item.orientation==1}">
                         <span>{{list.value}}</span>
                       </el-checkbox>
                     </el-checkbox-group>
@@ -262,20 +284,20 @@
                   </div>-->
 
                   <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
-                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}" @change="qingjiaclick(confItemsval[(index+item.uid).toString()], index, fieldIndex, item.uid)">
+                    <select v-model="confItemsval[(daycurrent+index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}" @change="qingjiaclick(confItemsval[(index+item.uid).toString()], index, fieldIndex, item.uid)">
                       <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
                     </select>
 
                   </div>
                   <div class="leaveboxcen" v-if="item.code == 'outType'">
-                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}">
+                    <select v-model="confItemsval[(daycurrent+index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}">
                       <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
                     </select>
                   </div>
 
                   <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
-                    <select v-model="confItemsval[(index+item.uid).toString()]">
-                      <option v-for="option in confItems[(index+item.uid).toString()]" :value="option.value">{{option.value}}</option>
+                    <select v-model="confItemsval[(daycurrent+index+item.uid).toString()]">
+                      <option v-for="option in confItems[(daycurrent+index+item.uid).toString()]" :value="option.value">{{option.value}}</option>
                     </select>
                   </div>
                 </div>
@@ -293,7 +315,7 @@
                 <!--返回多个日期时间段时，默认只取最后一个-->
                   <!--&& perioduid == item.uid-->
                 <div v-if="item.fieldType=='7'">
-                  <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[(index+item.uid).toString()]" :key="applyIndex" style="position: relative;">
+                  <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[(daycurrent+index+item.uid).toString()]" :key="applyIndex" style="position: relative;">
                     <h4 align="left" class="fc1 pr">
                       <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
                       <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid, index)">+</span>
@@ -425,6 +447,12 @@
                 </div>
 
               </div>
+            </div>
+
+            <div class="deleteRecord" v-if="detail.status==undefined">
+              <mt-button type="primary" class="btndeleteRecord" @click="deleteRecord(index, detail.approvalFields)">
+                <span>删除</span>
+              </mt-button>
             </div>
           </div>
           </div>
@@ -644,7 +672,8 @@
         daycurrent: '',
         searchApplyRecord: [],
         searchApplyRecordAll: {},
-        attendReport: [],
+        attendReport: {},
+        newAttendReport: {},
         //申请表单数据
         applyData: {
           approvalTypeUid: '',  //申请类型Uid
@@ -812,6 +841,20 @@
 
     },
     methods: {
+      // 删除新增的考勤状态
+      deleteRecord(posIndex, approvalFields){
+        if(approvalFields && approvalFields != undefined){
+          for(let i = 0; i < approvalFields.length; i++){
+            let item = approvalFields[i];
+            if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5' || item.fieldType == '6' || item.fieldType == '7'){
+              delete this.confItemsval[(this.daycurrent+posIndex+item.uid).toString()];
+            }
+          }
+        }
+        this.selectedDataApply.splice(posIndex, 1);
+        this.searchApplyRecord.splice(posIndex, 1);
+        this.$set(this.searchApplyRecordAll, this.daycurrent.toString(), this.searchApplyRecord);
+      },
       //增加考勤状态
       addApproval() {
         // console.log(123);
@@ -831,8 +874,8 @@
               }
               // this.$set(this.confItems, list.uid.toString(), list.attendtime);
               // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
-              this.$set(this.confItems, (numIndex+item.uid).toString(), this.attendtime);
-              this.$set(this.confItemsval, (numIndex+item.uid).toString(), item.valuearray);
+              this.$set(this.confItems, (this.daycurrent+numIndex+item.uid).toString(), this.attendtime);
+              this.$set(this.confItemsval, (this.daycurrent+numIndex+item.uid).toString(), item.valuearray);
             }else{
               if(item.approvalFieldValues.length > 0){
                 for(let j = 0; j < item.approvalFieldValues.length; j++){
@@ -846,8 +889,8 @@
                   }
                 }
               }
-              this.$set(this.confItems, (numIndex+item.uid).toString(), item.approvalFieldValues);
-              this.$set(this.confItemsval, (numIndex+item.uid).toString(), item.valuearray); //默认选中的值
+              this.$set(this.confItems, (this.daycurrent+numIndex+item.uid).toString(), item.approvalFieldValues);
+              this.$set(this.confItemsval, (this.daycurrent+numIndex+item.uid).toString(), item.valuearray); //默认选中的值
             }
           }
         }
@@ -855,7 +898,9 @@
         this.searchApplyRecord.push(this.fields);
         this.$set(this.searchApplyRecordAll, this.daycurrent.toString(), this.searchApplyRecord);
 
-        // console.log(this.searchApplyRecord);
+
+        console.log(this.searchApplyRecord);
+        // this.fieldsdata.approvalFields
 
       },
       //获取考勤详情数据
@@ -874,6 +919,7 @@
             this.datePunchCardLogs = data.abnormalAttendApproval.datePunchCardLogs;
             this.dateApplys = data.abnormalAttendApproval.dateApplys;
             this.attendReport = data.abnormalAttendApproval.attendReport;
+            this.newAttendReport = data.abnormalAttendApproval.newAttendReport;
             this.connectTime = data.abnormalAttendApproval;
 
             this.$http.get('/api/v1.0/client/queryApprovalForm/'+response.body.result.approvalType).then(response => {
@@ -906,7 +952,7 @@
         this.isSaveState = true; //不保存
       },
       saverevisetmp(){
-
+        console.log(123);
         for(let i = 0; i < this.searchApplyRecord.length; i++){
           let item = this.searchApplyRecord[i];
           for(let j = 0; j < item.approvalFields.length; j++){
@@ -935,18 +981,18 @@
               }
 
             }else if(list.fieldType == "3" || list.fieldType == "4"){ //多行文本
-              if((this.confItemsval[(i+list.uid).toString()] == [] || this.confItemsval[(i+list.uid).toString()].length == 0) && list.isRequired){
+              if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()].length == 0) && list.isRequired){
                 this.showMsg(list.fieldHint,-1);
                 return false;
               }
             }else if(list.fieldType == "5"){ //下拉选框（请假类型和外出类型）
               if(list.code == 'leaveType' || list.code == 'outType'){
-                if((this.confItemsval[(i+list.uid).toString()] == [] || this.confItemsval[(i+list.uid).toString()] == undefined) && list.isRequired){
+                if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()] == undefined) && list.isRequired){
                   this.showMsg(list.fieldHint,-1);
                   return false;
                 }
               }else{
-                if((this.confItemsval[(i+list.uid).toString()] == [] || this.confItemsval[(i+list.uid).toString()] == undefined) && list.isRequired){
+                if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()] == undefined) && list.isRequired){
                   this.showMsg(list.fieldHint,-1);
                   return false;
                 }
@@ -957,7 +1003,7 @@
                 return false;
               }
             }else if(list.fieldType == "7"){ //日期和日期时间段
-              if( this.applyWorkRefAll[(i+list.uid).toString()].length != 0 && (this.applyWorkRefAll[(i+list.uid).toString()][0].startTime == '' || this.applyWorkRefAll[(i+list.uid).toString()][0].startTime == '') && list.isRequired){
+              if( this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length != 0 && (this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][0].startTime == '' || this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][0].startTime == '') && list.isRequired){
                 this.showMsg(list.fieldHint,-1);
                 return false;
               }
@@ -990,27 +1036,27 @@
             }else if(list.fieldType == '2'){
               list.approvalValues[0].value = list.value;
             }*/else if(list.fieldType == '3'){ //单选框
-              list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()];
+              list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()];
             }else if(list.fieldType == '4'){ //多选框
-              for(let m = 0; m < this.confItemsval[(i+list.uid).toString()].length; m++){
-                if(list.approvalValues.length < this.confItemsval[(i+list.uid).toString()].length){
+              for(let m = 0; m < this.confItemsval[(this.daycurrent+i+list.uid).toString()].length; m++){
+                if(list.approvalValues.length < this.confItemsval[(this.daycurrent+i+list.uid).toString()].length){
                   list.approvalValues.push({
                     value: '',
                     term: 0,
                     sortnum: m
                   });
                 }
-                list.approvalValues[m].value = this.confItemsval[(i+list.uid).toString()][m];
+                list.approvalValues[m].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()][m];
               }
             }else if(list.fieldType == '5'){ //下拉框
               if(list.code == 'leaveType'){
-                item.leaveUid = this.confItemsval[(i+list.uid).toString()].LEAVE_INFO_UID;
-                list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()].NAME;
+                item.leaveUid = this.confItemsval[(this.daycurrent+i+list.uid).toString()].LEAVE_INFO_UID;
+                list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].NAME;
               }else if(list.code == 'outType'){
                 item.leaveUid = '';
-                list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()].name;
+                list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].name;
               }else{
-                list.approvalValues[0].value = this.confItemsval[(i+list.uid).toString()];
+                list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()];
               }
             }else if(list.fieldType == '6'){
               list.approvalValues[0].value = list.value;
@@ -1025,13 +1071,16 @@
                 });
               }
 
-              if(this.applyWorkRefAll[(i+list.uid).toString()].length > 1){
+              if(this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length > 1){
                 tmpapprovalValues = list.approvalValues[0];
               }
 
-              for(let n = 0; n < this.applyWorkRefAll[(i+list.uid).toString()].length; n++){
-                let itemtwo = this.applyWorkRefAll[(i+list.uid).toString()][n];
-                for(let h = 0; h < 2; h++){
+              list.periodarr = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
+
+              // for(let n = 0; n < this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length; n++){
+              //   let itemtwo = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][n];
+              //   list.periodarr = itemtwo;
+                /*for(let h = 0; h < 2; h++){
                   let timecurr,currnum;
                   if(h == 0){
                     timecurr = itemtwo.startTime;
@@ -1048,9 +1097,10 @@
                   }else{
                     list.approvalValues[currnum].value = timecurr;
                   }
+                }*/
 
-                }
-              }
+              // }
+
             }else if(list.fieldType == '8'){
               list.approvalValues = list.approvalFieldValues;
             }
@@ -1119,11 +1169,16 @@
         // this.record = this.searchApplyRecord;
         // let record = this.searchApplyRecord;
 
+        console.log("我是searchApplyRecordAll");
+        console.log(this.searchApplyRecordAll);
+
         let arrdata = [];
         var obj = this.searchApplyRecordAll;
         for(let key in obj) {
           arrdata = arrdata.concat(obj[key]);
         }
+        console.log(arrdata);
+
         this.record = arrdata;
         let record = arrdata;
         let applys = [];
@@ -1145,10 +1200,10 @@
             }else{
               if(list.fieldType == "3" || list.fieldType == "5"){  //单选框
                 if(list.fieldType == "3"){
-                  if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
+                  if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
                     approvalValues.push({
                       approvalFieldUid: list.uid,
-                      value: this.confItemsval[(i+list.uid).toString()],
+                      value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()],
                       term: 0,
                       sortnum: 0
                     });
@@ -1156,30 +1211,30 @@
                 }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
                   console.log(123);
                   if(list.code == "leaveType"){
-                    if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
-                      item.leaveUid = this.confItemsval[(i+list.uid).toString()].LEAVE_INFO_UID;
+                    if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
+                      item.leaveUid = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].LEAVE_INFO_UID;
                       approvalValues.push({
                         approvalFieldUid: list.uid,
-                        value: this.confItemsval[(i+list.uid).toString()].NAME,
+                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].NAME,
                         term: 0,
                         sortnum: 0
                       });
                     }
                   }else if(list.code == "outType"){
-                    if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
+                    if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
                       item.leaveUid = '';
                       approvalValues.push({
                         approvalFieldUid: list.uid,
-                        value: this.confItemsval[(i+list.uid).toString()].name,
+                        value: this.confItemsval[(item.daycurrent+i+list.uid).toString()].name,
                         term: 0,
                         sortnum: 0
                       });
                     }
                   }else{
-                    if(this.confItemsval[(i+list.uid).toString()] != '' && this.confItemsval[(i+list.uid).toString()] != null && this.confItemsval[(i+list.uid).toString()] != undefined) {
+                    if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
                       approvalValues.push({
                         approvalFieldUid : list.uid,
-                        value : this.confItemsval[(i+list.uid).toString()],
+                        value : this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()],
                         term : 0,
                         sortnum : 0
                       });
@@ -1187,11 +1242,11 @@
                   }
                 }
               }else if(list.fieldType == "4"){  //多选框
-                if(this.confItemsval[(i+list.uid).toString()].length > 0) {
-                  for (let m = 0; m < this.confItemsval[(i+list.uid).toString()].length; m++) {
+                if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].length > 0) {
+                  for (let m = 0; m < this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].length; m++) {
                     approvalValues.push({
                       approvalFieldUid: list.uid,
-                      value: this.confItemsval[(i+list.uid).toString()][m],
+                      value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()][m],
                       term: 0,
                       sortnum: m
                     });
@@ -1200,10 +1255,11 @@
               }
 
               if(list.fieldType == "7"){
+                console.log(345);
                 //处理item.fieldType="7"日期时间段的数据
                 let periodarr = [];
-                for(let m = 0; m < this.applyWorkRefAll[(i+list.uid).toString()].length; m++){
-                  let itemtwo = this.applyWorkRefAll[(i+list.uid).toString()][m];
+                for(let m = 0; m < this.applyWorkRefAll[(item.daycurrent+item.daysortnum+list.uid).toString()].length; m++){
+                  let itemtwo = this.applyWorkRefAll[(item.daycurrent+item.daysortnum+list.uid).toString()][m];
                   for(let n = 0; n < 2; n++){
                     let timecurr;
                     if(n == 0){
@@ -1263,9 +1319,10 @@
           applys:applys
         };
 
-        // console.log("提交考勤异常申请数据————————");
-        // console.log(applysAllparams);
-        // console.log(this.dateApplys);
+        console.log("提交考勤异常申请数据————————");
+        console.log(applysAllparams);
+        console.log(this.dateApplys);
+        // return false;
 
         this.$http.post('/api/v1.0/client/abnormalApply', applysAllparams).then(response => { //提交请假申请
           // Indicator.close();//申请提交成功
@@ -1326,7 +1383,8 @@
         if(dateApplys && dateApplys.length > 0){
           for(let i = 0; i < dateApplys.length; i++){
             let applyItem = dateApplys[i];
-
+            applyItem['daycurrent'] = newday;
+            applyItem['daysortnum'] = i;
             if(dateApplys.length > 0){
               this.selectedDataApply.push(applyItem.approvalType);
             }else{
@@ -1360,7 +1418,7 @@
                   list.periodarr = timearr;
                   this.applyWorkRef = timearr;
                 }
-                this.$set(this.applyWorkRefAll, (i+list.uid).toString(), timearr);
+                this.$set(this.applyWorkRefAll, (this.daycurrent+i+list.uid).toString(), timearr);
 
               }else if(list.fieldType == '3' || list.fieldType == '4' || list.fieldType == '5'){
                 list.term = 0;
@@ -1376,8 +1434,14 @@
                   }
                   // this.$set(this.confItems, list.uid.toString(), list.attendtime);
                   // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
-                  this.$set(this.confItems, (i+list.uid).toString(), list.attendtime);
-                  this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
+                  // this.$set(this.confItems, (i+list.uid).toString(), list.attendtime);
+                  // this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
+
+                  let daycurrentStr = (this.daycurrent).toString();
+                  // console.log(daycurrentStr);
+                  this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), list.attendtime);
+                  this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
+
                 }else{
                   if(list.approvalFieldValues.length > 0 && list.approvalValues.length > 0){
                     for(let j = 0; j < list.approvalValues.length; j++){
@@ -1391,16 +1455,13 @@
                   }
                   // list.confItems = list.approvalFieldValues;
                   // list.confItemsval = list.valuearray;
+                  // this.$set(this.confItems, (i+list.uid).toString(), list.approvalFieldValues);
+                  // this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
 
-                  this.$set(this.confItems, (i+list.uid).toString(), list.approvalFieldValues);
-                  this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
-
-                  // console.log((j+list.uid).toString());
-                  // console.log(56789);
-                  // console.log(this.confItems);
-                  // console.log(this.confItemsval);
-                  // this.confItems[list.uid.toString()] = list.approvalFieldValues;
-                  // this.confItemsval[list.uid.toString()] = list.valuearray;
+                  let daycurrentStr = (this.daycurrent).toString();
+                  console.log(daycurrentStr);
+                  this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), list.approvalFieldValues);
+                  this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
 
                 }
 
@@ -1415,8 +1476,8 @@
             }
 
             // console.log("confItemsALL123");
-            this.$set(this.confItemsALL, (i).toString(), this.confItems);
-            this.$set(this.confItemsALLval, (i).toString(), this.confItemsval);
+            // this.$set(this.confItemsALL, (i).toString(), this.confItems);
+            // this.$set(this.confItemsALLval, (i).toString(), this.confItemsval);
             // console.log(this.confItemsALL);
 
           }
@@ -1652,17 +1713,10 @@
                   uid: item.uid
                 }];
                 let numIndex =this.searchApplyRecord.length-1;
-                this.$set(this.applyWorkRefAll, (numIndex+item.uid).toString(), timearr);
+                this.$set(this.applyWorkRefAll, (this.daycurrent+numIndex+item.uid).toString(), timearr);
                 this.fields.push(item);
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
-                // item.term = 0;
-                // item.sortnumtmp = 0;
-                // item.valuearray = [],item.valuearray2 = [];
-                // item.valuearray.push(item.approvalFieldValues[0].value);
-                // this.valuearray = item.valuearray;
-                // this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
-                // this.$set(this.confItemsval, item.uid.toString(), item.valuearray);
-                // this.fields.push(item);
+                console.log(123);
 
                 item.term = 0;
                 item.sortnumtmp = 0;
@@ -1681,8 +1735,11 @@
                   // this.$set(this.confItems, list.uid.toString(), list.attendtime);
                   // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
                   // console.log("numIndex22="+ numIndex);
-                  this.$set(this.confItems, (numIndex+item.uid).toString(), this.attendtime);
-                  this.$set(this.confItemsval, (numIndex+item.uid).toString(), item.valuearray);
+                  this.$set(this.confItems, (this.daycurrent+numIndex+item.uid).toString(), this.attendtime);
+                  this.$set(this.confItemsval, (this.daycurrent+numIndex+item.uid).toString(), item.valuearray);
+
+
+
                 }else{
                   if(item.approvalFieldValues.length > 0){
                     for(let j = 0; j < item.approvalFieldValues.length; j++){
@@ -1699,8 +1756,8 @@
                   // this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
                   // this.$set(this.confItemsval, item.uid.toString(), item.valuearray); //默认选中的值
 
-                  this.$set(this.confItems, (numIndex+item.uid).toString(), item.approvalFieldValues);
-                  this.$set(this.confItemsval, (numIndex+item.uid).toString(), item.valuearray); //默认选中的值
+                  this.$set(this.confItems, (this.daycurrent+numIndex+item.uid).toString(), item.approvalFieldValues);
+                  this.$set(this.confItemsval, (this.daycurrent+numIndex+item.uid).toString(), item.valuearray); //默认选中的值
                   // console.log(this.confItems);
                   // console.log(this.confItemsval);
                 }
@@ -1717,6 +1774,9 @@
             }
             this.periodnum = periodnum;
             this.fieldsdata.approvalFields= this.fields;
+            this.fieldsdata['daycurrent'] = this.daycurrent;
+            let numIndex = parseInt(this.searchApplyRecord.length-1);
+            this.fieldsdata['daysortnum'] = numIndex;
             this.searchApplyRecord[index] = this.fieldsdata;
 
             // console.log(11111111111111);
@@ -1770,7 +1830,7 @@
       },
       //添加加班时间段
       addTime(uid, index){
-        this.applyWorkRefAll[(index+uid).toString()].push({
+        this.applyWorkRefAll[(this.daycurrent+index+uid).toString()].push({
           startTime: '',
           endTime: '',
           uid: uid
@@ -1779,13 +1839,13 @@
       },
       //删除加班时间段
       deleteTime(num, uid, index){
-        this.applyWorkRefAll[(index+uid).toString()].splice(num, 1);
+        this.applyWorkRefAll[(this.daycurrent+index+uid).toString()].splice(num, 1);
       },
       // 开始时间格式化
       handleConfirmStart(data){
         if (this.fieldTypecurr === '7') {
           // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
-          this.applyWorkRefAll[(this.posIndex+this.uid).toString()][this.pos].startTime = moment(data).format(df);
+          this.applyWorkRefAll[(this.daycurrent+this.posIndex+this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
           this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
           this.tmpnumber = 2;
@@ -1799,7 +1859,7 @@
       handleConfirmEnd(data){
         if (this.fieldTypecurr === '7') {
           // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
-          this.applyWorkRefAll[(this.posIndex+this.uid).toString()][this.pos].endTime = moment(data).format(df);
+          this.applyWorkRefAll[(this.daycurrent+this.posIndex+this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
           this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
           this.tmpnumber = 2;
@@ -1816,20 +1876,20 @@
         this.currfieldIndex = fieldIndex;
         this.fieldTypecurr = fieldType;
         if(fieldType == '6'){
-          let displaytime = this.fields[index].value;
+          let displaytime = this.searchApplyRecord[index].approvalFields[fieldIndex].value;
           this.startTimeValue1 = displaytime ? displaytime : new Date();
           this.$refs.picker0.open();
         }else if(fieldType == '7'){
           if(type == 0){
-            if(this.applyWorkRefAll[(index+this.uid).toString()][this.pos].startTime){
-              this.startTimeValue1 = this.applyWorkRefAll[(index+this.uid).toString()][this.pos].startTime;
+            if(this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].startTime){
+              this.startTimeValue1 = this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].startTime;
             }else{
               this.startTimeValue1 = new Date();
             }
             this.$refs.picker0.open();
           }else if(type == 1){
-            if(this.applyWorkRefAll[(index+this.uid).toString()][this.pos].endTime){
-              this.endTimeValue1 = this.applyWorkRefAll[(index+this.uid).toString()][this.pos].endTime;
+            if(this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].endTime){
+              this.endTimeValue1 = this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].endTime;
             }else{
               this.endTimeValue1 = new Date();
             }
@@ -2259,6 +2319,11 @@
         .reviseconttwo{
           .revisecontmid{
             min-height: 100px;
+            .deleteRecord{
+              .btndeleteRecord{
+
+              }
+            }
           }
           .reviseitem{
             line-height: 25px;

@@ -513,9 +513,8 @@
                 <p>
                   <span class="spanlft">产假累计: 10天(共80工时)</span>
                 </p>
-                <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
                 <p>
-                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
                 </p>
                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertime}}小时)</p>
                 <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertime}}小时)</p>
@@ -528,19 +527,15 @@
                 <p>本月异常考勤累计时间</p>
                 <p>
                   <span>迟到累计：{{item.abnormalAttendApproval.newAttendReport.belateTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.belateTotal}}工时）</span>
-                  <span>事假累计: 10天(共80工时)</span>
                 </p>
                 <p>
                   <span>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</span>
-                  <span>病假累计: 10天(共80工时)</span>
                 </p>
                 <p>
                   <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</span>
-                  <span class="spanlft">产假累计: 10天(共80工时)</span>
                 </p>
-                <!--<p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>-->
                 <p>
-                  <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
+                  <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
                 </p>
 
                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}小时)</p>

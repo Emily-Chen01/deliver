@@ -424,17 +424,6 @@
               background-color: #00CCCC;
               color: rgb(255, 255, 255);
               position: relative;
-              &::before{
-                content: "";
-                display: block;
-                width: 7px;
-                height: 7px;
-                background: red;
-                border-radius: 50%;
-                position: absolute;
-                right: 5px;
-                top: -2px;
-              }
             }
           }
         }
