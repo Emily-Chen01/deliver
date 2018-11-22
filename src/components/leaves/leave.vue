@@ -79,17 +79,17 @@
           <div v-if="item.fieldType=='5'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
-              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldDescr}"
-                      @change="qingjiaclick(selectedDataHoliday, index)" placeholder="selectedDataHoliday">
-                <!--<option>{{item.fieldDescr}}</option>-->
+              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday=='请选择'}"
+                      @change="qingjiaclick(selectedDataHoliday, index)">
+                <option :value="''||null">请选择</option>
                 <option v-for="option in holidayTypeArray" :value="option"
                         v-text="option.NAME"></option>
               </select>
             </div>
             <div class="leaveboxcen" v-if="item.code == 'outType'">
-              <select v-model="selectedDataHolidaytwo" :class="{'colorA6':selectedDataHolidaytwo===item.fieldDescr}"
+              <select v-model="selectedDataHolidaytwo" :class="{'colorA6':selectedDataHolidaytwo=='请选择'}"
                       @change="waichuclick(selectedDataHolidaytwo, index)">
-                <!--<option>{{item.fieldDescr}}</option>-->
+                <option :value="''||null">请选择</option>
                 <option v-for="option in outsideObj" :value="option"
                         v-text="option.name"></option>
               </select>
@@ -98,7 +98,7 @@
               <!--:placeholder="item.fieldDescr"-->
               <!--:class="{'colorA6': item.fieldDescr}"-->
               <select v-model="confItemsval[item.uid]" :placeholder="'请选择'">
-                <!--<option>{{item.fieldDescr}}</option>-->
+                <option :value="''||null">请选择</option>
                 <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
               </select>
             </div>
@@ -700,8 +700,8 @@
         popupVisible: false, // 查看图片弹框
         selectedDataApply: 0, //选择的申请类型
         applyTypeArray: [], //申请分类
-        selectedDataHoliday: '请假类型根据不同人员拥有假期自动展示', // 选择的假期类型
-        selectedDataHolidaytwo: '请选择外出类型', // 选择的外出类型
+        selectedDataHoliday: '', // 选择的假期类型
+        selectedDataHolidaytwo: '', // 选择的外出类型
         holidayTypeArray: [], // 假期类型列表
         selectHoliday: {},
         imgSrc: {
@@ -1320,14 +1320,18 @@
         });*/
       },
       qingjiaclick(value, index){
-        this.applyData.leaveUid = value.LEAVE_INFO_UID;
-        this.fields[index].value = value.NAME;
-        this.selectHoliday = value;
+        if(value!=null && value!=''){
+          this.applyData.leaveUid = value.LEAVE_INFO_UID;
+          this.fields[index].value = value.NAME;
+          this.selectHoliday = value;
+        }
       },
       waichuclick(value, index){
-        this.fields[index].value = value.name;
-        this.selectHoliday = value;
-        this.applyData.leaveUid = '';
+        if(value!=null && value!='') {
+          this.fields[index].value = value.name;
+          this.selectHoliday = value;
+          this.applyData.leaveUid = '';
+        }
       },
       // 打开查看附件弹框
       lookImages(imgSrc){

@@ -150,6 +150,7 @@
               <div class="leaveboxlft icon-stars">考勤状态</div>
               <div class="leaveboxcen">
                 <select v-model="selectedDataApply[index]" @change="shengqingclick(detail.approvalType, index)">
+                  <option :value="''||null">请选择</option>
                   <option v-for="option in applyTypeArray" :value="option.type">{{option.name}}</option>
                 </select>
               </div>
@@ -287,20 +288,24 @@
                     </select>
                   </div>-->
 
+
                   <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
                     <select v-model="confItemsval[(daycurrent+index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}" @change="qingjiaclick(confItemsval[(daycurrent+index+item.uid).toString()], index, fieldIndex, item.uid)">
+                      <option :value="''||null">请选择</option>
                       <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
                     </select>
 
                   </div>
                   <div class="leaveboxcen" v-if="item.code == 'outType'">
                     <select v-model="confItemsval[(daycurrent+index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}">
+                      <option :value="''||null">请选择</option>
                       <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
                     </select>
                   </div>
 
                   <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
                     <select v-model="confItemsval[(daycurrent+index+item.uid).toString()]">
+                      <option :value="''||null">请选择</option>
                       <option v-for="option in confItems[(daycurrent+index+item.uid).toString()]" :value="option.value">{{option.value}}</option>
                     </select>
                   </div>
@@ -1403,7 +1408,6 @@
                 list.term = 0;
                 list.sortnumtmp = 0;
                 list.valuearray = [],list.valuearray2 = [];
-                console.log(123);
 
                 if(list.code == 'punchTime'){ //忘记打卡
                   if(list.approvalValues.length > 0){
@@ -1412,11 +1416,6 @@
                       list.valuearray.push(appfieldval.value);
                     }
                   }
-                  // this.$set(this.confItems, list.uid.toString(), list.attendtime);
-                  // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
-                  // this.$set(this.confItems, (i+list.uid).toString(), list.attendtime);
-                  // this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
-
                   let daycurrentStr = (this.daycurrent).toString();
                   this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), list.attendtime);
                   this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
@@ -1427,20 +1426,23 @@
                     qingjiaval = list.approvalValues[0].value;
                     let daycurrentStr = (this.daycurrent).toString();
                     this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), { NAME: qingjiaval});
+                    for(let n=0; n< this.holidayTypeArray.length; n++){
+                      if(qingjiaval == this.holidayTypeArray[n].NAME){
+                        this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(),  this.holidayTypeArray[n]);
+                      }
+                    }
                   }
-
-                  // this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
-
-                  // if(list.code == 'leaveType'){
-                  //   item.leaveUid = this.confItemsval[(this.daycurrent+i+list.uid).toString()].LEAVE_INFO_UID;
-                  //   list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].NAME;
-                  // }
                 }else if(list.code == 'outType'){
                   let qingjiaval;
                   if(list.approvalValues.length > 0){
                     qingjiaval = list.approvalValues[0].value;
                     let daycurrentStr = (this.daycurrent).toString();
                     this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), { name: qingjiaval});
+                    for(let n=0; n< this.outsideObj.length; n++){
+                      if(qingjiaval == this.outsideObj[n].name){
+                        this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(),  this.outsideObj[n]);
+                      }
+                    }
                   }
 
                 }else{
@@ -2181,7 +2183,7 @@
 <style lang="scss">
   .attendwhite{
     background: #fff;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     .inputtext{
       height: 48px;
       width: 98%;
