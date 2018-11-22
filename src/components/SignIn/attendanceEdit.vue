@@ -955,131 +955,132 @@
       saverevisetmp(){
         for(let i = 0; i < this.searchApplyRecord.length; i++){
           let item = this.searchApplyRecord[i];
-          for(let j = 0; j < item.approvalFields.length; j++){
-            let list = item.approvalFields[j];
+          if(item.status != '1' && item.status != '2'){ //已通过1，和未通过2，不需要提交申请
+            for(let j = 0; j < item.approvalFields.length; j++){
+              let list = item.approvalFields[j];
 
-            //验证数据
-            if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
-              if(list.value == '' || list.value ==undefined){
-                if(list.isRequired){ //必填
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }else{
-                if((list.fieldType == "0" || list.fieldType == "1") && list.fieldName != "时长（小时）" && (!list.isDefault)){
-                  if ( !textPattern[list.conditions.join('')].test(list.value) ) {
+              //验证数据
+              if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
+                if(list.value == '' || list.value ==undefined){
+                  if(list.isRequired){ //必填
                     this.showMsg(list.fieldHint,-1);
                     return false;
                   }
-                }else if(list.fieldType == "2" && (!list.isDefault)){ //数字
-                  if ( !textPattern[3].test(list.value) ) {
+                }else{
+                  if((list.fieldType == "0" || list.fieldType == "1") && list.fieldName != "时长（小时）" && (!list.isDefault)){
+                    if ( !textPattern[list.conditions.join('')].test(list.value) ) {
+                      this.showMsg(list.fieldHint,-1);
+                      return false;
+                    }
+                  }else if(list.fieldType == "2" && (!list.isDefault)){ //数字
+                    if ( !textPattern[3].test(list.value) ) {
+                      this.showMsg(list.fieldHint,-1);
+                      return false;
+                    }
+                  }
+                }
+
+              }else if(list.fieldType == "3" || list.fieldType == "4"){ //多行文本
+                if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()].length == 0) && list.isRequired){
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }else if(list.fieldType == "5"){ //下拉选框（请假类型和外出类型）
+                if(list.code == 'leaveType' || list.code == 'outType'){
+                  if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()] == undefined) && list.isRequired){
+                    this.showMsg(list.fieldHint,-1);
+                    return false;
+                  }
+                }else{
+                  if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()] == undefined) && list.isRequired){
+                    this.showMsg(list.fieldHint,-1);
+                    return false;
+                  }
+                }
+              }else if(list.fieldType == "6"){
+                if((list.value == '' || list.value ==undefined) && list.isRequired){
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }else if(list.fieldType == "7"){ //日期和日期时间段
+                let workrefval = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
+                if( workrefval.length != 0 && (workrefval[0].startTime == '' || workrefval[0].endTime == '') && list.isRequired){
+                  this.showMsg(list.fieldHint,-1);
+                  return false;
+                }
+              }else if(list.fieldType == "8"){ //附件
+                if(list.approvalFieldValues.length == 0 || list.approvalFieldValues ==[]){
+                  if(list.isRequired){ //必填
                     this.showMsg(list.fieldHint,-1);
                     return false;
                   }
                 }
               }
 
-            }else if(list.fieldType == "3" || list.fieldType == "4"){ //多行文本
-              if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()].length == 0) && list.isRequired){
-                this.showMsg(list.fieldHint,-1);
-                return false;
-              }
-            }else if(list.fieldType == "5"){ //下拉选框（请假类型和外出类型）
-              if(list.code == 'leaveType' || list.code == 'outType'){
-                if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()] == undefined) && list.isRequired){
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }else{
-                if((this.confItemsval[(this.daycurrent+i+list.uid).toString()] == [] || this.confItemsval[(this.daycurrent+i+list.uid).toString()] == undefined) && list.isRequired){
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }
-            }else if(list.fieldType == "6"){
-              if((list.value == '' || list.value ==undefined) && list.isRequired){
-                this.showMsg(list.fieldHint,-1);
-                return false;
-              }
-            }else if(list.fieldType == "7"){ //日期和日期时间段
-              let workrefval = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
-              if( workrefval.length != 0 && (workrefval[0].startTime == '' || workrefval[0].endTime == '') && list.isRequired){
-                this.showMsg(list.fieldHint,-1);
-                return false;
-              }
-            }else if(list.fieldType == "8"){ //附件
-              if(list.approvalFieldValues.length == 0 || list.approvalFieldValues ==[]){
-                if(list.isRequired){ //必填
-                  this.showMsg(list.fieldHint,-1);
-                  return false;
-                }
-              }
-            }
-
-            if(list.approvalValues.length == 0){
-              list.approvalValues.push({
-                value: '',
-                term: 0,
-                sortnum: 0
-              });
-            }
-
-            if(list.fieldType == '0' || list.fieldType == '1' || list.fieldType == '2'){
-              if(list.value != '' && list.value != null && list.value != undefined){
-                list.approvalValues[0].value = list.value;
-              }else{
-                list.approvalValues = [];
+              if(list.approvalValues.length == 0){
+                list.approvalValues.push({
+                  value: '',
+                  term: 0,
+                  sortnum: 0
+                });
               }
 
-            }/*else if(list.fieldType == '1'){
+              if(list.fieldType == '0' || list.fieldType == '1' || list.fieldType == '2'){
+                if(list.value != '' && list.value != null && list.value != undefined){
+                  list.approvalValues[0].value = list.value;
+                }else{
+                  list.approvalValues = [];
+                }
+
+              }/*else if(list.fieldType == '1'){
               list.approvalValues[0].value = list.value;
             }else if(list.fieldType == '2'){
               list.approvalValues[0].value = list.value;
             }*/else if(list.fieldType == '3'){ //单选框
-              list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()];
-            }else if(list.fieldType == '4'){ //多选框
-              for(let m = 0; m < this.confItemsval[(this.daycurrent+i+list.uid).toString()].length; m++){
-                if(list.approvalValues.length < this.confItemsval[(this.daycurrent+i+list.uid).toString()].length){
+                list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()];
+              }else if(list.fieldType == '4'){ //多选框
+                for(let m = 0; m < this.confItemsval[(this.daycurrent+i+list.uid).toString()].length; m++){
+                  if(list.approvalValues.length < this.confItemsval[(this.daycurrent+i+list.uid).toString()].length){
+                    list.approvalValues.push({
+                      value: '',
+                      term: 0,
+                      sortnum: m
+                    });
+                  }
+                  list.approvalValues[m].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()][m];
+                }
+              }else if(list.fieldType == '5'){ //下拉框
+                if(list.code == 'leaveType'){
+                  item.leaveUid = this.confItemsval[(this.daycurrent+i+list.uid).toString()].LEAVE_INFO_UID;
+                  list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].NAME;
+                }else if(list.code == 'outType'){
+                  item.leaveUid = '';
+                  list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].name;
+                }else{
+                  list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()];
+                }
+              }else if(list.fieldType == '6'){
+                list.approvalValues[0].value = list.value;
+              }else if(list.fieldType == '7'){
+                let periodarr = [];
+                let tmpapprovalValues;
+                if(list.approvalValues.length == 1){ //不是必填
                   list.approvalValues.push({
                     value: '',
                     term: 0,
-                    sortnum: m
+                    sortnum: 1
                   });
                 }
-                list.approvalValues[m].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()][m];
-              }
-            }else if(list.fieldType == '5'){ //下拉框
-              if(list.code == 'leaveType'){
-                item.leaveUid = this.confItemsval[(this.daycurrent+i+list.uid).toString()].LEAVE_INFO_UID;
-                list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].NAME;
-              }else if(list.code == 'outType'){
-                item.leaveUid = '';
-                list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()].name;
-              }else{
-                list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()];
-              }
-            }else if(list.fieldType == '6'){
-              list.approvalValues[0].value = list.value;
-            }else if(list.fieldType == '7'){
-              let periodarr = [];
-              let tmpapprovalValues;
-              if(list.approvalValues.length == 1){ //不是必填
-                list.approvalValues.push({
-                  value: '',
-                  term: 0,
-                  sortnum: 1
-                });
-              }
 
-              if(this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length > 1){
-                tmpapprovalValues = list.approvalValues[0];
-              }
+                if(this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length > 1){
+                  tmpapprovalValues = list.approvalValues[0];
+                }
 
-              list.periodarr = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
+                list.periodarr = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
 
-              // for(let n = 0; n < this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length; n++){
-              //   let itemtwo = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][n];
-              //   list.periodarr = itemtwo;
+                // for(let n = 0; n < this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length; n++){
+                //   let itemtwo = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][n];
+                //   list.periodarr = itemtwo;
                 /*for(let h = 0; h < 2; h++){
                   let timecurr,currnum;
                   if(h == 0){
@@ -1099,13 +1100,15 @@
                   }
                 }*/
 
-              // }
+                // }
 
-            }else if(list.fieldType == '8'){
-              list.approvalValues = list.approvalFieldValues;
+              }else if(list.fieldType == '8'){
+                list.approvalValues = list.approvalFieldValues;
+              }
+
             }
-
           }
+
         }
         this.dateApplys[this.daycurrent] = this.searchApplyRecord;
 
@@ -1151,136 +1154,137 @@
         for(let i = 0; i < record.length; i++){
           let item = record[i];
           approvalValues = [];
-          for(let j = 0; j < item.approvalFields.length; j++){
-            let list = item.approvalFields[j];
-            if(list.fieldType != "7" && list.fieldType != "8" && list.fieldType != "3" && list.fieldType != "4" && (list.fieldType != "5" && list.code != "outType" && list.code !="leaveType")){
-              if(list.value != '' && list.value != null && list.value != undefined){
-                approvalValues.push({
-                  approvalFieldUid : list.uid,
-                  value : list.value,
-                  term : list.term,
-                  sortnum : list.sortnumtmp
-                });
-              }
-            }else{
-              if(list.fieldType == "3" || list.fieldType == "5"){  //单选框
-                if(list.fieldType == "3"){
-                  if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
-                    approvalValues.push({
-                      approvalFieldUid: list.uid,
-                      value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()],
-                      term: 0,
-                      sortnum: 0
-                    });
-                  }
-                }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
-                  console.log(1111);
-                  let qingjiaval = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()];
-                  if(list.code == "leaveType"){
-                    if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
-                      // item.leaveUid = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].LEAVE_INFO_UID;
-                      approvalValues.push({
-                        approvalFieldUid: list.uid,
-                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].NAME,
-                        term: 0,
-                        sortnum: 0
-                      });
-                    }
-                  }else if(list.code == "outType"){
-                    if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
-                      item.leaveUid = '';
-                      approvalValues.push({
-                        approvalFieldUid: list.uid,
-                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].name,
-                        term: 0,
-                        sortnum: 0
-                      });
-                    }
-                  }else{
+          if(item.status != '1' && item.status != '2'){
+            for(let j = 0; j < item.approvalFields.length; j++){
+              let list = item.approvalFields[j];
+              if(list.fieldType != "7" && list.fieldType != "8" && list.fieldType != "3" && list.fieldType != "4" && (list.fieldType != "5" && list.code != "outType" && list.code !="leaveType")){
+                if(list.value != '' && list.value != null && list.value != undefined){
+                  approvalValues.push({
+                    approvalFieldUid : list.uid,
+                    value : list.value,
+                    term : list.term,
+                    sortnum : list.sortnumtmp
+                  });
+                }
+              }else{
+                if(list.fieldType == "3" || list.fieldType == "5"){  //单选框
+                  if(list.fieldType == "3"){
                     if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
                       approvalValues.push({
-                        approvalFieldUid : list.uid,
-                        value : this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()],
-                        term : 0,
-                        sortnum : 0
-                      });
-                    }
-                  }
-                }
-              }else if(list.fieldType == "4"){  //多选框
-                if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].length > 0) {
-                  for (let m = 0; m < this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].length; m++) {
-                    approvalValues.push({
-                      approvalFieldUid: list.uid,
-                      value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()][m],
-                      term: 0,
-                      sortnum: m
-                    });
-                  }
-                }
-              }
-
-              if(list.fieldType == "7"){
-                //处理item.fieldType="7"日期时间段的数据
-                let periodarr = [];
-                for(let m = 0; m < this.applyWorkRefAll[(item.daycurrent+item.daysortnum+list.uid).toString()].length; m++){
-                  let itemtwo = this.applyWorkRefAll[(item.daycurrent+item.daysortnum+list.uid).toString()][m];
-                  for(let n = 0; n < 2; n++){
-                    let timecurr;
-                    if(n == 0){
-                      timecurr = itemtwo.startTime;
-                    }else if(n == 1){
-                      timecurr = itemtwo.endTime;
-                    }
-                    if(timecurr != '' && timecurr != null && timecurr != undefined){
-                      periodarr.push({
-                        approvalFieldUid : list.uid,
-                        value : timecurr,
-                        term : m,
-                        sortnum : n
-                      });
-                    }
-                  }
-                }
-                approvalValues = approvalValues.concat(periodarr);
-              }
-
-              if(list.fieldType == "8"){
-                if(list.approvalFieldValues.length != 0){
-                  let picturearr = [];
-                  for(let m = 0; m < list.approvalFieldValues.length; m++){
-                    let detail = list.approvalFieldValues[m];
-                    if(detail.url != '' && detail.url != null && detail.url != undefined) {
-                      picturearr.push({
                         approvalFieldUid: list.uid,
-                        value: detail.url,
+                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()],
+                        term: 0,
+                        sortnum: 0
+                      });
+                    }
+                  }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
+                    console.log(1111);
+                    let qingjiaval = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()];
+                    if(list.code == "leaveType"){
+                      if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
+                        // item.leaveUid = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].LEAVE_INFO_UID;
+                        approvalValues.push({
+                          approvalFieldUid: list.uid,
+                          value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].NAME,
+                          term: 0,
+                          sortnum: 0
+                        });
+                      }
+                    }else if(list.code == "outType"){
+                      if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
+                        item.leaveUid = '';
+                        approvalValues.push({
+                          approvalFieldUid: list.uid,
+                          value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].name,
+                          term: 0,
+                          sortnum: 0
+                        });
+                      }
+                    }else{
+                      if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != '' && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != null && this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()] != undefined) {
+                        approvalValues.push({
+                          approvalFieldUid : list.uid,
+                          value : this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()],
+                          term : 0,
+                          sortnum : 0
+                        });
+                      }
+                    }
+                  }
+                }else if(list.fieldType == "4"){  //多选框
+                  if(this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].length > 0) {
+                    for (let m = 0; m < this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].length; m++) {
+                      approvalValues.push({
+                        approvalFieldUid: list.uid,
+                        value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()][m],
                         term: 0,
                         sortnum: m
                       });
                     }
                   }
-                  approvalValues = approvalValues.concat(picturearr);
                 }
+
+                if(list.fieldType == "7"){
+                  //处理item.fieldType="7"日期时间段的数据
+                  let periodarr = [];
+                  for(let m = 0; m < this.applyWorkRefAll[(item.daycurrent+item.daysortnum+list.uid).toString()].length; m++){
+                    let itemtwo = this.applyWorkRefAll[(item.daycurrent+item.daysortnum+list.uid).toString()][m];
+                    for(let n = 0; n < 2; n++){
+                      let timecurr;
+                      if(n == 0){
+                        timecurr = itemtwo.startTime;
+                      }else if(n == 1){
+                        timecurr = itemtwo.endTime;
+                      }
+                      if(timecurr != '' && timecurr != null && timecurr != undefined){
+                        periodarr.push({
+                          approvalFieldUid : list.uid,
+                          value : timecurr,
+                          term : m,
+                          sortnum : n
+                        });
+                      }
+                    }
+                  }
+                  approvalValues = approvalValues.concat(periodarr);
+                }
+
+                if(list.fieldType == "8"){
+                  if(list.approvalFieldValues.length != 0){
+                    let picturearr = [];
+                    for(let m = 0; m < list.approvalFieldValues.length; m++){
+                      let detail = list.approvalFieldValues[m];
+                      if(detail.url != '' && detail.url != null && detail.url != undefined) {
+                        picturearr.push({
+                          approvalFieldUid: list.uid,
+                          value: detail.url,
+                          term: 0,
+                          sortnum: m
+                        });
+                      }
+                    }
+                    approvalValues = approvalValues.concat(picturearr);
+                  }
+                }
+
               }
-
             }
-          }
-
-          if(item.approvalConfigUid){ //修改的
-            applys.push({
-              uid:item.uid,                // 里面小的提交的考勤的审批id
-              approvalTypeUid:item.approvalTypeUid,   // 申请类型Uid
-              approvalConfigUid:item.approvalConfigUid ? item.approvalConfigUid : item.uid, // 具体流程的uid
-              leaveUid:item.leaveUid,          // 假期uid
-              approvalValues: approvalValues
-            });
-          }else{ //新增的
-            applys.push({
-              approvalTypeUid:item.approvalTypeUid,   // 申请类型Uid
-              approvalConfigUid:item.approvalConfigUid ? item.approvalConfigUid : item.uid, // 具体流程的uid
-              leaveUid:item.leaveUid,          // 假期uid
-              approvalValues: approvalValues
-            });
+            if(item.approvalConfigUid){ //修改的
+              applys.push({
+                uid:item.uid,                // 里面小的提交的考勤的审批id
+                approvalTypeUid:item.approvalTypeUid,   // 申请类型Uid
+                approvalConfigUid:item.approvalConfigUid ? item.approvalConfigUid : item.uid, // 具体流程的uid
+                leaveUid:item.leaveUid,          // 假期uid
+                approvalValues: approvalValues
+              });
+            }else{ //新增的
+              applys.push({
+                approvalTypeUid:item.approvalTypeUid,   // 申请类型Uid
+                approvalConfigUid:item.approvalConfigUid ? item.approvalConfigUid : item.uid, // 具体流程的uid
+                leaveUid:(item.leaveUid && item.leaveUid!=undefined) ? item.leaveUid : '',          // 假期uid
+                approvalValues: approvalValues
+              });
+            }
           }
 
         }
@@ -2177,6 +2181,7 @@
 <style lang="scss">
   .attendwhite{
     background: #fff;
+    padding-bottom: 20px;
     .inputtext{
       height: 48px;
       width: 98%;
