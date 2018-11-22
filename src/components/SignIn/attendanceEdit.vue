@@ -9,7 +9,7 @@
       <p>早退累计：{{attendReport.leaveearlyTimes}}次（共{{attendReport.leaveearlyTotal}}工时）</p>
       <p>旷工累计: {{attendReport.absentTimes}}天(共{{attendReport.absentTotal}}工时)</p>
       <p>
-        <span v-for="list in attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
+        <span v-for="list in attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</span>
       </p>
       <p>工作日加班累计时长：{{attendReport.dayOvertime}}天(共{{attendReport.dayOvertimeDays}}小时)</p>
       <p>周末加班累计时长：{{attendReport.weekendOvertime}}天(共{{attendReport.weekendOvertimeDays}}小时)</p>
@@ -22,7 +22,7 @@
       <p>早退累计：{{newAttendReport.leaveearlyTimes}}次（共{{newAttendReport.leaveearlyTotal}}工时）</p>
       <p>旷工累计: {{newAttendReport.absentTimes}}天(共{{newAttendReport.absentTotal}}工时)</p>
       <p>
-        <span v-for="list in newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
+        <span v-for="list in newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</span>
       </p>
       <p>工作日加班累计时长：{{newAttendReport.dayOvertime}}天(共{{newAttendReport.dayOvertimeDays}}小时)</p>
       <p>周末加班累计时长：{{newAttendReport.weekendOvertime}}天(共{{newAttendReport.weekendOvertimeDays}}小时)</p>
@@ -1002,7 +1002,8 @@
                 return false;
               }
             }else if(list.fieldType == "7"){ //日期和日期时间段
-              if( this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length != 0 && (this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][0].startTime == '' || this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][0].startTime == '') && list.isRequired){
+              let workrefval = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
+              if( workrefval.length != 0 && (workrefval[0].startTime == '' || workrefval[0].endTime == '') && list.isRequired){
                 this.showMsg(list.fieldHint,-1);
                 return false;
               }

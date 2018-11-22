@@ -2,7 +2,7 @@
   <div id="leave-wrapper">
     <mt-navbar v-model="selected" class="leave-header">
       <mt-tab-item id="1">
-        <span>填写申请</span>
+        <div @click="changeselTab()"><span>填写申请</span></div>
       </mt-tab-item>
       <mt-tab-item id="2">
         <div @click="changeShow(-1, 3)"><span>我的申请</span></div>
@@ -508,13 +508,7 @@
                 <p>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</p>
                 <p>旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</p>
                 <p>
-                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天</span>
-                </p>
-                <p>
-                  <span class="spanlft">产假累计: 10天(共80工时)</span>
-                </p>
-                <p>
-                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
+                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</span>
                 </p>
                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertime}}小时)</p>
                 <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertime}}小时)</p>
@@ -535,9 +529,8 @@
                   <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</span>
                 </p>
                 <p>
-                  <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}{{list.UNIT}}</span>
+                  <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</span>
                 </p>
-
                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}小时)</p>
                 <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}小时)</p>
                 <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}小时)</p>
@@ -864,6 +857,12 @@
         }
       }
 
+      let selectedTab = this.$route.query.selectedTab;
+      if(selectedTab && selectedTab == '2'){
+        this.selected = selectedTab;
+        this.changeShow(-1, 3);
+      }
+
     },
     watch: {},
     methods: {
@@ -920,8 +919,6 @@
                 });
                 this.fields.push(item);
                 this.$set(this.applyWorkRefAll, (item.uid).toString(), timearr);
-                console.log(333);
-                console.log(this.applyWorkRefAll);
 
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
 
@@ -1147,7 +1144,8 @@
               return false;
             }
           }else if(item.fieldType == "7"){ //日期和日期时间段
-            if((this.applyWorkRefAll[(item.uid).toString()][0].startTime == '' || this.applyWorkRefAll[(item.uid).toString()][0].startTime == '') && item.isRequired){
+            let worfRefval = this.applyWorkRefAll[(item.uid).toString()];
+            if((worfRefval[0].startTime == '' || worfRefval[0].endTime == '') && item.isRequired){
               this.showMsg(item.fieldHint,-1);
               return false;
             }
@@ -1377,6 +1375,12 @@
         }
         return isImage && isInSize;
       },
+      changeselTab(){
+        let origin = window.location.href.split("#")[0];
+        console.log(origin);
+        let newloactionhref = origin+"#/leave";
+        window.location.replace(newloactionhref);
+      },
       //查看申请记录
       changeShow(val, type){
         if(this.currentval != val){
@@ -1393,6 +1397,13 @@
           this.currentval = val;
           this.pagenum = 1;
           this.selectInfo = 'a';
+
+          let selectedTab = this.$route.query.selectedTab;
+          if(!(selectedTab && selectedTab == '2')) {
+            let loactionhref = window.location.href;
+            let newloactionhref = loactionhref+"?selectedTab=2";
+            window.location.replace(newloactionhref);
+          }
         }
 
         if(val == -1){
