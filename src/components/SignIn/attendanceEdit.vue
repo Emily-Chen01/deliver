@@ -1851,7 +1851,8 @@
           // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
           this.applyWorkRefAll[(this.daycurrent+this.posIndex+this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
+          // this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
+          this.$set(this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
       },
@@ -1861,7 +1862,8 @@
           // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
           this.applyWorkRefAll[(this.daycurrent+this.posIndex+this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
+          // this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
+          this.$set(this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
       },

@@ -1038,7 +1038,8 @@
           // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
           this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.fields[this.posIndex].value =  moment(data).format(df2);
+          // this.fields[this.posIndex].value =  moment(data).format(df2);
+          this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
           this.tmpnumber = 2;
         }
       },
@@ -1048,7 +1049,8 @@
           // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
           this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.fields[this.posIndex].value =  moment(data).format(df2);
+          // this.fields[this.posIndex].value =  moment(data).format(df2);
+          this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
           this.tmpnumber = 2;
         }
       },
