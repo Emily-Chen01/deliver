@@ -159,6 +159,7 @@
             case 5:
               break;
             case 6:
+              item.num = response.body.result.approvals;
               break;
             default:
               break;
