@@ -107,9 +107,9 @@
           <!--日期 type为6-->
           <div v-if="item.fieldType=='6'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-            <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index, item.uid)">
-            <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
-                  :class="{'colorA6':!item.value}"></span>
+            <div class="leaveboxcen" @click="openPicker(0, 0, item.fieldType, index, item.uid, item.code)">
+              <span align="left" v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
+                  :class="{'colorA6':!item.value}" style="display: block;"></span>
             </div>
           </div>
 
@@ -126,15 +126,15 @@
                 <div class="leavebox">
                   <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">开始时间</div>
                   <div class="leaveboxcen">
-              <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
-                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index, item.uid)"></span>
+                    <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
+                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0, applyIndex, item.fieldType, index, item.uid, item.code)" style="display: block;"></span>
                   </div>
                 </div>
                 <div class="leavebox">
                   <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">结束时间</div>
                   <div class="leaveboxcen">
-                <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
-                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index, item.uid)"></span>
+                    <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
+                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex, item.fieldType, index, item.uid, item.code)" style="display: block;"></span>
                   </div>
                 </div>
               </div>
@@ -507,9 +507,7 @@
                 <p>迟到累计：{{item.abnormalAttendApproval.attendReport.belateTimes}}次（共{{item.abnormalAttendApproval.attendReport.belateTotal}}工时）</p>
                 <p>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</p>
                 <p>旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</p>
-                <p>
-                  <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</span>
-                </p>
+                <p v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</p>
                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}小时)</p>
                 <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}小时)</p>
                 <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}小时)</p>
@@ -519,18 +517,10 @@
               <div class="attendttit">修订后数据</div>
               <div class="attendDetail">
                 <p>本月异常考勤累计时间</p>
-                <p>
-                  <span>迟到累计：{{item.abnormalAttendApproval.newAttendReport.belateTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.belateTotal}}工时）</span>
-                </p>
-                <p>
-                  <span>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</span>
-                </p>
-                <p>
-                  <span class="spanlft">旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</span>
-                </p>
-                <p>
-                  <span v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</span>
-                </p>
+                <p>迟到累计：{{item.abnormalAttendApproval.newAttendReport.belateTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.belateTotal}}工时）</p>
+                <p>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</p>
+                <p>旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</p>
+                <p v-for="list in item.abnormalAttendApproval.newAttendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</p>
                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}小时)</p>
                 <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}小时)</p>
                 <p>法定假日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.holidayOvertimeDays}}小时)</p>
@@ -642,7 +632,7 @@
       </div>
     </mt-popup>
 
-
+    <div v-if="wordcodecurr!='workOverTime'">
     <mt-datetime-picker
       type="datetime"
       ref="picker0"
@@ -667,6 +657,38 @@
       @confirm="handleConfirmEnd"
     >
     </mt-datetime-picker>
+    </div>
+
+    <div v-if="wordcodecurr=='workOverTime'">
+    <mt-datetime-picker
+      type="datetime"
+      ref="picker0"
+      v-model="startTimeValue1"
+      year-format="{value} 年"
+      month-format="{value} 月"
+      date-format="{value} 日"
+      hour-format="{value} 时"
+      minute-format="{value} 分"
+      @confirm="handleConfirmStart"
+      :end-date="new Date()"
+    >
+    </mt-datetime-picker>
+    <mt-datetime-picker
+      type="datetime"
+      ref="picker1"
+      v-model="endTimeValue1"
+      year-format="{value} 年"
+      month-format="{value} 月"
+      date-format="{value} 日"
+      hour-format="{value} 时"
+      minute-format="{value} 分"
+      @confirm="handleConfirmEnd"
+      :end-date="new Date()"
+    >
+    </mt-datetime-picker>
+    </div>
+
+
 
   </div>
 </template>
@@ -793,7 +815,8 @@
         valuearray: [],
         confItems: {},
         confItemsval: {},
-        uploadImagelist:{} //附件内容
+        uploadImagelist:{}, //附件内容
+        wordcodecurr:''
       };
     },
     created: function () {
@@ -1049,11 +1072,12 @@
         return status;
       },
       // 日历样式
-      openPicker(type, pos, fieldType, index, uid) {
+      openPicker(type, pos, fieldType, index, uid, itemCode) {
         this.uid = uid;
         this.pos = pos;
         this.posIndex = index;
         this.fieldTypecurr = fieldType;
+        this.wordcodecurr = itemCode;
         if(fieldType == '6'){
             let displaytime = this.fields[index].value;
             this.startTimeValue1 = displaytime ? displaytime : new Date();
