@@ -510,9 +510,9 @@
                 <p>
                   <span v-for="list in item.abnormalAttendApproval.attendReport.leaves">{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</span>
                 </p>
-                <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertime}}小时)</p>
-                <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertime}}小时)</p>
-                <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertime}}小时)</p>
+                <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}小时)</p>
+                <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}小时)</p>
+                <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}小时)</p>
               </div>
 
 
