@@ -632,7 +632,8 @@
       </div>
     </mt-popup>
 
-    <div v-if="wordcodecurr!='workOverTime'">
+    <!--v-if="wordcodecurr!='workOverTime'"-->
+    <div>
     <mt-datetime-picker
       type="datetime"
       ref="picker0"
@@ -642,7 +643,9 @@
       date-format="{value} 日"
       hour-format="{value} 时"
       minute-format="{value} 分"
+      :closeOnClickModal="false"
       @confirm="handleConfirmStart"
+      @cancel="closeDatepicker"
     >
     </mt-datetime-picker>
     <mt-datetime-picker
@@ -654,12 +657,14 @@
       date-format="{value} 日"
       hour-format="{value} 时"
       minute-format="{value} 分"
+      :closeOnClickModal="false"
       @confirm="handleConfirmEnd"
+      @cancel="closeDatepicker"
     >
     </mt-datetime-picker>
     </div>
 
-    <div v-if="wordcodecurr=='workOverTime'">
+    <!--<div v-if="wordcodecurr=='workOverTime'">
     <mt-datetime-picker
       type="datetime"
       ref="picker0"
@@ -669,8 +674,10 @@
       date-format="{value} 日"
       hour-format="{value} 时"
       minute-format="{value} 分"
+      :closeOnClickModal="false"
       @confirm="handleConfirmStart"
-      :end-date="new Date()"
+      @cancel="closeDatepicker"
+      :end-date="new Date((new Date).getFullYear()+'-'+(new Date).getMonth()+'-'+(new Date).getDate()+' 23:59')"
     >
     </mt-datetime-picker>
     <mt-datetime-picker
@@ -682,11 +689,13 @@
       date-format="{value} 日"
       hour-format="{value} 时"
       minute-format="{value} 分"
+      :closeOnClickModal="false"
       @confirm="handleConfirmEnd"
-      :end-date="new Date()"
+      @cancel="closeDatepicker"
+      :end-date="new Date((new Date).getFullYear()+'-'+(new Date).getMonth()+'-'+(new Date).getDate()+' 23:59')"
     >
     </mt-datetime-picker>
-    </div>
+    </div>-->
 
 
 
@@ -816,7 +825,11 @@
         confItems: {},
         confItemsval: {},
         uploadImagelist:{}, //附件内容
-        wordcodecurr:''
+        wordcodecurr:'',
+        handler: function(e){
+          e.preventDefault()
+        }
+
       };
     },
     created: function () {
@@ -1032,6 +1045,9 @@
         // this.applyWorkRef.splice(num, 1);
         this.applyWorkRefAll[(uid).toString()].splice(num, 1);
       },
+      closeDatepicker(){
+        this.openTouch();
+      },
       // 开始时间格式化
       handleConfirmStart(data){
         if (this.fieldTypecurr === '7') {
@@ -1042,6 +1058,7 @@
           this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
           this.tmpnumber = 2;
         }
+        this.openTouch();
       },
       // 结束时间格式化
       handleConfirmEnd(data){
@@ -1053,6 +1070,7 @@
           this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
           this.tmpnumber = 2;
         }
+        this.openTouch();
       },
       //审批状态
       applyState(state){
@@ -1101,6 +1119,7 @@
             this.$refs.picker1.open();
           }
         }
+        this.closeTouch();
       },
       // 加班段数格式化
       overtimeNum(num){
@@ -1630,6 +1649,12 @@
         V.set(list[i], 'selected', !list[i].selected)
       },
       getExtType,
+      closeTouch () {
+        document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, {passive:false})//阻止默认事件
+      },
+      openTouch () {
+        document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
+      }
     },
     components: {
       uploadImage

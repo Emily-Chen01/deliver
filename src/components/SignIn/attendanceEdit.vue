@@ -564,7 +564,8 @@
     </mt-popup>
 
     <!--日期组件-->
-    <div v-if="wordcodecurr!='workOverTime'">
+    <!--v-if="wordcodecurr!='workOverTime'"-->
+    <div>
     <mt-datetime-picker
       type="datetime"
       ref="picker0"
@@ -574,7 +575,9 @@
       date-format="{value} 日"
       hour-format="{value} 时"
       minute-format="{value} 分"
+      :closeOnClickModal="false"
       @confirm="handleConfirmStart"
+      @cancel="closeDatepicker"
     >
     </mt-datetime-picker>
     <mt-datetime-picker
@@ -586,13 +589,15 @@
       date-format="{value} 日"
       hour-format="{value} 时"
       minute-format="{value} 分"
+      :closeOnClickModal="false"
       @confirm="handleConfirmEnd"
+      @cancel="closeDatepicker"
     >
     </mt-datetime-picker>
     </div>
 
     <!--加班时间日期-->
-    <div v-if="wordcodecurr=='workOverTime'">
+    <!--<div v-if="wordcodecurr=='workOverTime'">
       <mt-datetime-picker
         type="datetime"
         ref="picker0"
@@ -602,9 +607,11 @@
         date-format="{value} 日"
         hour-format="{value} 时"
         minute-format="{value} 分"
+        :closeOnClickModal="false"
         @confirm="handleConfirmStart"
+        @cancel="closeDatepicker"
         :start-date="new Date(connectTime.startTime)"
-        :end-date="new Date(new Date(connectTime.endTime).setHours(new Date(connectTime.endTime).getHours()+15.9))"
+        :end-date="new Date(new Date(connectTime.endTime).setHours(new Date(connectTime.endTime).getHours()+15))"
         v-if="connectTime.startTime && connectTime.endTime"
       >
       </mt-datetime-picker>
@@ -617,13 +624,15 @@
         date-format="{value} 日"
         hour-format="{value} 时"
         minute-format="{value} 分"
+        :closeOnClickModal="false"
         @confirm="handleConfirmEnd"
+        @cancel="closeDatepicker"
         :start-date="new Date(connectTime.startTime)"
-        :end-date="new Date(new Date(connectTime.endTime).setHours(new Date(connectTime.endTime).getHours()+15.9))"
+        :end-date="new Date(new Date(connectTime.endTime).setHours(new Date(connectTime.endTime).getHours()+15))"
         v-if="connectTime.startTime && connectTime.endTime"
       >
       </mt-datetime-picker>
-    </div>
+    </div>-->
 
 
   </div>
@@ -861,7 +870,10 @@
         currfieldIndex: '',
         qingjiapos: '',
         currApprovalConfigUid: '',
-        wordcodecurr:''
+        wordcodecurr:'',
+        handler: function(e){
+          e.preventDefault()
+        }
       }
     },
     created: function () {
@@ -1845,6 +1857,9 @@
       deleteTime(num, uid, index){
         this.applyWorkRefAll[(this.daycurrent+index+uid).toString()].splice(num, 1);
       },
+      closeDatepicker(){
+        this.openTouch();
+      },
       // 开始时间格式化
       handleConfirmStart(data){
         if (this.fieldTypecurr === '7') {
@@ -1855,6 +1870,7 @@
           this.$set(this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
+        this.openTouch();
       },
       // 结束时间格式化
       handleConfirmEnd(data){
@@ -1866,6 +1882,7 @@
           this.$set(this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
+        this.openTouch();
       },
       //日历样式
       openPicker(type, pos, fieldType, index, fieldIndex, uid, itemCode) {
@@ -1896,6 +1913,7 @@
             this.$refs.picker1.open();
           }
         }
+        this.closeTouch();
       },
       // 加班段数格式化
       overtimeNum(num){
@@ -2201,6 +2219,12 @@
         V.set(list[i], 'selected', !list[i].selected)
       },
       getExtType,
+      closeTouch () {
+        document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, {passive:false})//阻止默认事件
+      },
+      openTouch () {
+        document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
+      }
     },
     components: {
       fullCalendar,
