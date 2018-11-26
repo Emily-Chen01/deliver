@@ -48,7 +48,7 @@
                 <div class="YD_image_list" v-if="list.fileAttribute=='0'">
                   <div class="YD_image_list_item"
                        v-for="(n, index) in list.approvalValues"
-                       :data-index="index">
+                       v-fancybox-thumbnail="[n.width, n.height]" :data-index="index">
                     <img @click="queryImg($event,list.approvalValues)" :src="n.value" alt="">
                   </div>
                 </div>
@@ -56,7 +56,7 @@
                 <div class="YD_image_list" v-if="list.fileAttribute=='1'">
                   <div class="YD_image_list_item"
                        v-for="(n, index) in list.approvalValues"
-                       :data-index="index">
+                       v-fancybox-thumbnail="[40, 40]" :data-index="index">
                     <img src="../../assets/ico_document.png" alt="">
                     <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
                        :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
@@ -451,6 +451,7 @@
   import utilsValid from '../common/utils'
   import utils from '@/components/utils'
   import moment from 'moment'
+  import fancyBox from 'vue-fancybox';
 
 
   let df = 'YYYY-MM-DD HH:mm';
@@ -651,6 +652,15 @@
                     }
                   }
                   list.periodarr = timearr;
+                }else if(list.fieldType == '8'){
+                  if(list.approvalValues.length > 0){
+                    for(let n = 0; n < list.approvalValues.length; n++){
+                      let detail = list.approvalValues[n];
+                      detail["url"] = detail.value;
+                      detail["width"] = '0';
+                      detail["height"] = '0';
+                    }
+                  }
                 }
               }
             }
@@ -772,6 +782,10 @@
         return time;
       },
       getExtType,
+      //查看图片
+      queryImg(e, list){
+        fancyBox(e.target, list);
+      },
     },
     components: {},
   }

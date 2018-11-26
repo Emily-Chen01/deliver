@@ -183,6 +183,7 @@
                   <img v-if="item.fileEdit" :src="n.url" alt="">
                 </div>
               </div>
+
               <!--文件-->
               <div class="YD_image_list" v-if="item.fileAttribute=='1'">
                 <div class="YD_image_list_item"
@@ -222,7 +223,8 @@
             <!--选择下一级审批人-->
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length == undefined">{{approvalTypeObj.NAME}}</div>
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length > 0">
-              <span @click="showperson == true">{{selectperData}}</span>
+              <!--<span class="btnapproveper" @click="showperson=true" v-if="showperson==true">{{selectperData}}</span>-->
+              <span class="btnapproveper" @click="showperson=true" v-show="showpersonstyle==true">{{selectperData}}</span>
               <el-popover
                 placement="top-start"
                 trigger="click" class="popoverPerson" v-model="showperson" style="width: 100%">
@@ -470,7 +472,7 @@
                   <div class="YD_image_list" v-if="list.fileAttribute=='0'">
                     <div class="YD_image_list_item"
                          v-for="(n, index) in list.approvalValues"
-                          :data-index="index">
+                         v-fancybox-thumbnail="[n.width, n.height]" :data-index="index">
                       <img @click="queryImg($event,list.approvalValues)" :src="n.value" alt="">
                     </div>
                   </div>
@@ -478,7 +480,7 @@
                   <div class="YD_image_list" v-if="list.fileAttribute=='1'">
                     <div class="YD_image_list_item"
                          v-for="(n, index) in list.approvalValues"
-                          :data-index="index">
+                         v-fancybox-thumbnail="[40, 40]" :data-index="index">
                       <img src="../../assets/ico_document.png" alt="">
                       <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
                          :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
@@ -817,6 +819,7 @@
         tmpnumber: "1",
         outsideObj: [],
         showperson: false,  //是否显示选择审批人弹框
+        showpersonstyle: false,
         selectperData: '',
         pagenum: 1,
         totalpages: '',
@@ -907,6 +910,7 @@
         this.selectperData = row.NAME;
         this.applyData.currentApprover = row.UID;
         this.showperson = false;
+        this.showpersonstyle = true;
       },
       //根据审批类型返回的审批表单
       shengqingclick(){
@@ -1494,6 +1498,16 @@
                     }
                     list.periodarr = timearr;
                   }
+                }else if(list.fieldType == '8'){
+                  if(list.approvalValues.length > 0){
+                    for(let n = 0; n < list.approvalValues.length; n++){
+                      let detail = list.approvalValues[n];
+                      detail["url"] = detail.value;
+                      detail["width"] = '0';
+                      detail["height"] = '0';
+                    }
+                  }
+
                 }
               }
             }
@@ -2006,6 +2020,23 @@
         font-size: 14px;
         border-radius: 4px;
       }
+    }
+    .btnapproveper{
+      color: #fff;
+      background-color: #26a2ff;
+      border-radius: 4px;
+      border: 0;
+      box-sizing: border-box;
+      outline: 0;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+      font-size: 14px;
+      padding: 0 12px !important;
+      height: 33px;
+      line-height: 33px;
+      margin-top: 8px;
+      display: inline-block;
     }
   }
 

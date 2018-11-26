@@ -997,11 +997,12 @@
         this.isSaveState = true; //不保存
 
         //这里需处理，添加考勤状态的数据，添加的数据不需要保存
-        this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
-        this.selectedDataApply = [];
+
         let dateApplys;
         if(this.dateApplys[this.daycurrent] && this.dateApplys[this.daycurrent] != undefined){
           dateApplys = this.dateApplys[this.daycurrent];
+          this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
+          this.selectedDataApply = [];
         }
         if(dateApplys && dateApplys.length > 0) {
           for (let i = 0; i < dateApplys.length; i++) {
@@ -1185,8 +1186,9 @@
         this.showRevise = true;
         this.isSaveState = true; //不保存
         this.hasSave = false;
-        this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
-        // this.dayClick(this.daycurrent);
+        if(this.dateApplys[this.daycurrent] && this.dateApplys[this.daycurrent]!=undefined){
+          this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
+        }
 
       },
       savereviseone () {
