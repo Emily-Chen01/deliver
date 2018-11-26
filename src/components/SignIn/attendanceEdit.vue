@@ -964,6 +964,7 @@
             this.attendReport = data.abnormalAttendApproval.attendReport;
             this.newAttendReport = data.abnormalAttendApproval.newAttendReport;
             this.connectTime = data.abnormalAttendApproval;
+            this.dayClick(new Date());
 
             this.$http.get('/api/v1.0/client/queryApprovalForm/'+response.body.result.approvalType).then(response => {
               if (response.body.code === 200) {
@@ -994,8 +995,30 @@
       btncancel(){
         this.showRevise = true;
         this.isSaveState = true; //不保存
+
+        //这里需处理，添加考勤状态的数据，添加的数据不需要保存
+        this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
+        this.selectedDataApply = [];
+        let dateApplys;
+        if(this.dateApplys[this.daycurrent] && this.dateApplys[this.daycurrent] != undefined){
+          dateApplys = this.dateApplys[this.daycurrent];
+        }
+        if(dateApplys && dateApplys.length > 0) {
+          for (let i = 0; i < dateApplys.length; i++) {
+            let applyItem = dateApplys[i];
+            applyItem['daycurrent'] = this.daycurrent;
+            applyItem['daysortnum'] = i;
+            if (dateApplys.length > 0) {
+              this.selectedDataApply.push(applyItem.approvalType);
+            } else {
+              this.selectedDataApply = ['0'];
+            }
+          }
+        }
+
       },
       saverevisetmp(){
+        this.hasSave = false; //关闭保存提示弹框
         for(let i = 0; i < this.searchApplyRecord.length; i++){
           let item = this.searchApplyRecord[i];
           if(item.status != '1' && item.status != '2'){ //已通过1，和未通过2，不需要提交申请
@@ -1151,19 +1174,20 @@
 
             }
           }
-
         }
-        this.dateApplys[this.daycurrent] = this.searchApplyRecord;
 
+        this.dateApplys[this.daycurrent] = this.searchApplyRecord;
         this.isSaveState = true;  //判断是否保存
         this.showRevise = true;
-        this.hasSave = false;
 
       },
       savereviseNot(){
         this.showRevise = true;
         this.isSaveState = true; //不保存
         this.hasSave = false;
+        this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
+        // this.dayClick(this.daycurrent);
+
       },
       savereviseone () {
         // 提交this.configType
@@ -1221,7 +1245,6 @@
                       });
                     }
                   }else if(list.fieldType == "5" && (list.code != "outType" || list.code != "leaveType")){
-                    console.log(1111);
                     let qingjiaval = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()];
                     if(list.code == "leaveType"){
                       if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
@@ -1371,11 +1394,13 @@
 
         if(!this.isSaveState){
           this.hasSave = true;
+          return false;
         }
 
         let newday = moment(day).format(df3);
         this.daycurrent = newday;
         this.duration = this.datePunchCardLogs[newday];
+
         if(this.duration){
           let durationstatus = '';
           if(this.duration.isAbsent == true){
@@ -1396,8 +1421,12 @@
         }
 
         this.selectedDataApply = [];
+        this.searchApplyRecord = [];  //页面显示申请数据个数，列表和修改时
         //显示当日申请记录，可能有多个申请
-        let dateApplys = this.dateApplys[newday];
+        let dateApplys;
+        if(this.dateApplys[newday] && this.dateApplys[newday] != undefined){
+          dateApplys = this.dateApplys[newday];
+        }
         if(dateApplys && dateApplys.length > 0){
           for(let i = 0; i < dateApplys.length; i++){
             let applyItem = dateApplys[i];
@@ -1499,7 +1528,6 @@
                   // this.$set(this.confItems, (i+list.uid).toString(), list.approvalFieldValues);
                   // this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
 
-                  // console.log(2222);
                   let daycurrentStr = (this.daycurrent).toString();
                   this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), list.approvalFieldValues);
                   this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
@@ -1517,7 +1545,8 @@
             }
 
           }
-          this.searchApplyRecord = dateApplys;
+          // this.searchApplyRecord = dateApplys;
+          this.searchApplyRecord = this.searchApplyRecord.concat(dateApplys);
 
         }else{
           this.searchApplyRecord = [];
@@ -1535,7 +1564,7 @@
           this.fcEvents = [];
           if (response.body.code === 200) {
             //显示默认当天考勤信息
-            this.dayClick(new Date());
+            // this.dayClick(new Date());
             if (response.body.result) {
               //显示假期信息
               let arrayShow = response.body.result.attend.holidays;
