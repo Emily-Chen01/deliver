@@ -320,7 +320,7 @@
                   <!--&& perioduid == item.uid-->
                 <div v-if="item.fieldType=='7'">
                   <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[(daycurrent+index+item.uid).toString()]" :key="applyIndex" style="position: relative;">
-                    <h4 align="left" class="fc1 pr">
+                    <h4 align="left" class="fc1 pr timetitdate">
                       <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
                       <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid, index)">+</span>
                     </h4>
@@ -420,13 +420,15 @@
 
               </div>
             </div>
-            <div class="leavebox">
+
+            <!--单个申请的审批人这里不需要显示-->
+            <div class="leavebox" style="display: none;">
               <div class="leaveboxlft icon-stars">审批对象</div>
               <div class="leaveboxcen">
                 <!--选择下一级审批人-->
                 <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length == undefined">{{approvalTypeObj.NAME}}</div>
                 <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length > 0">
-                  <span @click="showperson == true">{{selectperData}}</span>
+                  <span class="btnapproveper" @click="showperson=true" v-show="showpersonstyle==true">{{selectperData}}</span>
                   <el-popover
                     placement="top-start"
                     trigger="click" class="popoverPerson" v-model="showperson" style="width: 100%">
@@ -445,9 +447,7 @@
                       <span>选择审批人</span>
                     </mt-button>
                   </el-popover>
-
                 </div>
-
               </div>
             </div>
 
@@ -784,6 +784,7 @@
         outsideObj: [],
         showperson: false,  //是否显示选择审批人弹框
         showpersontwo: false,  //是否显示选择审批人弹框
+        showpersonstyle: false,
         selectperData: '',
         pagenum: 1,
         totalpages: '',
@@ -972,8 +973,7 @@
                 let approvalType = response.body.result.approvalType;
                 let configType = response.body.result.configType;
                 this.currApprovalConfigUid = response.body.result.uid;
-                // configType = 1;
-                this.configType = configType; //审批人类型
+                this.configType = configType; //当前异常考勤的审批人类型
                 this.approvalperson(configType,approvalType);
               }
             }, response => {
@@ -1706,20 +1706,20 @@
         });
       },
       // 选择审批人
-      selectperson(row, event, column){
+      /*selectperson(row, event, column){
         this.selectperData = row.NAME;
         this.showperson = false;
-      },
+        this.showpersonstyle = true;
+      },*/
       // 选择审批人
-      selectpersontwo(row, event, column){
+      /*selectpersontwo(row, event, column){
         // this.selectperData = row.NAME;
 
         this.approveAllData.category = '1';
         this.approveAllData.currentApprover = row.UID;
         this.approveAllData.email = '';
-
         this.showpersontwo = false;
-      },
+      },*/
       //根据审批类型返回的审批表单
       // approvalType, isEdit
       shengqingclick(approvalType, index){
@@ -1747,7 +1747,7 @@
           if (response.body.code === 200) {
             this.fieldsdata = response.body.result;
             let configType = response.body.result.configType;
-            this.approvalperson(configType, this.selectedDataApply[index]);
+            this.approvalperson(configType, this.selectedDataApply[index]);  //单个申请审批人不需要显示
             this.applyData.approvalConfigUid = response.body.result.uid;  //具体流程的uid
 
             //处理提交的表单数据格式
@@ -2437,6 +2437,12 @@
         }
       }
     }
+    .timetitdate{
+      &:before {
+        content: '';
+        margin-right: 10px;
+      }
+    }
   }
 
   .approveperson{
@@ -2696,6 +2702,10 @@
         padding: 10px 0;
         color: #457aa3;
         font-weight: bold;
+        &:before {
+          content: '';
+          margin-right: 10px;
+        }
       }
       textarea {
         box-sizing: border-box;
@@ -2703,10 +2713,11 @@
         outline: none;
         overflow: hidden;
         overflow-y: scroll;
-        width: 98%;
+        width: 96%;
         height: 70px;
         border-radius: 4px;
         resize: none;
+        margin-left: 6px;
       }
     }
     .leaveboxBtn {

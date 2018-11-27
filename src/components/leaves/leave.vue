@@ -117,7 +117,7 @@
           <!--返回多个日期时间段时，默认只取最后一个-->
           <div v-if="item.fieldType=='7'">
             <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex">
-              <h4 align="left" class="fc1 pr" :class="{'icon-stars':item.isRequired==true}">
+              <h4 align="left" class="fc1 pr timetitdate" :class="{'icon-stars':item.isRequired==true}">
                 <span v-if="item.code!='outTime'" v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
                 <span v-if="item.code=='outTime'">{{item.fieldName}}</span>
                 <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid)">+</span>
@@ -1845,6 +1845,10 @@
             padding: 10px 0;
             color: #457aa3;
             font-weight: bold;
+            &:before {
+              content: '';
+              margin-right: 10px;
+            }
           }
           textarea {
             box-sizing: border-box;
@@ -1852,7 +1856,7 @@
             outline: none;
             overflow: hidden;
             overflow-y: scroll;
-            width: 98%;
+            width: 96%;
             height: 70px;
             border-radius: 4px;
             resize: none;
@@ -2038,6 +2042,12 @@
       margin-top: 8px;
       display: inline-block;
     }
+    .timetitdate{
+      &:before {
+        content: '';
+        margin-right: 10px;
+      }
+    }
   }
 
   .forgetclock{
@@ -2047,6 +2057,14 @@
       &:nth-child(1){
         padding: 10px 0;
       }
+      &::before {
+        content: '';
+        margin-right: 10px;
+        clear:both;
+      }
+    }
+    .el-checkbox-group{
+      display: inline-block;
     }
     border-bottom: 1px solid #d2dce6;
     padding: 0 0 10px 0;
@@ -2257,6 +2275,10 @@
         color: #457aa3;
         text-align: left;
         float: left;
+        &:before {
+          content: '';
+          margin-right: 10px;
+        }
       }
       .leaveboxImgrgt{
         float: left;
