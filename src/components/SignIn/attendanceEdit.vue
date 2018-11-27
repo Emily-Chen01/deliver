@@ -41,9 +41,6 @@
       <div class="revisetop" v-if="currentStatus != '2' && (approveAllData.status == '' || approveAllData.status == null || approveAllData.status == 'null' || approveAllData.status == 3) && approveAllData.status != 0">
         修订申请<span class="editapply" @click="editapply()">修改申请</span>
       </div>
-      <!--<div class="revisetop" v-if="currentStatus != '2'">
-        修订申请<span class="editapply" @click="editapply()">修改申请</span>
-      </div>-->
       <div class="revisetop" v-if="currentStatus == '2'">
         修订数据
       </div>
@@ -51,7 +48,6 @@
         <div class="revisecontone" v-show="showRevise">
           <!--显示考勤数据申请记录，有多个数据-->
           <div class="leavecontInfo" v-if="searchApplyRecord.length > 0" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 10px;">
-              <!--第{{index}}个申请记录-->
             <div class="marginTop10">
               <h3>考勤状态：</h3>
               <p>{{detail.name}}</p>
@@ -62,10 +58,6 @@
                   <p v-for="detail in list.approvalValues">{{detail.value}}</p>
                 </div>
                 <!--日期时间段-->
-                <!--<div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
-                  <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
-                  <p>{{detail.startTime}}至{{detail.endTime}}</p>
-                </div>-->
                 <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
                   <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
                   <p>{{detail.startTime}}至{{detail.endTime}}</p>
@@ -107,7 +99,6 @@
 
           <!--选择下一级审批人-->
           <div v-if="currentStatus == '1' && (approveAllData.status == '' || approveAllData.status == null || approveAllData.status == 'null' || approveAllData.status == 3) && approveAllData.status != 0">
-          <!--<div v-if="currentStatus == '1'">-->
             <div v-if="(typeof approvalTypeObjtwo === 'object') && approvalTypeObjtwo.length == undefined">
               <mt-button slot="reference" type="primary" class="btnattend" @click="savereviseone()">
                 <span>提交全部考勤修订内容</span>
@@ -140,8 +131,6 @@
         <div class="reviseconttwo" v-show="!showRevise">
           <div class="revisecontmid">
             <div class="leave-main-box" v-if="detail.status==0 || detail.status==undefined" v-for="(detail, index) in searchApplyRecord" :key="index" style="border-bottom:1px dashed #dedede;margin-bottom: 15px;padding-bottom: 20px;">
-
-            <!--这是第{{index}}个申请表单-->
             <div class="leavebox">
               <div class="leaveboxlft icon-stars">考勤状态</div>
               <div class="leaveboxcen">
@@ -174,66 +163,6 @@
                     <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
                   </div>
                 </div>
-
-                <!--&lt;!&ndash;单选按钮 type为3&ndash;&gt;
-                <div v-if="item.fieldType=='3'" class="forgetclock">
-                  <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
-                  <p>
-                    <el-radio-group v-model="confItemsAllval[(index).toString()][item.uid]">
-                      <el-radio v-for="(list, index3) in confItemsAll[(index).toString()][item.uid] || []" :label="list.value" :key="index3" :class="{'checkblock':item.orientation==1}">
-                        <span>{{list.value}}</span>
-                      </el-radio>
-                    </el-radio-group>
-                  </p>
-                </div>
-
-                &lt;!&ndash;复选框 type为4&ndash;&gt;
-                <div v-if="item.fieldType=='4'" class="forgetclock">
-                  <p :class="{'icon-stars':item.isRequired==true}" class="bluebold">{{item.fieldName}}</p>
-                  <p>
-                    &lt;!&ndash;忘记打卡时间&ndash;&gt;
-                    <el-checkbox-group v-model="confItemsAllval[(index).toString()][item.uid]" v-if="item.code=='punchTime'">
-                      <el-checkbox v-for="list in attendtime || []" :key="list" :label="list">
-                        <span v-model="item.value">{{list}}</span>
-                      </el-checkbox>
-                    </el-checkbox-group>
-
-                    <el-checkbox-group v-model="confItemsAllval[(index).toString()][item.uid]" v-if="item.code!='punchTime'">
-                      <el-checkbox v-for="(list, index) in confItemsAll[(index).toString()][item.uid] || []" :label="list.value" :key="index" :class="{'checkblock':item.orientation==1}">
-                        <span>{{list.value}}</span>
-                      </el-checkbox>
-                    </el-checkbox-group>
-                  </p>
-                </div>
-
-                &lt;!&ndash;下拉菜单 type为5&ndash;&gt;
-                &lt;!&ndash;请假和外出类型&ndash;&gt;
-                <div v-if="item.fieldType=='5'" class="leavebox">
-                  <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-                  <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
-                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="qingjiaclick(selectedDataHoliday, index, fieldIndex)">
-                      &lt;!&ndash;<option>{{item.fieldHint}}</option>&ndash;&gt;
-                      <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
-                    </select>
-                  </div>
-                  <div class="leaveboxcen" v-if="item.code == 'outType'">
-                    <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="waichuclick(selectedDataHoliday, index, fieldIndex)">
-                      &lt;!&ndash;<option>{{item.fieldHint}}</option>&ndash;&gt;
-                      <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
-                    </select>
-                  </div>
-
-                  <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
-                    &lt;!&ndash;:class="{'colorA6':confItemsAllval[(index).toString()][item.uid]===confItemsAll[(index).toString()][item.uid][0] && item.fieldDescr}"&ndash;&gt;
-                    &lt;!&ndash;:class="{'colorA6': item.fieldDescr}"&ndash;&gt;
-                    <select v-model="confItemsAllval[(index).toString()][item.uid]">
-                      &lt;!&ndash;<option>{{item.fieldDescr}}</option>&ndash;&gt;
-                      <option v-for="option in confItemsAll[(index).toString()][item.uid]" :value="option.value">{{option.value}}</option>
-                    </select>
-                  </div>
-                </div>-->
 
                 <!--单选按钮 type为3-->
                 <div v-if="item.fieldType=='3'" class="forgetclock">
@@ -270,21 +199,6 @@
                 <!--请假和外出类型-->
                 <div v-if="item.fieldType=='5'" class="leavebox">
                   <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-                  <!--<div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
-                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="qingjiaclick(confItemsval[qingjiapos], index, fieldIndex, item.uid)">
-                      <option v-for="option in holidayTypeArray" :value="option">{{option.NAME}}</option>
-                    </select>
-
-                  </div>
-                  <div class="leaveboxcen" v-if="item.code == 'outType'">
-                    <select v-model="confItemsval[(index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}"
-                            @change="waichuclick(confItemsval[(index+item.uid).toString()], index, fieldIndex, item.uid)">
-                      <option v-for="option in outsideObj" :value="option">{{option.name}}</option>
-                    </select>
-                  </div>-->
-
-
                   <div class="leaveboxcen" v-if="item.fieldName == '请假类型'">
                     <select v-model="confItemsval[(daycurrent+index+item.uid).toString()]" :class="{'colorA6':selectedDataHoliday===item.fieldHint}" @change="qingjiaclick(confItemsval[(daycurrent+index+item.uid).toString()], index, fieldIndex, item.uid)">
                       <option :value="''||null">请选择</option>
@@ -316,11 +230,9 @@
                 </div>
 
                 <!--日期区间 type为7-->
-                <!--返回多个日期时间段时，默认只取最后一个-->
-                  <!--&& perioduid == item.uid-->
                 <div v-if="item.fieldType=='7'">
                   <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[(daycurrent+index+item.uid).toString()]" :key="applyIndex" style="position: relative;">
-                    <h4 align="left" class="fc1 pr timetitdate">
+                    <h4 align="left" class="fc1 pr timetitdate" :class="{'icon-stars':item.isRequired==true}">
                       <span v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"></span>
                       <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex, item.uid, index)">+</span>
                     </h4>
@@ -340,16 +252,12 @@
                     </div>
                   </div>
                   <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && detail.isthingtype==true)">
-                  <!--<div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)">-->
                     <mt-button type="primary"
                                @click.native="addTime(item.uid, index)">
                       <span> +添加时间 </span>
-                      <!--<span v-if="item.code=='leaveTime'"> +添加事假时间</span>-->
-                      <!--<span v-if="item.code=='outTime'"> +添加新的加班时间段</span>-->
                     </mt-button>
                   </div>
                 </div>
-
 
                 <!--附件 type为8-->
                 <div v-if="item.fieldType=='8'" class="leavebox leaveboxImg">
@@ -378,8 +286,6 @@
                            v-fancybox-thumbnail="[n.width, n.height]" :data-index="picindex" v-if="n.url!='' && n.url!=null && n.url!=undefined ">
                         <img v-if="!item.fileEdit" @click="queryImg($event,item.approvalFieldValues)"
                              :src="n.url" alt="">
-                        <!--<i v-if="field._configs.fileEdit" class="bg-img ico_select_1" :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"-->
-                        <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
                         <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
                            :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
                            @click="selectImg(item.approvalFieldValues,picindex)"></i>
@@ -401,22 +307,6 @@
                     </div>
                   </div>
                 </div>
-
-                <!--<div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
-                  <div class="" style="height: 10px;background: #dedede;"></div>
-                  <el-upload
-                    action="/api/v1.0/client/upload"
-                    name="files"
-                    :show-file-list="false"
-                    :headers="tokenHeader"
-                    :on-success="passportUrlOk"
-                    :before-upload="beforePassportUrl">
-                    <div class="leavebox-upload"
-                         :style="{'background-image': 'url('+(item.value ? item.value : imgSrc.shenFenIconShowCamera)+')'}"></div>
-                  </el-upload>
-                  <p v-show="passportUrlErrFlag">
-                    请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-                </div>-->
 
               </div>
             </div>
@@ -496,7 +386,6 @@
             </div>
           </div>
           <div class="mint-msgbox-btns">
-            <!--<button class="mint-msgbox-btn mint-msgbox-cancel " >选择下一级审批人</button>-->
             <div style="display: inline-block;width: 50%;" v-if="(typeof approvalTypeObjtwo === 'object') && approvalTypeObjtwo.length > 0">
               <el-popover
                 placement="top-start"
@@ -543,7 +432,6 @@
             <button class="mint-msgbox-btn mint-msgbox-cancel" @click="savereviseNot()">不保存</button>
             <button @click="saverevisetmp()" class="mint-msgbox-btn mint-msgbox-confirm ">保存修订内容</button>
           </div>
-
         </div>
       </div>
       <div class="v-modal" style="z-index: 1000 !important;"></div>
@@ -689,27 +577,6 @@
           timeIcon: require('../../assets/time.png'),
         },
         showRevise: true,
-        tableData: [{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        }],
         hasAbnormal: [],
         datePunchCardLogs: [],
         daycurrent: '',
@@ -755,27 +622,6 @@
         fields: [],
         checked1: true,
         checked2: false,
-        tableData: [{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        }],
         attendtime: [],  //忘记打卡时间
         attendtimelist: ['18:00'],
         periodnum: 0,
@@ -880,11 +726,6 @@
     created: function () {
       //初始化查询当月考勤省略 由于 changeMonth会执行查询这个月的数据展示
 
-      //获取考勤详情数据
-      // let param = {
-      //   date: moment(day).format(df2)
-      // };
-
       this.getDetail();
       this.getApprovalType();
 
@@ -920,8 +761,6 @@
                   item.valuearray.push(appfieldval.value);
                 }
               }
-              // this.$set(this.confItems, list.uid.toString(), list.attendtime);
-              // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
               this.$set(this.confItems, (this.daycurrent+numIndex+item.uid).toString(), this.attendtime);
               this.$set(this.confItemsval, (this.daycurrent+numIndex+item.uid).toString(), item.valuearray);
             }else{
@@ -942,7 +781,6 @@
             }
           }
         }
-
         this.searchApplyRecord.push(this.fields);
         this.$set(this.searchApplyRecordAll, this.daycurrent.toString(), this.searchApplyRecord);
 
@@ -980,8 +818,6 @@
             });
 
             //外出类型数据
-            // this.approvaloutside('43');
-            //外出类型数据
             this.approvaloutside('43');
 
           }
@@ -996,13 +832,13 @@
         this.showRevise = true;
         this.isSaveState = true; //不保存
 
-        //这里需处理，添加考勤状态的数据，添加的数据不需要保存
-
+        //这里处理添加考勤状态的数据，添加的数据不需要保存
+        this.searchApplyRecord = [];
+        this.selectedDataApply = [];
         let dateApplys;
         if(this.dateApplys[this.daycurrent] && this.dateApplys[this.daycurrent] != undefined){
           dateApplys = this.dateApplys[this.daycurrent];
           this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
-          this.selectedDataApply = [];
         }
         if(dateApplys && dateApplys.length > 0) {
           for (let i = 0; i < dateApplys.length; i++) {
@@ -1016,6 +852,7 @@
             }
           }
         }
+        this.$set(this.searchApplyRecordAll, this.daycurrent.toString(), this.searchApplyRecord);
 
       },
       saverevisetmp(){
@@ -1025,7 +862,6 @@
           if(item.status != '1' && item.status != '2'){ //已通过1，和未通过2，不需要提交申请
             for(let j = 0; j < item.approvalFields.length; j++){
               let list = item.approvalFields[j];
-
               //验证数据
               if(list.fieldType == "0" || list.fieldType == "1" || list.fieldType == "2"){ //单行文本、多行文本、数字
                 if(list.value == '' || list.value ==undefined){
@@ -1098,12 +934,7 @@
                 }else{
                   list.approvalValues = [];
                 }
-
-              }/*else if(list.fieldType == '1'){
-              list.approvalValues[0].value = list.value;
-            }else if(list.fieldType == '2'){
-              list.approvalValues[0].value = list.value;
-            }*/else if(list.fieldType == '3'){ //单选框
+              }else if(list.fieldType == '3'){ //单选框
                 list.approvalValues[0].value = this.confItemsval[(this.daycurrent+i+list.uid).toString()];
               }else if(list.fieldType == '4'){ //多选框
                 for(let m = 0; m < this.confItemsval[(this.daycurrent+i+list.uid).toString()].length; m++){
@@ -1138,36 +969,10 @@
                     sortnum: 1
                   });
                 }
-
                 if(this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length > 1){
                   tmpapprovalValues = list.approvalValues[0];
                 }
-
                 list.periodarr = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
-
-                // for(let n = 0; n < this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()].length; n++){
-                //   let itemtwo = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()][n];
-                //   list.periodarr = itemtwo;
-                /*for(let h = 0; h < 2; h++){
-                  let timecurr,currnum;
-                  if(h == 0){
-                    timecurr = itemtwo.startTime;
-                  }else if(h == 1){
-                    timecurr = itemtwo.endTime;
-                  }
-                  currnum = parseInt((n*2)+h);
-
-                  if(n > 0){
-                    list.approvalValues.push(tmpapprovalValues);
-                    list.approvalValues[currnum].value = timecurr;
-                    list.approvalValues[currnum].term = n;
-                    list.approvalValues[currnum].sortnum = h;
-                  }else{
-                    list.approvalValues[currnum].value = timecurr;
-                  }
-                }*/
-
-                // }
 
               }else if(list.fieldType == '8'){
                 list.approvalValues = list.approvalFieldValues;
@@ -1176,7 +981,6 @@
             }
           }
         }
-
         this.dateApplys[this.daycurrent] = this.searchApplyRecord;
         this.isSaveState = true;  //判断是否保存
         this.showRevise = true;
@@ -1186,13 +990,30 @@
         this.showRevise = true;
         this.isSaveState = true; //不保存
         this.hasSave = false;
+        //这里处理添加考勤状态的数据，添加的数据不需要保存
+        this.searchApplyRecord = [];
+        this.selectedDataApply = [];
+        let dateApplys;
         if(this.dateApplys[this.daycurrent] && this.dateApplys[this.daycurrent]!=undefined){
+          dateApplys = this.dateApplys[this.daycurrent];
           this.searchApplyRecord = [].concat(this.dateApplys[this.daycurrent]);
         }
+        if(dateApplys && dateApplys.length > 0) {
+          for (let i = 0; i < dateApplys.length; i++) {
+            let applyItem = dateApplys[i];
+            applyItem['daycurrent'] = this.daycurrent;
+            applyItem['daysortnum'] = i;
+            if (dateApplys.length > 0) {
+              this.selectedDataApply.push(applyItem.approvalType);
+            } else {
+              this.selectedDataApply = ['0'];
+            }
+          }
+        }
+        this.$set(this.searchApplyRecordAll, this.daycurrent.toString(), this.searchApplyRecord);
 
       },
       savereviseone () {
-        // 提交this.configType
         if(this.configType == 1){
           this.showpersontwo = true;
         }else{
@@ -1208,7 +1029,6 @@
         this.saverevisethree(); //提交
       },
       saverevisethree () {
-
         //处理申请表单的数据
         let arrdata = [];
         var obj = this.searchApplyRecordAll;
@@ -1250,7 +1070,6 @@
                     let qingjiaval = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()];
                     if(list.code == "leaveType"){
                       if(qingjiaval != '' && qingjiaval != null && qingjiaval != undefined) {
-                        // item.leaveUid = this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].LEAVE_INFO_UID;
                         approvalValues.push({
                           approvalFieldUid: list.uid,
                           value: this.confItemsval[(item.daycurrent+item.daysortnum+list.uid).toString()].NAME,
@@ -1367,7 +1186,6 @@
           attendPeroid: this.approveAllData.attendPeroid,
           applys:applys
         };
-
         this.$http.post('/api/v1.0/client/abnormalApply', applysAllparams).then(response => { //提交请假申请
           // Indicator.close();//申请提交成功
           this.codeSuccess = response.body.code;
@@ -1382,7 +1200,6 @@
         }, response => {
 //          console.log('error callback');
         });
-
 
       },
 
@@ -1468,7 +1285,6 @@
                       }
                     }
                     list.periodarr = timearr;
-                    // this.applyWorkRef = timearr;
                   }
                 }
                 this.$set(this.applyWorkRefAll, (this.daycurrent+i+list.uid).toString(), timearr);
@@ -1525,17 +1341,11 @@
                       }
                     }
                   }
-                  // list.confItems = list.approvalFieldValues;
-                  // list.confItemsval = list.valuearray;
-                  // this.$set(this.confItems, (i+list.uid).toString(), list.approvalFieldValues);
-                  // this.$set(this.confItemsval, (i+list.uid).toString(), list.valuearray);
-
                   let daycurrentStr = (this.daycurrent).toString();
                   this.$set(this.confItems, (daycurrentStr + i + list.uid).toString(), list.approvalFieldValues);
                   this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
 
                 }
-
               }else{
                 if(list.approvalValues.length){
                   list.value = list.approvalValues[0].value;
@@ -1543,11 +1353,8 @@
                 list.term = 0;
                 list.sortnumtmp = 0;
               }
-
             }
-
           }
-          // this.searchApplyRecord = dateApplys;
           this.searchApplyRecord = this.searchApplyRecord.concat(dateApplys);
 
         }else{
@@ -1682,10 +1489,7 @@
         this.$http.get('/api/v1.0/client/queryApprovalType').then(response => {
           if (response.body.code === 200) {
             this.applyTypeArray = response.body.result;
-            // this.selectedDataApply = parseInt(this.getCookie('leaveType'));
-
             this.selectedDatafirst = parseInt(this.getCookie('leaveType'));
-            // this.shengqingclick('0', -1);
           }
         }, response => {
           console.log('error callback');
@@ -1714,14 +1518,12 @@
       // 选择审批人
       /*selectpersontwo(row, event, column){
         // this.selectperData = row.NAME;
-
         this.approveAllData.category = '1';
         this.approveAllData.currentApprover = row.UID;
         this.approveAllData.email = '';
         this.showpersontwo = false;
       },*/
       //根据审批类型返回的审批表单
-      // approvalType, isEdit
       shengqingclick(approvalType, index){
         this.posIndex = index;  //当前是第几个申请记录
         // this.selectedDataApply = approvalType;  //申请分类类型
@@ -1737,12 +1539,10 @@
           this.selectedDataApply[index] = this.applyTypeArray[0].type;
           this.applyData.approvalTypeUid = this.applyTypeArray[0].uid;
         }
-
         if(index == -1){
           index = 0;
         }
 
-        // this.selectedDataApply = approvalType;
         this.$http.get('/api/v1.0/client/queryApprovalForm/'+this.selectedDataApply[index]).then(response => {
           if (response.body.code === 200) {
             this.fieldsdata = response.body.result;
@@ -1763,11 +1563,6 @@
               if(item.fieldType == '7'){
                 let itemtmp = {};
                 this.perioduid = item.uid;
-                // this.applyWorkRef.push({
-                //   startTime: '',
-                //   endTime: '',
-                //   uid: item.uid
-                // });
                 let timearr = [{
                   startTime: '',
                   endTime: '',
@@ -1788,11 +1583,8 @@
                       item.valuearray.push(appfieldval.value);
                     }
                   }
-                  // this.$set(this.confItems, list.uid.toString(), list.attendtime);
-                  // this.$set(this.confItemsval, list.uid.toString(), list.valuearray);
                   this.$set(this.confItems, (this.daycurrent+numIndex+item.uid).toString(), this.attendtime);
                   this.$set(this.confItemsval, (this.daycurrent+numIndex+item.uid).toString(), item.valuearray);
-
                 }else{
                   if(item.approvalFieldValues.length > 0){
                     for(let j = 0; j < item.approvalFieldValues.length; j++){
@@ -1806,15 +1598,9 @@
                       }
                     }
                   }
-                  // this.$set(this.confItems, item.uid.toString(), item.approvalFieldValues);
-                  // this.$set(this.confItemsval, item.uid.toString(), item.valuearray); //默认选中的值
-
                   this.$set(this.confItems, (this.daycurrent+numIndex+item.uid).toString(), item.approvalFieldValues);
                   this.$set(this.confItemsval, (this.daycurrent+numIndex+item.uid).toString(), item.valuearray); //默认选中的值
                 }
-
-                // item.confItems = item.approvalFieldValues;
-                // item.confItemsval = item.valuearray;
                 this.fields.push(item);
 
               }else{
@@ -1841,7 +1627,6 @@
           let data = response.body.result;
           if(configType == '0'){
             this.approvalTypeObj = data;
-            // this.applyData.applicant = data.UID;   //申请人uid
             this.applyData.category = data.WAY;   // 审批人类型,1或者2
             this.approveAllData.category = data.WAY;
             if(data.WAY == '1'){
@@ -1882,7 +1667,6 @@
           endTime: '',
           uid: uid
         });
-
       },
       //删除加班时间段
       deleteTime(num, uid, index){
@@ -1894,10 +1678,8 @@
       // 开始时间格式化
       handleConfirmStart(data){
         if (this.fieldTypecurr === '7') {
-          // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
           this.applyWorkRefAll[(this.daycurrent+this.posIndex+this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          // this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
           this.$set(this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
@@ -1906,10 +1688,8 @@
       // 结束时间格式化
       handleConfirmEnd(data){
         if (this.fieldTypecurr === '7') {
-          // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
           this.applyWorkRefAll[(this.daycurrent+this.posIndex+this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          // this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex].value =  moment(data).format(df3);
           this.$set(this.searchApplyRecord[this.posIndex].approvalFields[this.currfieldIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
@@ -1957,32 +1737,6 @@
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
           let item = this.fields[i];
-
-          //验证数据
-          /*if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2" || item.fieldType == "6"){ //单行文本、多行文本、数字
-            if(item.value == '' || item.value ==undefined){
-              this.showMsg(item.fieldHint,-1);
-              return false;
-            }
-          }else if(item.fieldType == "3" || item.fieldType == "4" || item.fieldType == "5"){ //多行文本
-            if(this.confItemsAllval[(index).toString()][item.uid] == [] || this.confItemsAllval[(index).toString()][item.uid].length == 0){
-              this.showMsg(item.fieldHint,-1);
-              return false;
-            }
-          }else if(item.fieldType == "7"){ //日期和日期时间段
-            if(this.applyWorkRef[0].startTime == '' || this.applyWorkRef[0].startTime == ''){
-              this.showMsg(item.fieldHint,-1);
-              return false;
-            }
-
-          }else if(item.fieldType == "8"){ //附件
-            if(this.confItemsAllval[(index).toString()][item.uid] == [] || this.confItemsAllval[(index).toString()][item.uid].length == 0){
-              this.showMsg(item.fieldHint,-1);
-              return false;
-            }
-          }*/
-
-
           if(item.fieldType != "7" && item.fieldType != "3" && item.fieldType != "4" && (item.fieldType != "5" || item.code == "outType" || item.code =="leaveType")){
             approvalValues.push({
               approvalFieldUid : item.uid,
@@ -2009,7 +1763,6 @@
               }
             }
           }
-
         }
 
         //处理item.fieldType="7"日期时间段的数据
@@ -2083,8 +1836,6 @@
       // 上传图片成功
       passportUrlOk(res, file) {
         if (res.code === 200) {
-          // this.applyData.image = res.result;
-
           for(let i = 0; i< this.fields.length; i++){
             let item = this.fields[i];
             if(item.fieldType == '8'){
@@ -2106,9 +1857,6 @@
       },
       //通过或拒绝
       isPass(item, type){
-        // MessageBox('提示', '操作成功');
-        // return false;
-
         let url, text;
         if (type === 1) {//通过
           url = '/api/v1.0/client/agree';
@@ -2161,7 +1909,6 @@
 //          console.log('error callback');
             });
           }
-
 
         });
       },
@@ -2464,7 +2211,6 @@
     margin: 0 auto 20px auto;
   }
 
-
   .egStates {
     height: 43px;
     background: #ffffff;
@@ -2618,9 +2364,9 @@
       margin-right: 10px;
     }
     .icon-stars:before {
-      content: '*';
-      color: #ff4949;
-      margin-right: 4px;
+      content: '*' !important;
+      color: #ff4949 !important;
+      margin-right: 4px !important;
     }
     .leave-main-box-del {
       transform: rotate(45deg) scale(2.4);

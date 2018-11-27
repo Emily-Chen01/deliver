@@ -76,10 +76,6 @@
         }
       },
       beforeStaffPhoUrl(file) {
-//        console.log('wertyu', this.configs)
-//         console.log("file");
-//         console.log(file);
-
         let errType = '';
         let backValue;
         let condition = null;
@@ -128,7 +124,7 @@
         } else {
           backValue = false;
         }
-        console.log(123);
+
         if (backValue) {
           this.uploadErrFlag = false;
         } else {

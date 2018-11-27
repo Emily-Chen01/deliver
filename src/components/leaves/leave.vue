@@ -95,8 +95,6 @@
               </select>
             </div>
             <div class="leaveboxcen" v-if="item.fieldName != '请假类型' && item.code != 'outType'">
-              <!--:placeholder="item.fieldDescr"-->
-              <!--:class="{'colorA6': item.fieldDescr}"-->
               <select v-model="confItemsval[item.uid]" :placeholder="'请选择'">
                 <option :value="''||null">请选择</option>
                 <option v-for="option in confItems[item.uid]" :value="option.value">{{option.value}}</option>
@@ -114,7 +112,6 @@
           </div>
 
           <!--日期区间 type为7-->
-          <!--返回多个日期时间段时，默认只取最后一个-->
           <div v-if="item.fieldType=='7'">
             <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex">
               <h4 align="left" class="fc1 pr timetitdate" :class="{'icon-stars':item.isRequired==true}">
@@ -147,7 +144,6 @@
             </div>
           </div>
 
-
           <!--附件 type为8-->
           <div v-if="item.fieldType=='8'" class="leavebox leaveboxImg">
             <div class="leaveboxImglft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
@@ -162,7 +158,6 @@
                 </el-button>
               </uploadImage>
               <div v-if="item.fileEdit">
-                <!--:disabled="!item.isEdit"-->
                 <el-button type="danger" size="small" @click="deleteFile(index)">
                   <span>删除{{item.isEdit}}</span>
                 </el-button>
@@ -175,8 +170,6 @@
                      v-fancybox-thumbnail="[n.width, n.height]" :data-index="index">
                   <img v-if="!item.fileEdit" @click="queryImg($event,item.approvalValues)"
                        :src="n.url" alt="">
-                  <!--<i v-if="field._configs.fileEdit" class="bg-img ico_select_1" :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"-->
-                  <!--@click="makeRemoveUploadItem(bodyIdx, partIdx, groupIdx, fieldIdx, idx)"></i>-->
                   <i v-if="item.fileEdit" class="bg-img YD_image_list_item_icon"
                      :class="{'ico_select_1':!n.selected,'ico_select_2':n.selected}"
                      @click="selectImg(item.approvalValues,index)"></i>
@@ -200,22 +193,6 @@
             </div>
           </div>
 
-          <!--原来上传图片样式-->
-          <!--<div v-if="item.fieldType=='8' && updateImage" class="leaveboxImg">
-            <div class="" style="height: 10px;background: #dedede;"></div>
-            <el-upload
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="passportUrlOk"
-              :before-upload="beforePassportUrl">
-              <div class="leavebox-upload"
-                   :style="{'background-image': 'url('+(item.value ? item.value : imgSrc.shenFenIconShowCamera)+')'}"></div>
-            </el-upload>
-            <p v-show="passportUrlErrFlag">
-              请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </div>-->
         </div>
         <div class="leavebox">
           <div class="leaveboxlft icon-stars">审批对象</div>
@@ -223,7 +200,6 @@
             <!--选择下一级审批人-->
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length == undefined">{{approvalTypeObj.NAME}}</div>
             <div v-if="(typeof approvalTypeObj === 'object') && approvalTypeObj.length > 0">
-              <!--<span class="btnapproveper" @click="showperson=true" v-if="showperson==true">{{selectperData}}</span>-->
               <span class="btnapproveper" @click="showperson=true" v-show="showpersonstyle==true">{{selectperData}}</span>
               <el-popover
                 placement="top-start"
@@ -246,98 +222,6 @@
             </div>
           </div>
         </div>
-
-        <!--原来页面的表单，先注释-->
-        <!--<div style="display: none;">
-          <div style="height: 350px;border:1px solid #dedede"></div>
-          <div class="leavebox" v-if="changeApply">
-            <div class="leaveboxlft icon-stars">假期分类</div>
-            <div class="leaveboxcen">
-              <select v-model="selectedDataHoliday" :class="{'colorA6':selectedDataHoliday==='选择假期类型'}"
-                      @change="qingjiaclick(selectedDataHoliday)">
-                <option>选择假期类型</option>
-                <option v-for="option in holidayTypeArray" :value="option"
-                        v-text="option.NAME"></option>
-              </select>
-            </div>
-          </div>
-          <div class="leavebox" v-if="changeApply && (selectHoliday.TYPE===0||selectHoliday.TYPE===13)">
-            <div class="leaveboxlft">剩余假期</div>
-            <div class="leaveboxcen">
-              <span align="left" class="colorA6" v-text="selectHoliday.DAYS+(selectHoliday.TYPE===0?' 天':' 小时')"></span>
-            </div>
-          </div>
-          <div v-if="selectedDataApply!==3">
-            <div class="leavebox">
-              <div class="leaveboxlft icon-stars">开始时间</div>
-              <div class="leaveboxcen" @click="openPicker(0)">
-              <span align="left" v-text="startTimeValue ? startTimeValue : '请输入日期'"
-                    :class="{'colorA6':!startTimeValue}"></span>
-              </div>
-            </div>
-            <div class="leavebox">
-              <div class="leaveboxlft icon-stars">结束时间</div>
-              <div class="leaveboxcen" @click="openPicker(1)">
-                <span align="left" v-text="endTimeValue ? endTimeValue : '请输入日期'"
-                      :class="{'colorA6':!endTimeValue}"></span>
-              </div>
-            </div>
-          </div>
-          <div v-if="selectedDataApply===3">
-            <div class="mt10" v-for="(apply,applyIndex) in applyWorkRef" :key="applyIndex">
-              <h4 align="left" class="fc1 pr">
-                <span v-text="'第'+overtimeNum(applyIndex)+'段加班申请'"></span>
-                <span v-if="applyIndex>0" class="leave-main-box-del" @click="deleteTime(applyIndex)">+</span>
-              </h4>
-              <div class="pl30">
-                <div class="leavebox">
-                  <div class="leaveboxlft icon-stars">开始时间</div>
-                  <div class="leaveboxcen">
-              <span align="left" v-text="apply.startTime ? apply.startTime : '请输入日期'"
-                    :class="{'colorA6':!apply.startTime}" @click="openPicker(0,applyIndex)"></span>
-                  </div>
-                </div>
-                <div class="leavebox">
-                  <div class="leaveboxlft icon-stars">结束时间</div>
-                  <div class="leaveboxcen">
-                <span align="left" v-text="apply.endTime ? apply.endTime : '请输入日期'"
-                      :class="{'colorA6':!apply.endTime}" @click="openPicker(1,applyIndex)"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mt10">
-              <mt-button type="primary"
-                         @click.native="addTime()">
-                <span> +添加新的加班时间段</span>
-              </mt-button>
-            </div>
-
-          </div>
-          <div class="leaveboxImg" v-if="updateImage">
-            <el-upload
-              action="/api/v1.0/client/upload"
-              name="files"
-              :show-file-list="false"
-              :headers="tokenHeader"
-              :on-success="passportUrlOk"
-              :before-upload="beforePassportUrl">
-              <div class="leavebox-upload"
-                   :style="{'background-image': 'url('+(applyData.image ? applyData.image : imgSrc.shenFenIconShowCamera)+')'}"></div>
-            </el-upload>
-            <p v-show="passportUrlErrFlag">
-              请上传正确的护照照片(格式为 jpg 或 jpeg 或 png，照片体积小于 5 兆)</p>
-          </div>
-          <div class="leaveboxText">
-            <div class="leaveboxText-top icon-stars">申请内容</div>
-            <textarea placeholder="#请输入文字(不超过50字)" v-model="applyData.remarks"></textarea>
-          </div>
-          <div class="leavebox" v-if="approvalTypeObj">
-            <div class="leaveboxlft"
-                 v-text="approvalTypeObj.WAY==='1'?'审批人':(approvalTypeObj.WAY==='2'?'审批邮箱':'')"></div>
-            <div class="leaveboxcen" v-text="approvalTypeObj.NAME"></div>
-          </div>
-        </div>-->
 
         <div class="leaveboxBtn">
           <mt-button type="primary" class="leaveboxBtn-btn"
@@ -364,85 +248,6 @@
           </mt-tab-item>
         </mt-navbar>
         <div class="leave-main-content">
-
-          <!--新增加考勤异常申请-->
-          <!--<div class="approve-main-content-wrapper attendance" style="display: none;">
-            <div class="approve-main-content-top">
-              <h3 class="approve-main-content-title">
-                <span class="approve-main-content-title-left">审批申请（8月份异常考勤申请）</span>
-                <span class="approve-main-content-title-right">审批中</span>
-              </h3>
-            </div>
-            <div class="approve-main-content-Info attendcont">
-              <div class="attendtop">申请人：张三(CI11570)</div>
-              <div class="attendttit">原始数据</div>
-              <div class="attendDetail">
-                <p>本月异常考勤累计时间</p>
-                <p>
-                  <span>迟到累计：2次（共3工时）</span>
-                  <span>事假累计: 10天(共80工时)</span>
-                </p>
-                <p>
-                  <span>早退累计：2次（共3工时）</span>
-                  <span>病假累计: 10天(共80工时)</span>
-                </p>
-                <p>
-                  <span class="spanlft">旷工累计: 10天(共80工时)</span>
-                  <span class="spanlft">产假累计: 10天(共80工时)</span>
-                </p>
-                <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
-                <p>工作日加班累计时长：0.5天(共4小时)</p>
-                <p>周末加班累计时长：0.5天(共4小时)</p>
-                <p>法定假日加班累计时长：0.5天(共4小时)</p>
-              </div>
-              <div class="attendttit">修订后数据</div>
-              <div class="attendDetail">
-                <p>本月异常考勤累计时间</p>
-                <p>
-                  <span>迟到累计：2次（共3工时）</span>
-                  <span>事假累计: 10天(共80工时)</span>
-                </p>
-                <p>
-                  <span>早退累计：2次（共3工时）</span>
-                  <span>病假累计: 10天(共80工时)</span>
-                </p>
-                <p>
-                  <span class="spanlft">旷工累计: 10天(共80工时)</span>
-                  <span class="spanlft">产假累计: 10天(共80工时)</span>
-                </p>
-                <p style="padding: 20px;text-align: center;">根据假期配置产生累计</p>
-                <p>工作日加班累计时长：0.5天(共4小时)</p>
-                <p>周末加班累计时长：0.5天(共4小时)</p>
-                <p>法定假日加班累计时长：0.5天(共4小时)</p>
-              </div>
-              <div class="btnlookdet">
-                <mt-button size="normal" class="btnlookattend" type="primary" @click="gotodetail(item.uid)">
-                  <span>查看详情</span>
-                </mt-button>
-              </div>
-            </div>
-            <div class="approve-main-content-append approve-main-content-append1 ">
-              <div class="approve-main-content-btnBox">
-                <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass('uid',1)">
-                  <span>通过</span>
-                </mt-button>
-              </div>
-              <div class="approve-main-content-btnBox">
-                <mt-button size="small" class="approve-main-content-btn" type="primary" @click="isPass('uid',2)">
-                  <span>拒绝并修改</span>
-                </mt-button>
-              </div>
-            </div>
-            <div class="approve-main-content-append approve-main-content-append1 plr15 fs13">
-              <p>
-                <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
-              </p>
-              <p>
-                <span>2018-05-12 16:22:11</span><span> 审批人:刘佳安(CI11511)        已通过</span>
-              </p>
-            </div>
-          </div>-->
-
           <!--现在显示的内容-->
           <div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
             <div class="leave-main-content-top">
@@ -487,7 +292,6 @@
                     </div>
                   </div>
                 </div>
-
               </div>
               <!--加班时显示加班时长-->
               <div class="marginTop10" v-if="item.approvalType == 3">
@@ -514,8 +318,6 @@
                 <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}小时)</p>
                 <p>法定假日加班累计时长：{{item.abnormalAttendApproval.attendReport.holidayOvertime}}天(共{{item.abnormalAttendApproval.attendReport.holidayOvertimeDays}}小时)</p>
               </div>
-
-
               <div class="attendttit">修订后数据</div>
               <div class="attendDetail">
                 <p>本月异常考勤累计时间</p>
@@ -532,78 +334,13 @@
                   <span>查看详情</span>
                 </mt-button>
               </div>
-
             </div>
-
             <div class="leave-main-content-append leave-main-content-append1 " v-if="item.status===0">
               <mt-button size="small" class="leave-main-content-btn" type="primary" @click="revokes(item.uid)">
                 <span>撤回申请</span>
               </mt-button>
             </div>
           </div>
-
-
-
-
-          <!--原来显示内容-->
-          <!--<div class="leave-main-content-wrapper" v-for="item in searchApplyRecord" v-if="searchApplyRecord.length>0">
-            <div class="leave-main-content-top">
-              <h3 class="leave-main-content-title">
-                <span class="leave-main-content-title-left"
-                      v-text="item.name+'申请'+(item.name===item.sname ? '':('('+item.sname+')'))"></span>
-                <span class="leave-main-content-title-right"
-                      v-text="applyState(item.status)"></span>
-              </h3>
-            </div>
-            <div class="leave-main-content-Info">
-              <div v-if="item.time&&item.time.length>0" :class="{'marginTop10': overIndex>0}"
-                   v-for="(overTime,overIndex) in item.time" :key="overIndex">
-                <h3 v-text="'第'+overtimeNum(overIndex)+'段时间起止时间'"></h3>
-                <p>
-                  <span v-text="datefmt(overTime.startTime)"></span> 至 <span v-text="datefmt(overTime.endTime)"></span>
-                </p>
-              </div>
-              <div v-if="!(item.time&&item.time.length>0)">
-                <h3>起止日期</h3>
-                <p>
-                  <span v-text="datefmt(item.startTime)"></span> 至 <span v-text="datefmt(item.endTime)"></span>
-                </p>
-              </div>
-              <div v-if="item.configType===3 && item.overworkTime" class="marginTop10">
-                <h3>加班时长</h3>
-                <p><span>平日加班：</span><span v-text="queryOverworkTime(item.workTime,0)+'小时'"></span></p>
-                <p><span>周末加班：</span><span v-text="queryOverworkTime(item.workTime,1)+'小时'"></span></p>
-                <p><span>节假日加班：</span><span v-text="queryOverworkTime(item.workTime,2)+'小时'"></span></p>
-              </div>
-              <div v-if="!(item.configType===3)" class="marginTop10">
-                <h3>申请时长</h3>
-                <p><span v-text="item.days ? item.days : '&#45;&#45;'"></span></p>
-              </div>
-              <div class="marginTop10">
-                <h3>事由</h3>
-                <p v-text="item.remarks "></p>
-              </div>
-              <div v-if="item.why" class="marginTop10">
-                <h3>拒绝原因</h3>
-                <p v-text="item.why"></p>
-              </div>
-              <div class="leave-main-content-append marginTop10" v-if="item.image">
-                <h3>附件内容：</h3>
-                <mt-button size="small" class="leave-main-content-btn" type="primary" @click="lookImages(item.image)">
-                  <span>查看附件</span>
-                </mt-button>
-              </div>
-              <div class="marginTop10" v-if="item.status===0&&(item.category===1||item.category===2)">
-                <h3 v-text="item.category===1 ? '当前审批人' : '当前审批邮箱'"></h3>
-                <p v-text="item.category===1 ? item.approvaler : item.email"></p>
-              </div>
-            </div>
-            <div class="leave-main-content-append leave-main-content-append1 " v-if="item.status===0">
-              <mt-button size="small" class="leave-main-content-btn" type="primary" @click="revokes(item.uid)">
-                <span>撤回申请</span>
-              </mt-button>
-            </div>
-          </div>-->
 
           <div class="myApplyNo" v-if="searchApplyRecord.length===0">
             <span>没有数据</span>
@@ -699,8 +436,6 @@
     </mt-datetime-picker>
     </div>-->
 
-
-
   </div>
 </template>
 <script>
@@ -791,27 +526,6 @@
         fields: [],
         checked1: true,
         checked2: false,
-        tableData: [{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        },{
-          name: '测试',
-          mobile: '13212121212',
-          department: '技术部',
-          job: '技术'
-        }],
         attendtime: [],  //忘记打卡时间
         attendtimelist: ['18:00'],
         periodnum: 0,
@@ -858,9 +572,6 @@
       //获取忘记打卡时间列表
       this.$http.get('/api/v1.0/client/queryAttendTime').then(response => {
         this.attendtime = response.body.result;
-        // for(let i = 0; i < this.attendtime.length; i++){
-        //   this.attendtime[i].checktime = false;
-        // }
       }, response => {
         console.log('error callback');
       });
@@ -872,22 +583,10 @@
         console.log('假期分类 error callback');
       });
 
-      /*this.$http.get('/api/v1.0/client/queryApprovalType').then(response => { //查看审批类型
-        this.holidayTypeArray = response.body.result;
-      }, response => {
-//        console.log('假期分类 error callback');
-      });*/
-
-      // this.approvalform();
-
-
       let that = this;
       window.onscroll = function() {
         if(that.getScrollTop() + that.getClientHeight() >= that.getScrollHeight()) {
           that.pagenum++;
-          // console.log('下拉刷新了');
-          // console.log("pagenum="+that.pagenum);
-          // console.log("totalpages="+that.totalpages);
           if(that.pagenum > that.totalpages){
             return false;
           }else{
@@ -945,7 +644,6 @@
               }
               if(item.fieldType == '7'){
                 let itemtmp = {};
-                // this.perioduid = item.uid;
                 this.applyWorkRef.push({
                   startTime: '',
                   endTime: '',
@@ -961,7 +659,6 @@
                 this.$set(this.applyWorkRefAll, (item.uid).toString(), timearr);
 
               }else if(item.fieldType == '3' || item.fieldType == '4' || item.fieldType == '5'){
-
                 item.term = 0;
                 item.sortnumtmp = 0;
                 item.valuearray = [],item.valuearray2 = [];
@@ -1032,11 +729,6 @@
       },
       //添加加班时间段
       addTime(uid){
-        // this.applyWorkRef.push({
-        //   startTime: '',
-        //   endTime: '',
-        //   uid: this.perioduid
-        // });
         this.applyWorkRefAll[(uid).toString()].push({
           startTime: '',
           endTime: '',
@@ -1055,10 +747,8 @@
       // 开始时间格式化
       handleConfirmStart(data){
         if (this.fieldTypecurr === '7') {
-          // this.applyWorkRef[this.pos].startTime = moment(data).format(df);
           this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          // this.fields[this.posIndex].value =  moment(data).format(df2);
           this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
           this.tmpnumber = 2;
         }
@@ -1067,10 +757,8 @@
       // 结束时间格式化
       handleConfirmEnd(data){
         if (this.fieldTypecurr === '7') {
-          // this.applyWorkRef[this.pos].endTime = moment(data).format(df);
           this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          // this.fields[this.posIndex].value =  moment(data).format(df2);
           this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
           this.tmpnumber = 2;
         }
@@ -1132,8 +820,6 @@
       },
       //提交申请
       handerDataSubmit(){
-        // this.showMsg("数据出错", 1);
-
         if(this.selectedDataApply != '0'){
           this.applyData.leaveUid = '';
         }
@@ -1141,7 +827,6 @@
         let approvalValues = [];
         for( let i = 0; i < this.fields.length; i++){
           let item = this.fields[i];
-          console.log(111);
           //验证数据
           if(item.fieldType == "0" || item.fieldType == "1" || item.fieldType == "2"){ //单行文本、多行文本、数字
             if(item.value == '' || item.value ==undefined){
@@ -1186,7 +871,6 @@
               }
             }
 
-
           }else if(item.fieldType == "6"){
             if((item.value == '' || item.value ==undefined) && item.isRequired){
               this.showMsg(item.fieldHint,-1);
@@ -1228,7 +912,6 @@
                 });
               }
             }else if(item.fieldType == "4"){  //多选框(并且不是忘记打卡的情况)
-            // && item.code!='punchTime'
               if(this.confItemsval[item.uid].length > 0){
                 for(let j = 0; j < this.confItemsval[item.uid].length; j++){
                   if(this.confItemsval[item.uid][j] != '' && this.confItemsval[item.uid][j] != null){
@@ -1298,13 +981,8 @@
               }
             }
           }
-
         }
-
         this.applyData.approvalValues = approvalValues;
-        console.log(555);
-        console.log(this.applyData);
-
         Indicator.open('正在提交申请...');
         this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
           Indicator.close();//申请提交成功
@@ -1321,52 +999,6 @@
 //          console.log('error callback');
         });
 
-
-        /*// 表单验证
-        let applyData = this.applyData;
-        let selectedDataApply = this.selectedDataApply;
-        if(selectedDataApply == '0'){ //请假
-          if(applyData.leaveUid == ''){
-            console.log("请选择请假类型");
-          }
-        }
-        return false;
-        if (this.selectedDataApply === 3) {
-          this.applyData.applyWorkRef = this.applyWorkRef.map((item, index) => {
-            return {
-              startTime: new Date(item.startTime).getTime(),
-              endTime: new Date(item.endTime).getTime(),
-              sortnum: index,
-            };
-          });
-        } else {
-          this.applyData.startTime = new Date(this.startTimeValue).getTime();
-          this.applyData.endTime = new Date(this.endTimeValue).getTime();
-        }
-        this.applyData.remarks = this.applyData.remarks.trim();
-        if (this.approvalTypeObj) {
-          if (this.approvalTypeObj.WAY === '1') {
-            this.applyData.category = '1';
-            this.applyData.currentApprover = this.approvalTypeObj.UID
-          } else if (this.approvalTypeObj.WAY === '2') {
-            this.applyData.category = '2';
-            this.applyData.email = this.approvalTypeObj.NAME
-          }
-        }
-        this.$http.post('/api/v1.0/client/apply', this.applyData).then(response => { //提交请假申请
-          Indicator.close();//申请提交成功
-          this.codeSuccess = response.body.code;
-          this.leaveSuccess = true;
-          if (response.body.code === 200) {
-            this.alertSuccessImage = true;
-            this.alertMessage = response.body.message;
-          } else {
-            this.alertSuccessImage = false;
-            this.alertMessage = response.body.message
-          }
-        }, response => {
-//          console.log('error callback');
-        });*/
       },
       qingjiaclick(value, index){
         if(value!=null && value!=''){
@@ -1407,8 +1039,6 @@
       // 上传图片成功
       passportUrlOk(res, file) {
         if (res.code === 200) {
-          // this.applyData.image = res.result;
-
           for(let i = 0; i< this.fields.length; i++){
             let item = this.fields[i];
             if(item.fieldType == '8'){
@@ -1513,24 +1143,6 @@
             }
             this.searchApplyRecord = this.searchApplyRecord.concat(data);
 
-            /*let that = this;
-            window.onscroll = function() {
-              if(that.getScrollTop() + that.getClientHeight() >= that.getScrollHeight()) {
-
-                ++that.pagenum;
-                console.log('下拉刷新了');
-                console.log("pagenum="+that.pagenum);
-                console.log("totalpages="+that.totalpages);
-                if(that.pagenum > that.totalpages){
-                  return false;
-                }else{
-                  that.changeShow(val);
-                }
-
-              }
-            }*/
-
-
           }
         }, response => {
 //          console.log('error callback');
@@ -1608,19 +1220,12 @@
       },
       //上传图片文件
       updateImgFile(data){
-        // console.log(123456);
-        // console.log(data);
-        // console.log(data.position);
-        // console.log(this.fields[data.position.index].approvalValues);
         this.fields[data.position.index].approvalValues.push({
           selected: false,
           url: data.url,
           width: 0,
           height: 0
         });
-        // console.log(3333);
-        // console.log(this.fields[data.position.index]);
-
       },
       showUpdateError(data){
         this.showMsg(data.fieldHint, -1);
@@ -1631,19 +1236,13 @@
       },
       //编辑操作
       editImg(index){
-
-//        console.log(123456789, this.model.bodies[bodyIdx].children[partIdx]._children[groupIdx][fieldIdx]._configs._staffValues.value)
         V.set(this.fields[index], 'fileEdit', true);
         this.fields[index].fileEdit = true;
-        // console.log(this.fields[index]);
-        // console.log(11111111111);
-
       },
       //取消删除文件
       cancelEditImg(index){
         V.set(this.fields[index], 'fileEdit', false);
         this.fields[index].fileEdit = false;
-        // console.log(this.fields[index]);
       },
       //编辑状态，删除文件
       deleteFile(index){
@@ -1654,7 +1253,6 @@
             i--;
           }
         }
-//        console.log(list)
         this.fields[index].approvalValues = list;
         this.cancelEditImg(index);
       },
@@ -1761,9 +1359,9 @@
           margin-right: 10px;
         }
         .icon-stars:before {
-          content: '*';
-          color: #ff4949;
-          margin-right: 4px;
+          content: '*' !important;
+          color: #ff4949 !important;
+          margin-right: 4px !important;
         }
         .leave-main-box-del {
           transform: rotate(45deg) scale(2.4);
