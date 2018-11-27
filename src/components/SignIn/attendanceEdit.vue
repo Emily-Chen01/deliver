@@ -825,6 +825,10 @@
         });
       },
       editapply () {
+        if(this.approveAllData.category == '' || this.approveAllData.category == 'null' || this.approveAllData.category == null){
+          this.showMsg("请填写汇报关系",-1);
+          return false;
+        }
         this.showRevise = false;
         this.isSaveState = false;
       },
@@ -1625,26 +1629,32 @@
       approvalperson(configType, approvalType){
         this.$http.get('/api/v1.0/client/findReporter/'+configType).then(response => {
           let data = response.body.result;
-          if(configType == '0'){
-            this.approvalTypeObj = data;
-            this.applyData.category = data.WAY;   // 审批人类型,1或者2
-            this.approveAllData.category = data.WAY;
-            if(data.WAY == '1'){
-              this.applyData.currentApprover = data.UID;
-              this.approveAllData.currentApprover = data.UID;
-              this.approveAllData.email = '';
-            }else if(data.WAY == '2'){
-              this.applyData.email = data.NAME;
-              this.approveAllData.currentApprover = '';
-              this.approveAllData.email = data.NAME;
-            }
-          }else if(configType == '1'){
-            if(approvalType == '-1'){
-              this.approveAllData.category = 1;
-              this.approvalTypeObjtwo = data;
-            }else{
+          if(response.body.result != null){
+            if(configType == '0'){
               this.approvalTypeObj = data;
+              this.applyData.category = data.WAY;   // 审批人类型,1或者2
+              this.approveAllData.category = data.WAY;
+              if(data.WAY == '1'){
+                this.applyData.currentApprover = data.UID;
+                this.approveAllData.currentApprover = data.UID;
+                this.approveAllData.email = '';
+              }else if(data.WAY == '2'){
+                this.applyData.email = data.NAME;
+                this.approveAllData.currentApprover = '';
+                this.approveAllData.email = data.NAME;
+              }
+            }else if(configType == '1'){
+              if(approvalType == '-1'){
+                this.approveAllData.category = 1;
+                this.approvalTypeObjtwo = data;
+              }else{
+                this.approvalTypeObj = data;
+              }
             }
+          }else{
+            this.approveAllData.category = '';
+            this.approveAllData.currentApprover = '';
+            this.approveAllData.email = '';
           }
 
         }, response => {
