@@ -69,15 +69,15 @@
                   <div class="YD_image_list" v-if="list.fileAttribute=='0'">
                     <div class="YD_image_list_item"
                          v-for="(n, picindex) in list.approvalValues"
-                         :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
-                      <img @click="queryImg($event,list.approvalValues)" :src="n.value" alt="">
+                         v-fancybox-thumbnail="[n.width, n.height]" :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
+                      <img @click="queryImg($event,list.approvalValues)" :src="n.url" alt="">
                     </div>
                   </div>
                   <!--文件-->
                   <div class="YD_image_list" v-if="list.fileAttribute=='1'">
                     <div class="YD_image_list_item"
                          v-for="(n, picindex) in list.approvalValues"
-                         :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
+                         v-fancybox-thumbnail="[40, 40]" :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
                       <img src="../../assets/ico_document.png" alt="">
                       <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
                          :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
@@ -452,40 +452,7 @@
     </mt-popup>
 
     <!--日期组件-->
-    <!--v-if="wordcodecurr!='workOverTime'"-->
-    <div>
-    <mt-datetime-picker
-      type="datetime"
-      ref="picker0"
-      v-model="startTimeValue1"
-      year-format="{value} 年"
-      month-format="{value} 月"
-      date-format="{value} 日"
-      hour-format="{value} 时"
-      minute-format="{value} 分"
-      :closeOnClickModal="false"
-      @confirm="handleConfirmStart"
-      @cancel="closeDatepicker"
-    >
-    </mt-datetime-picker>
-    <mt-datetime-picker
-      type="datetime"
-      ref="picker1"
-      v-model="endTimeValue1"
-      year-format="{value} 年"
-      month-format="{value} 月"
-      date-format="{value} 日"
-      hour-format="{value} 时"
-      minute-format="{value} 分"
-      :closeOnClickModal="false"
-      @confirm="handleConfirmEnd"
-      @cancel="closeDatepicker"
-    >
-    </mt-datetime-picker>
-    </div>
-
-    <!--加班时间日期-->
-    <!--<div v-if="wordcodecurr=='workOverTime'">
+    <div v-if="wordcodecurr!='workOverTime'">
       <mt-datetime-picker
         type="datetime"
         ref="picker0"
@@ -498,9 +465,6 @@
         :closeOnClickModal="false"
         @confirm="handleConfirmStart"
         @cancel="closeDatepicker"
-        :start-date="new Date(connectTime.startTime)"
-        :end-date="new Date(new Date(connectTime.endTime).setHours(new Date(connectTime.endTime).getHours()+15))"
-        v-if="connectTime.startTime && connectTime.endTime"
       >
       </mt-datetime-picker>
       <mt-datetime-picker
@@ -515,12 +479,43 @@
         :closeOnClickModal="false"
         @confirm="handleConfirmEnd"
         @cancel="closeDatepicker"
-        :start-date="new Date(connectTime.startTime)"
-        :end-date="new Date(new Date(connectTime.endTime).setHours(new Date(connectTime.endTime).getHours()+15))"
-        v-if="connectTime.startTime && connectTime.endTime"
       >
       </mt-datetime-picker>
-    </div>-->
+    </div>
+
+    <!--加班时间日期-->
+    <div v-if="wordcodecurr=='workOverTime'">
+      <mt-datetime-picker
+        type="datetime"
+        ref="picker0"
+        v-model="startTimeValue1"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        hour-format="{value} 时"
+        minute-format="{value} 分"
+        :closeOnClickModal="false"
+        @confirm="handleConfirmStart"
+        @cancel="closeDatepicker"
+        :end-date="workdatetimevurr"
+      >
+      </mt-datetime-picker>
+      <mt-datetime-picker
+        type="datetime"
+        ref="picker1"
+        v-model="endTimeValue1"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        hour-format="{value} 时"
+        minute-format="{value} 分"
+        :closeOnClickModal="false"
+        @confirm="handleConfirmEnd"
+        @cancel="closeDatepicker"
+        :end-date="workdatetimevurr"
+      >
+      </mt-datetime-picker>
+    </div>
 
 
   </div>
@@ -537,6 +532,7 @@
   let df1 = 'YYYY/MM';
   let df2 = 'YYYY/MM/DD';
   let df3 = 'YYYY-MM-DD';
+  let df4 = 'YYYY/MM/DD HH:mm';
   const textPattern = utilsValid.textPattern; //验证文本
   const idNumberPattern = utilsValid.idNumberPattern;
   const getExtType = utilsValid.getExtType;
@@ -720,7 +716,8 @@
         wordcodecurr:'',
         handler: function(e){
           e.preventDefault()
-        }
+        },
+        workdatetimevurr: new Date()
       }
     },
     created: function () {
@@ -729,6 +726,8 @@
       this.getDetail();
       this.getApprovalType();
 
+      //当前日期时间
+      this.workdatetimevurr = new Date((new Date).getFullYear()+'/'+parseInt((new Date).getMonth()+1)+'/'+(new Date).getDate()+' 23:59');
     },
     methods: {
       // 删除新增的考勤状态
@@ -979,6 +978,14 @@
                 list.periodarr = this.applyWorkRefAll[(this.daycurrent+i+list.uid).toString()];
 
               }else if(list.fieldType == '8'){
+                if(list.approvalFieldValues.length > 0){
+                  for(let n = 0; n < list.approvalFieldValues.length; n++){
+                    let detail = list.approvalFieldValues[n];
+                    detail["url"] = detail.value;
+                    detail["width"] = '0';
+                    detail["height"] = '0';
+                  }
+                }
                 list.approvalValues = list.approvalFieldValues;
               }
 
@@ -1350,6 +1357,16 @@
                   this.$set(this.confItemsval, (daycurrentStr + i + list.uid).toString(), list.valuearray);
 
                 }
+              }else if(list.fieldType == '8'){
+                if(list.approvalValues.length > 0){
+                  for(let n = 0; n < list.approvalValues.length; n++){
+                    let detail = list.approvalValues[n];
+                    detail["url"] = detail.value;
+                    detail["width"] = '0';
+                    detail["height"] = '0';
+                  }
+                }
+                list.approvalFieldValues = list.approvalValues;
               }else{
                 if(list.approvalValues.length){
                   list.value = list.approvalValues[0].value;
@@ -1715,19 +1732,19 @@
         this.wordcodecurr = itemCode;
         if(fieldType == '6'){
           let displaytime = this.searchApplyRecord[index].approvalFields[fieldIndex].value;
-          this.startTimeValue1 = displaytime ? displaytime : new Date();
+          this.startTimeValue1 = displaytime ? new Date(moment(displaytime).format(df4)) : new Date();
           this.$refs.picker0.open();
         }else if(fieldType == '7'){
           if(type == 0){
             if(this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].startTime){
-              this.startTimeValue1 = this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].startTime;
+              this.startTimeValue1 = new Date(moment(this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].startTime).format(df4));
             }else{
               this.startTimeValue1 = new Date();
             }
             this.$refs.picker0.open();
           }else if(type == 1){
             if(this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].endTime){
-              this.endTimeValue1 = this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].endTime;
+              this.endTimeValue1 = new Date(moment(this.applyWorkRefAll[(this.daycurrent+index+this.uid).toString()][this.pos].endTime).format(df4));
             }else{
               this.endTimeValue1 = new Date();
             }
@@ -1965,13 +1982,35 @@
       },
       //上传图片文件
       updateImgFile(data){
-        this.searchApplyRecord[data.position.index].approvalFields[data.position.fieldIndex].approvalFieldValues.push({
-          selected: false,
-          url: data.url,
-          value: data.url,
-          width: 0,
-          height: 0
-        });
+        let approvalFieldValues = this.searchApplyRecord[data.position.index].approvalFields[data.position.fieldIndex].approvalFieldValues;
+        if(approvalFieldValues.length==1){
+          if(approvalFieldValues[0].value==null || approvalFieldValues[0].value=='null' || approvalFieldValues[0].value=='' || approvalFieldValues[0].value==undefined){
+            this.searchApplyRecord[data.position.index].approvalFields[data.position.fieldIndex].approvalFieldValues = [{
+              selected: false,
+              url: data.url,
+              value: data.url,
+              width: 0,
+              height: 0
+            }];
+          }else{
+            this.searchApplyRecord[data.position.index].approvalFields[data.position.fieldIndex].approvalFieldValues.push({
+              selected: false,
+              url: data.url,
+              value: data.url,
+              width: 0,
+              height: 0
+            });
+          }
+        }else{
+          this.searchApplyRecord[data.position.index].approvalFields[data.position.fieldIndex].approvalFieldValues.push({
+            selected: false,
+            url: data.url,
+            value: data.url,
+            width: 0,
+            height: 0
+          });
+        }
+
       },
       showUpdateError(data){
         this.showMsg(data.fieldHint, -1);
@@ -2034,10 +2073,11 @@
       display: block;
       width: 100%;
       font-size: 12px !important;
+      text-align: center;
       .picker-slot {
         flex: none !important;
         display: inline-block;
-        width: 20%;
+        width: 18%;
         font-size: 12px !important;
       }
       .picker-item{

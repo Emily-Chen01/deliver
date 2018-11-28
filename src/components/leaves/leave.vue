@@ -371,70 +371,69 @@
       </div>
     </mt-popup>
 
-    <!--v-if="wordcodecurr!='workOverTime'"-->
-    <div>
-    <mt-datetime-picker
-      type="datetime"
-      ref="picker0"
-      v-model="startTimeValue1"
-      year-format="{value} 年"
-      month-format="{value} 月"
-      date-format="{value} 日"
-      hour-format="{value} 时"
-      minute-format="{value} 分"
-      :closeOnClickModal="false"
-      @confirm="handleConfirmStart"
-      @cancel="closeDatepicker"
-    >
-    </mt-datetime-picker>
-    <mt-datetime-picker
-      type="datetime"
-      ref="picker1"
-      v-model="endTimeValue1"
-      year-format="{value} 年"
-      month-format="{value} 月"
-      date-format="{value} 日"
-      hour-format="{value} 时"
-      minute-format="{value} 分"
-      :closeOnClickModal="false"
-      @confirm="handleConfirmEnd"
-      @cancel="closeDatepicker"
-    >
-    </mt-datetime-picker>
+    <div v-if="wordcodecurr!='workOverTime'">
+      <mt-datetime-picker
+        type="datetime"
+        ref="picker0"
+        v-model="startTimeValue1"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        hour-format="{value} 时"
+        minute-format="{value} 分"
+        :closeOnClickModal="false"
+        @confirm="handleConfirmStart"
+        @cancel="closeDatepicker"
+      >
+      </mt-datetime-picker>
+      <mt-datetime-picker
+        type="datetime"
+        ref="picker1"
+        v-model="endTimeValue1"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        hour-format="{value} 时"
+        minute-format="{value} 分"
+        :closeOnClickModal="false"
+        @confirm="handleConfirmEnd"
+        @cancel="closeDatepicker"
+      >
+      </mt-datetime-picker>
     </div>
 
-    <!--<div v-if="wordcodecurr=='workOverTime'">
-    <mt-datetime-picker
-      type="datetime"
-      ref="picker0"
-      v-model="startTimeValue1"
-      year-format="{value} 年"
-      month-format="{value} 月"
-      date-format="{value} 日"
-      hour-format="{value} 时"
-      minute-format="{value} 分"
-      :closeOnClickModal="false"
-      @confirm="handleConfirmStart"
-      @cancel="closeDatepicker"
-      :end-date="new Date((new Date).getFullYear()+'-'+(new Date).getMonth()+'-'+(new Date).getDate()+' 23:59')"
-    >
-    </mt-datetime-picker>
-    <mt-datetime-picker
-      type="datetime"
-      ref="picker1"
-      v-model="endTimeValue1"
-      year-format="{value} 年"
-      month-format="{value} 月"
-      date-format="{value} 日"
-      hour-format="{value} 时"
-      minute-format="{value} 分"
-      :closeOnClickModal="false"
-      @confirm="handleConfirmEnd"
-      @cancel="closeDatepicker"
-      :end-date="new Date((new Date).getFullYear()+'-'+(new Date).getMonth()+'-'+(new Date).getDate()+' 23:59')"
-    >
-    </mt-datetime-picker>
-    </div>-->
+    <div v-if="wordcodecurr=='workOverTime'">
+      <mt-datetime-picker
+        type="datetime"
+        ref="picker0"
+        v-model="startTimeValue1"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        hour-format="{value} 时"
+        minute-format="{value} 分"
+        :closeOnClickModal="false"
+        @confirm="handleConfirmStart"
+        @cancel="closeDatepicker"
+        :end-date="workdatetimevurr"
+      >
+      </mt-datetime-picker>
+      <mt-datetime-picker
+        type="datetime"
+        ref="picker1"
+        v-model="endTimeValue1"
+        year-format="{value} 年"
+        month-format="{value} 月"
+        date-format="{value} 日"
+        hour-format="{value} 时"
+        minute-format="{value} 分"
+        :closeOnClickModal="false"
+        @confirm="handleConfirmEnd"
+        @cancel="closeDatepicker"
+        :end-date="workdatetimevurr"
+      >
+      </mt-datetime-picker>
+    </div>
 
   </div>
 </template>
@@ -448,7 +447,9 @@
   import moment from 'moment'
 
   let df = 'YYYY-MM-DD HH:mm';
-  let df2 = 'YYYY-MM-DD';
+  let df2 = 'YYYY/MM/DD';
+  let df3 = 'YYYY-MM-DD';
+  let df4 = 'YYYY/MM/DD HH:mm';
   const textPattern = utilsValid.textPattern; //验证文本
   const idNumberPattern = utilsValid.idNumberPattern;
   const getExtType = utilsValid.getExtType;
@@ -545,7 +546,8 @@
         wordcodecurr:'',
         handler: function(e){
           e.preventDefault()
-        }
+        },
+        workdatetimevurr: new Date()
 
       };
     },
@@ -600,6 +602,9 @@
         this.selected = selectedTab;
         this.changeShow(-1, 3);
       }
+
+      //当前日期时间
+      this.workdatetimevurr = new Date((new Date).getFullYear()+'/'+parseInt((new Date).getMonth()+1)+'/'+(new Date).getDate()+' 23:59');
 
     },
     watch: {},
@@ -749,7 +754,7 @@
         if (this.fieldTypecurr === '7') {
           this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
+          this.$set(this.fields[this.posIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
         this.openTouch();
@@ -759,7 +764,7 @@
         if (this.fieldTypecurr === '7') {
           this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime = moment(data).format(df);
         } else if(this.fieldTypecurr === '6'){
-          this.$set(this.fields[this.posIndex], "value", moment(data).format(df2));
+          this.$set(this.fields[this.posIndex], "value", moment(data).format(df3));
           this.tmpnumber = 2;
         }
         this.openTouch();
@@ -792,19 +797,19 @@
         this.wordcodecurr = itemCode;
         if(fieldType == '6'){
             let displaytime = this.fields[index].value;
-            this.startTimeValue1 = displaytime ? displaytime : new Date();
+            this.startTimeValue1 = displaytime ? new Date(moment(displaytime).format(df4)) : new Date();
             this.$refs.picker0.open();
         }else if(fieldType == '7'){
           if(type == 0){
             if(this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime){
-              this.startTimeValue1 = this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime;
+              this.startTimeValue1 = new Date(moment(this.applyWorkRefAll[(this.uid).toString()][this.pos].startTime).format(df4));
             }else{
               this.startTimeValue1 = new Date();
             }
             this.$refs.picker0.open();
           }else if(type == 1){
             if(this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime){
-              this.endTimeValue1 = this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime;
+              this.endTimeValue1 = new Date(moment(this.applyWorkRefAll[(this.uid).toString()][this.pos].endTime).format(df4));
             }else{
               this.endTimeValue1 = new Date();
             }
@@ -1309,10 +1314,11 @@
     .picker-items {
       display: block;
       width: 100%;
+      text-align: center;
       .picker-slot {
         flex: none !important;
         display: inline-block;
-        width: 20%;
+        width: 18%;
         font-size: 12px;
       }
     }
