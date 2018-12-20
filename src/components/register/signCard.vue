@@ -139,32 +139,34 @@
       this.state = false;
       Indicator.open('正在加载...');
       this.$http.get('/api/v1.0/client/status').then(response => {
-        this.listData.map((item) => {
-          switch (item.type) {
-            case 0:
-              item.num = response.body.result.apply;
-              break;
-            case 1:
-              item.num = response.body.result.punchCard;
-              item.date = response.body.result.date;
-              break;
-            case 2:
-              item.num = response.body.result.salary;
-              break;
-            case 3:
-              item.num = response.body.result.notice;
-              break;
-            case 4:
-              break;
-            case 5:
-              break;
-            case 6:
-              item.num = response.body.result.approvals;
-              break;
-            default:
-              break;
-          }
-        });
+        if (response.body.code === 200) {
+          this.listData.map((item) => {
+            switch (item.type) {
+              case 0:
+                item.num = response.body.result.apply;
+                break;
+              case 1:
+                item.num = response.body.result.punchCard;
+                item.date = response.body.result.date;
+                break;
+              case 2:
+                item.num = response.body.result.salary;
+                break;
+              case 3:
+                item.num = response.body.result.notice;
+                break;
+              case 4:
+                break;
+              case 5:
+                break;
+              case 6:
+                item.num = response.body.result.approvals;
+                break;
+              default:
+                break;
+            }
+          });
+        }
       }, response => {
         console.log('error callback');
       });

@@ -54,11 +54,14 @@ Vue.http.interceptors.push(function (request, next) {
       // console.log('inter', response.body.message);
       router.push({path: 'index'});
     }else if (response.body.code === 5001) {
+      Indicator.close();//关闭加载中
       Toast({
         message: response.body.message,
         iconClass: 'bg-img ico_error'
       });
-      router.push({path: 'index'});
+      setTimeout(function () {
+        router.push({path: '/binding'});
+      },2000);
     }
   });
 });
