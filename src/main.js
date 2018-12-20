@@ -53,6 +53,12 @@ Vue.http.interceptors.push(function (request, next) {
     if (response.body.code === 4001) {
       // console.log('inter', response.body.message);
       router.push({path: 'index'});
+    }else if (response.body.code === 5001) {
+      Toast({
+        message: response.body.message,
+        iconClass: 'bg-img ico_error'
+      });
+      router.push({path: 'index'});
     }
   });
 });
