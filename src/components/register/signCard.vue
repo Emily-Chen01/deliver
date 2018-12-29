@@ -119,6 +119,12 @@
             icon: 'bg-approve',
             type: 6,
             num:0
+          },
+          {
+            name: '专项扣除',
+            icon: 'bg-approve',
+            type: 7,
+            num:0
           }
         ],
         imgSrc: {
@@ -234,6 +240,9 @@
           case 6:
             this.$router.push({path: '/approve'});
             break;
+          case 7:
+            this.$router.push({path: '/specialDeduct'});
+            break;
           default:
             break;
         }
@@ -323,10 +332,13 @@
     #record-list-wrapper {
       margin-top: 13px;
       font-size: 0;
+      background: #fff;
+      &::after{content:"";display: block;height:0;clear: both;}
       .record-list-item {
         position: relative;
         display: inline-block;
         box-sizing: border-box;
+        float: left;
         width: 33.33%;
         padding-top: 33.33%;
         background-color: #ffffff;
