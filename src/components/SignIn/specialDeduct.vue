@@ -7,7 +7,7 @@
     <!--内容-->
     <div class="special-content">
       <p>长按图片识别二维码，打开小程序</p>
-      <p><img src="../../assets/images/pic_qrcode.jpg"></p>
+      <p><img src="../../assets/images/pic_qrcode.png"></p>
     </div>
   </div>
 </template>
