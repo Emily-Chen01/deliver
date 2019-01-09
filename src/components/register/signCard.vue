@@ -30,7 +30,7 @@
             <div class="record-list-item_position">
               <div style="display: inline-block;position: relative;">
                 <p class="record-list-item_tag" v-if="listItem.num" v-text="listItem.num">1</p>
-                <i class="icon_bg_homeImg" :class="listItem.icon"></i><br/>
+                <i class="icon_bg_homeImg2" :class="listItem.icon"></i><br/>
               </div>
               <p class="mt10" v-text="listItem.name"></p>
             </div>
@@ -64,6 +64,15 @@
         <span>解绑</span>
       </mt-tab-item>
     </mt-tabbar>
+
+    <!--专项扣除申报二维码弹框-->
+    <div class="popupSpecial" v-show="showSpecial">
+      <div class="popoverlay" @click="showSpecial=false"></div>
+      <div class="popuocont">
+        <p><img src="../../assets/images/pic_qrcode.png"></p>
+        <p>长按图片识别二维码，打开小程序</p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -121,15 +130,16 @@
             num:0
           },
           {
-            name: '专项扣除',
-            icon: 'bg-approve',
+            name: '专项扣除申报',
+            icon: 'bg-declare',
             type: 7,
             num:0
           }
         ],
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
-        }
+        },
+        showSpecial: false
       }
     },
     watch: {
@@ -241,7 +251,7 @@
             this.$router.push({path: '/approve'});
             break;
           case 7:
-            this.$router.push({path: '/specialDeduct'});
+            this.showSpecial = true;
             break;
           default:
             break;
@@ -270,7 +280,7 @@
 
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   #signCard-wrapper {
     .mt10 {
       margin-top: 10px;
@@ -423,6 +433,51 @@
           text-align: center;
           margin-top: 2rem;
         }
+      }
+    }
+  }
+
+  .popupSpecial{
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top:0;
+    right:0;
+    bottom:0;
+    z-index: 1000;
+    .popoverlay{
+      width: 100%;
+      position: fixed;
+      left: 0;
+      top:0;
+      right:0;
+      bottom:0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1001;
+    }
+    .popuocont{
+      position: fixed;
+      left: 18%;
+      top:50%;
+      -webkit-transform: translateY(-50%);
+      transform: translateY(-50%);
+      width: 64%;
+      z-index: 1002;
+      p{
+        color:#fff;
+        font-size: 12px;
+        &:nth-child(1){
+          padding: 15px;
+          background: #fff;
+          display: block;
+        }
+        &:nth-child(2){
+          padding-top: 20px;
+        }
+      }
+      img{
+        width: 100%;
+        display: block;
       }
     }
   }

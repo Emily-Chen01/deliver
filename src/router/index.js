@@ -13,7 +13,6 @@ import attendanceRecord from "@/components/SignIn/attendanceRecord"
 import attendanceEdit from "@/components/SignIn/attendanceEdit"
 import approveDetail from "@/components/myApprove/approveDetail"
 import mySalary from "@/components/SignIn/mySalary"
-import specialDeduct from "@/components/SignIn/specialDeduct"
 import binding from "@/components/binding/binding"
 import task from "@/components/task/task"
 import taskDetails from "@/components/task/details"
@@ -84,10 +83,6 @@ export default new Router({
     {
       path: '/mySalary',  //我的工资条
       component: mySalary
-    },
-    {
-      path: '/specialDeduct',  //专项扣除
-      component: specialDeduct
     },
     {
       path: '/notice',  //公告列表页
