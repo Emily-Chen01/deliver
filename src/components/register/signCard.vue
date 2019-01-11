@@ -1,6 +1,6 @@
 <template>
   <div v-if="state" id="signCard-wrapper">
-    <div v-if="toolState">
+    <div class="signCardcont" v-if="toolState">
       <!--头部-->
       <div id="bg">
         <div class="header-top">
@@ -282,6 +282,12 @@
 
 <style scoped lang="scss">
   #signCard-wrapper {
+    .signCardcont{
+      padding-bottom:55px;
+    }
+    .mint-tabbar{
+      position: fixed;
+    }
     .mt10 {
       margin-top: 10px;
     }
