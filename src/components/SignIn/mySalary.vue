@@ -24,11 +24,19 @@
       <div class="maSalary-list">
         <table>
           <tbody>
-          <tr v-for="item in dateGrid.detail"
+          <!--<tr v-for="item in dateGrid.detail"
               v-if="(showFormat(item.add) || showFormat(item.deduct))">
             <td class="left-icon"><img :src="iconFormat(item.filedType)"></td>
             <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
             <td align="right" v-text="showFormat(item.add) ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
+          </tr>-->
+
+          <tr v-for="item in dateGrid.detail">
+            <td class="left-icon"><img src="../../assets/qianIcon.png"></td>
+            <td align="left" class="maSalary-details-td" v-text="item.name">{{item.name}}</td>
+            <td align="right">
+              {{showFormat(item.value) ? moneyFormat(item.value) : item.value}}
+            </td>
           </tr>
           </tbody>
         </table>
