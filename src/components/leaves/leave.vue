@@ -1915,4 +1915,22 @@
       width: 98%;
     }
   }
+
+  #leave-wrapper{
+    /*.picker-item.picker-selected {*/
+      /*color: #000;*/
+      /*transform: translate(0, 0) rotateX(0) !important;*/
+    /*}*/
+    /*.mint-popup-bottom{
+      -webkit-transform: translate(-50%, 0) !important;
+       transform: translate(-50%, 0) !important;
+    }*/
+    .picker-items{
+      height: 252px;
+    }
+    .picker-slot{
+      height: 252px;
+    }
+  }
+
 </style>
