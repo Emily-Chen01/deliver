@@ -371,7 +371,8 @@
       </div>
     </mt-popup>
 
-    <div v-if="wordcodecurr!='workOverTime'">
+    <!--v-if="wordcodecurr!='workOverTime'"-->
+    <div>
       <mt-datetime-picker
         type="datetime"
         ref="picker0"
@@ -384,6 +385,7 @@
         :closeOnClickModal="false"
         @confirm="handleConfirmStart"
         @cancel="closeDatepicker"
+        :end-date="enddatetime"
       >
       </mt-datetime-picker>
       <mt-datetime-picker
@@ -398,11 +400,12 @@
         :closeOnClickModal="false"
         @confirm="handleConfirmEnd"
         @cancel="closeDatepicker"
+        :end-date="enddatetime"
       >
       </mt-datetime-picker>
     </div>
 
-    <div v-if="wordcodecurr=='workOverTime'">
+    <!--<div v-if="wordcodecurr=='workOverTime'">
       <mt-datetime-picker
         type="datetime"
         ref="picker0"
@@ -433,7 +436,7 @@
         :end-date="workdatetimevurr"
       >
       </mt-datetime-picker>
-    </div>
+    </div>-->
 
   </div>
 </template>
@@ -547,8 +550,8 @@
         handler: function(e){
           e.preventDefault()
         },
-        workdatetimevurr: new Date()
-
+        workdatetimevurr: new Date(),
+        enddatetime: new Date(new Date().getFullYear() + 10, 11, 31, 23, 59)
       };
     },
     created: function () {
@@ -1913,23 +1916,6 @@
     .inputtext{
       height: 48px;
       width: 98%;
-    }
-  }
-
-  #leave-wrapper{
-    /*.picker-item.picker-selected {*/
-      /*color: #000;*/
-      /*transform: translate(0, 0) rotateX(0) !important;*/
-    /*}*/
-    /*.mint-popup-bottom{
-      -webkit-transform: translate(-50%, 0) !important;
-       transform: translate(-50%, 0) !important;
-    }*/
-    .picker-items{
-      height: 252px;
-    }
-    .picker-slot{
-      height: 252px;
     }
   }
 

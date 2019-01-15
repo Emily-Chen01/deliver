@@ -452,7 +452,8 @@
     </mt-popup>
 
     <!--日期组件-->
-    <div v-if="wordcodecurr!='workOverTime'">
+    <!--v-if="wordcodecurr!='workOverTime'"-->
+    <div>
       <mt-datetime-picker
         type="datetime"
         ref="picker0"
@@ -465,6 +466,7 @@
         :closeOnClickModal="false"
         @confirm="handleConfirmStart"
         @cancel="closeDatepicker"
+        :end-date="enddatetime"
       >
       </mt-datetime-picker>
       <mt-datetime-picker
@@ -479,12 +481,13 @@
         :closeOnClickModal="false"
         @confirm="handleConfirmEnd"
         @cancel="closeDatepicker"
+        :end-date="enddatetime"
       >
       </mt-datetime-picker>
     </div>
 
     <!--加班时间日期-->
-    <div v-if="wordcodecurr=='workOverTime'">
+    <!--<div v-if="wordcodecurr=='workOverTime'">
       <mt-datetime-picker
         type="datetime"
         ref="picker0"
@@ -515,7 +518,7 @@
         :end-date="workdatetimevurr"
       >
       </mt-datetime-picker>
-    </div>
+    </div>-->
 
 
   </div>
@@ -717,7 +720,8 @@
         handler: function(e){
           e.preventDefault()
         },
-        workdatetimevurr: new Date()
+        workdatetimevurr: new Date(),
+        enddatetime: new Date(new Date().getFullYear() + 10, 11, 31, 23, 59)
       }
     },
     created: function () {
