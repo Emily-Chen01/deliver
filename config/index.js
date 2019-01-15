@@ -31,7 +31,7 @@ module.exports = {
       //  接口专用配置
       '/api': {
         target: 'http://192.168.140.215:8082/',
-        // target: 'http://192.168.14.187:8080/', // star
+        // target: 'http://192.168.140.155:8080/', // star
         // target: 'http://192.168.140.157:8080/',  // kevin
         // target: 'http://192.168.14.179:8080/', // jason
         // target: 'http://123.57.51.45:8080/', // test

@@ -21,25 +21,36 @@
     <!--工资明细-->
     <div class="maSalary-details" v-if="dateGrid.detail&&dateGrid.detail.length">
       <h4 align="left">工资明细</h4>
-      <div class="maSalary-list">
+      <!--<div class="maSalary-list" style="display: none;">
         <table>
           <tbody>
-          <!--<tr v-for="item in dateGrid.detail"
+          &lt;!&ndash;<tr v-for="item in dateGrid.detail"
               v-if="(showFormat(item.add) || showFormat(item.deduct))">
             <td class="left-icon"><img :src="iconFormat(item.filedType)"></td>
             <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
             <td align="right" v-text="showFormat(item.add) ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
-          </tr>-->
+          </tr>&ndash;&gt;
 
-          <tr v-for="item in dateGrid.detail">
+          &lt;!&ndash;<tr v-for="item in dateGrid.detail">
             <td class="left-icon"><img src="../../assets/qianIcon.png"></td>
             <td align="left" class="maSalary-details-td" v-text="item.name">{{item.name}}</td>
             <td align="right">
               {{showFormat(item.value) ? moneyFormat(item.value) : item.value}}
             </td>
-          </tr>
+          </tr>&ndash;&gt;
           </tbody>
         </table>
+      </div>-->
+
+      <div class="salaryCategory" v-for="list in Object.keys(griddet)">
+        <h1>{{list.split('_')[1]}}</h1>
+        <p v-for="item in griddet[list]">
+          <span class="left-icon"><img src="../../assets/qianIcon.png"></span>
+          <span class="maSalary-details-td" v-text="item.name">{{item.name}}</span>
+          <span>
+              {{showFormat(item.value) ? moneyFormat(item.value) : item.value}}
+            </span>
+        </p>
       </div>
     </div>
   </div>
@@ -71,7 +82,8 @@
 //              total: 1235
 //            }
           ]
-        }
+        },
+        griddet: {}
       }
     },
 
@@ -164,6 +176,21 @@
             this.dateGrid = {};
             if (response.body.result) {
               this.dateGrid = response.body.result;
+
+              let griddet = [];
+              this.dateGrid.detail.forEach((item, idx) => {
+                if(griddet.length > 0){
+                  if(griddet[0].type == item.type){
+                    griddet.push(item);
+                  }else{
+                    this.$set(this.griddet, (griddet[0].type).toString(), griddet);
+                    griddet = [item];
+                  }
+                }else{
+                  griddet = [item];
+                }
+                this.$set(this.griddet, (item.type).toString(), griddet);
+              });
             } else {
               this.dateGrid = {
                 money: 0,
@@ -262,6 +289,7 @@
     }
     .maSalary-details {
       width: 100%;
+      padding-bottom: 20px;
       h4 {
         padding-left: 15px;
         height: 26px;
@@ -301,6 +329,58 @@
             color: #475669;
             font-weight: inherit;
             padding-left: 0;
+          }
+        }
+      }
+      .salaryCategory{
+        text-align: left;
+        box-sizing: border-box;
+        padding: 0 15px;
+        h1{
+          padding: 10px 0;
+          height: 26px;
+          line-height: 26px;
+          font-size: 14px;
+          border-bottom: 1px solid #d2dce6;
+        }
+        p{
+          text-align: left;
+          height: 70px;
+          line-height: 70px;
+          border-bottom: 1px solid #d2dce6;
+          &::after{content:"";height: 0;display: block;clear: both;}
+          span{
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #1f2d3d;
+            &:nth-child(1){
+              float: left;
+              width: 50px;
+              height: 70px;
+              padding-left: 0;
+              position: relative;
+              img {
+                display: block;
+                width: 40px;
+                height: 40px;
+                position: absolute;
+                top:50%;
+                left: 50%;
+                -webkit-transform: translate(-50%,-50%);
+                transform: translate(-50%,-50%);
+              }
+            }
+            &:nth-child(2){
+              float: left;
+              font-size: 14px;
+              color: #475669;
+              font-weight: inherit;
+              padding-left: 0;
+            }
+            &:nth-child(3){
+              float: right;
+            }
           }
         }
       }
