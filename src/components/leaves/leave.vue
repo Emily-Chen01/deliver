@@ -25,21 +25,21 @@
           <div v-if="item.fieldType=='0'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
-              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" :disabled="item.code=='lengthTime' || item.fieldName=='时长（小时）'">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" :disabled="item.code=='lengthTime' || item.fieldName=='时长（小时）'" @blur="inputblur()">
             </div>
           </div>
 
           <!--多行文本 type为1-->
           <div v-if="item.fieldType=='1'" class="leaveboxText">
             <div class="leaveboxText-top" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
-            <textarea v-model="item.value" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256"></textarea>
+            <textarea v-model="item.value" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" @blur="inputblur()"></textarea>
           </div>
 
           <!--数字 type为2-->
           <div v-if="item.fieldType=='2'" class="leavebox">
             <div class="leaveboxlft" :class="{'icon-stars':item.isRequired==true}">{{item.fieldName}}</div>
             <div class="leaveboxcen">
-              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256">
+              <input v-model="item.value" class="inputtext" type="text" :placeholder="item.fieldDescr" :maxlength="item.fieldSize ? item.fieldSize : 256" @blur="inputblur()">
             </div>
           </div>
 
@@ -1274,6 +1274,13 @@
       },
       openTouch () {
         document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
+      },
+      //当输入框失去焦点，页面自动滚动到顶部原来的位置
+      inputblur(){
+        setTimeout(() => {
+          let scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0;
+          window.scrollTo(0, Math.max(scrollHeight - 1, 0));
+        }, 100);
       }
     },
     components: {
