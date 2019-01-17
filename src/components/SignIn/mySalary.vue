@@ -43,9 +43,11 @@
       </div>-->
 
       <div class="salaryCategory" v-for="list in Object.keys(griddet)">
-        <h1>{{list.split('_')[1]}}</h1>
+        <h1>
+          <img class="cateorypic" :src="iconFormatType(list.split('_')[0])">
+          {{list.split('_')[1]}}
+        </h1>
         <p v-for="item in griddet[list]">
-          <span class="left-icon"><img src="../../assets/qianIcon.png"></span>
           <span class="maSalary-details-td" v-text="item.name">{{item.name}}</span>
           <span>
               {{showFormat(item.value) ? moneyFormat(item.value) : item.value}}
@@ -58,6 +60,14 @@
 <script>
   export default {
     data(){
+      for(let i = 1; i < 15; i++){
+        let imgurl = require(`../../assets/images/salaryIcon/salaryIcon_${i}.png`);
+        if(i == 1){
+          this.imgSrcAll = [imgurl];
+        }else{
+          this.imgSrcAll.push(imgurl);
+        }
+      }
       return {
         imgSrc: {
           qianIcon: require('../../assets/qianIcon.png'),
@@ -66,6 +76,7 @@
           tax: require('../../assets/ico_tax.png'),
           other: require('../../assets/ico_other.png'),
         },
+        imgSrcAll: this.imgSrcAll,
         initTime: '',
 //        upTime: new Date().getMonth() + 1,
         upTime: null,
@@ -119,6 +130,10 @@
         } else {
           return this.imgSrc.other;
         }
+      },
+      iconFormatType(type){
+        type = parseInt(type - 1);
+        return this.imgSrcAll[type];
       },
       moneyFormat(money){
         let Money;
@@ -337,17 +352,23 @@
         box-sizing: border-box;
         padding: 0 15px;
         h1{
-          padding: 10px 0;
-          height: 26px;
+          padding: 20px 0 10px 0;
           line-height: 26px;
           font-size: 14px;
           border-bottom: 1px solid #d2dce6;
+          img.cateorypic{
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+          }
         }
         p{
           text-align: left;
-          height: 70px;
-          line-height: 70px;
-          border-bottom: 1px solid #d2dce6;
+          height: 45px;
+          line-height: 45px;
+          border-bottom: 1px dashed #d2dce6;
           &::after{content:"";height: 0;display: block;clear: both;}
           span{
             display: inline-block;
@@ -356,29 +377,11 @@
             color: #1f2d3d;
             &:nth-child(1){
               float: left;
-              width: 50px;
-              height: 70px;
-              padding-left: 0;
-              position: relative;
-              img {
-                display: block;
-                width: 40px;
-                height: 40px;
-                position: absolute;
-                top:50%;
-                left: 50%;
-                -webkit-transform: translate(-50%,-50%);
-                transform: translate(-50%,-50%);
-              }
-            }
-            &:nth-child(2){
-              float: left;
               font-size: 14px;
               color: #475669;
               font-weight: inherit;
-              padding-left: 0;
             }
-            &:nth-child(3){
+            &:nth-child(2){
               float: right;
             }
           }
