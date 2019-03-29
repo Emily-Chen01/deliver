@@ -10,7 +10,11 @@
     ></full-calendar>
     <div class="candidate" v-if="candidateList.length > 0">
       <h2 class="title">候选人</h2>
-      <ul class="list">
+      <ul class="list"
+          v-infinite-scroll="loadMore"
+          infinite-scroll-disabled="loading"
+          infinite-scroll-distance="10"
+      >
         <li @click="handleClick(item.RESUME_UID)" v-for="item in candidateList">
           <div class="clearfix">
             <div class="avatar fl">
@@ -39,7 +43,7 @@
   import Vue from 'vue'
   import fullCalendar from '@/components/vue-fullcalendar/src/fullCalendar'
   import moment from 'moment'
-  import {Badge, Indicator} from 'mint-ui';
+  import {Badge, Indicator, InfiniteScroll} from 'mint-ui';
 
   Vue.component(Badge.name, Badge);
 
@@ -64,9 +68,15 @@
   export default {
     data() {
       return {
+        loading: false,         // 上滑加载loading
+        total: 0,               // 候选人总数
+        fetchList_params: {     // 列表请求参数
+          yearMonthDay: '',
+          pageSize: 10,
+          pageNumber: 1,
+        },
         fcEvents: [],
         candidateList: {},      // 候选人列表
-        oldDayClick: '',        // 已经选中的日期
         connectTime: {
           state: false,         // 判断是否显示这些数量值
         },
@@ -83,16 +93,11 @@
       // 点击日历日期，获取对应数据
       dayClick(day) {
         const thisDay = moment(day).format(df2);
-        if (this.oldDayClick !== thisDay) {
-          this.oldDayClick = thisDay;
-          Indicator.open('正在加载...');
-          this.$http.post('/api/v1.0/client/interview/arrange', {yearMonthDay: thisDay}).then(response => {    // 点击查看当天
-            if (response.body.code === 200) {
-              this.candidateList = response.body.result;
-            }
-            Indicator.close();
-          }, response => {
-          });
+        const yearMonthDay = this.fetchList_params.yearMonthDay;
+        if (yearMonthDay !== thisDay) {
+          this.fetchList_params.pageNumber = 1;
+          this.fetchList_params.yearMonthDay = thisDay;
+          this.fetchList();
         }
       },
       changeMonth(start, end, currentStart, current) {
@@ -118,6 +123,29 @@
           Indicator.close();
         }, response => {
         });
+      },
+
+      fetchList(callback) {
+        Indicator.open('正在加载...');
+        this.$http.post('/api/v1.0/client/interview/arrange', this.fetchList_params).then(response => {    // 点击查看当天
+          if (response.body.code === 200) {
+            this.total = response.body.result.total;
+            this.candidateList = response.body.result.data;
+          }
+          Indicator.close();
+          callback && callback();
+        }, response => {
+        });
+      },
+
+      loadMore() {
+        if(this.fetchList_params.pageNumber * this.fetchList_params.pageSize < this.total){
+          this.loading = true;
+          this.fetchList_params.pageNumber = this.fetchList_params.pageNumber + 1;
+          this.fetchList(() => {
+            this.loading = false;
+          });
+        }
       },
 
       // 通过key获取value
