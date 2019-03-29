@@ -17,7 +17,8 @@ import binding from "@/components/binding/binding"
 import task from "@/components/task/task"
 import taskDetails from "@/components/task/details"
 import approve from "@/components/myApprove/approve"
-
+import myInterview from "@/components/interview/myInterview"
+import candidateDetail from "@/components/candidate/detail"
 
 Vue.use(Router);
 
@@ -91,6 +92,14 @@ export default new Router({
     {
       path: '/notice_details',  //公告详情页
       component: noticeDetails
+    },
+    {
+      path: '/myInterview',   // 我的面试
+      component: myInterview
+    },
+    {
+      path: '/candidate/detail/:id',   // 候选人详情
+      component: candidateDetail
     }
   ]
 })

@@ -134,7 +134,13 @@
             icon: 'bg-declare',
             type: 7,
             num:0
-          }
+          },
+          {
+            name: '我的面试',
+            icon: 'bg-approve',
+            type: 8,
+            num:0
+          },
         ],
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
@@ -177,6 +183,9 @@
                 break;
               case 6:
                 item.num = response.body.result.approvals;
+                break;
+              case 8:
+                // TODO 渲染新增面试数量
                 break;
               default:
                 break;
@@ -252,6 +261,9 @@
             break;
           case 7:
             this.showSpecial = true;
+            break;
+          case 8:
+            this.$router.push({path: '/myInterview'});
             break;
           default:
             break;
