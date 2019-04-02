@@ -94,14 +94,14 @@
         if(item.SOURCE === 1) {
           this.$router.push({path: '/candidate/detail/' + item.RESUME_UID});
         }else {
-          // console.log(2)
-          location.href = 'http://www.geetemp.com/geetemp/jd/report/即派推荐1009074-人事专员-朱先生.pdf'
           const api = `/api/v1.0/client/resumePreview/${item.JP_POSITION_UID}/${item.JP_PROFILE_UID}`
           this.$http
             .get(api)
             .then(({body: res}) => {
               if(res.code === 200) {
-                console.log('res.result', res.result)
+                // console.log('res.result', res.result)
+                // location.href = 'http://www.geetemp.com/geetemp/jd/report/即派推荐1009074-人事专员-朱先生.pdf'
+                location.href = res.result.pdf
               }
             })
             .catch(err => {
