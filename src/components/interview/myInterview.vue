@@ -8,6 +8,7 @@
       @dayClick="dayClick"
       @changeMonth="changeMonth"
     ></full-calendar>
+    <!-- <mt-button @click="handleClick2">dianwo</mt-button> -->
     <div class="candidate" v-if="candidateList.length > 0">
       <h2 class="title">候选人</h2>
       <ul class="list"
@@ -15,13 +16,15 @@
           infinite-scroll-disabled="loading"
           infinite-scroll-distance="10"
       >
-        <li @click="handleClick(item.RESUME_UID)" v-for="item in candidateList">
+        <li @click="handleClick(item.RESUME_UID)" v-for="item in candidateList" :key="item.RESUME_UID">
           <div class="clearfix">
             <div class="avatar fl">
               <img v-bind:src="item.AVATAR" alt="">
             </div>
             <div class="fl">
-              <p class="name">{{item.NAME}}<span class="id">(ID:{{item.PERFILE_NO}})</span>
+              <p><span class="id">ID:{{item.PERFILE_NO}}</span></p>
+              <p class="name">
+                <span class="name-part line-ellipsis">{{item.NAME}}</span>
                 <mt-badge type="primary" size="small">{{item.channel}}</mt-badge>
               </p>
               <p class="field">{{item.AGE || 0}}岁 · {{getValueByKey(item.SEX, 'sex')}} · {{item.educationName}}</p>
@@ -32,7 +35,7 @@
           </div>
           <p class="clearfix">
             <span class="fl">面试时间：{{item.interviewTime}}</span>
-            <span class="fr">期望月薪：{{item.salaryExpect}}/月</span>
+            <span class="fr">期望月薪：{{item.salaryExpect}}</span>
           </p>
         </li>
       </ul>
@@ -90,6 +93,9 @@
       handleClick(id) {
         this.$router.push({path: '/candidate/detail/' + id});
       },
+      // handleClick2(item) {
+      //   this.$router.push({path: '/jp-resume', query: {jpid: 0, jid: 1}})
+      // },
       // 点击日历日期，获取对应数据
       dayClick(day) {
         const thisDay = moment(day).format(df2);
@@ -171,92 +177,106 @@
 </script>
 
 <style scoped lang="scss">
-  .myInterview {
-    min-height: 100%;
-    background-color: #fff;
-  }
+.myInterview {
+  min-height: 100%;
+  background-color: #fff;
+}
 
-  .fl {
-    float: left;
-  }
+.fl {
+  float: left;
+}
 
-  .fr {
-    float: right;
-  }
+.fr {
+  float: right;
+}
 
-  .clearfix:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden
-  }
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden
+}
 
-  .clearfix {
-    *zoom: 1;
-  }
+.clearfix {
+  *zoom: 1;
+}
 
-  .mint-header {
-    height: 44px;
-  }
+.mint-header {
+  height: 44px;
+}
 
-  .candidate {
-    .title {
-      padding: 0 10px;
-      text-align: left;
-      font-size: 18px;
-      font-weight: normal;
-      line-height: 40px;
-      border-bottom: 1px solid #e9ebf0;
-    }
-    .list {
-      padding: 0 10px;
-      li {
-        padding: 10px 0;
-        border-bottom: 1px #e9ebf0 dashed;
-        p {
-          text-align: left;
-          line-height: 1.6rem;
-          font-size: .9rem;
+.candidate {
+  .title {
+    padding: 0 10px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 40px;
+    border-bottom: 1px solid #e9ebf0;
+  }
+  .list {
+    padding: 0 10px;
+    li {
+      padding: 10px 0;
+      border-bottom: 1px #e9ebf0 dashed;
+      p {
+        text-align: left;
+        line-height: 1.6rem;
+        font-size: .9rem;
+      }
+      .avatar {
+        width: 92px;
+        height: 114px;
+        margin-right: 10px;
+        position: relative;
+        img {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          -webkit-transform: translate(-50%, -50%);
+          -moz-transform: translate(-50%, -50%);
+          -ms-transform: translate(-50%, -50%);
+          -o-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width: 100%;
+          max-height: 100%;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          border-radius: 4px;
         }
-        .avatar {
-          width: 92px;
-          height: 114px;
-          margin-right: 10px;
-          position: relative;
-          img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            -moz-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            -o-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            width: 100%;
-            max-height: 100%;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-            border-radius: 4px;
-          }
+      }
+      .name {
+        line-height: 1rem;
+        .name-part {
+          display: inline-block;
+          max-width: 9em;
+          vertical-align: middle;
+          // line-height: 13px;
         }
-        .name {
-          line-height: 1rem;
-          .id {
-            font-size: .8rem;
-            margin: 0 4px;
-          }
+        .id {
+          font-size: .8rem;
+          margin: 0 4px;
+          font-weight: bold;
         }
-        .field {
-          font-size: 12px;
-        }
+      }
+      .field {
+        margin-top: 2px;
+        font-size: 12px;
       }
     }
   }
+
+}
+.line-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
 <style lang="scss">
-  .full-calendar-header {
-    background-color: #eff3f7;
-    color: #26a2ff;
-  }
+.full-calendar-header {
+  background-color: #eff3f7;
+  color: #26a2ff;
+}
 </style>
