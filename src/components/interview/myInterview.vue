@@ -8,7 +8,7 @@
       @dayClick="dayClick"
       @changeMonth="changeMonth"
     ></full-calendar>
-    <!-- <mt-button @click="handleClick2">dianwo</mt-button> -->
+
     <div class="candidate" v-if="candidateList.length > 0">
       <h2 class="title">候选人</h2>
       <ul class="list"
@@ -16,7 +16,7 @@
           infinite-scroll-disabled="loading"
           infinite-scroll-distance="10"
       >
-        <li @click="handleClick(item.RESUME_UID)" v-for="item in candidateList" :key="item.RESUME_UID">
+        <li @click="handleClick(item)" v-for="item in candidateList" :key="item.RESUME_UID">
           <div class="clearfix">
             <div class="avatar fl">
               <img v-bind:src="item.AVATAR" alt="">
@@ -90,8 +90,24 @@
     },
     methods: {
       // 候选人点击
-      handleClick(id) {
-        this.$router.push({path: '/candidate/detail/' + id});
+      handleClick(item) {
+        if(item.SOURCE === 1) {
+          this.$router.push({path: '/candidate/detail/' + item.RESUME_UID});
+        }else {
+          // console.log(2)
+          location.href = 'http://www.geetemp.com/geetemp/jd/report/即派推荐1009074-人事专员-朱先生.pdf'
+          const api = `/api/v1.0/client/resumePreview/${item.JP_POSITION_UID}/${item.JP_PROFILE_UID}`
+          this.$http
+            .get(api)
+            .then(({body: res}) => {
+              if(res.code === 200) {
+                console.log('res.result', res.result)
+              }
+            })
+            .catch(err => {
+              console.log(err.status, err.statusText, err.url)
+            });
+        }
       },
       // handleClick2(item) {
       //   this.$router.push({path: '/jp-resume', query: {jpid: 0, jid: 1}})
