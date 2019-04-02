@@ -31,8 +31,8 @@ module.exports = {
       //  接口专用配置
       '/api': {
         target: 'http://192.168.140.215:8082/',
-        // target: 'http://192.168.140.72:8080/', //keivn的
-        // target: 'http://192.168.140.71:8080/',  // start的
+        // target: 'http://192.168.140.157:8080/', //keivn的
+        // target: 'http://192.168.140.155:8080/',  // start的
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
