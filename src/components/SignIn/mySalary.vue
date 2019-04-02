@@ -21,17 +21,38 @@
     <!--工资明细-->
     <div class="maSalary-details" v-if="dateGrid.detail&&dateGrid.detail.length">
       <h4 align="left">工资明细</h4>
-      <div class="maSalary-list">
+      <!--<div class="maSalary-list" style="display: none;">
         <table>
           <tbody>
-          <tr v-for="item in dateGrid.detail"
+          &lt;!&ndash;<tr v-for="item in dateGrid.detail"
               v-if="(showFormat(item.add) || showFormat(item.deduct))">
             <td class="left-icon"><img :src="iconFormat(item.filedType)"></td>
             <td align="left" class="maSalary-details-td" v-text="item.remark"></td>
             <td align="right" v-text="showFormat(item.add) ? moneyFormat(item.add) : moneyFormat(item.deduct)"></td>
-          </tr>
+          </tr>&ndash;&gt;
+
+          &lt;!&ndash;<tr v-for="item in dateGrid.detail">
+            <td class="left-icon"><img src="../../assets/qianIcon.png"></td>
+            <td align="left" class="maSalary-details-td" v-text="item.name">{{item.name}}</td>
+            <td align="right">
+              {{showFormat(item.value) ? moneyFormat(item.value) : item.value}}
+            </td>
+          </tr>&ndash;&gt;
           </tbody>
         </table>
+      </div>-->
+
+      <div class="salaryCategory" v-for="list in Object.keys(griddet)">
+        <h1>
+          <img class="cateorypic" :src="iconFormatType(list.split('_')[0])">
+          {{list.split('_')[1]}}
+        </h1>
+        <p v-for="item in griddet[list]">
+          <span class="maSalary-details-td" v-text="item.name">{{item.name}}</span>
+          <span>
+              {{showFormat(item.value) ? moneyFormat(item.value) : item.value}}
+            </span>
+        </p>
       </div>
     </div>
   </div>
@@ -39,6 +60,14 @@
 <script>
   export default {
     data(){
+      for(let i = 1; i < 15; i++){
+        let imgurl = require(`../../assets/images/salaryIcon/salaryIcon_${i}.png`);
+        if(i == 1){
+          this.imgSrcAll = [imgurl];
+        }else{
+          this.imgSrcAll.push(imgurl);
+        }
+      }
       return {
         imgSrc: {
           qianIcon: require('../../assets/qianIcon.png'),
@@ -47,6 +76,7 @@
           tax: require('../../assets/ico_tax.png'),
           other: require('../../assets/ico_other.png'),
         },
+        imgSrcAll: this.imgSrcAll,
         initTime: '',
 //        upTime: new Date().getMonth() + 1,
         upTime: null,
@@ -63,7 +93,8 @@
 //              total: 1235
 //            }
           ]
-        }
+        },
+        griddet: {}
       }
     },
 
@@ -99,6 +130,10 @@
         } else {
           return this.imgSrc.other;
         }
+      },
+      iconFormatType(type){
+        type = parseInt(type - 1);
+        return this.imgSrcAll[type];
       },
       moneyFormat(money){
         let Money;
@@ -156,6 +191,21 @@
             this.dateGrid = {};
             if (response.body.result) {
               this.dateGrid = response.body.result;
+
+              let griddet = [];
+              this.dateGrid.detail.forEach((item, idx) => {
+                if(griddet.length > 0){
+                  if(griddet[0].type == item.type){
+                    griddet.push(item);
+                  }else{
+                    this.$set(this.griddet, (griddet[0].type).toString(), griddet);
+                    griddet = [item];
+                  }
+                }else{
+                  griddet = [item];
+                }
+                this.$set(this.griddet, (item.type).toString(), griddet);
+              });
             } else {
               this.dateGrid = {
                 money: 0,
@@ -254,6 +304,7 @@
     }
     .maSalary-details {
       width: 100%;
+      padding-bottom: 20px;
       h4 {
         padding-left: 15px;
         height: 26px;
@@ -293,6 +344,46 @@
             color: #475669;
             font-weight: inherit;
             padding-left: 0;
+          }
+        }
+      }
+      .salaryCategory{
+        text-align: left;
+        box-sizing: border-box;
+        padding: 0 15px;
+        h1{
+          padding: 20px 0 10px 0;
+          line-height: 26px;
+          font-size: 14px;
+          border-bottom: 1px solid #d2dce6;
+          img.cateorypic{
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+          }
+        }
+        p{
+          text-align: left;
+          height: 45px;
+          line-height: 45px;
+          border-bottom: 1px dashed #d2dce6;
+          &::after{content:"";height: 0;display: block;clear: both;}
+          span{
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #1f2d3d;
+            &:nth-child(1){
+              float: left;
+              font-size: 14px;
+              color: #475669;
+              font-weight: inherit;
+            }
+            &:nth-child(2){
+              float: right;
+            }
           }
         }
       }

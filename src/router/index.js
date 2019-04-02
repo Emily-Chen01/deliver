@@ -10,11 +10,15 @@ import leave from "@/components/leaves/leave"
 import notice from "@/components/notice/notice"
 import noticeDetails from "@/components/notice/details"
 import attendanceRecord from "@/components/SignIn/attendanceRecord"
+import attendanceEdit from "@/components/SignIn/attendanceEdit"
+import approveDetail from "@/components/myApprove/approveDetail"
 import mySalary from "@/components/SignIn/mySalary"
 import binding from "@/components/binding/binding"
 import task from "@/components/task/task"
 import taskDetails from "@/components/task/details"
-
+import approve from "@/components/myApprove/approve"
+import myInterview from "@/components/interview/myInterview"
+import candidateDetail from "@/components/candidate/detail"
 
 Vue.use(Router);
 
@@ -46,6 +50,10 @@ export default new Router({
       component: ManyCompany
     },
     {
+      path: '/approve',  //我的审批
+      component: approve
+    },
+    {
       path: '/signCard',  //点击公司后进入签到打卡
       component: signCard
     },
@@ -66,6 +74,14 @@ export default new Router({
       component: attendanceRecord
     },
     {
+      path: '/attendanceEdit',  //我的考勤
+      component: attendanceEdit
+    },
+    {
+      path: '/approveDetail',  //审批考勤异常详情
+      component: approveDetail
+    },
+    {
       path: '/mySalary',  //我的工资条
       component: mySalary
     },
@@ -76,6 +92,14 @@ export default new Router({
     {
       path: '/notice_details',  //公告详情页
       component: noticeDetails
+    },
+    {
+      path: '/myInterview',   // 我的面试
+      component: myInterview
+    },
+    {
+      path: '/candidate/detail/:id',   // 候选人详情
+      component: candidateDetail
     }
   ]
 })

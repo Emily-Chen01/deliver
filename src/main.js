@@ -51,8 +51,17 @@ Vue.http.interceptors.push(function (request, next) {
   // continue to next interceptor
   next(response => {
     if (response.body.code === 4001) {
-      console.log('inter', response.body.message);
+      // console.log('inter', response.body.message);
       router.push({path: 'index'});
+    }else if (response.body.code === 5001) {
+      Indicator.close();//关闭加载中
+      Toast({
+        message: response.body.message,
+        iconClass: 'bg-img ico_error'
+      });
+      setTimeout(function () {
+        router.push({path: '/binding'});
+      },2000);
     }
   });
 });

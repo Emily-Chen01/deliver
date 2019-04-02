@@ -25,8 +25,12 @@
         <div class="punchInfo" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">
           <div class="punchInfoLeft">
             <div class="punchInfoLine"></div>
-            <p class="punchInfoUp"></p>
-            <p class="punchInfoDown"></p>
+            <p class="punchInfoUp">
+              <i class="icon_bg_signInImg bg-ico_to"></i>
+            </p>
+            <p class="punchInfoDown">
+              <i class="icon_bg_signInImg bg-ico_off"></i>
+            </p>
           </div>
           <div class="punchInfoRight">
             <p
@@ -42,7 +46,7 @@
 <script>
   import fullCalendar from '@/components/vue-fullcalendar/src/fullCalendar'
   import moment from 'moment'
-  let df = 'HH:mm:ss';
+  let df = 'YYYY/MM/DD HH:mm';
   let df1 = 'YYYY/MM';
   let df2 = 'YYYY/MM/DD';
 
@@ -333,14 +337,10 @@
           border-radius: 50%;
         }
         .punchInfoUp {
-          top: 0;
-          background: url("../../assets/ico_to.png");
-          background-size: 22px 22px;
+          top: -1px;
         }
         .punchInfoDown {
-          bottom: 0;
-          background: url("../../assets/ico_off.png");
-          background-size: 22px 22px;
+          bottom: -1px;
         }
       }
       .punchInfoRight {

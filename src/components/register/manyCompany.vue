@@ -48,6 +48,7 @@
         };
         this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => {
           if (response.body.code === 200) {
+            this.setCookie('isLowEntry', response.body.result, 365);//员工状态
             if(response.body.result === '-1' || response.body.result === '-2') {
               this.$router.push({path: '/myData'});
             }else {

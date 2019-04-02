@@ -31,11 +31,8 @@
                 <img :src="'data:image/jpg;base64,'+verCode" width="100%" height="100%" alt="">
               </div>
             </el-col>
-            <el-button type="primary" @click.native="submitVerCode" class="binding-main-btn mt20 fs12">验证图形验证码
-
-
-
-
+            <el-button type="primary" @click.native="submitVerCode" class="binding-main-btn mt20 fs12">
+              <span>验证图形验证码</span>
             </el-button>
           </el-form-item>
           <el-form-item>
@@ -54,13 +51,9 @@
     <mt-popup
       v-model="errorModel"
       class="binding-Bomb"
-      closeOnClickModal="true">
+      :closeOnClickModal="true">
       <div class="binding-Bomb-imgBox">
         <img :src="imgSrc.bg2" class="alertImages"/>
-      </div>
-      <div v-if="noneModel" class="binding-Bomb-main">
-        <p class="fs13">抱歉!</p>
-        <p class="fs12">没有找到您的员工记录,请联系您的HR</p>
       </div>
       <div v-if="alertMessageShow" class="binding-Bomb-main">
         <p class="fs12" v-text="alertMessage"></p>
@@ -91,7 +84,6 @@
         yanzheng: '获取验证码',//验证码
         YZdisabled: false,
         errorModel: false, //错误弹框
-        noneModel: false, //没有员工
         alertMessage: '', //进行赋值的错误信息
         alertMessageShow: true,
         verCode: '',//图形验证码
@@ -123,13 +115,12 @@
                   self.yanzheng = "重新发送(" + countdown + ")";
                 }
               }
+
               //获取验证码倒计时
               timer1 = setInterval(settime, 1000);
               this.setCookie('iphoneNumber', this.phoneNumber, 365);
             } else if (response.body.code === 500) {
-              this.errorModel = true;
-              this.noneModel = true;
-              this.alertMessageShow = false; //动态赋值信息false
+              this.popupBomb(response.body.message);
             } else if (response.body.code === 1000) {
               this.verCodeShow = true;
               this.verCode = response.body.result;
@@ -175,6 +166,7 @@
               this.$http.post('/api/v1.0/client/chooseCompany', param).then(response => { //选择公司
                 Indicator.close();
                 if (response.body.code === 200) {
+                  this.setCookie('isLowEntry', response.body.result, 365);//员工状态
                   if (response.body.result === '-1' || response.body.result === '-2') {
                     this.$router.push({path: '/myData'});
                   } else {
@@ -200,7 +192,6 @@
       popupBomb(message){
         this.alertMessageShow = true;
         this.errorModel = true;
-        this.noneModel = false; //隐藏没有记录
         this.alertMessage = message;
       },
       // 验证图形验证码

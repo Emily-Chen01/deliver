@@ -14,57 +14,77 @@
     </div>
     <!--打卡情况信息-->
     <div class="signIn-middle" :class="{'signIn-middle1': (!punchCardInfo.isNeed || showHide)}">
-      <div class="signIn-article" v-if="punchCardInfo.punchCardLogs.length===0">
-        <div class="signIn-article-left">
-          <p class="article-icon-up"></p>
-        </div>
-      </div>
       <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs">
-        <div class="signIn-article-left">
-          <div v-if="punchClock(punch.twStatus)" class="signIn-article-line"></div>
-          <p class="article-icon-up"></p>
-          <p v-if="punchClock(punch.twStatus)" class="article-icon-down"></p>
-        </div>
         <div class="signIn-article-right" v-if="punchClock(punch.twStatus)">
           <div class="signIn-article-top" :class="{'signIn-article-top1':  punchCardInfo.attendRuleUid==='3'}">
+            <div class="article-icon-up">
+              <i class="icon_bg_signInImg bg-ico_to"></i>
+            </div>
+            <div v-if="punchClock(punch.twStatus)" class="article-icon-down">
+              <i class="icon_bg_signInImg bg-ico_off"></i>
+            </div>
             <p>
-              <span v-text="'上班时间 '+punchTime(punch.twTime)"></span>
+              <span v-text="'上班时间： '+punchTime(punch.twTime)"></span>
+            </p>
+            <p>
               <span class="article-tab article-tab-zc" v-if="punch.twStatus===0">正常</span>
               <span class="article-tab article-tab-cd" v-else-if="punch.twStatus===1">迟到</span>
               <span class="article-tab article-tab-kg" v-else-if="punch.twStatus===2">旷工</span>
               <span class="article-tab article-tab-qyw" v-if="punch.twOutside">区域外</span>
             </p>
             <p>
-              <img :src="imgSrc.PostionIcon">
-              <span
-                v-text="'地理位置: '+ ((!punch.twOutside) ? '区域内' : (punch.twLocation ? (punch.twLocation+'附近') : ''))"></span>
+              <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
+              <span class="signIn-article_location"
+                    v-text="'地理位置： '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"></span>
+            </p>
+            <p align="left">
+              <img class="img_map" :src="punch.twMap">
             </p>
             <p>
-            <span class="article-tab article-tab-sq" v-if="punch.twOutside"
-                  @click="submitApplyRouter(0)">提交请假/外出申请</span>
+              <span class="article-tab article-tab-sq" v-if="punch.twOutside"
+                    @click="submitApplyRouter(0)">提交请假/外出申请</span>
               <span class="article-tab article-tab-wdk" v-if="punch.twStatus===1 || punch.twStatus===2"
                     @click="submitApplyRouter(1)">忘打卡</span>
             </p>
+            <p>
+              <span class="article-tab article-tab-sx article-tab-sq"
+                    @click="updatePunch({punchCardUid:punch.uid,startWork:0})">
+                <i class="icon_bg_signInImg bg-icon_gengxin"></i>
+                更新当前打卡记录(以当前时间地点作为记录)
+              </span>
+            </p>
           </div>
           <div class="signIn-article-bottom"
-               v-if="punchClock(punch.owStatus) && (punchCardInfo.attendRuleUid==='1'|| punchCardInfo.attendRuleUid==='2')">
+               v-if="punchClock(punch.owStatus) && (punchCardInfo.attendRuleUid==='1'|| punchCardInfo.attendRuleUid==='2'||punchCardInfo.attendRuleUid==='5'|| punchCardInfo.attendRuleUid==='6')">
             <p>
-              <span v-text="'下班时间 '+punchTime(punch.owTime)"></span>
+              <span v-text="'下班时间： '+punchTime(punch.owTime)"></span>
+            </p>
+            <p>
               <span class="article-tab article-tab-zc" v-if="punch.owStatus===0 || punch.owStatus===2">正常</span>
               <span class="article-tab article-tab-zt" v-else-if="punch.owStatus===1">早退</span>
               <span class="article-tab article-tab-kg" v-else-if="punch.owStatus===3">旷工</span>
               <span class="article-tab article-tab-qyw" v-if="punch.owOutside">区域外</span>
             </p>
             <p>
-              <img :src="imgSrc.PostionIcon">
-              <span
-                v-text="'地理位置: '+((!punch.owOutside) ? '区域内' : (punch.owLocation ? (punch.owLocation+'附近') : ''))"></span>
+              <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
+              <span class="signIn-article_location"
+                    v-text="'地理位置： '+ (punch.owLocation ? (punch.owLocation+'附近') : '')"></span>
             </p>
-            <p>
+            <p align="left">
+              <img class="img_map" :src="punch.owMap">
+            </p>
+            <p v-if="punch.owOutside || punch.owStatus">
             <span class="article-tab article-tab-sq" v-if="punch.owOutside || punch.owStatus===1 || punch.owStatus===3"
                   @click="submitApplyRouter(0)">提交请假/外出申请</span>
               <span class="article-tab article-tab-jbsq" @click="submitApplyRouter(3)"
                     v-if="punch.owStatus===2">提交加班申请</span>
+            </p>
+            <p>
+              <span class="article-tab article-tab-sx article-tab-sq"
+                    @click="updatePunch({punchCardUid:punch.uid,startWork:1})">
+                <i class="icon_bg_signInImg bg-icon_gengxin"></i>
+                更新当前打卡记录(以当前时间地点作为记录)
+              </span>
             </p>
           </div>
         </div>
@@ -80,12 +100,9 @@
         <span v-else>查看全部</span>
       </mt-button>
     </div>
-    <div id="toImage" style="position: absolute;z-index: 1000;"></div>
     <!--打卡区域-->
     <div class="Punch-btn-wrapper" v-if="punchCardInfo.isNeed && !showHide">
-      <div class="Punch-btn-bg">
-        <img :src="showBtnContent ? imgSrc.bg1 : imgSrc.bg">
-      </div>
+      <div class="Punch-btn-bg" :class="showBtnContent ? 'Punch-btn-bg1':'Punch-btn-bg0'"></div>
       <mt-button class="Punch-btn-btn" type="primary" :disabled="showBtnContent"
                  @click="handerClickEvent">
         <p v-text="showBtnContent ? '正在获取' : (punchCardInfo.status ? '上班打卡' : '下班打卡')"></p>
@@ -96,27 +113,28 @@
     <mt-popup
       v-model="qulocation"
       class="getLocation-alert-wrapper"
-      closeOnClickModal="false">
-
+      :closeOnClickModal="false">
       <div class="getLocation-alert-content">
-        <!--<p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">HR SAAS系统要使用您的地理位置，是否允许？</p>-->
-        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"><span v-text="punDate"></span><br/><span
-          v-text="punTime"></span></p>
         <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
         <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
         <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
       </div>
+      <h3 class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+        <span class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''"
+              v-text="outsideObtainValue?'区域外':'区域内'"></span>
+        <span class="amap-headRight" v-text="punTime"></span>
+      </h3>
       <div id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-        <div id="amapContainer"></div>
-        <p v-text="twRange"></p>
-        <p v-text="outsideObtainValue?'区域外':'区域内'"></p>
+        <!--<div id="amapContainer"></div>-->
+        <img :src="amapImg" alt="">
+        <p class="amap-detail" id="amap-detail" v-text="twRange"></p>
       </div>
       <div class="getLocation-alert-btnBox">
         <p @click="closeAlert" class="getLocation-alert-btn"
            :class="(punchCardInfo.locations.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
            v-text="(punchCardInfo.locations.length && !failModel) ? '取消' : '确定'">
         </p>
-        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup" @click="toImage"
+        <p v-if="punchCardInfo.locations.length && !failModel && !wifiPopup" @click="determinePunchCard"
            class="getLocation-alert-btn getLocation-alert-btnRight">
           确定打卡
         </p>
@@ -130,7 +148,7 @@
     <mt-popup
       v-model="popupVisible"
       class="punch-success-wrapper"
-      closeOnClickModal="false">
+      :closeOnClickModal="false">
       <div class="punch-success-box" v-if="popupVisible">
         <div class="punch-success-header">
           <div class="punch-success-headerLeft"></div>
@@ -141,51 +159,103 @@
           <div class="punch-success-img">
             <img :src="imgSrc.alertHeader">
           </div>
-          <p class="punch-success-time"
-             v-text="(punchCardInfo.status===false || punchCardInfo.attendRuleUid === '3')?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
-          <div class="punch-success-tab" v-if="punchCardInfo.status===false">
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-zc"
-                       v-if="punchCardSuccess.punchCardLogs.twStatus===0">
-              <span>打卡正常</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-cd"
-                       v-if="punchCardSuccess.punchCardLogs.twStatus===1">
-              <span>您迟到了</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-kg"
-                       v-if="punchCardSuccess.punchCardLogs.twStatus===2">
-              <span>旷工打卡</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-qyw"
-                       v-if="punchCardSuccess.punchCardLogs.twOutside">
-              <span>区域外</span>
-            </mt-button>
+          <div v-if="updatePunchCard.updateState">
+            <p class="punch-success-time"
+               v-text="(updatePunchCard.startWork===0)?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
+            <div class="punch-success-tab"
+                 v-if="updatePunchCard.updateState && updatePunchCard.startWork===0">
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===0">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-cd"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===1">
+                <span>您迟到了</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===2">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.twOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
+            <div class="punch-success-tab" v-else>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===0 || punchCardSuccess.punchCardLogs.owStatus===2">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===3">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zt"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===1">
+                <span>早退</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.owOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
           </div>
-          <div class="punch-success-tab" v-else>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-zc"
-                       v-if="punchCardSuccess.punchCardLogs.owStatus===0 || punchCardSuccess.punchCardLogs.owStatus===2">
-              <span>打卡正常</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-kg"
-                       v-if="punchCardSuccess.punchCardLogs.owStatus===3">
-              <span>旷工打卡</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-zt"
-                       v-if="punchCardSuccess.punchCardLogs.owStatus===1">
-              <span>早退</span>
-            </mt-button>
-            <mt-button type="default"
-                       class="punch-success-tabHeight article-tab-qyw"
-                       v-if="punchCardSuccess.punchCardLogs.owOutside">
-              <span>区域外</span>
-            </mt-button>
+          <div v-else>
+            <p class="punch-success-time"
+               v-text="(punchCardInfo.status===false || punchCardInfo.attendRuleUid === '3')?('上班 '+' '+punchTime(punchCardSuccess.punchCardLogs.twTime)):('下班 '+' '+punchTime(punchCardSuccess.punchCardLogs.owTime))"></p>
+            <div class="punch-success-tab"
+                 v-if="punchCardInfo.status===false|| punchCardInfo.attendRuleUid === '3'">
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===0">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-cd"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===1">
+                <span>您迟到了</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.twStatus===2">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.twOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
+            <div class="punch-success-tab" v-else>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zc"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===0 || punchCardSuccess.punchCardLogs.owStatus===2">
+                <span>打卡正常</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-kg"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===3">
+                <span>旷工打卡</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-zt"
+                         v-if="punchCardSuccess.punchCardLogs.owStatus===1">
+                <span>早退</span>
+              </mt-button>
+              <mt-button type="default"
+                         class="punch-success-tabHeight article-tab-qyw"
+                         v-if="punchCardSuccess.punchCardLogs.owOutside">
+                <span>区域外</span>
+              </mt-button>
+            </div>
           </div>
         </div>
         <div class="punch-success-btn" @click="knowFunction">
@@ -204,11 +274,17 @@
 
   let df = 'HH:mm:ss';
   let df1 = 'YYYY年MM月DD日';
-  let df2 = 'YYYY-MM-DD';
+  let df2 = 'YYYY-MM-DD HH:mm:ss';
+  let df3 = 'YYYY-MM-DD HH:mm';
   export default {
     components: {MtButton},
     data(){
       return {
+        updatePunchCard: {//更新打卡信息记录
+          updateState: false,//判断是否更新打卡
+          punchCardUid: '',//更新打卡的数据id
+          startWork: null,//更新打卡的上下班场次,0上班1下班
+        },
         punchCardInfo: {//获取打卡信息记录
           locations: [],
           punchCardLogs: []
@@ -225,16 +301,12 @@
         date: moment(new Date()).format(df1), //右上角日期
         time: '00:00:00',// 打卡按钮上的时间
         punchDateTime: new Date(),//打卡时间
-        punDate: moment(new Date()).format(df2),//地图弹框中的日期
-        punTime: moment(new Date()).format(df),//地图弹框中的时间
+        punTime: moment(new Date()).format(df2),//地图弹框中的时间
         imgSrc: {
           header: require('../../assets/tx.png'), // 员工头像
-          PostionIcon: require('../../assets/ico_location_1.png'), // 位置图标
-          bg: require('../../assets/0_gif.gif'), // 打卡按钮背景1
-          bg1: require('../../assets/0_gif1.gif'), // 打卡按钮背景2
           alertHeader: require('../../assets/pic_check in.png'), // 打卡成功弹框中的图标
         },
-        outsideObtainValue: true, //获取的经纬度，判断是否区域内，true是区域外，false区域内
+        outsideObtainValue: false, //获取的经纬度，判断是否区域内，true是区域外，false区域内
         searchLocationArray: [],  //查询出来的locations经纬度，来判断是否在考勤地点区域内
         twRange: '', //记录打卡时，所在的地址
         showHide: false,//是否显示全部打卡信息
@@ -245,7 +317,7 @@
       this.doSearch(); //初始化页面查询数据
     },
     methods: {
-      //初始开始
+      //====初始开始====//
       doSearch(state){
         this.handerSign();
         setInterval(this.handerSign, 1000);
@@ -266,7 +338,15 @@
             }
             if (state) {
               this.punchCardSuccess = JSON.parse(JSON.stringify(this.punchCardInfo));
-              this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs.length ? this.punchCardInfo.punchCardLogs[this.punchCardInfo.punchCardLogs.length - 1] : {};
+              if (this.updatePunchCard.updateState) {
+                for (let i = 0; i < this.punchCardInfo.punchCardLogs.length; i++) {
+                  if (this.updatePunchCard.punchCardUid === this.punchCardInfo.punchCardLogs[i].uid) {
+                    this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs[i];
+                  }
+                }
+              } else {
+                this.punchCardSuccess.punchCardLogs = this.punchCardInfo.punchCardLogs.length ? this.punchCardInfo.punchCardLogs[this.punchCardInfo.punchCardLogs.length - 1] : {};
+              }
               this.popupVisible = true;
               this.showBtnContent = false;
             }
@@ -280,11 +360,11 @@
 //          console.log('error callback');
         });
       },
-      //初始结束
-      // 格式化日期
+      //====初始结束====//
+
+      // 打卡按钮 格式化时间
       handerSign(){
-        let oDate = new Date();
-        this.time = moment(oDate).format(df);
+        this.time = moment(new Date()).format(df);
       },
       // 判断上下班状态
       punchClock(state){
@@ -292,39 +372,32 @@
       },
       //格式化时间
       punchTime(time){
-        return time ? moment(time).format(df) : '';
+        return time ? moment(time).format(df3) : '';
       },
       // 是否显示全部打卡信息
       showHides(){
         this.showHide = !this.showHide;
       },
-      // 地图转换成图片
-      toImage(){
+      // 确定打卡
+      determinePunchCard(){
         let disTime = new Date().getTime() - this.punchDateTime.getTime();
         if (disTime < 5 * 60 * 1000) {
-          let self = this;
-          self.qulocation = false;
-          html2canvas(document.getElementById('amapContainer'), {
-            useCORS: true,
-            foreignObjectRendering: false,
-            allowTaint: false
-          }).then(function (canvas) {
-            self.amapImg = canvas.toDataURL('image/png');
-            self.punchInfo();
-          });
+          this.qulocation = false;
+          this.punchInfo();
         } else {
           this.showBtnContent = false;
           this.qulocation = false;
           MessageBox('提示', '打卡信息已失效，请重新打卡');
         }
       },
+      //打卡开始
       handerClickEvent(){  //打卡按钮   上班或下班
         if (navigator.onLine) { //正常工作
           this.wifiPopup = false;
           if (this.punchCardInfo.isWifi) {
             const $scripts = document.createElement('script');
             window.document.body.appendChild($scripts);
-            $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
+            $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8"; //获取IP
             this.wifiPopup = true;// 获取wifi弹框内容
             this.wifiIP = '';
             this.qulocation = true;
@@ -332,12 +405,19 @@
             this.okClickEvent();
           }
           this.punchDateTime = new Date();
-          this.punDate = moment(this.punchDateTime).format(df2);//地图弹框中的日期
-          this.punTime = moment(this.punchDateTime).format(df);//地图弹框中的时间
+          this.punTime = moment(this.punchDateTime).format(df2);//地图弹框中的时间
         } else { //执行离线状态时的任务
           MessageBox('提示', '未连接网络');
         }
       },
+      //更新打卡
+      updatePunch(data){
+        this.updatePunchCard.updateState = true;
+        this.updatePunchCard.punchCardUid = data.punchCardUid;
+        this.updatePunchCard.startWork = data.startWork;
+        this.handerClickEvent();
+      },
+      //取消弹框按钮
       closeAlert(){ //打卡获取地理位置alert
         this.showBtnContent = false;
         this.qulocation = false;
@@ -347,9 +427,11 @@
           this.wifiPopup = false;
         }, 300);
       },
+      //我知道了按钮
       knowFunction(){
         this.popupVisible = false;
         this.qulocation = false;
+        this.updatePunchCard.updateState = false;//更新打卡状态
       },
       //提交申请跳转路由开始
       submitApplyRouter(type){
@@ -358,11 +440,13 @@
       },
       //获取wifi地址
       okClickWifi(){
-        this.wifiPopup = true;
-        if (returnCitySN["cip"]) {
+        if (returnCitySN["cip"]) {//获取IP
           this.wifiIP = returnCitySN["cip"];
           this.qulocation = false;
-          console.log(this.wifiIP)
+          // 加定时器是因为弹框不能立即消失，状态值改变，里面的内容会乱，加个定时器延迟其他状态值改变
+          setTimeout(() => {
+            this.wifiPopup = false;
+          }, 300);
           this.okClickEvent();
         } else {
           this.qulocation = false;
@@ -376,8 +460,7 @@
         let curl;
         //判断是不是安卓苹果
         let u = navigator.userAgent;
-        let isAndroid = '0';
-        isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
         if (isAndroid) {
           curl = {
             location: location.href //安卓的参数
@@ -438,19 +521,43 @@
                       MessageBox('提示', '获取地理位置失败');
                     }
                   });
+
                   // 创建地图
-                  let map = new AMap.Map('amapContainer', {
-                    zoom: 16,//级别
-                    center: lnglat,//中心点坐标
-                    dragEnable: false, //是否可拖拽
-                    doubleClickZoom: false,//是否双击放大
-                    touchZoom: false,//移动端多指触控放大缩小
+//                  let map = new AMap.Map('amapContainer', {
+//                    zoom: 16,//级别
+//                    center: lnglat,//中心点坐标
+//                    dragEnable: false, //是否可拖拽
+//                    doubleClickZoom: false,//是否双击放大
+//                    touchZoom: false,//移动端多指触控放大缩小
+//                  });
+//                  // 标记当前位置
+//                  let marker = new AMap.Marker({
+//                    map: map,
+//                    position: lnglat,
+//                  });
+
+                  //静态地图路径
+                  let url = 'http://restapi.amap.com/v3/staticmap?location=' + lnglat[0] + ',' + lnglat[1] + '&zoom=16&size=240*180&markers=small,0xFF0000,:' + lnglat[0] + ',' + lnglat[1] + '&key=79772b4966abdb3838a61e903d9d30e6';
+                  getUrlBase64(url, 'png', (base64) => {
+                    self.amapImg = base64;
                   });
-                  // 标记当前位置
-                  let marker = new AMap.Marker({
-                    map: map,
-                    position: lnglat
-                  });
+                  //传入图片路径，返回base64
+                  function getUrlBase64(url, ext, callback) {
+                    let canvas = document.createElement("canvas");   //创建canvas DOM元素
+                    let ctx = canvas.getContext("2d");
+                    let img = new Image;
+                    img.crossOrigin = 'Anonymous';
+                    img.src = url;
+                    img.onload = function () {
+                      canvas.height = 160; //指定画板的高度,自定义
+                      canvas.width = 240; //指定画板的宽度，自定义
+                      ctx.drawImage(img, 0, 0, 240, 160, 0, 0, 240, 160); //参数可自定义
+                      let dataURL = canvas.toDataURL("image/" + ext);
+                      callback.call(this, dataURL); //回掉函数获取Base64编码
+                      canvas = null;
+                    };
+                  }
+
                   let scopes = [];//考勤地点区域内半径
                   // 获取考勤地点经纬度集合
                   self.searchLocationArray = (rt => {
@@ -475,8 +582,7 @@
                 cancel: function (res) {
                   //判断是不是安卓苹果
                   let u = navigator.userAgent;
-                  let isAndroid = '0';
-                  isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                  let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
                   self.showBtnContent = false;
                   if (isAndroid) {
                     MessageBox('提示', '您拒绝了获取定位请求，只有允许才能进行打卡');
@@ -504,23 +610,7 @@
         });
         //点击获取定位结束
       },
-      // 获取ip地址
-//      getIP(){
-//        new Promise((resolve, reject) => { //如果执行成功，将调用resolve()，如果执行失败，将调用reject();
-//          const $scripts = document.createElement('script');
-//          window.document.body.appendChild($scripts);
-//          $scripts.src = "https://pv.sohu.com/cityjson?ie=utf-8";
-//          resolve();
-//        }).then(() => {
-//          if (returnCitySN["cip"]) {
-//            this.wifiIP = returnCitySN["cip"];
-//            return '';
-//          }else {
-//            MessageBox('提示', '获取IP地址失败');
-//            return '';
-//          }
-//        });
-//      },
+      //上传打卡信息
       punchInfo(){
         let updakaObj = {
           isRange: this.outsideObtainValue,
@@ -528,10 +618,15 @@
           longitude: this.longitude,
           latitude: this.latitude,
           wifi: this.wifiIP,
-//          punchTime: this.punchDateTime.getTime(),
-          map: this.amapImg
+          map: this.amapImg.split(',')[1]
         };
-        this.$http.post('/api/v1.0/client/punchCardLog', updakaObj).then(response => { //打卡
+        let url = '/api/v1.0/client/punchCardLog';
+        if (this.updatePunchCard.updateState) {
+          url = '/api/v1.0/client/updatePunchCardLog';
+          updakaObj.punchCardUid = this.updatePunchCard.punchCardUid;
+          updakaObj.startWork = this.updatePunchCard.startWork;
+        }
+        this.$http.post(url, updakaObj).then(response => { //打卡
           if (response.body.code === 200) {
             this.doSearch(true);
           } else if (response.body.code === 500) {
@@ -549,7 +644,7 @@
   #signIn-wrapper {
     position: relative;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background-color: #ffffff;
     .clearFix {
       &:before {
@@ -563,6 +658,15 @@
         overflow: hidden;
         *zoom: 1
       }
+    }
+    .mr5 {
+      margin-right: 5px;
+    }
+    .vam {
+      vertical-align: middle;
+    }
+    .vat {
+      vertical-align: top;
     }
     p {
       margin: 0;
@@ -615,60 +719,28 @@
     }
     .signIn-middle {
       position: relative;
-      padding-top: 60px;
-      height: 250px;
+      padding-top: 100px;
+      height: 210px;
       overflow-y: hidden;
       .signIn-article {
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        padding: 25px 20px;
         margin-bottom: 20px;
-        .signIn-article-left {
-          position: relative;
-          width: 22px;
-          height: 144px;
-          p {
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-
-          }
-          .article-icon-up {
-            top: 0;
-            background: url("../../assets/ico_to.png");
-            background-size: 22px 22px;
-          }
-          .article-icon-down {
-            bottom: 0;
-            background: url("../../assets/ico_off.png");
-            background-size: 22px 22px;
-          }
-          .signIn-article-line {
-            position: absolute;
-            top: 1px;
-            left: 10px;
-            height: 142px;
-            border-left: 1px solid #98abbf;
-          }
-        }
         .signIn-article-right {
-          position: absolute;
-          top: 25px;
           text-align: left;
           box-sizing: border-box;
-          padding-left: 22px;
-          width: 90%;
+          padding: 0 15px 0 25px;
           .signIn-article-top, .signIn-article-bottom {
             box-sizing: border-box;
-            padding-left: 10px;
+            padding-left: 20px;
+            padding-bottom: 30px;
             font-size: 0;
             p {
               box-sizing: border-box;
               width: 100%;
               min-height: 22px;
-              margin-bottom: 4px;
+              margin-bottom: 5px;
               span {
                 box-sizing: border-box;
                 display: inline-block;
@@ -677,6 +749,10 @@
                 margin-right: 5px;
                 text-align: center;
                 border-radius: 4px;
+              }
+              .signIn-article_location {
+                display: inline;
+                vertical-align: middle;
               }
               .article-tab {
                 font-size: 14px;
@@ -700,6 +776,10 @@
               .article-tab-sq, .article-tab-wdk, .article-tab-jbsq {
                 background-color: #20a2ff;
               }
+              .article-tab-sx {
+                font-size: 10px;
+                background-color: #f08c60;
+              }
               .article-tab-sq {
                 min-width: 120px;
                 padding: 3px 10px;
@@ -707,6 +787,10 @@
               .article-tab-jbsq {
                 min-width: 90px;
                 padding: 3px 10px;
+              }
+              .img-postionIcon {
+                height: 15px;
+                margin-right: 5px;
               }
             }
             p:nth-child(1) {
@@ -716,19 +800,40 @@
                 margin-right: 10px;
               }
             }
-            img {
-              height: 15px;
-              margin-right: 5px;
+            .img_map {
+              width: 240px;
+            }
+          }
+          .signIn-article-top {
+            position: relative;
+            border-left: 1px solid #98abbf;
+            .article-icon-up {
+              display: inline-block;
+              width: 22px;
+              height: 22px;
+              position: absolute;
+              top: -1px;
+              left: -11px;
+            }
+            .article-icon-down {
+              display: inline-block;
+              width: 22px;
+              height: 22px;
+              position: absolute;
+              bottom: -1px;
+              left: -11px;
             }
           }
           .signIn-article-top1 {
             margin-top: 30px;
           }
           .signIn-article-bottom {
-            position: absolute;
-            top: 122px;
+            margin-top: -20px;
           }
         }
+      }
+      .signIn-article:last-child {
+        margin-bottom: 50px;
       }
       .signIn_mask {
         position: absolute;
@@ -781,18 +886,21 @@
     .Punch-btn-wrapper {
       position: absolute;
       top: 350px;
-      /*bottom: 30px;*/
-      /*position: relative;*/
       box-sizing: border-box;
       width: 100%;
+      background-color: #ffffff;
       .Punch-btn-bg {
         margin: 0 auto;
         width: 250px;
         height: 250px;
-        img {
-          width: 100%;
-          height: 100%;
-        }
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+      .Punch-btn-bg0 {
+        background-image: url('../../assets/0_gif.gif');
+      }
+      .Punch-btn-bg1 {
+        background-image: url('../../assets/0_gif1.gif');
       }
       .Punch-btn-btn {
         position: absolute;
@@ -835,13 +943,50 @@
           font-size: 15px;
         }
       }
+      .amap-head {
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        .amap-headLeft {
+          width: 100px;
+          text-align: left;
+          border-left: 15px solid #2bcebd;
+          font-size: 16px;
+          padding-left: 10px;
+          margin-left: 0;
+          color: #2bcebd;
+        }
+        .amap-headLeft1 {
+          border-left: 15px solid #ff4947;
+          color: #ff4947;
+        }
+        .amap-headRight {
+          width: 100%;
+          text-align: right;
+          padding-right: 15px;
+          font-size: 14px;
+          color: #666666;
+        }
+      }
       #amap-box {
-        padding: 10px;
+        padding: 15px;
+        padding-bottom: 0;
         #amapContainer {
           width: 100%;
-          height: 150px;
+          height: 160px;
           border: #ccc solid 1px;
           box-sizing: border-box;
+          .amap-logo, .amap-copyright {
+            display: none !important;
+          }
+        }
+        .amap-detail {
+          padding-top: 15px;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          color: #333333;
         }
       }
       .getLocation-alert-btnBox {
@@ -862,7 +1007,7 @@
           color: #1f2d3d;
         }
         .getLocation-alert-btn:nth-child(2) {
-          background-color: #20a2ff;
+          background-color: #20a0ff;
           color: #ffffff;
         }
         .getLocation-alert-btnLeft {
