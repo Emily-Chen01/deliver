@@ -16,7 +16,7 @@
           infinite-scroll-disabled="loading"
           infinite-scroll-distance="10"
       >
-        <li @click="handleClick(item)" v-for="item in candidateList" :key="item.RESUME_UID">
+        <li @click="handleClick(item)" v-for="item in candidateList" :key="item.UID">
           <div class="clearfix">
             <div class="avatar fl">
               <img v-bind:src="item.AVATAR" alt="">
@@ -35,7 +35,7 @@
           </div>
           <p class="clearfix">
             <span class="fl">面试时间：{{item.interviewTime}}</span>
-            <span class="fr">期望月薪：{{item.salaryExpect}}</span>
+            <span class="fr">期望薪资：{{item.salaryExpect}}</span>
           </p>
         </li>
       </ul>
