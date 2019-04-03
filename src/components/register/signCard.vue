@@ -127,19 +127,19 @@
             name: '我的审批',
             icon: 'bg-approve',
             type: 6,
-            num:0
+            num: 0
           },
           {
             name: '专项扣除申报',
             icon: 'bg-declare',
             type: 7,
-            num:0
+            num: 0
           },
           {
             name: '我的面试',
-            icon: 'bg-approve',
+            icon: 'bg-interview',
             type: 8,
-            num:0
+            num: 0
           },
         ],
         imgSrc: {
