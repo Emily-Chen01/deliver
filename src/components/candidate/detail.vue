@@ -131,7 +131,7 @@
         if (response.body.code === 200) {
           this.statusData = response.body.result;
           response.body.result.forEach(item => {
-            if(['7', '0'].indexOf(item.id) > -1) {
+            if(['0', '1', '7'].indexOf(item.id) > -1) {
               return;
             }
             this.actions.push({

@@ -27,7 +27,7 @@
                 <span class="name-part line-ellipsis">{{item.NAME}}</span>
                 <mt-badge type="primary" size="small">{{item.channel}}</mt-badge>
               </p>
-              <p class="field">{{item.AGE || 0}}岁 · {{getValueByKey(item.SEX, 'sex')}} · {{item.educationName}}</p>
+              <p class="field">{{item.AGE || 0}}岁 · {{item.sexName}} · {{item.educationName}}</p>
               <p>生育情况：{{item.marryName}}</p>
               <p>应聘岗位：{{item.EXPECTED_POSITION || '空'}}</p>
               <p>{{item.WORK_TIME || '0年'}}经验 · 现居{{item.cityName}}</p>
