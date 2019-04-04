@@ -19,7 +19,7 @@
             </p>
             <p class="field">{{pageData.age}}岁 · {{getValueByKey('sex')}} · {{getValueByKey('education')}}</p>
             <p>生育情况：{{getValueByKey('marry_status')}}</p>
-            <p>应聘岗位：{{getValue('expect_position', 'intent')}}</p>
+            <p>期望岗位：{{getValue('expect_position', 'intent')}}</p>
             <p>{{new Date().getFullYear() - (getValue('work_begin_year', 'basic'))}}年经验 · 现居{{pageData.detail.basic.city_id.value}}</p>
           </div>
         </div>
@@ -155,7 +155,7 @@
       },
       // 获取备注 跟人选的一些信息
       fetchProfile() {
-        this.$http.get('/api/v1.0/client/query/profile/' + this.url_params.id).then((response) => {
+        this.$http.get(`/api/v1.0/client/query/profile/${this.url_params.id}/${this.url_params.pid}`).then((response) => {
           if (response.body.code === 200) {
             this.basicData = response.body.result.profile;
             this.interviewerFeedbacks = response.body.result.interviewerFeedbacks;

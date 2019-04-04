@@ -99,7 +99,7 @@ export default new Router({
       component: myInterview
     },
     {
-      path: '/candidate/detail/:id',   // 候选人详情
+      path: '/candidate/detail/:id/:pid',   // 候选人详情
       component: candidateDetail
     },
     // {

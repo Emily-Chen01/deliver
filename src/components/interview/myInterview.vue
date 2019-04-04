@@ -92,7 +92,7 @@
       // 候选人点击
       handleClick(item) {
         if(item.SOURCE === 1) {
-          this.$router.push({path: '/candidate/detail/' + item.RESUME_UID});
+          this.$router.push({path: `/candidate/detail/${item.RESUME_UID}/${item.POSITION_UID}`});
         }else {
           const api = `/api/v1.0/client/resumePreview/${item.JP_POSITION_UID}/${item.JP_PROFILE_UID}`
           this.$http
