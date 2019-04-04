@@ -29,7 +29,7 @@
               </p>
               <p class="field">{{item.AGE || 0}}岁 · {{item.sexName}} · {{item.educationName}}</p>
               <p>生育情况：{{item.marryName}}</p>
-              <p>应聘岗位：{{item.EXPECTED_POSITION || '空'}}</p>
+              <p>应聘岗位：{{item.POSITION_NAME || '空'}}</p>
               <p>{{item.WORK_TIME || '0年'}}经验 · 现居{{item.cityName}}</p>
             </div>
           </div>
@@ -79,7 +79,7 @@
           pageNumber: 1,
         },
         fcEvents: [],
-        candidateList: {},      // 候选人列表
+        candidateList: [],      // 候选人列表
         connectTime: {
           state: false,         // 判断是否显示这些数量值
         },
@@ -119,6 +119,7 @@
         if (yearMonthDay !== thisDay) {
           this.fetchList_params.pageNumber = 1;
           this.fetchList_params.yearMonthDay = thisDay;
+          this.candidateList = [];
           this.fetchList();
         }
       },
@@ -152,7 +153,7 @@
         this.$http.post('/api/v1.0/client/interview/arrange', this.fetchList_params).then(response => {    // 点击查看当天
           if (response.body.code === 200) {
             this.total = response.body.result.total;
-            this.candidateList = response.body.result.data;
+            this.candidateList = this.candidateList.concat(response.body.result.data);
           }
           Indicator.close();
           callback && callback();
