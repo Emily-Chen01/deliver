@@ -26,6 +26,7 @@
               <p class="name">
                 <span class="name-part line-ellipsis">{{item.NAME}}</span>
                 <mt-badge type="primary" size="small">{{item.channel}}</mt-badge>
+                <span class="mobile">{{item.mobile}}</span>
               </p>
               <p class="field">{{item.AGE || 0}}岁 · {{item.sexName}} · {{item.educationName}}</p>
               <p>生育情况：{{item.marryName}}</p>
@@ -270,6 +271,9 @@
           max-width: 9em;
           vertical-align: middle;
           // line-height: 13px;
+        }
+        .mobile {
+          vertical-align: middle;
         }
         .id {
           font-size: .8rem;
