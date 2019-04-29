@@ -26,9 +26,9 @@
               <p class="name">
                 <span class="name-part line-ellipsis">{{item.NAME}}</span>
                 <mt-badge type="primary" size="small">{{item.channel}}</mt-badge>
-                <span class="mobile">{{item.mobile}}</span>
+                <!-- <span class="mobile">{{item.mobile}}</span> -->
               </p>
-              <p class="field">{{item.AGE || 0}}岁 · {{item.sexName}} · {{item.educationName}}</p>
+              <p class="field">{{item.AGE || 0}}岁 · {{item.sexName}}<span v-if="item.educationName"> · </span>{{item.educationName}}<span> · </span>{{item.mobile}}</p>
               <p>生育情况：{{item.marryName}}</p>
               <p>应聘岗位：{{item.POSITION_NAME || '空'}}</p>
               <p>{{item.WORK_TIME || '0年'}}经验 · 现居{{item.cityName}}</p>
@@ -272,9 +272,9 @@
           vertical-align: middle;
           // line-height: 13px;
         }
-        .mobile {
-          vertical-align: middle;
-        }
+        // .mobile {
+        //   vertical-align: middle;
+        // }
         .id {
           font-size: .8rem;
           margin: 0 4px;
