@@ -43,7 +43,7 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-button :disabled="verCodeShow" type="primary" @click.native="handerSubmit" class="binding-main-btn mt20 fs12">
+      <el-button :disabled="verCodeShow || submitting" type="primary" @click.native="handerSubmit" class="binding-main-btn mt20 fs12">
         <span>确定</span>
       </el-button>
     </el-row>
@@ -88,6 +88,7 @@
         alertMessageShow: true,
         verCode: '',//图形验证码
         verCodeShow: false,//图形验证码是否显示
+        submitting: false
       }
     },
     created(){
@@ -139,16 +140,23 @@
           phone: this.phoneNumber,
         };
         Indicator.open('加载中...');
-        this.$http.post('/api/v1.0/client/bind', bindingObj).then(response => { //进行手机号码进行绑定
-          if (response.body.code === 200) {
-            this.findCompany(this.phoneNumber);
-          } else {
-            Indicator.close();//关闭加载
-            this.popupBomb(response.body.message);
-          }
-        }, response => {
-          console.log('error callback');
-        });
+        this.submitting = true
+        this.$http.post('/api/v1.0/client/bind', bindingObj)
+          .then(
+            response => { //进行手机号码进行绑定
+              this.submitting = false
+              if (response.body.code === 200) {
+                this.findCompany(this.phoneNumber);
+              } else {
+                Indicator.close();//关闭加载
+                this.popupBomb(response.body.message);
+              }
+            },
+            response => {
+              this.submitting = false
+              console.log('error callback');
+            }
+          );
       },
       handerCome: function () {
         Indicator.close();//关闭加载
