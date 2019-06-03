@@ -334,7 +334,7 @@
       },
       // 加班段数格式化
       overtimeNum(num) {
-        return typeof num === 'number' ? num : '';
+        return typeof num === 'number' ? (num + 1) : '';
         // let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
         // return arr[num];
       },
