@@ -1502,11 +1502,6 @@
         }
         return show;
       },
-      // 加班段数格式化
-      overtimeNum(num){
-        let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-        return arr[num];
-      },
 
       //修改申请表单内容
       getApprovalType(){
@@ -1758,9 +1753,10 @@
         this.closeTouch();
       },
       // 加班段数格式化
-      overtimeNum(num){
-        let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-        return arr[num];
+      overtimeNum(num) {
+        return typeof num === 'number' ? num : '';
+        // let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+        // return arr[num];
       },
       //提交申请
       handerDataSubmit(){

@@ -333,9 +333,10 @@
         return status;
       },
       // 加班段数格式化
-      overtimeNum(num){
-        let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-        return arr[num];
+      overtimeNum(num) {
+        return typeof num === 'number' ? num : '';
+        // let arr = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+        // return arr[num];
       },
       changeShow(val){ //查看审批信息
         this.$http.post('/api/v1.0/client/queryOtherApplys', {
