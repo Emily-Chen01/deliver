@@ -25,11 +25,13 @@
       <p>法定假日加班累计时长：{{newAttendReport.holidayOvertime}}天(共{{newAttendReport.holidayOvertimeDays}}小时)</p>
     </div>
 
+    <div class="i-hd" v-if="attendReport && attendReport.year && attendReport.month">{{attendReport.year}}年{{attendReport.month}}月</div>
     <full-calendar
+      v-if="attendReport && attendReport.year && attendReport.month"
       :connectTime="connectTime"
       :events="fcEvents" lang="zh"
       @dayClick="dayClick"
-      @changeMonth="changeMonth"
+      no-changeMonth="changeMonth"
     ></full-calendar>
 
     <div class="abnormalattend">
@@ -39,7 +41,7 @@
     </div>
     <div class="reviseapply">
       <div class="revisetop" v-if="currentStatus != '2' && (approveAllData.status == '' || approveAllData.status == null || approveAllData.status == 'null' || approveAllData.status == 3) && approveAllData.status != 0">
-        修订申请<span class="editapply" @click="editapply()">修改申请</span>
+        修订申请<span class="editapply" @click="editapply">修改申请</span>
       </div>
       <div class="revisetop" v-if="currentStatus == '2'">
         修订数据
@@ -790,6 +792,7 @@
       },
       //获取考勤详情数据
       getDetail() {
+        // console.log(1)
         let uid = this.$route.query.uid;
         let frompage = this.$route.query.frompage;
         if(frompage == '' || frompage == null || frompage == undefined){
@@ -806,7 +809,15 @@
             this.attendReport = data.abnormalAttendApproval.attendReport;
             this.newAttendReport = data.abnormalAttendApproval.newAttendReport;
             this.connectTime = data.abnormalAttendApproval;
-            this.dayClick(new Date());
+
+            if(this.attendReport.year && this.attendReport.month) {
+              this.dayClick(new Date(
+                Number(this.attendReport.year),
+                Number(this.attendReport.month) - 1,
+                1
+              ));
+              this.changeMonth()
+            }
 
             this.$http.get('/api/v1.0/client/queryApprovalForm/'+response.body.result.approvalType).then(response => {
               if (response.body.code === 200) {
@@ -1391,9 +1402,20 @@
 
       },
       changeMonth (start, end, currentStart, current) {
-        let param = {
-          date: moment(new Date(currentStart)).format(df1)
-        };
+        // console.log(2)
+        let param
+        if(this.attendReport.year && this.attendReport.month) {
+          param = {
+            date: moment(new Date(
+              Number(this.attendReport.year),
+              Number(this.attendReport.month) - 1,
+              1
+            )).format(df1)
+          };
+        }else {
+          return
+        }
+
         this.$http.post('/api/v1.0/client/findMonthAttends', param).then(response => { //查询当月考勤接口
           this.fcEvents = [];
           if (response.body.code === 200) {
@@ -2074,6 +2096,9 @@
     .inputtext{
       height: 48px;
       width: 98%;
+    }
+    .i-hd {
+      margin-bottom: 0.75em;
     }
     // 复写mint ui 组件
     .picker-items {
