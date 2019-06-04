@@ -1,5 +1,5 @@
 <template>
-  <div class="part-calendar-header">
+  <div v-show="false" class="part-calendar-header">
     <!--<div class="header-left">
       &lt;!&ndash;<slot name="header-left">&ndash;&gt;
       <span class="prev-month" @click.stop="goPrev">{{leftArrow}}</span>
