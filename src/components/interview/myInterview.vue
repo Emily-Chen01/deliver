@@ -31,7 +31,7 @@
               <p class="field">{{item.AGE || 0}}岁 · {{item.sexName}}<span v-if="item.educationName"> · </span>{{item.educationName}}<span> · </span>{{item.mobile}}</p>
               <p>生育情况：{{item.marryName}}</p>
               <p>应聘岗位：{{item.POSITION_NAME || '空'}}</p>
-              <p>{{item.WORK_TIME || '0年'}}经验 · 现居{{item.cityName}}</p>
+              <p>{{item.WORK_TIME || '0'}}年经验 · 现居地：{{item.cityName || '未知'}}</p>
             </div>
           </div>
           <p class="clearfix">
