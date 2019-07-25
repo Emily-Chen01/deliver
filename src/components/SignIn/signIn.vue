@@ -120,7 +120,7 @@
         <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
       </div>
       <h3 class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-        <span v-if="isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''"
+        <span v-if="!isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''"
               v-text="outsideObtainValue?'区域外':'区域内'"></span>
         <span class="amap-headRight" v-text="punTime"></span>
       </h3>
