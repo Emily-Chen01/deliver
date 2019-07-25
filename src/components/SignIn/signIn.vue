@@ -120,10 +120,11 @@
         <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
       </div>
       <h3 class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-        <span class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''"
+        <span v-if="!isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''"
               v-text="outsideObtainValue?'区域外':'区域内'"></span>
         <span class="amap-headRight" v-text="punTime"></span>
       </h3>
+      <!-- <pre>{{isOutside}}</pre> -->
       <div id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
         <!--<div id="amapContainer"></div>-->
         <img :src="amapImg" alt="">
@@ -311,6 +312,7 @@
         twRange: '', //记录打卡时，所在的地址
         showHide: false,//是否显示全部打卡信息
         amapImg: '',//地图截图
+        isOutside: false
       }
     },
     created(){
@@ -336,6 +338,7 @@
               MessageBox('提示', '当前考勤不需要打卡');
               this.$router.push({path: '/signCard'});
             }
+            this.isOutside = response.body.result.isOutside
             if (state) {
               this.punchCardSuccess = JSON.parse(JSON.stringify(this.punchCardInfo));
               if (this.updatePunchCard.updateState) {
@@ -349,6 +352,7 @@
               }
               this.popupVisible = true;
               this.showBtnContent = false;
+
             }
           } else if (response.body.code === 500) { //不能显示打卡功能
             MessageBox('提示', response.body.message);
@@ -611,9 +615,9 @@
         //点击获取定位结束
       },
       //上传打卡信息
-      punchInfo(){
+      punchInfo() {
         let updakaObj = {
-          isRange: this.outsideObtainValue,
+          isRange: this.isOutside ? false : this.outsideObtainValue,
           location: this.twRange,
           longitude: this.longitude,
           latitude: this.latitude,
