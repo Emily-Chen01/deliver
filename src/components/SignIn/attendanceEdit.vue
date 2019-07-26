@@ -321,41 +321,45 @@
                                     </div>
 
                                     <!--复选框 type为4-->
-                                    <div v-if="item.fieldType=='4'" class="forgetclock">
-                                        <p
-                                            :class="{'icon-stars':item.isRequired==true}"
-                                            class="bluebold"
-                                        >{{item.fieldName}}</p>
-                                        <p>
-                                            <!--忘记打卡时间-->
-                                            <el-checkbox-group
-                                                v-model="confItemsval[(daycurrent+index+item.uid).toString()]"
-                                                v-if="item.code=='punchTime'"
-                                            >
-                                                <el-checkbox
-                                                    v-for="list in attendtime || []"
-                                                    :key="list"
-                                                    :label="list"
+                                    <template
+                                        v-if="selectedDataApply[index] !== 1 || searchApplyRecord[index].attendRuleUid == '2'"
+                                    >
+                                        <div v-if="item.fieldType=='4'" class="forgetclock">
+                                            <p
+                                                :class="{'icon-stars':item.isRequired==true}"
+                                                class="bluebold"
+                                            >{{item.fieldName}}</p>
+                                            <p>
+                                                <!--忘记打卡时间-->
+                                                <el-checkbox-group
+                                                    v-model="confItemsval[(daycurrent+index+item.uid).toString()]"
+                                                    v-if="item.code=='punchTime'"
                                                 >
-                                                    <span v-model="item.value">{{list}}</span>
-                                                </el-checkbox>
-                                            </el-checkbox-group>
+                                                    <el-checkbox
+                                                        v-for="list in attendtime || []"
+                                                        :key="list"
+                                                        :label="list"
+                                                    >
+                                                        <span v-model="item.value">{{list}}</span>
+                                                    </el-checkbox>
+                                                </el-checkbox-group>
 
-                                            <el-checkbox-group
-                                                v-model="confItemsval[(daycurrent+index+item.uid).toString()]"
-                                                v-if="item.code!='punchTime'"
-                                            >
-                                                <el-checkbox
-                                                    v-for="(list, index4) in confItems[(daycurrent+index+item.uid).toString()] || []"
-                                                    :label="list.value"
-                                                    :key="index4"
-                                                    :class="{'checkblock':item.orientation==1}"
+                                                <el-checkbox-group
+                                                    v-model="confItemsval[(daycurrent+index+item.uid).toString()]"
+                                                    v-if="item.code!='punchTime'"
                                                 >
-                                                    <span>{{list.value}}</span>
-                                                </el-checkbox>
-                                            </el-checkbox-group>
-                                        </p>
-                                    </div>
+                                                    <el-checkbox
+                                                        v-for="(list, index4) in confItems[(daycurrent+index+item.uid).toString()] || []"
+                                                        :label="list.value"
+                                                        :key="index4"
+                                                        :class="{'checkblock':item.orientation==1}"
+                                                    >
+                                                        <span>{{list.value}}</span>
+                                                    </el-checkbox>
+                                                </el-checkbox-group>
+                                            </p>
+                                        </div>
+                                    </template>
 
                                     <!--下拉菜单 type为5-->
                                     <!--请假和外出类型-->
@@ -407,24 +411,111 @@
                                     </div>
 
                                     <!--日期 type为6-->
-                                    <div v-if="item.fieldType=='6'" class="leavebox">
-                                        <div
-                                            class="leaveboxlft"
-                                            :class="{'icon-stars':item.isRequired==true}"
-                                        >{{item.fieldName}}</div>
-                                        <div
-                                            class="leaveboxcen"
-                                            @click="openPicker(0, 0, item.fieldType, index, fieldIndex, item.uid, item.code)"
-                                        >
-                                            <span
-                                                align="left"
-                                                v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
-                                                :class="{'colorA6':!item.value}"
-                                                style="display: block;"
-                                            ></span>
+                                    <template
+                                        v-if="selectedDataApply[index] !== 1 || searchApplyRecord[index].attendRuleUid == '2'"
+                                    >
+                                        <div v-if="item.fieldType=='6'" class="leavebox">
+                                            <div
+                                                class="leaveboxlft"
+                                                :class="{'icon-stars':item.isRequired==true}"
+                                            >{{item.fieldName}}</div>
+                                            <div
+                                                class="leaveboxcen"
+                                                @click="openPicker(0, 0, item.fieldType, index, fieldIndex, item.uid, item.code)"
+                                            >
+                                                <span
+                                                    align="left"
+                                                    v-text="item.value ? item.value : (item.fieldDescr ? item.fieldDescr : '请选择日期')"
+                                                    :class="{'colorA6':!item.value}"
+                                                    style="display: block;"
+                                                ></span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </template>
+                                    <template
+                                        v-if="selectedDataApply[index] == 1 || searchApplyRecord[index].attendRuleUid == 1"
+                                    >
+                                        <div v-if="item.fieldType=='6'">
+                                            <div
+                                                v-for="(sub,$index) in detail.forgetTime"
+                                                :key="$index"
+                                            >
+                                                <div class="leavebox">
+                                                    <!-- 单独处理,选择日期 + 忘记打卡时间带手输,能分组 -->
+                                                    <div
+                                                        class="leaveboxlft"
+                                                        :class="{'icon-stars':item.isRequired==true}"
+                                                    >{{item.fieldName}}</div>
+                                                    <div
+                                                        class="leaveboxcen"
+                                                        @click="openforgetDate($index,index)"
+                                                    >
+                                                        <span
+                                                            align="left"
+                                                            v-text=" detail.forgetTime[$index].date?detail.forgetTime[$index].date: '请选择日期'"
+                                                            :class="{'colorA6':!item.value}"
+                                                            style="display: block;"
+                                                        ></span>
+                                                    </div>
+                                                    <span
+                                                        class="x-del"
+                                                        v-show="$index>0"
+                                                        @click="detail.forgetTime.splice($index, 1)"
+                                                    >+</span>
+                                                </div>
+                                                <div class="forgetclock">
+                                                    <p
+                                                        :class="{'icon-stars':fieldType4.isRequired==true}"
+                                                        class="bluebold"
+                                                    >{{fieldType4.fieldName}}</p>
+                                                    <p>
+                                                        <!--忘记打卡时间-->
+                                                        <el-checkbox
+                                                            v-model="detail.forgetTime[$index].checkStart"
+                                                            @change="changeChb(detail.forgetTime[$index].checkStart,attendtime[0],'start',$index,index)"
+                                                        >{{attendtime[0]}}</el-checkbox>
+                                                        <el-checkbox
+                                                            v-model="detail.forgetTime[$index].checkEnd"
+                                                            @change="changeChb(detail.forgetTime[$index].checkEnd,attendtime[1],'end',$index,index)"
+                                                        >{{attendtime[1]}}</el-checkbox>
+                                                    </p>
+                                                </div>
+                                                <div class="pl30">
+                                                    <div class="leavebox">
+                                                        <div class="leaveboxlft">开始时间</div>
+                                                        <div class="leaveboxcen">
+                                                            <span
+                                                                align="left"
+                                                                v-text="detail.forgetTime[$index].start?detail.forgetTime[$index].start: '请输入时间'"
+                                                                @click="openforgetTime($index,index,'start')"
+                                                                style="display: block;"
+                                                            ></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="leavebox">
+                                                        <div class="leaveboxlft">结束时间</div>
+                                                        <div class="leaveboxcen">
+                                                            <span
+                                                                align="left"
+                                                                v-text="detail.forgetTime[$index].end?detail.forgetTime[$index].end: '请输入时间'"
+                                                                @click="openforgetTime($index,index,'end')"
+                                                                style="display: block;"
+                                                            ></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                            <div class="mt10">
+                                                <mt-button
+                                                    type="primary"
+                                                    @click.native="addForgetTime(detail.forgetTime)"
+                                                >
+                                                    <span>+添加</span>
+                                                </mt-button>
+                                            </div>
+                                        </div>
+                                    </template>
                                     <!--日期区间 type为7-->
                                     <div v-if="item.fieldType=='7'">
                                         <div
@@ -852,6 +943,13 @@
       >
       </mt-datetime-picker>
         </div>-->
+        <mt-datetime-picker
+            ref="forgetDate"
+            :startDate="new Date(2019,0,1)"
+            type="date"
+            @confirm="handleForgetDate"
+        ></mt-datetime-picker>
+        <mt-datetime-picker ref="forgetTime" type="time" @confirm="handleForgetTime"></mt-datetime-picker>
     </div>
 </template>
 <script>
@@ -882,6 +980,11 @@ export default {
     //    abnormal=异常   normal=正常   leave=请假   这个定的值是封装在日历里面定义好的颜色
     data() {
         return {
+            fieldType4: {},
+            currIndex: 0,
+            applyIndex: 0,
+            isStart: true,
+
             hasSave: false,
             checked: true,
             checked1: true,
@@ -1080,6 +1183,62 @@ export default {
         );
     },
     methods: {
+        changeChb(bool, val, type, index, applyIndex) {
+            var forgetTime = this.searchApplyRecord[this.applyIndex].forgetTime;
+            this.currIndex = index;
+            if (bool) {
+                forgetTime[this.currIndex][type] = val;
+            } else {
+                forgetTime[this.currIndex][type] = "";
+            }
+        },
+        handleForgetDate(date) {
+            var forgetTime = this.searchApplyRecord[this.applyIndex].forgetTime;
+            forgetTime[this.currIndex].date = moment(date).format(df3);
+        },
+        handleForgetTime(date) {
+            var forgetTime = this.searchApplyRecord[this.applyIndex].forgetTime;
+            if (this.isStart) {
+                forgetTime[this.currIndex].start = date;
+                if (this.attendtime[0] != date) {
+                    forgetTime[this.currIndex].checkStart = false;
+                } else {
+                    forgetTime[this.currIndex].checkStart = true;
+                }
+            } else {
+                forgetTime[this.currIndex].end = date;
+                if (this.attendtime[1] != date) {
+                    forgetTime[this.currIndex].checkEnd = false;
+                } else {
+                    forgetTime[this.currIndex].checkEnd = true;
+                }
+            }
+        },
+        openforgetDate(index, applyIndex) {
+            this.currIndex = index;
+            this.applyIndex = applyIndex;
+            this.$refs.forgetDate.open();
+        },
+        openforgetTime(index, applyIndex, type) {
+            this.currIndex = index;
+            this.applyIndex = applyIndex;
+            this.$refs.forgetTime.open();
+            if (type == "start") {
+                this.isStart = true;
+            } else {
+                this.isStart = false;
+            }
+        },
+        addForgetTime(obj) {
+            obj.push({
+                date: "",
+                start: "",
+                end: "",
+                checkStart: false,
+                checkEnd: false
+            });
+        },
+
         // 删除新增的考勤状态
         deleteRecord(posIndex, approvalFields) {
             if (approvalFields && approvalFields != undefined) {
@@ -1344,7 +1503,9 @@ export default {
                             }
                         } else if (
                             list.fieldType == "3" ||
-                            list.fieldType == "4"
+                            (list.fieldType == "4" &&
+                                (this.selectedDataApply[i] !== 1 ||
+                                    item.attendRuleUid == "2"))
                         ) {
                             //多行文本
                             if (
@@ -1413,11 +1574,48 @@ export default {
                             }
                         } else if (list.fieldType == "6") {
                             if (
-                                (list.value == "" || list.value == undefined) &&
-                                list.isRequired
+                                this.selectedDataApply[i] !== 1 ||
+                                item.attendRuleUid == "2"
                             ) {
-                                this.showMsg(list.fieldHint, -1);
-                                return false;
+                                if (
+                                    (list.value == "" ||
+                                        list.value == undefined) &&
+                                    list.isRequired
+                                ) {
+                                    this.showMsg(list.fieldHint, -1);
+                                    return false;
+                                }
+                            } else if (
+                                this.selectedDataApply[i] == 1 &&
+                                item.attendRuleUid == 1
+                            ) {
+                                //特殊处理
+                                let valid = true;
+
+                                item.forgetTime.forEach(el => {
+                                    if (
+                                        el.date.length == 0 &&
+                                        list.isRequired
+                                    ) {
+                                        this.showMsg(list.fieldHint, -1);
+                                        valid = false;
+                                        return valid;
+                                    }
+                                    if (
+                                        (!el.start || !el.end) &&
+                                        this.fieldType4.isRequired
+                                    ) {
+                                        this.showMsg(
+                                            this.fieldType4.fieldHint,
+                                            -1
+                                        );
+                                        valid = false;
+                                        return valid;
+                                    }
+                                });
+                                if (!valid) {
+                                    return valid;
+                                }
                             }
                         } else if (list.fieldType == "7") {
                             //日期和日期时间段
@@ -1475,36 +1673,49 @@ export default {
                                 (this.daycurrent + i + list.uid).toString()
                             ];
                         } else if (list.fieldType == "4") {
-                            //多选框
-                            for (
-                                let m = 0;
-                                m <
-                                this.confItemsval[
-                                    (this.daycurrent + i + list.uid).toString()
-                                ].length;
-                                m++
+                            if (
+                                this.selectedDataApply[i] !== 1 ||
+                                item.attendRuleUid == "2"
                             ) {
-                                if (
-                                    list.approvalValues.length <
+                                //多选框
+                                for (
+                                    let m = 0;
+                                    m <
                                     this.confItemsval[
                                         (
                                             this.daycurrent +
                                             i +
                                             list.uid
                                         ).toString()
-                                    ].length
+                                    ].length;
+                                    m++
                                 ) {
-                                    list.approvalValues.push({
-                                        value: "",
-                                        term: 0,
-                                        sortnum: m
-                                    });
+                                    if (
+                                        list.approvalValues.length <
+                                        this.confItemsval[
+                                            (
+                                                this.daycurrent +
+                                                i +
+                                                list.uid
+                                            ).toString()
+                                        ].length
+                                    ) {
+                                        list.approvalValues.push({
+                                            value: "",
+                                            term: 0,
+                                            sortnum: m
+                                        });
+                                    }
+                                    list.approvalValues[
+                                        m
+                                    ].value = this.confItemsval[
+                                        (
+                                            this.daycurrent +
+                                            i +
+                                            list.uid
+                                        ).toString()
+                                    ][m];
                                 }
-                                list.approvalValues[
-                                    m
-                                ].value = this.confItemsval[
-                                    (this.daycurrent + i + list.uid).toString()
-                                ][m];
                             }
                         } else if (list.fieldType == "5") {
                             //下拉框
@@ -1526,7 +1737,39 @@ export default {
                                 ];
                             }
                         } else if (list.fieldType == "6") {
-                            list.approvalValues[0].value = list.value;
+                            if (
+                                this.selectedDataApply[i] !== 1 ||
+                                item.attendRuleUid == "2"
+                            ) {
+                                list.approvalValues[0].value = list.value;
+                            }
+                            if (
+                                this.selectedDataApply[i] == 1 &&
+                                item.attendRuleUid == 1
+                            ) {
+                                item.forgetTime.forEach((el, i) => {
+                                    //6
+                                    list.approvalValues.push({
+                                        // approvalFieldUid: list.uid,
+                                        value: el.date,
+                                        // term: i,
+                                        // sortnum: list.sortnumtmp
+                                    });
+                                    // //4
+                                    // list.approvalValues.push({
+                                    //     approvalFieldUid: this.fieldType4.uid,
+                                    //     value: el.start,
+                                    //     term: i,
+                                    //     sortnum: 0
+                                    // });
+                                    // list.approvalValues.push({
+                                    //     approvalFieldUid: this.fieldType4.uid,
+                                    //     value: el.end,
+                                    //     term: i,
+                                    //     sortnum: 1
+                                    // });
+								});
+                            }
                         } else if (list.fieldType == "7") {
                             let periodarr = [];
                             let tmpapprovalValues;
@@ -1563,7 +1806,8 @@ export default {
                             }
                             list.approvalValues = list.approvalFieldValues;
                         }
-                    }
+					}
+					console.log(this.searchApplyRecord)
                 }
             }
             this.dateApplys[this.daycurrent] = this.searchApplyRecord;
@@ -1621,6 +1865,7 @@ export default {
             this.saverevisethree(); //提交
         },
         saverevisethree() {
+            //处理申请表单的数据
             //处理申请表单的数据
             let arrdata = [];
             var obj = this.searchApplyRecordAll;
@@ -1970,6 +2215,7 @@ export default {
         },
 
         dayClick(day) {
+            //  点击日历，获取日期
             //  点击日历，获取日期
             //  转换日期格式
             //  检测假日里是否已经含有点击的这一天
@@ -2632,6 +2878,9 @@ export default {
                                     item.sortnumtmp = 0;
                                     this.fields.push(item);
                                 }
+                                if (item.fieldType == "4") {
+                                    this.fieldType4 = item;
+                                }
                             }
                             this.periodnum = periodnum;
                             this.fieldsdata.approvalFields = this.fields;
@@ -2640,6 +2889,20 @@ export default {
                                 this.searchApplyRecord.length - 1
                             );
                             this.fieldsdata["daysortnum"] = numIndex;
+                            if (
+                                this.fieldsdata.approvalType == 1 &&
+                                this.fieldsdata.attendRuleUid == 1
+                            ) {
+                                this.$set(this.fieldsdata, "forgetTime", [
+                                    {
+                                        date: "",
+                                        start: "",
+                                        end: "",
+                                        checkStart: false,
+                                        checkEnd: false
+                                    }
+                                ]);
+                            }
                             this.searchApplyRecord[index] = this.fieldsdata;
                         }
                     },
