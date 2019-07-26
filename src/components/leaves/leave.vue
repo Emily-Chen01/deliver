@@ -554,7 +554,73 @@
 
                         <!--普通申请-->
                         <div class="leave-main-content-Info" v-if="item.approvalType != -1">
-                            <div class="marginTop10" v-for="list in item.approvalFields">
+
+                            <!-- 忘记打卡单独处理 -->
+                            <template v-if="item.approvalType === 1">
+                              <div class="marginTop10" v-for="list in item.approvalFields">
+
+                                <div v-if="['6'].indexOf(list.fieldType) > -1">
+                                  <template v-for="(item, idx) in formatPunchCardData(item.approvalFields)">
+                                    <h3 class="marginTop10" :key="idx">{{item.dateName}}：</h3>
+                                    <p :key="idx">{{item.date}}</p>
+                                    <h3 class="marginTop10" :key="idx">{{item.timeName}}：</h3>
+                                    <p v-for="time in item.time" :key="time">{{time}}</p>
+                                  </template>
+
+                                </div>
+                                <div v-if="['6', '4', '7', '8'].indexOf(list.fieldType) === -1">
+                                    <h3>{{list.fieldName}}：</h3>
+                                    <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+                                </div>
+                                <!--日期时间段-->
+                                <div
+                                    class="marginTop10"
+                                    v-if="list.fieldType == '7'"
+                                    v-for="(detail,overIndex) in list.periodarr"
+                                    :key="overIndex"
+                                >
+                                    <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+                                    <p>{{detail.startTime}}至{{detail.endTime}}</p>
+                                </div>
+                                <!--附件-->
+                                <div v-if="list.fieldType == '8'">
+                                    <h3>{{list.fieldName}}：</h3>
+                                    <!--图片-->
+                                    <div class="YD_image_list" v-if="list.fileAttribute=='0'">
+                                        <div
+                                            class="YD_image_list_item"
+                                            v-for="(n, index) in list.approvalValues"
+                                            v-fancybox-thumbnail="[n.width, n.height]"
+                                            :data-index="index"
+                                        >
+                                            <img
+                                                @click="queryImg($event,list.approvalValues)"
+                                                :src="n.value"
+                                                alt
+                                            />
+                                        </div>
+                                    </div>
+                                    <!--文件-->
+                                    <div class="YD_image_list" v-if="list.fileAttribute=='1'">
+                                        <div
+                                            class="YD_image_list_item"
+                                            v-for="(n, index) in list.approvalValues"
+                                            v-fancybox-thumbnail="[40, 40]"
+                                            :data-index="index"
+                                        >
+                                            <img src="../../assets/ico_document.png" alt />
+                                            <a
+                                                :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                                                :class="getExtType(n.value)"
+                                                style="font-size: 14px;text-decoration: none;"
+                                            >下载</a>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </template>
+                            <template v-else>
+                              <div class="marginTop10" v-for="list in item.approvalFields">
                                 <div v-if="list.fieldType != '7' && list.fieldType != '8'">
                                     <h3>{{list.fieldName}}：</h3>
                                     <p v-for="detail in list.approvalValues">{{detail.value}}</p>
@@ -604,7 +670,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                              </div>
+                            </template>
+
                             <!--加班时显示加班时长-->
                             <div class="marginTop10" v-if="item.approvalType == 3">
                                 <h3>累计加班时长：</h3>
@@ -788,6 +856,7 @@ import utils from "@/components/utils";
 import uploadImage from "./uploadImage";
 import fancyBox from "vue-fancybox";
 import moment from "moment";
+import _ from 'lodash'
 
 let df = "YYYY-MM-DD HH:mm";
 let df2 = "YYYY/MM/DD";
@@ -2048,6 +2117,36 @@ export default {
                     0;
                 window.scrollTo(0, Math.max(scrollHeight - 1, 0));
             }, 100);
+        },
+        // 处理忘记打卡时的选择日期和忘记打卡时间
+        formatPunchCardData(data) {
+          const [{approvalValues: tmpDateArr, fieldName: dateName}] = _.filter(data, ['fieldType', '6'])
+          const [{approvalValues: tmpTimeArr, fieldName: timeName}] = _.filter(data, ['fieldType', '4'])
+
+          const out = []
+
+          if(tmpDateArr.length) {
+            tmpDateArr
+              .map(({value, term: group, sortnum: idx}) => ({value, group: Number(group), idx}))
+              .forEach(({value, group, idx}) => {
+                out[group] = {
+                  dateName,
+                  timeName,
+                  date: value,
+                  time: []
+                }
+              })
+          }
+
+          if(tmpTimeArr.length) {
+            tmpTimeArr
+              .map(({value, term: group, sortnum: idx}) => ({value, group: Number(group), idx}))
+              .forEach(({value, group, idx}) => {
+                out[group].time[idx] = value
+              })
+          }
+
+          return out
         }
     },
     components: {
