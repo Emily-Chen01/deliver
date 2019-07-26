@@ -103,7 +103,7 @@
                     <!-- <pre>{{selectedDataApply}} {{typeof(selectedDataApply)}}</pre> -->
                     <!--复选框 type为4-->
 
-                    <template v-if="selectedDataApply !== 1 || attendRuleUid !== '1'">
+                    <template v-if="selectedDataApply !== 1 || attendRuleUid == '2'">
                         <div v-if="item.fieldType=='4'" class="forgetclock">
                             <p
                                 :class="{'icon-stars':item.isRequired==true}"
@@ -191,7 +191,7 @@
                     </div>
 
                     <!--日期 type为6-->
-                    <template v-if="selectedDataApply !== 1 || attendRuleUid !== '1'">
+                    <template v-if="selectedDataApply !== 1 || attendRuleUid == '2'">
                         <div v-if="item.fieldType=='6'" class="leavebox">
                             <div
                                 class="leaveboxlft"
@@ -1409,7 +1409,7 @@ export default {
                     }
                 } else if (
                     item.fieldType == "4" &&
-                    (this.selectedDataApply !== 1 || this.attendRuleUid !== "1")
+                    (this.selectedDataApply !== 1 || this.attendRuleUid == "2")
                 ) {
                     if (
                         (this.confItemsval[item.uid] == [] ||
@@ -1442,7 +1442,7 @@ export default {
                 } else if (item.fieldType == "6") {
                     if (
                         this.selectedDataApply !== 1 ||
-                        this.attendRuleUid !== "1"
+                        this.attendRuleUid == "2"
                     ) {
                         if (
                             (item.value == "" || item.value == undefined) &&
@@ -1572,7 +1572,7 @@ export default {
                         //多选框(并且不是忘记打卡的情况)
                         if (
                             this.selectedDataApply !== 1 ||
-                            this.attendRuleUid !== "1"
+                            this.attendRuleUid == "2"
                         ) {
                             if (this.confItemsval[item.uid].length > 0) {
                                 for (
