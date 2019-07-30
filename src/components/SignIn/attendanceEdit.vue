@@ -83,89 +83,126 @@
 
                         <!-- 忘记打卡单独处理 -->
                         <template v-if="detail.approvalType === 1">
-
-                          <div class="marginTop10" v-for="list in detail.approvalFields">
-
-                            <div v-if="['6'].indexOf(list.fieldType) > -1">
-                              <template v-for="(item, idx) in formatPunchCardData(detail.approvalFields)">
-                                <h3 class="marginTop10" :key="idx">{{item.dateName}}：</h3>
-                                <p :key="idx">{{item.date}}</p>
-                                <h3 class="marginTop10" :key="idx">{{item.timeName}}：</h3>
-                                <p v-for="time in item.time" :key="time">{{time}}</p>
-                              </template>
-
-                            </div>
-
-                            <div v-if="['6', '4', '7', '8'].indexOf(list.fieldType) === -1">
-                              <h3>{{list.fieldName}}：</h3>
-                              <p v-for="detail in list.approvalValues">{{detail.value}}</p>
-                            </div>
-                            <!--日期时间段-->
-                            <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
-                              <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
-                              <p>{{detail.startTime}}至{{detail.endTime}}</p>
-                            </div>
-                            <!--附件-->
-                            <div v-if="list.fieldType == '8'">
-                              <h3>{{list.fieldName}}：</h3>
-                              <!--图片-->
-                              <div class="YD_image_list" v-if="list.fileAttribute=='0'">
-                                <div class="YD_image_list_item"
-                                      v-for="(n, picindex) in list.approvalValues"
-                                      v-fancybox-thumbnail="[n.width, n.height]" :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
-                                  <img @click="queryImg($event,list.approvalValues)" :src="n.url" alt="">
+                            <div class="marginTop10" v-for="list in detail.approvalFields">
+                                <div v-if="['6'].indexOf(list.fieldType) > -1">
+                                    <template
+                                        v-for="(item, idx) in formatPunchCardData(detail.approvalFields)"
+                                    >
+                                        <h3 class="marginTop10" :key="idx">{{item.dateName}}：</h3>
+                                        <p :key="idx">{{item.date}}</p>
+                                        <h3 class="marginTop10" :key="idx">{{item.timeName}}：</h3>
+                                        <p v-for="time in item.time" :key="time">{{time}}</p>
+                                    </template>
                                 </div>
-                              </div>
-                              <!--文件-->
-                              <div class="YD_image_list" v-if="list.fileAttribute=='1'">
-                                <div class="YD_image_list_item"
-                                      v-for="(n, picindex) in list.approvalValues"
-                                      v-fancybox-thumbnail="[40, 40]" :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
-                                  <img src="../../assets/ico_document.png" alt="">
-                                  <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
-                                      :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
 
+                                <div v-if="['6', '4', '7', '8'].indexOf(list.fieldType) === -1">
+                                    <h3>{{list.fieldName}}：</h3>
+                                    <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+                                </div>
+                                <!--日期时间段-->
+                                <div
+                                    class="marginTop10"
+                                    v-if="list.fieldType == '7'"
+                                    v-for="(detail,overIndex) in list.periodarr"
+                                    :key="overIndex"
+                                >
+                                    <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+                                    <p>{{detail.startTime}}至{{detail.endTime}}</p>
+                                </div>
+                                <!--附件-->
+                                <div v-if="list.fieldType == '8'">
+                                    <h3>{{list.fieldName}}：</h3>
+                                    <!--图片-->
+                                    <div class="YD_image_list" v-if="list.fileAttribute=='0'">
+                                        <div
+                                            class="YD_image_list_item"
+                                            v-for="(n, picindex) in list.approvalValues"
+                                            v-fancybox-thumbnail="[n.width, n.height]"
+                                            :data-index="picindex"
+                                            v-if="n.value!='' && n.value!=null && n.value!=undefined "
+                                        >
+                                            <img
+                                                @click="queryImg($event,list.approvalValues)"
+                                                :src="n.url"
+                                                alt
+                                            />
+                                        </div>
+                                    </div>
+                                    <!--文件-->
+                                    <div class="YD_image_list" v-if="list.fileAttribute=='1'">
+                                        <div
+                                            class="YD_image_list_item"
+                                            v-for="(n, picindex) in list.approvalValues"
+                                            v-fancybox-thumbnail="[40, 40]"
+                                            :data-index="picindex"
+                                            v-if="n.value!='' && n.value!=null && n.value!=undefined "
+                                        >
+                                            <img src="../../assets/ico_document.png" alt />
+                                            <a
+                                                :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                                                :class="getExtType(n.value)"
+                                                style="font-size: 14px;text-decoration: none;"
+                                            >下载</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </template>
                         <template v-else>
-                          <div class="marginTop10" v-for="list in detail.approvalFields">
-                            <div v-if="list.fieldType != '7' && list.fieldType != '8'">
-                              <h3>{{list.fieldName}}：</h3>
-                              <p v-for="detail in list.approvalValues">{{detail.value}}</p>
-                            </div>
-                            <!--日期时间段-->
-                            <div class="marginTop10" v-if="list.fieldType == '7'" v-for="(detail,overIndex) in list.periodarr" :key="overIndex">
-                              <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
-                              <p>{{detail.startTime}}至{{detail.endTime}}</p>
-                            </div>
-                            <!--附件-->
-                            <div v-if="list.fieldType == '8'">
-                              <h3>{{list.fieldName}}：</h3>
-                              <!--图片-->
-                              <div class="YD_image_list" v-if="list.fileAttribute=='0'">
-                                <div class="YD_image_list_item"
-                                      v-for="(n, picindex) in list.approvalValues"
-                                      v-fancybox-thumbnail="[n.width, n.height]" :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
-                                  <img @click="queryImg($event,list.approvalValues)" :src="n.url" alt="">
+                            <div class="marginTop10" v-for="list in detail.approvalFields">
+                                <div v-if="list.fieldType != '7' && list.fieldType != '8'">
+                                    <h3>{{list.fieldName}}：</h3>
+                                    <p v-for="detail in list.approvalValues">{{detail.value}}</p>
                                 </div>
-                              </div>
-                              <!--文件-->
-                              <div class="YD_image_list" v-if="list.fileAttribute=='1'">
-                                <div class="YD_image_list_item"
-                                      v-for="(n, picindex) in list.approvalValues"
-                                      v-fancybox-thumbnail="[40, 40]" :data-index="picindex" v-if="n.value!='' && n.value!=null && n.value!=undefined ">
-                                  <img src="../../assets/ico_document.png" alt="">
-                                  <a :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
-                                      :class="getExtType(n.value)" style="font-size: 14px;text-decoration: none;">下载</a>
+                                <!--日期时间段-->
+                                <div
+                                    class="marginTop10"
+                                    v-if="list.fieldType == '7'"
+                                    v-for="(detail,overIndex) in list.periodarr"
+                                    :key="overIndex"
+                                >
+                                    <h3>第{{overtimeNum(overIndex)}}段{{list.fieldName}}</h3>
+                                    <p>{{detail.startTime}}至{{detail.endTime}}</p>
                                 </div>
-                              </div>
+                                <!--附件-->
+                                <div v-if="list.fieldType == '8'">
+                                    <h3>{{list.fieldName}}：</h3>
+                                    <!--图片-->
+                                    <div class="YD_image_list" v-if="list.fileAttribute=='0'">
+                                        <div
+                                            class="YD_image_list_item"
+                                            v-for="(n, picindex) in list.approvalValues"
+                                            v-fancybox-thumbnail="[n.width, n.height]"
+                                            :data-index="picindex"
+                                            v-if="n.value!='' && n.value!=null && n.value!=undefined "
+                                        >
+                                            <img
+                                                @click="queryImg($event,list.approvalValues)"
+                                                :src="n.url"
+                                                alt
+                                            />
+                                        </div>
+                                    </div>
+                                    <!--文件-->
+                                    <div class="YD_image_list" v-if="list.fileAttribute=='1'">
+                                        <div
+                                            class="YD_image_list_item"
+                                            v-for="(n, picindex) in list.approvalValues"
+                                            v-fancybox-thumbnail="[40, 40]"
+                                            :data-index="picindex"
+                                            v-if="n.value!='' && n.value!=null && n.value!=undefined "
+                                        >
+                                            <img src="../../assets/ico_document.png" alt />
+                                            <a
+                                                :href="n.value.replace('common', 'client') + `&openid=${tokenHeader.openId}`"
+                                                :class="getExtType(n.value)"
+                                                style="font-size: 14px;text-decoration: none;"
+                                            >下载</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
                         </template>
-
                     </div>
                     <div
                         v-if="searchApplyRecord.length == 0"
@@ -978,7 +1015,7 @@
         </div>-->
         <mt-datetime-picker
             ref="forgetDate"
-            :startDate="new Date(2019,0,1)"
+            :value="new Date()"
             type="date"
             @confirm="handleForgetDate"
         ></mt-datetime-picker>
@@ -1000,7 +1037,7 @@ import utilsValid from "../common/utils";
 import uploadImage from "../leaves/uploadImage";
 import fancyBox from "vue-fancybox";
 import moment from "moment";
-import _ from 'lodash'
+import _ from "lodash";
 
 let df = "YYYY-MM-DD HH:mm";
 let df1 = "YYYY/MM";
@@ -1219,7 +1256,8 @@ export default {
     },
     methods: {
         changeChb(bool, val, type, index, applyIndex) {
-            var forgetTime = this.searchApplyRecord[this.applyIndex].forgetTime;
+            var forgetTime = this.searchApplyRecord[applyIndex].forgetTime;
+            this.applyIndex = applyIndex;
             this.currIndex = index;
             if (bool) {
                 forgetTime[this.currIndex][type] = val;
@@ -1539,7 +1577,7 @@ export default {
                         } else if (
                             list.fieldType == "3" ||
                             (list.fieldType == "4" &&
-                                (this.selectedDataApply[i] !== 1 ||
+                                (item.approvalType !== 1 ||
                                     item.attendRuleUid == "2"))
                         ) {
                             //多行文本
@@ -1609,7 +1647,7 @@ export default {
                             }
                         } else if (list.fieldType == "6") {
                             if (
-                                this.selectedDataApply[i] !== 1 ||
+                                item.approvalType !== 1 ||
                                 item.attendRuleUid == "2"
                             ) {
                                 if (
@@ -1621,7 +1659,7 @@ export default {
                                     return false;
                                 }
                             } else if (
-                                this.selectedDataApply[i] == 1 &&
+                                item.approvalType == 1 &&
                                 item.attendRuleUid == 1
                             ) {
                                 //特殊处理
@@ -1687,7 +1725,7 @@ export default {
                                 sortnum: 0
                             });
                         }
-
+                        var list4 = {};
                         if (
                             list.fieldType == "0" ||
                             list.fieldType == "1" ||
@@ -1709,7 +1747,7 @@ export default {
                             ];
                         } else if (list.fieldType == "4") {
                             if (
-                                this.selectedDataApply[i] !== 1 ||
+                                item.approvalType !== 1 ||
                                 item.attendRuleUid == "2"
                             ) {
                                 //多选框
@@ -1751,6 +1789,26 @@ export default {
                                         ).toString()
                                     ][m];
                                 }
+                            } else if (
+                                item.approvalType == 1 &&
+                                item.attendRuleUid == 1
+                            ) {
+                                list.approvalValues = [];
+                                item.forgetTime.forEach((el, i) => {
+                                    // 4
+                                    list.approvalValues.push({
+                                        approvalFieldUid: list.uid,
+                                        value: el.start,
+                                        term: i,
+                                        sortnum: 0
+                                    });
+                                    list.approvalValues.push({
+                                        approvalFieldUid: list.uid,
+                                        value: el.end,
+                                        term: i,
+                                        sortnum: 1
+                                    });
+                                });
                             }
                         } else if (list.fieldType == "5") {
                             //下拉框
@@ -1773,37 +1831,26 @@ export default {
                             }
                         } else if (list.fieldType == "6") {
                             if (
-                                this.selectedDataApply[i] !== 1 ||
+                                item.approvalType !== 1 ||
                                 item.attendRuleUid == "2"
                             ) {
                                 list.approvalValues[0].value = list.value;
                             }
                             if (
-                                this.selectedDataApply[i] == 1 &&
+                                item.approvalType == 1 &&
                                 item.attendRuleUid == 1
                             ) {
+                                list.approvalValues = [];
+
                                 item.forgetTime.forEach((el, i) => {
                                     //6
                                     list.approvalValues.push({
-                                        // approvalFieldUid: list.uid,
+                                        approvalFieldUid: list.uid,
                                         value: el.date,
-                                        // term: i,
-                                        // sortnum: list.sortnumtmp
+                                        term: i,
+                                        sortnum: list.sortnumtmp
                                     });
-                                    // //4
-                                    // list.approvalValues.push({
-                                    //     approvalFieldUid: this.fieldType4.uid,
-                                    //     value: el.start,
-                                    //     term: i,
-                                    //     sortnum: 0
-                                    // });
-                                    // list.approvalValues.push({
-                                    //     approvalFieldUid: this.fieldType4.uid,
-                                    //     value: el.end,
-                                    //     term: i,
-                                    //     sortnum: 1
-                                    // });
-								});
+                                });
                             }
                         } else if (list.fieldType == "7") {
                             let periodarr = [];
@@ -1841,8 +1888,7 @@ export default {
                             }
                             list.approvalValues = list.approvalFieldValues;
                         }
-					}
-					console.log(this.searchApplyRecord)
+                    }
                 }
             }
             this.dateApplys[this.daycurrent] = this.searchApplyRecord;
@@ -1918,6 +1964,7 @@ export default {
                 if (item.status != "1" && item.status != "2") {
                     for (let j = 0; j < item.approvalFields.length; j++) {
                         let list = item.approvalFields[j];
+
                         if (
                             list.fieldType != "7" &&
                             list.fieldType != "8" &&
@@ -1928,16 +1975,31 @@ export default {
                                 list.code != "leaveType")
                         ) {
                             if (
-                                list.value != "" &&
-                                list.value != null &&
-                                list.value != undefined
+                                list.fieldType == "6" &&
+                                item.approvalType === 1 &&
+                                item.attendRuleUid === "1"
                             ) {
-                                approvalValues.push({
-                                    approvalFieldUid: list.uid,
-                                    value: list.value,
-                                    term: list.term,
-                                    sortnum: list.sortnumtmp
+                                list.approvalValues.forEach((el, i) => {
+                                    approvalValues.push({
+                                        approvalFieldUid: list.uid,
+                                        value: el.value,
+                                        term: i,
+                                        sortnum: list.sortnumtmp
+                                    });
                                 });
+                            } else {
+                                if (
+                                    list.value != "" &&
+                                    list.value != null &&
+                                    list.value != undefined
+                                ) {
+                                    approvalValues.push({
+                                        approvalFieldUid: list.uid,
+                                        value: list.value,
+                                        term: list.term,
+                                        sortnum: list.sortnumtmp
+                                    });
+                                }
                             }
                         } else {
                             if (
@@ -2073,41 +2135,53 @@ export default {
                                     }
                                 }
                             } else if (list.fieldType == "4") {
-                                //多选框
                                 if (
-                                    this.confItemsval[
-                                        (
-                                            item.daycurrent +
-                                            item.daysortnum +
-                                            list.uid
-                                        ).toString()
-                                    ].length > 0
+                                    item.approvalType !== 1 ||
+                                    item.attendRuleUid == 2
                                 ) {
-                                    for (
-                                        let m = 0;
-                                        m <
+                                    //多选框
+                                    if (
                                         this.confItemsval[
                                             (
                                                 item.daycurrent +
                                                 item.daysortnum +
                                                 list.uid
                                             ).toString()
-                                        ].length;
-                                        m++
+                                        ].length > 0
                                     ) {
-                                        approvalValues.push({
-                                            approvalFieldUid: list.uid,
-                                            value: this.confItemsval[
+                                        for (
+                                            let m = 0;
+                                            m <
+                                            this.confItemsval[
                                                 (
                                                     item.daycurrent +
                                                     item.daysortnum +
                                                     list.uid
                                                 ).toString()
-                                            ][m],
-                                            term: 0,
-                                            sortnum: m
-                                        });
+                                            ].length;
+                                            m++
+                                        ) {
+                                            approvalValues.push({
+                                                approvalFieldUid: list.uid,
+                                                value: this.confItemsval[
+                                                    (
+                                                        item.daycurrent +
+                                                        item.daysortnum +
+                                                        list.uid
+                                                    ).toString()
+                                                ][m],
+                                                term: 0,
+                                                sortnum: m
+                                            });
+                                        }
                                     }
+                                } else if (
+                                    item.approvalType === 1 &&
+                                    item.attendRuleUid === "1"
+                                ) {
+                                    list.approvalValues.forEach((el, i) => {
+                                        approvalValues.push(el);
+                                    });
                                 }
                             }
 
@@ -2216,7 +2290,7 @@ export default {
                     }
                 }
             }
-
+            console.log(applys);
             let applysAllparams = {
                 uid: this.approveAllData.uid, // 异常考勤的审批uid
                 approvalTypeUid: this.approveAllData.approvalTypeUid, // 申请类型Uid
@@ -2299,6 +2373,7 @@ export default {
             ) {
                 dateApplys = this.dateApplys[newday];
             }
+
             if (dateApplys && dateApplys.length > 0) {
                 for (let i = 0; i < dateApplys.length; i++) {
                     let applyItem = dateApplys[i];
@@ -2309,7 +2384,7 @@ export default {
                     } else {
                         this.selectedDataApply = ["0"];
                     }
-
+                    var _arr = [];
                     for (
                         let j = 0;
                         j < dateApplys[i].approvalFields.length;
@@ -2525,7 +2600,39 @@ export default {
                             list.term = 0;
                             list.sortnumtmp = 0;
                         }
+                        if (
+                            dateApplys[i].approvalType == 1 &&
+                            dateApplys[i].attendRuleUid == 1
+                        ) {
+
+                            if (list.fieldType == 6) {
+                                list.approvalValues.forEach((el, index) => {
+                                    _arr[el.term] = {
+                                        date: el.value,
+                                        start: "",
+                                        end: "",
+                                        checkStart: false,
+                                        checkEnd: false
+                                    };
+                                });
+                            } else if (list.fieldType == 4) {
+                                this.fieldType4 =list;
+                                list.approvalValues.forEach((el, index) => {
+                                    
+                                    if (el.sortnum == 0) {
+                                        _arr[el.term].start = el.value;
+                                        _arr[el.term].checkStart =
+                                            el.value == this.attendtime[0];
+                                    } else if (el.sortnum == 1) {
+                                        _arr[el.term].end = el.value;
+                                        _arr[el.term].checkEnd =
+                                            el.value == this.attendtime[1];
+                                    }
+                                });
+                            }
+                        }
                     }
+                    this.$set(dateApplys[i],'forgetTime',_arr)
                 }
                 this.searchApplyRecord = this.searchApplyRecord.concat(
                     dateApplys
@@ -3498,33 +3605,44 @@ export default {
         },
         // 处理忘记打卡时的选择日期和忘记打卡时间
         formatPunchCardData(data) {
-          const [{approvalValues: tmpDateArr, fieldName: dateName}] = _.filter(data, ['fieldType', '6'])
-          const [{approvalValues: tmpTimeArr, fieldName: timeName}] = _.filter(data, ['fieldType', '4'])
+            const [
+                { approvalValues: tmpDateArr, fieldName: dateName }
+            ] = _.filter(data, ["fieldType", "6"]);
+            const [
+                { approvalValues: tmpTimeArr, fieldName: timeName }
+            ] = _.filter(data, ["fieldType", "4"]);
 
-          const out = []
+            const out = [];
+            if (tmpDateArr.length) {
+                tmpDateArr
+                    .map(({ value, term: group, sortnum: idx }) => ({
+                        value,
+                        group: Number(group),
+                        idx
+                    }))
+                    .forEach(({ value, group, idx }) => {
+                        out[group] = {
+                            dateName,
+                            timeName,
+                            date: value,
+                            time: []
+                        };
+                    });
+            }
 
-          if(tmpDateArr.length) {
-            tmpDateArr
-              .map(({value, term: group, sortnum: idx}) => ({value, group: Number(group), idx}))
-              .forEach(({value, group, idx}) => {
-                out[group] = {
-                  dateName,
-                  timeName,
-                  date: value,
-                  time: []
-                }
-              })
-          }
+            if (tmpTimeArr.length) {
+                tmpTimeArr
+                    .map(({ value, term: group, sortnum: idx }) => ({
+                        value,
+                        group: Number(group),
+                        idx
+                    }))
+                    .forEach(({ value, group, idx }) => {
+                        out[group].time[idx] = value;
+                    });
+            }
 
-          if(tmpTimeArr.length) {
-            tmpTimeArr
-              .map(({value, term: group, sortnum: idx}) => ({value, group: Number(group), idx}))
-              .forEach(({value, group, idx}) => {
-                out[group].time[idx] = value
-              })
-          }
-
-          return out
+            return out;
         }
     },
     components: {

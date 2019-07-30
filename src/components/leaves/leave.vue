@@ -798,7 +798,7 @@
         </div>
         <mt-datetime-picker
             ref="forgetDate"
-            :startDate="new Date(2019,0,1)"
+            :value="new Date()"
             type="date"
             @confirm="handleForgetDate"
         ></mt-datetime-picker>
