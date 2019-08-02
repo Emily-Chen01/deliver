@@ -1536,7 +1536,7 @@ export default {
                                 return valid;
                             }
                             if (
-                                (!el.start || !el.end) &&
+                                (!el.start && !el.end) &&
                                 this.fieldType4.isRequired
                             ) {
                                 this.showMsg(this.fieldType4.fieldHint, -1);
@@ -1595,13 +1595,13 @@ export default {
                                 sortnum: this.fieldType6.sortnumtmp
                             });
                             //4
-                            approvalValues.push({
+                            el.start&&approvalValues.push({
                                 approvalFieldUid: this.fieldType4.uid,
                                 value: el.start,
                                 term: i,
                                 sortnum: 0
                             });
-                            approvalValues.push({
+                            el.end&&approvalValues.push({
                                 approvalFieldUid: this.fieldType4.uid,
                                 value: el.end,
                                 term: i,

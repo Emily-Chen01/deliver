@@ -1675,7 +1675,7 @@ export default {
                                         return valid;
                                     }
                                     if (
-                                        (!el.start || !el.end) &&
+                                        (!el.start && !el.end) &&
                                         this.fieldType4.isRequired
                                     ) {
                                         this.showMsg(
@@ -1796,13 +1796,13 @@ export default {
                                 list.approvalValues = [];
                                 item.forgetTime.forEach((el, i) => {
                                     // 4
-                                    list.approvalValues.push({
+                                    el.start&&list.approvalValues.push({
                                         approvalFieldUid: list.uid,
                                         value: el.start,
                                         term: i,
                                         sortnum: 0
                                     });
-                                    list.approvalValues.push({
+                                    el.end&&list.approvalValues.push({
                                         approvalFieldUid: list.uid,
                                         value: el.end,
                                         term: i,
