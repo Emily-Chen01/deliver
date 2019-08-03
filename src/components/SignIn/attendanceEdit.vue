@@ -392,7 +392,7 @@
 
                                     <!--复选框 type为4-->
                                     <template
-                                        v-if="selectedDataApply[index] !== 1 || searchApplyRecord[index].attendRuleUid !== '1'"
+                                        v-if="selectedDataApply[index] !== 1 || searchApplyRecord[index].attendRuleUid == '2'"
                                     >
                                         <div v-if="item.fieldType=='4'" class="forgetclock">
                                             <p
@@ -482,7 +482,7 @@
 
                                     <!--日期 type为6-->
                                     <template
-                                        v-if="selectedDataApply[index] !== 1 || searchApplyRecord[index].attendRuleUid !== '1'"
+                                        v-if="selectedDataApply[index] !== 1 || searchApplyRecord[index].attendRuleUid == '2'"
                                     >
                                         <div v-if="item.fieldType=='6'" class="leavebox">
                                             <div
@@ -503,7 +503,7 @@
                                         </div>
                                     </template>
                                     <template
-                                        v-if="selectedDataApply[index] == 1 && searchApplyRecord[index].attendRuleUid == 1"
+                                        v-if="selectedDataApply[index] == 1 && searchApplyRecord[index].attendRuleUid !== '2'"
                                     >
                                         <div v-if="item.fieldType=='6'">
                                             <div
@@ -1578,7 +1578,7 @@ export default {
                             list.fieldType == "3" ||
                             (list.fieldType == "4" &&
                                 (item.approvalType !== 1 ||
-                                    item.attendRuleUid !== "1"))
+                                    item.attendRuleUid == "2"))
                         ) {
                             //多行文本
                             if (
@@ -1648,7 +1648,7 @@ export default {
                         } else if (list.fieldType == "6") {
                             if (
                                 item.approvalType !== 1 ||
-                                item.attendRuleUid !== "1"
+                                item.attendRuleUid == "2"
                             ) {
                                 if (
                                     (list.value == "" ||
@@ -1660,7 +1660,7 @@ export default {
                                 }
                             } else if (
                                 item.approvalType == 1 &&
-                                item.attendRuleUid == 1
+                                item.attendRuleUid !== '2'
                             ) {
                                 //特殊处理
                                 let valid = true;
@@ -1748,7 +1748,7 @@ export default {
                         } else if (list.fieldType == "4") {
                             if (
                                 item.approvalType !== 1 ||
-                                item.attendRuleUid !== "1"
+                                item.attendRuleUid == "2"
                             ) {
                                 //多选框
                                 for (
@@ -1791,7 +1791,7 @@ export default {
                                 }
                             } else if (
                                 item.approvalType == 1 &&
-                                item.attendRuleUid == 1
+                                item.attendRuleUid !== '2'
                             ) {
                                 list.approvalValues = [];
                                 item.forgetTime.forEach((el, i) => {
@@ -1832,13 +1832,13 @@ export default {
                         } else if (list.fieldType == "6") {
                             if (
                                 item.approvalType !== 1 ||
-                                item.attendRuleUid !== "1"
+                                item.attendRuleUid == "2"
                             ) {
                                 list.approvalValues[0].value = list.value;
                             }
                             if (
                                 item.approvalType == 1 &&
-                                item.attendRuleUid == 1
+                                item.attendRuleUid !== '2'
                             ) {
                                 list.approvalValues = [];
 
@@ -1977,7 +1977,7 @@ export default {
                             if (
                                 list.fieldType == "6" &&
                                 item.approvalType === 1 &&
-                                item.attendRuleUid === "1"
+                                item.attendRuleUid !== "2"
                             ) {
                                 list.approvalValues.forEach((el, i) => {
                                     approvalValues.push({
@@ -2137,7 +2137,7 @@ export default {
                             } else if (list.fieldType == "4") {
                                 if (
                                     item.approvalType !== 1 ||
-                                    item.attendRuleUid !== 1
+                                    item.attendRuleUid == '2'
                                 ) {
                                     //多选框
                                     if (
@@ -2177,7 +2177,7 @@ export default {
                                     }
                                 } else if (
                                     item.approvalType === 1 &&
-                                    item.attendRuleUid === "1"
+                                    item.attendRuleUid !== "2"
                                 ) {
                                     list.approvalValues.forEach((el, i) => {
                                         approvalValues.push(el);
@@ -2602,7 +2602,7 @@ export default {
                         }
                         if (
                             dateApplys[i].approvalType == 1 &&
-                            dateApplys[i].attendRuleUid == 1
+                            dateApplys[i].attendRuleUid !== '2'
                         ) {
 
                             if (list.fieldType == 6) {
@@ -3033,7 +3033,7 @@ export default {
                             this.fieldsdata["daysortnum"] = numIndex;
                             if (
                                 this.fieldsdata.approvalType == 1 &&
-                                this.fieldsdata.attendRuleUid == 1
+                                this.fieldsdata.attendRuleUid !== '2'
                             ) {
                                 this.$set(this.fieldsdata, "forgetTime", [
                                     {
