@@ -12,7 +12,7 @@
         <el-button type="primary" size="small">
         <span>
           <i class="el-icon-upload"></i>
-          <span v-text="'上传'+title"></span>
+          <span v-text="title"></span>
         </span>
         </el-button>
       </el-upload>

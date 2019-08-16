@@ -210,7 +210,7 @@
                             </div>
                         </div>
                     </template>
-                    <template v-else-if="selectedDataApply === 1 && attendRuleUid === '1'">
+                    <template v-else-if="selectedDataApply === 1 && attendRuleUid !== '2'">
                         <div v-if="item.fieldType=='6'">
                             <div v-for="(sub,$index) in forgetTime" :key="$index">
                                 <div class="leavebox">
@@ -798,7 +798,7 @@
         </div>
         <mt-datetime-picker
             ref="forgetDate"
-            :startDate="new Date(2019,0,1)"
+            :value="new Date()"
             type="date"
             @confirm="handleForgetDate"
         ></mt-datetime-picker>
@@ -1523,7 +1523,7 @@ export default {
                     } else if (
                         //特殊处理
                         this.selectedDataApply === 1 &&
-                        this.attendRuleUid === "1"
+                        this.attendRuleUid !== "2"
                     ) {
                         let valid = true;
                         this.forgetTime.forEach(el => {
@@ -1536,7 +1536,7 @@ export default {
                                 return valid;
                             }
                             if (
-                                (!el.start || !el.end) &&
+                                (!el.start && !el.end) &&
                                 this.fieldType4.isRequired
                             ) {
                                 this.showMsg(this.fieldType4.fieldHint, -1);
@@ -1584,7 +1584,7 @@ export default {
                     if (
                         item.fieldType == "6" &&
                         this.selectedDataApply === 1 &&
-                        this.attendRuleUid === "1"
+                        this.attendRuleUid !== "2"
                     ) {
                         this.forgetTime.forEach((el, i) => {
                             //6
@@ -1595,13 +1595,13 @@ export default {
                                 sortnum: this.fieldType6.sortnumtmp
                             });
                             //4
-                            approvalValues.push({
+                            el.start&&approvalValues.push({
                                 approvalFieldUid: this.fieldType4.uid,
                                 value: el.start,
                                 term: i,
                                 sortnum: 0
                             });
-                            approvalValues.push({
+                            el.end&&approvalValues.push({
                                 approvalFieldUid: this.fieldType4.uid,
                                 value: el.end,
                                 term: i,
@@ -2176,7 +2176,7 @@ export default {
         top: 0;
         width: 100%;
         height: 44px;
-        z-index: 1;
+        z-index: 10;
         span {
             display: inline-block;
             font-size: 14px;
