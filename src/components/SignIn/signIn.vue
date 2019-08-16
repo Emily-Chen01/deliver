@@ -444,6 +444,9 @@
       },
       //获取wifi地址
       okClickWifi(){
+        if(!returnCitySN) {
+          returnCitySN = {}
+        }
         if (returnCitySN["cip"]) {//获取IP
           this.wifiIP = returnCitySN["cip"];
           this.qulocation = false;
