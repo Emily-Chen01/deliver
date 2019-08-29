@@ -58,7 +58,13 @@
               <div class="event-box-div">
                 <p class="event-item" v-show="event.cellIndex <= eventLimit" v-for="event in day.events">
                   <span class="dotStyle"
-                        :class="{'normalStyle':event.cssClass==='normal','abnormalStyle':event.cssClass==='abnormal','leaveStyle':event.cssClass==='leave'}"
+                        :class="{
+                          'normalStyle':event.cssClass==='normal','abnormalStyle':event.cssClass==='abnormal','leaveStyle':event.cssClass==='leave',
+                          'absenceStyle': event.cssClass === 'absence', // 旷工
+                          'lateAndEarlyStyle': event.cssClass === 'lateAndEarly', // 迟到早退
+                          'beLateStyle': event.cssClass === 'beLate', // 迟到
+                          'leaveEarlyStyle': event.cssClass === 'leaveEarly', //早退
+                        }"
                         v-if="event.cssClass"></span>
                   <span class="dotStyle holidayStyle" v-else-if="!event.cssClass && event.isHoliday"></span>
                   <!--<img src="../../../../assets/ico_holiday.png" class="ico_holiday" v-if="event.isHoliday" alt=""/>-->
@@ -487,18 +493,29 @@
                   margin: 0 2px;
                 }
                 .normalStyle {
-                  /*background: rgb(32, 161, 255);*/
+                  background: rgb(32, 161, 255);
                 }
 
                 .abnormalStyle {
-                  /*background: rgb(255, 204, 0);*/
+                  background: rgb(255, 204, 0);
                 }
-
                 .leaveStyle {
-                  /*background: rgb(102, 204, 0);*/
+                  background: rgb(102, 204, 0);
+                }
+                .absenceStyle {
+                  background: gray;
+                }
+                .lateAndEarlyStyle {
+                  background: rgb(0, 255, 191);
+                }
+                .beLateStyle {
+                  background: purple;
+                }
+                .leaveEarlyStyle {
+                  background: #ff8800;
                 }
                 .holidayStyle {
-                  /*background-color: #ff4949;*/
+                  background-color: #ff4949;
                 }
               }
             }

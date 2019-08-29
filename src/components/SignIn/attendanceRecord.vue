@@ -11,6 +11,10 @@
       <div class="egClass"><span class="publicStyle abnormalStyle"></span>考勤异常</div>
       <div class="egClass"><span class="publicStyle leaveStyle"></span>请假</div>
       <div class="egClass"><span class="publicStyle holidayStyle"></span>假期</div>
+      <div class="egClass"><span class="publicStyle absenceStyle"></span>旷工</div>
+      <div class="egClass"><span class="publicStyle beLateStyle"></span>迟到</div>
+      <div class="egClass"><span class="publicStyle leaveEarlyStyle"></span>早退</div>
+      <div class="egClass"><span class="publicStyle lateAndEarlyStyle"></span>迟到早退</div>
     </div>
     <div style="background:rgb(239,241,247);">
       <div class="timeTitle">
@@ -235,14 +239,16 @@
 
 <style scoped lang="scss">
   .egStates {
-    height: 43px;
+    text-align: left;
+    height: 62px;
     background: #ffffff;
     font-size: 0;
+    padding-left: 5%;
     .egClass {
       box-sizing: border-box;
       width: 25%;
-      height: 43px;
-      line-height: 43px;
+      height: 31px;
+      line-height: 31px;
       display: inline-block;
       font-size: 12px;
       .publicStyle {
@@ -265,18 +271,30 @@
       .holidayStyle {
         background-color: #ff4949;
       }
+      .absenceStyle {
+        background: gray;
+      }
+      .lateAndEarlyStyle {
+        background: rgb(0, 255, 191);
+      }
+      .beLateStyle {
+        background: purple;
+      }
+      .leaveEarlyStyle {
+        background: #ff8800;
+      }
     }
-    .egClass:nth-child(1) {
-      padding-left: 15px;
-      text-align: left;
-    }
-    .egClass:nth-child(2) {
-      text-align: center;
-    }
-    .egClass:nth-child(3) {
-      padding-right: 15px;
-      text-align: right;
-    }
+    // .egClass:nth-child(1) {
+    //   // padding-left: 15px;
+    //   // text-align: left;
+    // }
+    // .egClass:nth-child(2) {
+    //   // text-align: center;
+    // }
+    // .egClass:nth-child(3) {
+    //   // padding-right: 15px;
+    //   // text-align: right;
+    // }
   }
 
   .timeTitle {

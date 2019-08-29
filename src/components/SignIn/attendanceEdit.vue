@@ -3872,14 +3872,16 @@ export default {
 }
 
 .egStates {
-    height: 43px;
+    text-align: left;
+    height: 62px;
     background: #ffffff;
     font-size: 0;
+    padding-left: 5%;
     .egClass {
         box-sizing: border-box;
         width: 25%;
-        height: 43px;
-        line-height: 43px;
+        height: 31px;
+        line-height: 31px;
         display: inline-block;
         font-size: 12px;
         .publicStyle {
@@ -3899,21 +3901,33 @@ export default {
         .leaveStyle {
             background: rgb(102, 204, 0);
         }
+        .absenceStyle {
+            background: gray;
+        }
+        .lateAndEarlyStyle {
+            background: rgb(0, 255, 191);
+        }
+        .beLateStyle {
+            background: purple;
+        }
+        .leaveEarlyStyle {
+            background: #ff8800;
+        }
         .holidayStyle {
             background-color: #ff4949;
         }
     }
-    .egClass:nth-child(1) {
-        padding-left: 15px;
-        text-align: left;
-    }
-    .egClass:nth-child(2) {
-        text-align: center;
-    }
-    .egClass:nth-child(3) {
-        padding-right: 15px;
-        text-align: right;
-    }
+    // .egClass:nth-child(1) {
+    //     padding-left: 15px;
+    //     text-align: left;
+    // }
+    // .egClass:nth-child(2) {
+    //     text-align: center;
+    // }
+    // .egClass:nth-child(3) {
+    //     padding-right: 15px;
+    //     text-align: right;
+    // }
 }
 
 .timeTitle {
