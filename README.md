@@ -1,27 +1,22 @@
 # hro 微信端项目
 
-> vue project
+> vue 项目，ui 框架 mint-ui
 
-## Build Setup
+## 安装package
 
 ``` bash
-# install dependencies
 npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## 开发调试
+
+``` bash
+# 依据控制台输出，在浏览器打开
+npm run dev
+```
+
+## 打包
+
+``` bash
+npm run build
+```
