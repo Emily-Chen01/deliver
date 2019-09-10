@@ -297,20 +297,9 @@
 
                     <!--日期区间 type为7-->
                     <div v-if="item.fieldType=='7'">
-                        <div
-                            class="mt10"
-                            v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]"
-                            :key="applyIndex"
-                        >
-                            <h4
-                                align="left"
-                                class="fc1 pr timetitdate"
-                                :class="{'icon-stars':item.isRequired==true}"
-                            >
-                                <span
-                                    v-if="item.code!='outTime'"
-                                    v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName"
-                                ></span>
+                        <div class="mt10" v-for="(apply,applyIndex) in applyWorkRefAll[item.uid]" :key="applyIndex" >
+                            <h4 align="left" class="fc1 pr timetitdate" :class="{'icon-stars':item.isRequired==true}" >
+                                <span v-if="item.code!='outTime'" v-text="'第'+overtimeNum(applyIndex)+'段'+item.fieldName" ></span>
                                 <span v-if="item.code=='outTime'">{{item.fieldName}}</span>
                                 <span
                                     v-if="applyIndex>0"
@@ -351,10 +340,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div
-                            class="mt10"
-                            v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6)"
-                        >
+                        <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6) || item.code =='outTime'" >
                             <mt-button type="primary" @click.native="addTime(item.uid)">
                                 <span>+添加时间</span>
                             </mt-button>
@@ -1124,12 +1110,17 @@ export default {
         //根据审批类型返回的审批表单
         shengqingclick() {
             let state = false;
+
+            //为了拿到当前点击所对应的uid
+            //applyTypeArray数组 里面有申请分类的标题 标号type uid
             for (let i = 0; i < this.applyTypeArray.length; i++) {
+                //selectedDataApply申请分类的标号 0请假 1忘记打卡 2外出 3加班
                 if (this.selectedDataApply === this.applyTypeArray[i].type) {
                     this.applyData.approvalTypeUid = this.applyTypeArray[i].uid; //申请分类类型的uid
                     state = true;
                 }
             }
+            //初始 申请分类的标号和id
             if (!state) {
                 this.selectedDataApply = this.applyTypeArray[0].type;
                 this.applyData.approvalTypeUid = this.applyTypeArray[0].uid;
@@ -1144,6 +1135,7 @@ export default {
                 }
             ];
 
+            //选择申请分类之后 根据 申请分类的标号 获取对应的 数据
             this.$http
                 .get(
                     "/api/v1.0/client/queryApprovalForm/" +
@@ -1152,29 +1144,24 @@ export default {
                 .then(
                     response => {
                         if (response.body.code === 200) {
+                            // console.log(response.body.result)
                             this.fieldsdata = response.body.result;
+                            //configType服务器的初始为0
                             let configType = response.body.result.configType;
+                            //approvalperson获取审批人列表
                             this.approvalperson(configType);
-                            this.applyData.approvalConfigUid =
-                                response.body.result.uid; //具体流程的uid
-                            this.attendRuleUid =
-                                /* '1' ||  */ response.body.result.attendRuleUid; // '1' 多组,不分段 '2' 无多组,分段
+                            this.applyData.approvalConfigUid = response.body.result.uid; //具体流程的uid
+                            this.attendRuleUid = /* '1' ||  */ response.body.result.attendRuleUid; // '1' 多组,不分段 '2' 无多组,分段
 
                             //处理提交的表单数据格式
                             let approvalValues = [];
                             let periodnum = 0;
                             this.fields = [];
                             this.applyWorkRef = [];
-                            for (
-                                let i = 0;
-                                i < this.fieldsdata.fields.length;
-                                i++
-                            ) {
+                            for ( let i = 0; i < this.fieldsdata.fields.length; i++ ) {
                                 let item = this.fieldsdata.fields[i];
-                                if (
-                                    this.selectedDataApply == "2" &&
-                                    item.defaultType == "43"
-                                ) {
+                                //标号为2 外出 并 defaultType43 获取外出列表
+                                if ( this.selectedDataApply == "2" && item.defaultType == "43" ) {
                                     this.approvaloutside(item.defaultType);
                                 }
                                 if (item.fieldType == "7") {
@@ -1196,31 +1183,21 @@ export default {
                                         item.uid.toString(),
                                         timearr
                                     );
-                                } else if (
-                                    item.fieldType == "3" ||
-                                    item.fieldType == "4" ||
-                                    item.fieldType == "5"
-                                ) {
+                                } else if ( item.fieldType == "3" || item.fieldType == "4" || item.fieldType == "5" ) {
                                     item.term = 0;
                                     item.sortnumtmp = 0;
                                     (item.valuearray = []),
                                         (item.valuearray2 = []);
                                     if (item.approvalFieldValues.length > 0) {
-                                        for (
-                                            let j = 0;
-                                            j < item.approvalFieldValues.length;
-                                            j++
-                                        ) {
-                                            let appfieldval =
-                                                item.approvalFieldValues[j];
+                                        for ( let j = 0; j < item.approvalFieldValues.length; j++ ) {
+                                            let appfieldval = item.approvalFieldValues[j];
                                             if (appfieldval.isDefault) {
                                                 if (item.fieldType == "4") {
                                                     item.valuearray.push(
                                                         appfieldval.value
                                                     );
                                                 } else {
-                                                    item.valuearray =
-                                                        appfieldval.value;
+                                                    item.valuearray = appfieldval.value;
                                                 }
                                             }
                                         }
@@ -1261,6 +1238,7 @@ export default {
         approvalperson(configType) {
             this.$http.get("/api/v1.0/client/findReporter/" + configType).then(
                 response => {
+                    //获取的数据审批人列表 NAME:"sandy" UID:"aadec2580fa5488ea4c9de947294c3fe" WAY:"1"
                     let data = response.body.result;
                     if (response.body.result != null) {
                         this.approvalTypeObj = data;
@@ -1431,7 +1409,7 @@ export default {
 
             let approvalValues = [];
 
-            console.log(this.forgetTime);
+            // console.log(this.forgetTime);
 
             for (let i = 0; i < this.fields.length; i++) {
                 let item = this.fields[i];
@@ -1551,11 +1529,7 @@ export default {
                 } else if (item.fieldType == "7") {
                     //日期和日期时间段
                     let worfRefval = this.applyWorkRefAll[item.uid.toString()];
-                    if (
-                        (worfRefval[0].startTime == "" ||
-                            worfRefval[0].endTime == "") &&
-                        item.isRequired
-                    ) {
+                    if ( (worfRefval[0].startTime == "" || worfRefval[0].endTime == "") && item.isRequired ) {
                         this.showMsg(item.fieldHint, -1);
                         return false;
                     }
@@ -1749,7 +1723,7 @@ export default {
                     }
                 }
             }
-            console.log(approvalValues);
+            // console.log(approvalValues);
             this.applyData.approvalValues = approvalValues;
             Indicator.open("正在提交申请...");
 
@@ -1832,7 +1806,7 @@ export default {
         },
         changeselTab() {
             let origin = window.location.href.split("#")[0];
-            console.log(origin);
+            // console.log(origin);
             let newloactionhref = origin + "#/leave";
             window.location.replace(newloactionhref);
         },
