@@ -19,12 +19,12 @@
       </div>
     </div>
     <div class="weeks">
-      <strong class="week" v-for="week in weekNames">{{week}}</strong>
+      <strong class="week" v-for="week in weekNames" :key="week">{{week}}</strong>
     </div>
     <div class="dates" ref="dates">
       <div class="dates-bg">
-        <div class="week-row" v-for="week in currentDates">
-          <div class="day-cell" v-for="day in week"
+        <div class="week-row" v-for="week in currentDates" :key="week">
+          <div class="day-cell" v-for="day in week" :key="day.date"
                :class="{'today' : day.isToday,
               'todayBg':convertTime(day.date)===convertTime(currentDay),
               'clickDay':currentDay===day.date,
@@ -36,14 +36,14 @@
 
       <!-- absolute so we can make dynamic td -->
       <div class="dates-events">
-        <div class="events-week" v-for="week in currentDates">
-          <div class="events-day" v-for="day in week" track-by="$index"
+        <div class="events-week" v-for="week in currentDates" :key="week">
+          <div class="events-day" v-for="day in week" track-by="$index" :key="day.isToday"
                :class="{'today' : day.isToday,
               'not-cur-month' : !day.isCurMonth}" @click.stop="dayClick(day.date,day.isCurMonth, $event)">
             <p class="day-number">{{day.monthDay}}</p>
             <div class="event-box">
               <div class="event-box-div">
-                <p class="event-item" v-show="event.cellIndex <= eventLimit" v-for="event in day.events">
+                <p class="event-item" v-show="event.cellIndex <= eventLimit" v-for="event in day.events" :key="event.cssClass">
                   <span v-if="event.cssClass"
                         class="dotStyle"
                         :class="{
@@ -71,7 +71,7 @@
         </div>
         <div class="more-body">
           <ul class="body-list">
-            <li v-for="event in selectDay.events"
+            <li v-for="event in selectDay.events" :key="event.title"
                 v-show="event.isShow" class="body-item"
                 @click="eventClick(event,$event)">
               <span>{{event.title}}</span>
@@ -107,6 +107,8 @@
     },
     data () {
       return {
+        xinisCurMonth:false,
+        xinisCurMonth1:false,
         // weekNames : DAY_NAMES,
         weekMask: [1, 2, 3, 4, 5, 6, 7],
         // events : [],
@@ -157,6 +159,34 @@
         // else
         return ''
       },
+      format(time){
+        let ymd = ''
+        let mouth = (time.getMonth() + 1) >= 10 ? (time.getMonth() + 1) : ('0' + (time.getMonth() + 1))
+        let day = time.getDate() >= 10 ? time.getDate() : ('0' + time.getDate())
+        ymd += time.getFullYear() + '-' // 获取年份。
+        ymd += mouth + '-' // 获取月份。
+        ymd += day // 获取日。
+        return ymd // 返回日期。
+      },
+
+      getAllDate(start, end){
+        let dateArr = []
+        let startArr = start.split('-')
+        let endArr = end.split('-')
+        let db = new Date()
+        db.setUTCFullYear(startArr[0], startArr[1] - 1, startArr[2])
+        let de = new Date()
+        de.setUTCFullYear(endArr[0], endArr[1] - 1, endArr[2])
+        let unixDb = db.getTime()
+        let unixDe = de.getTime()
+        let stamp
+        const oneDay = 24 * 60 * 60 * 1000;
+        for (stamp = unixDb; stamp <= unixDe;) {
+          dateArr.push(this.format(new Date(parseInt(stamp))))
+          stamp = stamp + oneDay
+        }
+        return dateArr
+      },
       getCalendar () {
         // calculate 2d-array of each month
         // first day of this month
@@ -164,15 +194,32 @@
         let current = new Date(this.currentDate);
 
         let startDate = dateFunc.getStartDate(current);// 1st day of this month
-
+        
         let curWeekDay = startDate.getDay();
-
+        
         // begin date of this table may be some day of last month
         let diff = parseInt(this.firstDay) - curWeekDay;
+        
         diff = diff > 0 ? (diff - 7) : diff;
-
-        startDate.setDate(startDate.getDate() + diff);
+        
+        startDate.setDate(startDate.getDate() + diff); 
         let calendar = [];
+
+        // this.xinDate=this.getAllDate('2018-12-12', '2019-3-3')
+
+        // this.xinisCurMonth1=xinDate.some(res=>{
+        //   return res==string || false 
+        // })
+
+        // xinDate.forEach(item=>{
+        //   this.xinisCurMonth=true
+        // })  
+        
+        // if(this.xinisCurMonth){
+        //   this.xinisCurMonth1=true
+        // }else{
+        //   this.xinisCurMonth1=false
+        // }
 
         for (let perWeek = 0; perWeek < 6; perWeek++) {
 
@@ -182,7 +229,7 @@
             week.push({
               monthDay: startDate.getDate(),
               isToday: now.toDateString() == startDate.toDateString(),
-              isCurMonth: startDate.getMonth() == current.getMonth(),
+              isCurMonth:startDate.getMonth() == current.getMonth(),
               weekDay: perDay,
               date: new Date(startDate),
               events: this.slotEvents(startDate)
@@ -195,10 +242,14 @@
             // }
           }
           calendar.push(week)
+          // console.log('calendar', calendar)
           // if (isFinal) break
         }
         return calendar
       },
+      
+
+
       slotEvents (date) {
 
         // find all events start from this date

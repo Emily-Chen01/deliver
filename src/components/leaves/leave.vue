@@ -22,7 +22,7 @@
                             <option
                                 v-for="option in applyTypeArray"
                                 :value="option.type"
-                                v-text="option.name"
+                                v-text="option.name" :key="option.name"
                             ></option>
                         </select>
                     </div>
@@ -102,7 +102,6 @@
 
                     <!-- <pre>{{selectedDataApply}} {{typeof(selectedDataApply)}}</pre> -->
                     <!--复选框 type为4-->
-
                     <template v-if="selectedDataApply !== 1 || attendRuleUid == '2'">
                         <div v-if="item.fieldType=='4'" class="forgetclock">
                             <p
@@ -158,7 +157,7 @@
                                 <option
                                     v-for="option in holidayTypeArray"
                                     :value="option"
-                                    v-text="option.NAME"
+                                    v-text="option.NAME" :key="option.NAME"
                                 ></option>
                             </select>
                         </div>
@@ -172,7 +171,7 @@
                                 <option
                                     v-for="option in outsideObj"
                                     :value="option"
-                                    v-text="option.name"
+                                    v-text="option.name" :key="option.name"
                                 ></option>
                             </select>
                         </div>
@@ -184,7 +183,7 @@
                                 <option :value="''||null">请选择</option>
                                 <option
                                     v-for="option in confItems[item.uid]"
-                                    :value="option.value"
+                                    :value="option.value" :key="option.value"
                                 >{{option.value}}</option>
                             </select>
                         </div>
@@ -385,7 +384,7 @@
                                     class="YD_image_list_item"
                                     v-for="(n, index) in item.approvalValues"
                                     v-fancybox-thumbnail="[n.width, n.height]"
-                                    :data-index="index"
+                                    :data-index="index" :key="n.url"
                                 >
                                     <img
                                         v-if="!item.fileEdit"
@@ -409,7 +408,7 @@
                                     class="YD_image_list_item"
                                     v-for="(n, index) in item.approvalValues"
                                     v-fancybox-thumbnail="[40, 40]"
-                                    :data-index="index"
+                                    :data-index="index" :key="n.url"
                                 >
                                     <i
                                         v-if="item.fileEdit"
@@ -520,7 +519,7 @@
                     <div
                         class="leave-main-content-wrapper"
                         v-for="item in searchApplyRecord"
-                        v-if="searchApplyRecord.length>0"
+                        v-if="searchApplyRecord.length>0" :key="item.name"
                     >
                         <div class="leave-main-content-top">
                             <h3 class="leave-main-content-title">
@@ -543,7 +542,7 @@
 
                             <!-- 忘记打卡单独处理 -->
                             <template v-if="item.approvalType === 1">
-                              <div class="marginTop10" v-for="list in item.approvalFields">
+                              <div class="marginTop10" v-for="list in item.approvalFields" :key="list.fieldType">
 
                                 <div v-if="['6'].indexOf(list.fieldType) > -1">
                                   <template v-for="(item, idx) in formatPunchCardData(item.approvalFields)">
@@ -556,7 +555,7 @@
                                 </div>
                                 <div v-if="['6', '4', '7', '8'].indexOf(list.fieldType) === -1">
                                     <h3>{{list.fieldName}}：</h3>
-                                    <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+                                    <p v-for="detail in list.approvalValues" :key="detail.value">{{detail.value}}</p>
                                 </div>
                                 <!--日期时间段-->
                                 <div
@@ -577,7 +576,7 @@
                                             class="YD_image_list_item"
                                             v-for="(n, index) in list.approvalValues"
                                             v-fancybox-thumbnail="[n.width, n.height]"
-                                            :data-index="index"
+                                            :data-index="index" :key="n.value"
                                         >
                                             <img
                                                 @click="queryImg($event,list.approvalValues)"
@@ -592,7 +591,7 @@
                                             class="YD_image_list_item"
                                             v-for="(n, index) in list.approvalValues"
                                             v-fancybox-thumbnail="[40, 40]"
-                                            :data-index="index"
+                                            :data-index="index" :key="n.value"
                                         >
                                             <img src="../../assets/ico_document.png" alt />
                                             <a
@@ -606,10 +605,10 @@
                               </div>
                             </template>
                             <template v-else>
-                              <div class="marginTop10" v-for="list in item.approvalFields">
+                              <div class="marginTop10" v-for="list in item.approvalFields" :key="list.fieldType">
                                 <div v-if="list.fieldType != '7' && list.fieldType != '8'">
                                     <h3>{{list.fieldName}}：</h3>
-                                    <p v-for="detail in list.approvalValues">{{detail.value}}</p>
+                                    <p v-for="detail in list.approvalValues" :key="detail.value">{{detail.value}}</p>
                                 </div>
                                 <!--日期时间段-->
                                 <div
@@ -630,7 +629,7 @@
                                             class="YD_image_list_item"
                                             v-for="(n, index) in list.approvalValues"
                                             v-fancybox-thumbnail="[n.width, n.height]"
-                                            :data-index="index"
+                                            :data-index="index" :key="n.value"
                                         >
                                             <img
                                                 @click="queryImg($event,list.approvalValues)"
@@ -645,7 +644,7 @@
                                             class="YD_image_list_item"
                                             v-for="(n, index) in list.approvalValues"
                                             v-fancybox-thumbnail="[40, 40]"
-                                            :data-index="index"
+                                            :data-index="index" :key="n.value"
                                         >
                                             <img src="../../assets/ico_document.png" alt />
                                             <a
@@ -662,7 +661,7 @@
                             <!--加班时显示加班时长-->
                             <div class="marginTop10" v-if="item.approvalType == 3">
                                 <h3>累计加班时长：</h3>
-                                <div v-for="detail in item.workOvertimeHistories">
+                                <div v-for="detail in item.workOvertimeHistories" :key="detail.type">
                                     <p v-if="detail.type=='0'">平日加班:{{detail.time}}小时</p>
                                     <p v-if="detail.type=='1'">周末加班:{{detail.time}}小时</p>
                                     <p v-if="detail.type=='2'">假日加班:{{detail.time}}小时</p>
@@ -683,7 +682,7 @@
                                 <p>早退累计：{{item.abnormalAttendApproval.attendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.attendReport.leaveearlyTotal}}工时）</p>
                                 <p>旷工累计: {{item.abnormalAttendApproval.attendReport.absentTimes}}天(共{{item.abnormalAttendApproval.attendReport.absentTotal}}工时)</p>
                                 <p
-                                    v-for="list in item.abnormalAttendApproval.attendReport.leaves"
+                                    v-for="list in item.abnormalAttendApproval.attendReport.leaves" :key="list.NAME"
                                 >{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</p>
                                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.attendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.attendReport.dayOvertimeDays}}小时)</p>
                                 <p>周末加班累计时长：{{item.abnormalAttendApproval.attendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.attendReport.weekendOvertimeDays}}小时)</p>
@@ -696,7 +695,7 @@
                                 <p>早退累计：{{item.abnormalAttendApproval.newAttendReport.leaveearlyTimes}}次（共{{item.abnormalAttendApproval.newAttendReport.leaveearlyTotal}}工时）</p>
                                 <p>旷工累计: {{item.abnormalAttendApproval.newAttendReport.absentTimes}}天(共{{item.abnormalAttendApproval.newAttendReport.absentTotal}}工时)</p>
                                 <p
-                                    v-for="list in item.abnormalAttendApproval.newAttendReport.leaves"
+                                    v-for="list in item.abnormalAttendApproval.newAttendReport.leaves" :key="list.NAME"
                                 >{{list.NAME}}累计: {{list.DAYS}}天(共{{list.HOURS}}小时)</p>
                                 <p>工作日加班累计时长：{{item.abnormalAttendApproval.newAttendReport.dayOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.dayOvertimeDays}}小时)</p>
                                 <p>周末加班累计时长：{{item.abnormalAttendApproval.newAttendReport.weekendOvertime}}天(共{{item.abnormalAttendApproval.newAttendReport.weekendOvertimeDays}}小时)</p>
@@ -1136,13 +1135,7 @@ export default {
             ];
 
             //选择申请分类之后 根据 申请分类的标号 获取对应的 数据
-            this.$http
-                .get(
-                    "/api/v1.0/client/queryApprovalForm/" +
-                        this.selectedDataApply
-                )
-                .then(
-                    response => {
+            this.$http.get("/api/v1.0/client/queryApprovalForm/" + this.selectedDataApply).then(response => {
                         if (response.body.code === 200) {
                             // console.log(response.body.result)
                             this.fieldsdata = response.body.result;
@@ -1280,6 +1273,7 @@ export default {
         },
         //添加加班时间段
         addTime(uid) {
+            // console.log(this.applyWorkRefAll)
             this.applyWorkRefAll[uid.toString()].push({
                 startTime: "",
                 endTime: "",
@@ -1347,11 +1341,15 @@ export default {
         },
         // 日历样式
         openPicker(type, pos, fieldType, index, uid, itemCode) {
+            //console.log(type, pos, fieldType, index, uid, itemCode)
+            //0 0 "7" 0 "23d4939b00274a7983fdc0c7254bce23" "workOverTime"
+            //1 0 "7" 1 "7059c537bb4d47f59518ade493cc9673" "leaveTime"
             this.uid = uid;
             this.pos = pos;
             this.posIndex = index;
             this.fieldTypecurr = fieldType;
             this.wordcodecurr = itemCode;
+            // console.log(this.fields[index].value)
             if (fieldType == "6") {
                 let displaytime = this.fields[index].value;
                 this.startTimeValue1 = displaytime
@@ -1403,6 +1401,7 @@ export default {
         },
         //提交申请
         handerDataSubmit() {
+            // console.log(this.fields)
             if (this.selectedDataApply != "0") {
                 this.applyData.leaveUid = "";
             }
@@ -1529,15 +1528,14 @@ export default {
                 } else if (item.fieldType == "7") {
                     //日期和日期时间段
                     let worfRefval = this.applyWorkRefAll[item.uid.toString()];
-                    if ( (worfRefval[0].startTime == "" || worfRefval[0].endTime == "") && item.isRequired ) {
+                    if ( (worfRefval[0].startTime == "" || worfRefval[0].endTime == "") && item.isRequired ) { 
                         this.showMsg(item.fieldHint, -1);
                         return false;
                     }
                 } else if (item.fieldType == "8") {
                     //附件
                     if (
-                        item.approvalValues.length == 0 ||
-                        item.approvalValues == []
+                        item.approvalValues.length == 0 || item.approvalValues == []
                     ) {
                         if (item.isRequired) {
                             //必填
@@ -1548,18 +1546,8 @@ export default {
                 }
 
                 //处理数据
-                if (
-                    item.fieldType != "7" &&
-                    item.fieldType != "8" &&
-                    item.fieldType != "3" &&
-                    item.fieldType != "4" &&
-                    item.fieldType != "5"
-                ) {
-                    if (
-                        item.fieldType == "6" &&
-                        this.selectedDataApply === 1 &&
-                        this.attendRuleUid !== "2"
-                    ) {
+                if ( item.fieldType != "7" && item.fieldType != "8" && item.fieldType != "3" && item.fieldType != "4" && item.fieldType != "5" ) {
+                    if ( item.fieldType == "6" && this.selectedDataApply === 1 && this.attendRuleUid !== "2" ) {
                         this.forgetTime.forEach((el, i) => {
                             //6
                             approvalValues.push({
@@ -1583,11 +1571,7 @@ export default {
                             });
                         });
                     } else {
-                        if (
-                            item.value != "" &&
-                            item.value != null &&
-                            item.value != undefined
-                        ) {
+                        if ( item.value != "" && item.value != null && item.value != undefined ) {
                             approvalValues.push({
                                 approvalFieldUid: item.uid,
                                 value: item.value,
@@ -1599,11 +1583,7 @@ export default {
                 } else {
                     if (item.fieldType == "3") {
                         //单选框
-                        if (
-                            this.confItemsval[item.uid] != "" &&
-                            this.confItemsval[item.uid] != null &&
-                            this.confItemsval[item.uid] != undefined
-                        ) {
+                        if ( this.confItemsval[item.uid] != "" && this.confItemsval[item.uid] != null && this.confItemsval[item.uid] != undefined ) {
                             approvalValues.push({
                                 approvalFieldUid: item.uid,
                                 value: this.confItemsval[item.uid],
@@ -1613,10 +1593,7 @@ export default {
                         }
                     } else if (item.fieldType == "4") {
                         //多选框(并且不是忘记打卡的情况)
-                        if (
-                            this.selectedDataApply !== 1 ||
-                            this.attendRuleUid == "2"
-                        ) {
+                        if ( this.selectedDataApply !== 1 || this.attendRuleUid == "2" ) {
                             if (this.confItemsval[item.uid].length > 0) {
                                 for (
                                     let j = 0;
@@ -1676,15 +1653,8 @@ export default {
                     } else if (item.fieldType == "7") {
                         //处理item.fieldType="7"日期时间段的数据
                         let periodarr = [];
-                        for (
-                            let i = 0;
-                            i <
-                            this.applyWorkRefAll[item.uid.toString()].length;
-                            i++
-                        ) {
-                            let detail = this.applyWorkRefAll[
-                                item.uid.toString()
-                            ][i];
+                        for ( let i = 0; i < this.applyWorkRefAll[item.uid.toString()].length; i++ ) {
+                            let detail = this.applyWorkRefAll[item.uid.toString()][i];
                             for (let j = 0; j < 2; j++) {
                                 let timecurr;
                                 if (j == 0) {

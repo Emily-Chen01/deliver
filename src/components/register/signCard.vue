@@ -26,7 +26,6 @@
         <li class="record-list-item" v-for="(listItem, listIndex) in listData" :key="listIndex"
             @click="changeList(listItem.type)">
           <div class="record-list-item_main">
-
             <div class="record-list-item_position">
               <div style="display: inline-block;position: relative;">
                 <p class="record-list-item_tag" v-if="listItem.num" v-text="listItem.num">1</p>
@@ -36,7 +35,18 @@
             </div>
           </div>
         </li>
-        <!--<li class="record-list-item"></li>-->
+        <!-- <li class="record-list-item">
+          <a href="http://cn.bing.com" style="text-decoration:none;out-line: none;color: #333333;">
+            <div class="record-list-item_main">
+              <div class="record-list-item_position">
+                  <div style="display: inline-block;position: relative;margin-top:5px;">
+                    <i class="icon_bg_homeImg2 bg-wages"></i><br/>
+                  </div>
+                  <p class="mt10" style="display:block;height:20px;">我的福利</p>
+              </div>
+            </div>
+          </a>
+        </li> -->
       </ul>
     </div>
     <!--解除绑定-->
@@ -141,6 +151,12 @@
             type: 8,
             num: 0
           },
+          // {
+          //   name: '员工福利',
+          //   icon: 'bg-interview',
+          //   type: 8,
+          //   num: 0
+          // },
         ],
         imgSrc: {
           comAddress: require('../../assets/tx.png'),
