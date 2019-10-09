@@ -162,37 +162,55 @@
               :class="{'signIn-article-top1':  punchCardInfo.attendRuleUid==='3'}"
             >
                 <div class="changeyuantitle">
-                  <div style="display:flex;">
+                  <div style="display:flex;align-items:center;">
                     <div class="changeyuantitle-bj"></div>
-                    <div class="signIn-title">原打卡记录</div>
+                    <div class="signIn-title" style="font-size:10px;margin-top:1px;">原打卡记录</div>
                   </div>
-                  <div class="punch-success-time punch-success-timex"
+                  <!-- <div class="punch-success-time punch-success-timex"
                     v-text="(updatePunchCard.startWork===0)?(punchTime(punch.twTime)):(punchTime(punch.owTime))"
-                      ></div>
-                </div>
-                <div class="mapkuang">
-                  <img style="margin-top: -20px;" :src="punch.twMap" >
+                      ></div> -->
                 </div>
                 
-                <div class="signIn-yuanbottom-detail signIn-yuanbottom-detailx">
-                    <!-- <p class="punch-success-time" v-text="(updatePunchCard.startWork===0)?('上班时间： '+punchTime(punch.twTime)):('下班时间： '+punchTime(punch.owTime))" style="font-size:12px;line-height: 16px;" ></p> -->
-                  <p style="text-align: left;">
-                      <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:12px;"></i>
-                      <span style="font-size:12px;"
-                      class="signIn-article_location"
-                      v-text="'地理位置： '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"
-                      ></span>
-                  </p>
+                <div style="display:flex;">
+                  <div class="mapkuang" style="width:40%;">
+                    <img style="margin-top: -38px;margin-left: -80px;" :src="punch.twMap" >
+                  </div>
+                  
+                  <div class="signIn-yuanbottom-detail signIn-yuanbottom-detailx" style="width: 60%;    padding: 10px 0 0 6px;">
+                      <p class="punch-success-time" v-text="(updatePunchCard.startWork===0)?('上班时间： '+punchTime(punch.twTime)):('下班时间： '+punchTime(punch.owTime))" style="font-size:10px;line-height: 16px;text-align: left;" ></p>
+                    <p style="text-align: left;">
+                        <!-- <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:8px;"></i> -->
+                        <span style="font-size:10px;"
+                        class="signIn-article_location"
+                        v-text="'地理位置： '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"
+                        ></span>
+                    </p>
+                  </div>
                 </div>
+
                 <div class="fenge-line"></div>
 
-              <div class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-                <div style="display:flex;">
-                  <span class="amap-headxinbiaoji"></span>
-                  <span class="amap-head-xinbt">新打卡记录</span>
+              <div class="amap-head" style="display:block;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+                
+                <div style="display:flex;justify-content: space-between;">
+                  <div style="display:flex;align-items:center;">
+                    <span class="amap-headxinbiaoji" style="height:20px;"></span>
+                    <span class="amap-head-xinbt" style="margin-top:1px;">新打卡记录</span>
+                  </div>
+                  <!-- <span v-if="!isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''" v-text="outsideObtainValue?'区域外':'区域内'" ></span> -->
+                  
                 </div>
-                <!-- <span v-if="!isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''" v-text="outsideObtainValue?'区域外':'区域内'" ></span> -->
-                <span class="amap-headRight amap-headRightx" v-text="punTime"></span>
+                <div style="display:flex;justify-content: space-between;margin-top: 5px;">
+                  <div class="amap-headRight amap-headRightx" v-text="punTime" style="margin-left:10px;"></div>
+                  <div
+                    v-if="!isOutside"
+                    class="amap-headLeft"
+                    :class="outsideObtainValue?'amap-headLeft1':''"
+                    v-text="outsideObtainValue?'区域外':'区域内'"
+                    style="text-align: right;margin-right: 5px;"
+                  ></div>
+                </div>
+                
               </div>
               <!-- <pre>{{isOutside}}</pre> -->
               <div id="amap-box" style="padding:0;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
