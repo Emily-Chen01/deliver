@@ -147,167 +147,170 @@
       </mt-button>
     </div>
     <!--是否允许获取定位弹窗-->
-    <mt-popup v-model="qulocation" class="getLocation-alert-wrapper" :closeOnClickModal="false">
-      <div class="getLocation-alert-content">
-        <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
-        <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
-        <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
-      </div>
+    <div v-if="kejian">
+      <mt-popup v-model="qulocation" class="getLocation-alert-wrapper" :closeOnClickModal="false">
+        <div class="getLocation-alert-content">
+          <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
+          <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
+          <p v-if="wifiPopup">请确认是否已经连接指定wifi，若是没有可能会造成位置异常</p>
+        </div>
 
-      <div v-if="updatePunchCard.updateState===true">
-        <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs" :key="punchIndex">
-          <div class="signIn-article-right" v-if="punchClock(punch.twStatus)">
-            <div style="padding: 0 20px;max-width:240px;"
-              class="signIn-article-top"
-              :class="{'signIn-article-top1':  punchCardInfo.attendRuleUid==='3'}"
-            >
-                <div class="changeyuantitle">
-                  <div style="display:flex;align-items:center;">
-                    <div class="changeyuantitle-bj"></div>
-                    <div class="signIn-title" style="font-size:10px;margin-top:1px;">原打卡记录</div>
-                  </div>
-                  <!-- <div class="punch-success-time punch-success-timex"
-                    v-text="(updatePunchCard.startWork===0)?(punchTime(punch.twTime)):(punchTime(punch.owTime))"
-                      ></div> -->
-                </div>
-                
-                <div style="display:flex;">
-                  <div class="mapkuang" style="width:40%;">
-                    <img style="margin-top: -38px;margin-left: -80px;" :src="punch.twMap" >
+        <div v-if="updatePunchCard.updateState===true">
+          <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs" :key="punchIndex">
+            <div class="signIn-article-right" v-if="punchClock(punch.twStatus)">
+              <div style="padding: 0 20px;max-width:240px;"
+                class="signIn-article-top"
+                :class="{'signIn-article-top1':  punchCardInfo.attendRuleUid==='3'}"
+              >
+                  <div class="changeyuantitle">
+                    <div style="display:flex;align-items:center;">
+                      <div class="changeyuantitle-bj"></div>
+                      <div class="signIn-title" style="font-size:10px;margin-top:1px;">原打卡记录</div>
+                    </div>
+                    <!-- <div class="punch-success-time punch-success-timex"
+                      v-text="(updatePunchCard.startWork===0)?(punchTime(punch.twTime)):(punchTime(punch.owTime))"
+                        ></div> -->
                   </div>
                   
-                  <div class="signIn-yuanbottom-detail signIn-yuanbottom-detailx" style="width: 60%;    padding: 10px 0 0 6px;">
-                      <p class="punch-success-time" v-text="(updatePunchCard.startWork===0)?('上班时间： '+punchTime(punch.twTime)):('下班时间： '+punchTime(punch.owTime))" style="font-size:10px;line-height: 16px;text-align: left;" ></p>
-                    <p style="text-align: left;">
-                        <!-- <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:8px;"></i> -->
-                        <span style="font-size:10px;"
+                  <div style="display:flex;">
+                    <div class="mapkuang" style="width:40%;">
+                      <img style="margin-top: -38px;margin-left: -80px;" :src="punch.twMap" >
+                    </div>
+                    
+                    <div class="signIn-yuanbottom-detail signIn-yuanbottom-detailx" style="width: 60%;    padding: 10px 0 0 6px;">
+                        <p class="punch-success-time" v-text="(updatePunchCard.startWork===0)?('上班时间： '+punchTime(punch.twTime)):('下班时间： '+punchTime(punch.owTime))" style="font-size:10px;line-height: 16px;text-align: left;" ></p>
+                      <p style="text-align: left;">
+                          <!-- <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:8px;"></i> -->
+                          <span style="font-size:10px;"
+                          class="signIn-article_location"
+                          v-text="'地理位置： '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"
+                          ></span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="fenge-line"></div>
+
+                <div class="amap-head" style="display:block;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+                  
+                  <div style="display:flex;justify-content: space-between;">
+                    <div style="display:flex;align-items:center;">
+                      <span class="amap-headxinbiaoji" style="height:20px;"></span>
+                      <span class="amap-head-xinbt" style="margin-top:1px;">新打卡记录</span>
+                    </div>
+                    <!-- <span v-if="!isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''" v-text="outsideObtainValue?'区域外':'区域内'" ></span> -->
+                    
+                  </div>
+                  <div style="display:flex;justify-content: space-between;margin-top: 5px;">
+                    <div class="amap-headRight amap-headRightx" v-text="punTime" style="margin-left:10px;"></div>
+                    <div
+                      v-if="!isOutside"
+                      class="amap-headLeft"
+                      :class="outsideObtainValue?'amap-headLeft1':''"
+                      v-text="outsideObtainValue?'区域外':'区域内'"
+                      style="text-align: right;margin-right: 5px;"
+                    ></div>
+                  </div>
+                  
+                </div>
+                <!-- <pre>{{isOutside}}</pre> -->
+                <div id="amap-box" style="padding:0;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+                  <!--<div id="amapContainer"></div>-->
+                  <div class="amapImgkuang">
+                    <img style="margin-top: -20px;" :src="amapImg" alt />
+                  </div>
+                </div>
+                <div class="amap-detailkuang">
+                  <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
+                  <span style="font-size:12px;" class="amap-detail" id="amap-detail" v-text="'地理位置： '+twRange"> </span>
+                </div>
+                <!-- <div class="signIn-title" style="margin-top:20px;">新打卡记录：</div>
+                <div v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+                  <div class="signIn-yuanbottom">
+                    <div align="left">
+                      <img class="signIn-img_map" :src="amapImg" />
+                    </div>
+                    <div class="signIn-yuanbottom-detail">
+                      <p
+                        class="punch-success-time"
+                        v-text="(updatePunchCard.startWork===0)?('上班时间：'+punTime):('下班时间：'+punTime)"
+                        style="font-size:12px;"
+                      ></p>
+                      <p>
+                        <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:12px;"></i>
+                        <span style="font-size:12px;"
                         class="signIn-article_location"
-                        v-text="'地理位置： '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"
+                        id="amap-detail" 
+                        v-text="'地理位置： '+ twRange"
                         ></span>
-                    </p>
+                      </p>
+                    </div>
                   </div>
+                </div> -->
+                <div class="getLocation-alert-btnBox" style="padding: 8px 0;">
+                  <p
+                    @click="closeAlert"
+                    class="getLocation-alert-btn"
+                    :class="(punchCardInfo.locations.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
+                    v-text="(punchCardInfo.locations.length && !failModel) ? '取消' : '确定'"
+                  ></p>
+                  <p
+                    v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"
+                    @click="determinePunchCard"
+                    class="getLocation-alert-btn getLocation-alert-btnRight"
+                  >替换</p>
+                  <p
+                    v-if="wifiPopup"
+                    @click="okClickWifi"
+                    class="getLocation-alert-btn getLocation-alert-btnRight"
+                  >确定</p>
                 </div>
-
-                <div class="fenge-line"></div>
-
-              <div class="amap-head" style="display:block;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-                
-                <div style="display:flex;justify-content: space-between;">
-                  <div style="display:flex;align-items:center;">
-                    <span class="amap-headxinbiaoji" style="height:20px;"></span>
-                    <span class="amap-head-xinbt" style="margin-top:1px;">新打卡记录</span>
-                  </div>
-                  <!-- <span v-if="!isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''" v-text="outsideObtainValue?'区域外':'区域内'" ></span> -->
-                  
-                </div>
-                <div style="display:flex;justify-content: space-between;margin-top: 5px;">
-                  <div class="amap-headRight amap-headRightx" v-text="punTime" style="margin-left:10px;"></div>
-                  <div
-                    v-if="!isOutside"
-                    class="amap-headLeft"
-                    :class="outsideObtainValue?'amap-headLeft1':''"
-                    v-text="outsideObtainValue?'区域外':'区域内'"
-                    style="text-align: right;margin-right: 5px;"
-                  ></div>
-                </div>
-                
-              </div>
-              <!-- <pre>{{isOutside}}</pre> -->
-              <div id="amap-box" style="padding:0;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-                <!--<div id="amapContainer"></div>-->
-                <div class="amapImgkuang">
-                  <img style="margin-top: -20px;" :src="amapImg" alt />
-                </div>
-              </div>
-              <div class="amap-detailkuang">
-                <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
-                <span style="font-size:12px;" class="amap-detail" id="amap-detail" v-text="'地理位置： '+twRange"> </span>
-              </div>
-              <!-- <div class="signIn-title" style="margin-top:20px;">新打卡记录：</div>
-              <div v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-                <div class="signIn-yuanbottom">
-                  <div align="left">
-                    <img class="signIn-img_map" :src="amapImg" />
-                  </div>
-                  <div class="signIn-yuanbottom-detail">
-                    <p
-                      class="punch-success-time"
-                      v-text="(updatePunchCard.startWork===0)?('上班时间：'+punTime):('下班时间：'+punTime)"
-                      style="font-size:12px;"
-                    ></p>
-                    <p>
-                      <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:12px;"></i>
-                      <span style="font-size:12px;"
-                      class="signIn-article_location"
-                      id="amap-detail" 
-                      v-text="'地理位置： '+ twRange"
-                      ></span>
-                    </p>
-                  </div>
-                </div>
-              </div> -->
-              <div class="getLocation-alert-btnBox" style="padding: 8px 0;">
-                <p
-                  @click="closeAlert"
-                  class="getLocation-alert-btn"
-                  :class="(punchCardInfo.locations.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
-                  v-text="(punchCardInfo.locations.length && !failModel) ? '取消' : '确定'"
-                ></p>
-                <p
-                  v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"
-                  @click="determinePunchCard"
-                  class="getLocation-alert-btn getLocation-alert-btnRight"
-                >替换</p>
-                <p
-                  v-if="wifiPopup"
-                  @click="okClickWifi"
-                  class="getLocation-alert-btn getLocation-alert-btnRight"
-                >确定</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="amap-head-wku" v-if="updatePunchCard.updateState===false">
-        <div class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-          <span
-            v-if="!isOutside"
-            class="amap-headLeft amap-headLeft2"
-            :class="outsideObtainValue?'amap-headLeft1 amap-headLeft3':''"
-            v-text="outsideObtainValue?'区域外':'区域内'"
-          ></span>
-          <span style="margin-top: 2px;" class="amap-headRight" v-text="punTime"></span>
-        </div>
-        <!-- <pre>{{isOutside}}</pre> -->
-        <div style="padding:0;" id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-          <!--<div id="amapContainer"></div>-->
-          <div class="amapImg-waikuang">
-            <img style="margin-top: -20px;" :src="amapImg" alt />
+        <div class="amap-head-wku" v-if="updatePunchCard.updateState===false">
+          <div class="amap-head" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+            <span
+              v-if="!isOutside"
+              class="amap-headLeft amap-headLeft2"
+              :class="outsideObtainValue?'amap-headLeft1 amap-headLeft3':''"
+              v-text="outsideObtainValue?'区域外':'区域内'"
+            ></span>
+            <span style="margin-top: 2px;" class="amap-headRight" v-text="punTime"></span>
           </div>
-          <!-- <img :src="amapImg" alt /> -->
-          <p class="amap-detail" id="amap-detail" v-text="twRange"></p>
+          <!-- <pre>{{isOutside}}</pre> -->
+          <div style="padding:0;" id="amap-box" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
+            <!--<div id="amapContainer"></div>-->
+            <div class="amapImg-waikuang">
+              <img style="margin-top: -20px;" :src="amapImg" alt />
+            </div>
+            <!-- <img :src="amapImg" alt /> -->
+            <p class="amap-detail" id="amap-detail" v-text="twRange"></p>
+          </div>
+          <div class="getLocation-alert-btnBox" style="padding:8px 0;">
+            <p 
+              @click="closeAlert"
+              class="getLocation-alert-btn"
+              :class="(punchCardInfo.locations.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
+              v-text="(punchCardInfo.locations.length && !failModel) ? '取消' : '确定'"
+            ></p>
+            <p
+              v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"
+              @click="determinePunchCard"
+              class="getLocation-alert-btn getLocation-alert-btnRight"
+            >确定打卡</p>
+            <p
+              v-if="wifiPopup"
+              @click="okClickWifi"
+              class="getLocation-alert-btn getLocation-alert-btnRight"
+            >确定</p>
+          </div>
         </div>
-        <div class="getLocation-alert-btnBox" style="padding:8px 0;">
-          <p 
-            @click="closeAlert"
-            class="getLocation-alert-btn"
-            :class="(punchCardInfo.locations.length && !failModel) ? 'getLocation-alert-btnLeft' :  'getLocation-alert-btnColor getLocation-alert-btnCenter'"
-            v-text="(punchCardInfo.locations.length && !failModel) ? '取消' : '确定'"
-          ></p>
-          <p
-            v-if="punchCardInfo.locations.length && !failModel && !wifiPopup"
-            @click="determinePunchCard"
-            class="getLocation-alert-btn getLocation-alert-btnRight"
-          >确定打卡</p>
-          <p
-            v-if="wifiPopup"
-            @click="okClickWifi"
-            class="getLocation-alert-btn getLocation-alert-btnRight"
-          >确定</p>
-        </div>
-      </div>
-    </mt-popup>
+      </mt-popup>
+    </div>
+    
     <!--打卡成功弹窗-->
     <mt-popup v-model="popupVisible" class="punch-success-wrapper" :closeOnClickModal="false">
       <div class="punch-success-box" v-if="popupVisible">
@@ -467,6 +470,7 @@
   </div>
 </template>
 <script>
+import { Toast } from 'mint-ui';
 import { MessageBox, Popup } from "mint-ui";
 import moment from "moment";
 import html2canvas from "html2canvas";
@@ -480,6 +484,7 @@ export default {
   components: { MtButton },
   data() {
     return {
+      kejian:false,
       updatePunchCard: {
         //更新打卡信息记录
         updateState: false, //判断是否更新打卡
@@ -618,6 +623,7 @@ export default {
     },
     //更新打卡
     updatePunch(data) {
+      this.kejian=true
       this.updatePunchCard.updateState = true;
       this.updatePunchCard.punchCardUid = data.punchCardUid;
       this.updatePunchCard.startWork = data.startWork;
@@ -626,7 +632,7 @@ export default {
     //打卡开始
     handerClickEvent() {
       //打卡按钮   上班或下班
-      
+      this.kejian=true
       if (navigator.onLine) {
         //正常工作
         this.wifiPopup = false;
@@ -649,14 +655,19 @@ export default {
     },
     //取消弹框按钮
     closeAlert() {
+      this.kejian=false
+      // let instance = Toast('加载中');
       //打卡获取地理位置alert
       this.showBtnContent = false;
       this.qulocation = false;
+      
       // 加定时器是因为弹框不能立即消失，状态值改变，里面的内容会乱，加个定时器延迟其他状态值改变
       setTimeout(() => {
+        this.kejian=false
         this.failModel = false;
         this.wifiPopup = false;
         this.updatePunchCard.updateState = false;
+        // instance.close();
       }, 300);
     },
     //我知道了按钮
