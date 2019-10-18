@@ -12,6 +12,10 @@
         <p v-text="date"></p>
       </div>
     </div>
+    <div style="height:60px;"></div>
+
+    <swiper :data="posterList"></swiper>
+    
     <!--打卡情况信息-->
     <div class="signIn-middle" :class="{'signIn-middle1': (!punchCardInfo.isNeed || showHide)}">
       <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs" :key="punchIndex">
@@ -475,15 +479,18 @@ import { MessageBox, Popup } from "mint-ui";
 import moment from "moment";
 import html2canvas from "html2canvas";
 import MtButton from "../../../node_modules/mint-ui/packages/button/src/button";
+import swiper from "./posterSwiper";
+import Vue from 'vue'
 
 let df = "HH:mm:ss";
 let df1 = "YYYY年MM月DD日";
 let df2 = "YYYY-MM-DD HH:mm:ss";
 let df3 = "YYYY-MM-DD HH:mm";
 export default {
-  components: { MtButton },
+  components: { MtButton,swiper },
   data() {
     return {
+      posterList: [],
       kejian:false,
       updatePunchCard: {
         //更新打卡信息记录
@@ -523,8 +530,17 @@ export default {
   },
   created() {
     this.doSearch(); //初始化页面查询数据
+    this.getBannerList()
   },
   methods: {
+    getBannerList(){
+      Vue.http.interceptors.push(function (request, next) {
+        request.headers.set('locationUid', '0');
+      })
+      this.$http.get("/api/v1.0/client/show").then(res => {
+        this.posterList = res.body.result;
+      });
+    },
     //====初始开始====//
     doSearch(state) {
       this.handerSign();
