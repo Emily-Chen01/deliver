@@ -1,9 +1,7 @@
 <template>
   <swiper :options="swiperOption" ref="mySwiper" class="banner">
     <swiper-slide v-for="item in data" :key="item.img">
-      <!-- <a :href="item.link" > -->
       <img :src="item.picture" @click="showCount(item)" />
-      <!-- </a> -->
     </swiper-slide>
     <div class="swiper-pagination" slot="pagination"></div>
   </swiper>
@@ -24,9 +22,12 @@ export default {
     return {
       swiperOption: {
         autoplay: {
-          delay: 1300
+          delay: 3000,
+          stopOnLastSlide: false,
+          disableOnInteraction: false,
         },
-        loop: true,
+        observer:true, 
+        observeParents:true,
         pagination: {
           el: ".swiper-pagination"
         }
@@ -34,22 +35,39 @@ export default {
     };
   },
   methods: {
+    // initSwiper() {
+    //   setTimeout(() => {
+    //     var swiperOption = {
+    //       autoplay: {
+    //         delay: 1300,
+    //         stopOnLastSlide: false,
+    //         disableOnInteraction: false,
+    //       },
+    //       observer:true, 
+    //       observeParents:true,
+    //       pagination: {
+    //         el: ".swiper-pagination"
+    //       }
+    //     };
+    //   }, 300);
+    // },
     showCount(item) {
-        // console.log(item.showId)
-      let id = item;
       Vue.http.interceptors.push(function(request, next) {
         request.headers.set("showId", item.showId);
       });
       this.$http.get("/api/v1.0/client/showCount").then(res => {
-        console.log('广告');
+        console.log("广告");
       });
-      window.location.href =item.link
+      window.location.href = item.link;
     }
   },
   components: {
     swiper,
     swiperSlide
-  }
+  },
+  mounted() {
+    // this.initSwiper()
+  },
 };
 </script>
 
@@ -68,13 +86,14 @@ export default {
 }
 .banner img {
   width: 100%;
-  height: 60px;
+  height: 100px;
   border-radius: 8px;
 }
 
 .banner .swiper-pagination {
-  bottom: 20px;
-  margin-bottom: 6px;
+  /* bottom: 20px; */
+  display: flex;
+  margin-bottom: 10px;
 }
 
 .banner .swiper-pagination .swiper-pagination-bullet {
@@ -89,5 +108,9 @@ export default {
   .swiper-pagination
   .swiper-pagination-bullet.swiper-pagination-bullet-active {
   opacity: 1;
+}
+
+.swiper-container-horizontal > .swiper-pagination-bullets{
+  width:90%;
 }
 </style>

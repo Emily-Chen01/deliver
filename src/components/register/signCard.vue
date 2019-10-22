@@ -35,7 +35,7 @@
             </div>
           </div>
         </li>
-        <!-- <li class="record-list-item">
+        <li class="record-list-item">
           <a href="http://cn.bing.com" style="text-decoration:none;out-line: none;color: #333333;">
             <div class="record-list-item_main">
               <div class="record-list-item_position">
@@ -46,7 +46,7 @@
               </div>
             </div>
           </a>
-        </li> -->
+        </li>
       </ul>
     </div>
     <!--解除绑定-->
@@ -58,7 +58,7 @@
           </div>
         </div>
         <mt-button type="primary" size="large" class="Binding-btn" @click.native="handerUnbundling">解除绑定</mt-button>
-        <div class="Binding-hotLine">客服热线 ：0512-65925031</div>
+        <div class="Binding-hotLine">客服热线：010-59272967</div>
       </div>
     </div>
     <!--底部工具-->

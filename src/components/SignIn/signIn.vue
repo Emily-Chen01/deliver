@@ -12,10 +12,9 @@
         <p v-text="date"></p>
       </div>
     </div>
-    <div style="height:60px;"></div>
 
     <swiper :data="posterList"></swiper>
-    
+
     <!--打卡情况信息-->
     <div class="signIn-middle" :class="{'signIn-middle1': (!punchCardInfo.isNeed || showHide)}">
       <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs" :key="punchIndex">
@@ -482,6 +481,7 @@ import MtButton from "../../../node_modules/mint-ui/packages/button/src/button";
 import swiper from "./posterSwiper";
 import Vue from 'vue'
 
+
 let df = "HH:mm:ss";
 let df1 = "YYYY年MM月DD日";
 let df2 = "YYYY-MM-DD HH:mm:ss";
@@ -541,6 +541,7 @@ export default {
         this.posterList = res.body.result;
       });
     },
+
     //====初始开始====//
     doSearch(state) {
       this.handerSign();
@@ -1040,7 +1041,7 @@ export default {
     margin: 0;
   }
   .signIn-header {
-    position: fixed;
+    // position: fixed;
     box-sizing: border-box;
     overflow: hidden;
     z-index: 10;
@@ -1087,7 +1088,7 @@ export default {
   }
   .signIn-middle {
     position: relative;
-    padding-top: 100px;
+    // padding-top: 100px;
     height: 210px;
     overflow-y: hidden;
     .signIn-article {
