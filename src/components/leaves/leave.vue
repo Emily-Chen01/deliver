@@ -1143,11 +1143,11 @@ export default {
                             //configType服务器的初始为0
                             let configType = response.body.result.configType;
                             //approvalperson获取审批人列表
-                            if(configType == 1){
-                                this.shenpiShow=true
-                            } else {
-                                this.shenpiShow=false
-                            }
+                            // if(configType == 1){
+                            //     this.shenpiShow=true
+                            // } else {
+                            //     this.shenpiShow=false
+                            // }
                             this.approvalperson(configType);
                             this.applyData.approvalConfigUid = response.body.result.uid; //具体流程的uid
                             this.attendRuleUid = /* '1' ||  */ response.body.result.attendRuleUid; // '1' 多组,不分段 '2' 无多组,分段

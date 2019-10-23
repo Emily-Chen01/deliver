@@ -3,7 +3,7 @@
     <swiper-slide v-for="item in data" :key="item.img">
       <img :src="item.picture" @click="showCount(item)" />
     </swiper-slide>
-    <div class="swiper-pagination" slot="pagination"></div>
+      <div class="swiper-pagination" slot="pagination"></div>
   </swiper>
 </template>
 <script>
@@ -109,8 +109,13 @@ export default {
   .swiper-pagination-bullet.swiper-pagination-bullet-active {
   opacity: 1;
 }
+.swiper-container{
+  display:flex;
+  justify-content: center;
+}
 
-.swiper-container-horizontal > .swiper-pagination-bullets{
-  width:90%;
+.swiper-pagination-fraction, .swiper-pagination-custom, .swiper-container-horizontal>.swiper-pagination-bullets{
+  width:80%;
+  left: none;
 }
 </style>
