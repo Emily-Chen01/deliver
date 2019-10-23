@@ -541,7 +541,6 @@ export default {
         this.posterList = res.body.result;
       });
     },
-
     //====初始开始====//
     doSearch(state) {
       this.handerSign();

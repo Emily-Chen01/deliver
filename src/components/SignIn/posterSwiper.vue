@@ -58,7 +58,14 @@ export default {
       this.$http.get("/api/v1.0/client/showCount").then(res => {
         console.log("广告");
       });
-      window.location.href = item.link;
+      if(!item.link){
+        this.$message({
+          type: "error",
+          message: "此广告暂时还未设置链接！"
+        });
+      } else{
+        window.location.href = item.link;
+      }
     }
   },
   components: {
@@ -92,30 +99,23 @@ export default {
 
 .banner .swiper-pagination {
   /* bottom: 20px; */
-  display: flex;
   margin-bottom: 10px;
+  line-height:10px;
 }
 
+
 .banner .swiper-pagination .swiper-pagination-bullet {
-  width: 20px;
-  height: 5px;
-  background: #fff;
-  opacity: 0.5;
+  width: 8px;
+  height: 8px;
+  background: black;
+  opacity: 0.2;
   border-radius: 5px;
   margin: 0 5px;
 }
 .banner
   .swiper-pagination
   .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  opacity: 1;
-}
-.swiper-container{
-  display:flex;
-  justify-content: center;
+  opacity: 0.5;
 }
 
-.swiper-pagination-fraction, .swiper-pagination-custom, .swiper-container-horizontal>.swiper-pagination-bullets{
-  width:80%;
-  left: none;
-}
 </style>

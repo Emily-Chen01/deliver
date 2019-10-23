@@ -144,6 +144,7 @@
         this.$http.post('/api/v1.0/client/bind', bindingObj)
           .then(
             response => { //进行手机号码进行绑定
+            console.log(response.body.message)
               this.submitting = false
               if (response.body.code === 200) {
                 this.findCompany(this.phoneNumber);
