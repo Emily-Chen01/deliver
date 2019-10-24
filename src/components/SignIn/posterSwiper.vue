@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      showId:'',
+      showId: "",
       link: "",
       swiperOption: {
         autoplay: {
@@ -39,26 +39,26 @@ export default {
   methods: {
     showCount(item) {
       this.link = item.link;
-      this.showId=item.showId
-      Vue.http.interceptors.push(function(request, next) {
-        request.headers.set("showId", this.showId);
-      });
-      this.$http.get("/api/v1.0/client/showCount").then(res => {
-        if (!this.link) {
-          this.$message({
-            type: "error",
-            message: "此广告暂时还未设置链接！"
-          });
-        } else {
+      this.showId = item.showId;
+      if (!this.link) {
+        this.$message({
+          type: "error",
+          message: "此广告暂时还未设置链接！"
+        });
+      } else {
+        Vue.http.interceptors.push(function(request, next) {
+          request.headers.set("showId", this.showId);
+        });
+        this.$http.get("/api/v1.0/client/showCount").then(res => {
           window.location.href = this.link;
-        }
-      });
+        });
+      }
     }
   },
   components: {
     swiper,
     swiperSlide
-  },
+  }
 };
 </script>
 
