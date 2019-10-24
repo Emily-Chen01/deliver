@@ -3,7 +3,7 @@
     <swiper-slide v-for="item in data" :key="item.img">
       <img :src="item.picture" @click="showCount(item)" />
     </swiper-slide>
-      <div class="swiper-pagination" slot="pagination"></div>
+    <div class="swiper-pagination" slot="pagination"></div>
   </swiper>
 </template>
 <script>
@@ -20,14 +20,16 @@ export default {
   },
   data() {
     return {
+      showId:'',
+      link: "",
       swiperOption: {
         autoplay: {
           delay: 3000,
           stopOnLastSlide: false,
-          disableOnInteraction: false,
+          disableOnInteraction: false
         },
-        observer:true, 
-        observeParents:true,
+        observer: true,
+        observeParents: true,
         pagination: {
           el: ".swiper-pagination"
         }
@@ -35,45 +37,27 @@ export default {
     };
   },
   methods: {
-    // initSwiper() {
-    //   setTimeout(() => {
-    //     var swiperOption = {
-    //       autoplay: {
-    //         delay: 1300,
-    //         stopOnLastSlide: false,
-    //         disableOnInteraction: false,
-    //       },
-    //       observer:true, 
-    //       observeParents:true,
-    //       pagination: {
-    //         el: ".swiper-pagination"
-    //       }
-    //     };
-    //   }, 300);
-    // },
     showCount(item) {
+      this.link = item.link;
+      this.showId=item.showId
       Vue.http.interceptors.push(function(request, next) {
-        request.headers.set("showId", item.showId);
+        request.headers.set("showId", this.showId);
       });
       this.$http.get("/api/v1.0/client/showCount").then(res => {
-        console.log("广告");
+        if (!this.link) {
+          this.$message({
+            type: "error",
+            message: "此广告暂时还未设置链接！"
+          });
+        } else {
+          window.location.href = this.link;
+        }
       });
-      if(!item.link){
-        this.$message({
-          type: "error",
-          message: "此广告暂时还未设置链接！"
-        });
-      } else{
-        window.location.href = item.link;
-      }
     }
   },
   components: {
     swiper,
     swiperSlide
-  },
-  mounted() {
-    // this.initSwiper()
   },
 };
 </script>
@@ -100,9 +84,8 @@ export default {
 .banner .swiper-pagination {
   /* bottom: 20px; */
   margin-bottom: 10px;
-  line-height:10px;
+  line-height: 10px;
 }
-
 
 .banner .swiper-pagination .swiper-pagination-bullet {
   width: 8px;
@@ -117,5 +100,4 @@ export default {
   .swiper-pagination-bullet.swiper-pagination-bullet-active {
   opacity: 0.5;
 }
-
 </style>
