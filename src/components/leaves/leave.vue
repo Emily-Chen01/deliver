@@ -1138,7 +1138,6 @@ export default {
             //选择申请分类之后 根据 申请分类的标号 获取对应的 数据
             this.$http.get("/api/v1.0/client/queryApprovalForm/" + this.selectedDataApply).then(response => {
                         if (response.body.code === 200) {
-                            // console.log(response.body.result)
                             this.fieldsdata = response.body.result;
                             //configType服务器的初始为0
                             let configType = response.body.result.configType;
@@ -1279,7 +1278,6 @@ export default {
         },
         //添加加班时间段
         addTime(uid) {
-            // console.log(this.applyWorkRefAll)
             this.applyWorkRefAll[uid.toString()].push({
                 startTime: "",
                 endTime: "",
@@ -1407,14 +1405,12 @@ export default {
         },
         //提交申请
         handerDataSubmit() {
-            // console.log(this.fields)
             if (this.selectedDataApply != "0") {
                 this.applyData.leaveUid = "";
             }
 
             let approvalValues = [];
 
-            // console.log(this.forgetTime);
 
             for (let i = 0; i < this.fields.length; i++) {
                 let item = this.fields[i];
@@ -1699,7 +1695,6 @@ export default {
                     }
                 }
             }
-            // console.log(approvalValues);
             this.applyData.approvalValues = approvalValues;
             Indicator.open("正在提交申请...");
 
@@ -1782,7 +1777,6 @@ export default {
         },
         changeselTab() {
             let origin = window.location.href.split("#")[0];
-            // console.log(origin);
             let newloactionhref = origin + "#/leave";
             window.location.replace(newloactionhref);
         },

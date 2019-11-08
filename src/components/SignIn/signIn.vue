@@ -151,7 +151,7 @@
     </div>
     <!--是否允许获取定位弹窗-->
     <div v-if="kejian">
-      <mt-popup v-model="qulocation" class="getLocation-alert-wrapper" :closeOnClickModal="false">
+      <mt-popup v-model="qulocation" position="top" class="getLocation-alert-wrapper1" pop-transition="popup-fade" :closeOnClickModal="false">
         <div class="getLocation-alert-content">
           <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
           <p v-if="failModel && !wifiPopup" v-text="failModelErr ? '获取地理位置失败' : '请打开微信定位'"></p>
@@ -489,7 +489,14 @@ let df3 = "YYYY-MM-DD HH:mm";
 export default {
   components: { MtButton,swiper },
   data() {
+    
+    // const handler = function(e) {
+    //     e.preventDefault();
+    // }
     return {
+      handle: function(e){
+        e.preventDefault()
+      },
       posterList: [],
       kejian:false,
       updatePunchCard: {
@@ -528,11 +535,33 @@ export default {
       isOutside: false
     };
   },
+  watch: {
+    qulocation(value) {
+      if(value) {
+        this.closeTouch ()
+      }else{
+        this.openTouch ()
+      }
+    },
+    // qulocation: function (val) {
+    //   if(val) {
+    //       document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, { passive: false });
+    //   } else {
+    //       document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, { passive: false });
+    //   }
+    // }
+  },
   created() {
     this.doSearch(); //初始化页面查询数据
     this.getBannerList()
   },
   methods: {
+    closeTouch () {
+          document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, {passive:false})//阻止默认事件
+      },
+      openTouch () {
+          document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
+      },
     getBannerList(){
       Vue.http.interceptors.push(function (request, next) {
         request.headers.set('locationUid', '0');
@@ -558,7 +587,6 @@ export default {
           //查询是否有打卡
           if (response.body.code === 200) {
             this.punchCardInfo = response.body.result;
-            // console.log(response.body.result)
             if (this.punchCardInfo.attendRuleUid === "4") {
               MessageBox("提示", "当前考勤不需要打卡");
               this.$router.push({ path: "/signCard" });
@@ -924,6 +952,11 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+    position: fixed; 
+    left: 0;
+    top: 0;
+  }
 .amapImg-waikuang{
   width:100%;
   height:100px;
@@ -1257,6 +1290,7 @@ export default {
   .signIn-middle1 {
     height: auto;
     overflow-y: inherit;
+    margin-top: 10px;
   }
   .Punch-btn-wrapper {
     position: absolute;
@@ -1302,11 +1336,14 @@ export default {
       }
     }
   }
-  .getLocation-alert-wrapper {
+  .getLocation-alert-wrapper1 {
     width: 276px;
     background-color: #ffffff;
     border-radius: 4px;
     padding-bottom: 18px;
+    max-height: 500px;
+    overflow-y: auto;
+    margin-top: 35px;
     .getLocation-alert-content {
       box-sizing: border-box;
       padding: 20px 55px 0;
