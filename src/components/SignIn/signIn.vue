@@ -494,7 +494,7 @@ export default {
     //     e.preventDefault();
     // }
     return {
-      handle: function(e){
+      handler: function(e){
         e.preventDefault()
       },
       posterList: [],
@@ -557,10 +557,16 @@ export default {
   },
   methods: {
     closeTouch () {
-          document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, {passive:false})//阻止默认事件
+      document.getElementById("signIn-wrapper").style.height="100%"
+      document.getElementById("signIn-wrapper").style.overflow="hidden"
+      document.getElementById("signIn-wrapper").style.postion="fixed"
+          // document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, {passive:false})//阻止默认事件
       },
       openTouch () {
-          document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
+        document.getElementById("signIn-wrapper").style.height=""
+        document.getElementById("signIn-wrapper").style.overflow=""
+        document.getElementById("signIn-wrapper").style.postion="relative"
+          // document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
       },
     getBannerList(){
       Vue.http.interceptors.push(function (request, next) {
@@ -952,11 +958,11 @@ export default {
 </script>
 
 <style lang="scss">
-body {
-    position: fixed; 
-    left: 0;
-    top: 0;
-  }
+// body {
+//     position: fixed; 
+//     left: 0;
+//     top: 0;
+//   }
 .amapImg-waikuang{
   width:100%;
   height:100px;
@@ -1121,7 +1127,7 @@ body {
   .signIn-middle {
     position: relative;
     // padding-top: 100px;
-    height: 210px;
+    height: 120px;
     overflow-y: hidden;
     .signIn-article {
       position: relative;
