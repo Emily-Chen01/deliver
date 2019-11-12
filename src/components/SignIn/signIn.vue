@@ -489,10 +489,6 @@ let df3 = "YYYY-MM-DD HH:mm";
 export default {
   components: { MtButton,swiper },
   data() {
-    
-    // const handler = function(e) {
-    //     e.preventDefault();
-    // }
     return {
       handler: function(e){
         e.preventDefault()
@@ -539,34 +535,49 @@ export default {
     qulocation(value) {
       if(value) {
         this.closeTouch ()
+        this.noScroll()
       }else{
         this.openTouch ()
+        this.canScroll()
       }
     },
-    // qulocation: function (val) {
-    //   if(val) {
-    //       document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, { passive: false });
-    //   } else {
-    //       document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, { passive: false });
-    //   }
-    // }
   },
   created() {
     this.doSearch(); //初始化页面查询数据
     this.getBannerList()
   },
   methods: {
+    overscroll(el) {
+        el.addEventListener('touchstart', function() {
+          var top = el.scrollTop
+            , totalScroll = el.scrollHeight
+            , currentScroll = top + el.offsetHeight;
+          if(top === 0) {
+            el.scrollTop = 1;
+          } else if(currentScroll === totalScroll) {
+            el.scrollTop = top - 1;
+          }
+        });
+        el.addEventListener('touchmove', function(evt) {
+          if(el.offsetHeight < el.scrollHeight)
+            evt._isScroller = true;
+        });
+      },
     closeTouch () {
-      document.getElementById("signIn-wrapper").style.height="100%"
-      document.getElementById("signIn-wrapper").style.overflow="hidden"
-      document.getElementById("signIn-wrapper").style.postion="fixed"
-          // document.getElementsByTagName('body')[0].addEventListener('touchmove', this.handler, {passive:false})//阻止默认事件
+        this.overscroll(document.querySelector('.getLocation-alert-wrapper1'));
+          document.body.addEventListener('touchmove', function(evt) {
+            if(!evt._isScroller) {
+              evt.preventDefault();
+            }
+          });
       },
       openTouch () {
-        document.getElementById("signIn-wrapper").style.height=""
-        document.getElementById("signIn-wrapper").style.overflow=""
-        document.getElementById("signIn-wrapper").style.postion="relative"
-          // document.getElementsByTagName('body')[0].removeEventListener('touchmove', this.handler, {passive:false})//打开默认事件
+        this.overscroll(document.querySelector('#signIn-wrapper'));
+        document.body.addEventListener('touchmove', function(evt) {
+          if(!evt._isScroller) {
+            evt.preventDefault();
+          }
+        })
       },
     getBannerList(){
       Vue.http.interceptors.push(function (request, next) {
@@ -1053,6 +1064,9 @@ export default {
   width: 100%;
   min-height: 100%;
   background-color: #ffffff;
+  // position: fixed;
+  // top:0;
+  // left:0;
   .clearFix {
     &:before {
       content: "";
