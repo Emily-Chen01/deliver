@@ -122,11 +122,12 @@
           </div>
         </div>
       </div>
-      <div class="signIn_mask" v-if="punchCardInfo.isNeed&&!showHide"></div>
     </div>
+    <div class="signIn_mask" v-if="punchCardInfo.isNeed&&!showHide"></div>
+    <div style="height:20px;"></div>
     <div
       class="signIn_hide"
-      :class="{'signIn_hide1':showHide}"
+      :class="[showHide?'signIn_hide1':'signIn_hide2']"
       v-if="punchCardInfo.isNeed && punchCardInfo.punchCardLogs.length"
     >
       <mt-button type="default" @click="showHides" size="small">
@@ -227,29 +228,6 @@
                   <i class="icon_bg_signInImg bg-ico_location_1 mr5"></i>
                   <span style="font-size:12px;" class="amap-detail" id="amap-detail" v-text="'地理位置： '+twRange"> </span>
                 </div>
-                <!-- <div class="signIn-title" style="margin-top:20px;">新打卡记录：</div>
-                <div v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-                  <div class="signIn-yuanbottom">
-                    <div align="left">
-                      <img class="signIn-img_map" :src="amapImg" />
-                    </div>
-                    <div class="signIn-yuanbottom-detail">
-                      <p
-                        class="punch-success-time"
-                        v-text="(updatePunchCard.startWork===0)?('上班时间：'+punTime):('下班时间：'+punTime)"
-                        style="font-size:12px;"
-                      ></p>
-                      <p>
-                        <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:12px;"></i>
-                        <span style="font-size:12px;"
-                        class="signIn-article_location"
-                        id="amap-detail" 
-                        v-text="'地理位置： '+ twRange"
-                        ></span>
-                      </p>
-                    </div>
-                  </div>
-                </div> -->
                 <div class="getLocation-alert-btnBox" style="padding: 8px 0;">
                   <p
                     @click="closeAlert"
@@ -541,6 +519,13 @@ export default {
         this.canScroll()
       }
     },
+    showHide(value){
+      if(value) {
+        
+      }else{
+        
+      }
+    }
   },
   created() {
     this.doSearch(); //初始化页面查询数据
@@ -1140,8 +1125,8 @@ export default {
   }
   .signIn-middle {
     position: relative;
-    // padding-top: 100px;
-    height: 120px;
+    padding-top: 10px;
+    height: 220px;
     overflow-y: hidden;
     .signIn-article {
       position: relative;
@@ -1260,17 +1245,17 @@ export default {
     .signIn-article:last-child {
       margin-bottom: 50px;
     }
-    .signIn_mask {
+  }
+  .signIn_mask {
       position: absolute;
       width: 100%;
       height: 50px;
-      bottom: 0;
+      top: 305px;
       background-image: linear-gradient(
         rgba(255, 255, 255, 0),
         rgba(255, 255, 255, 1)
       );
     }
-  }
   .signIn_hide {
     .mint-button {
       background-color: transparent;
@@ -1280,6 +1265,26 @@ export default {
       }
       .mint-button-text {
         color: #26a2ff;
+      }
+      .mint-button-icon {
+        vertical-align: inherit;
+      }
+    }
+  }
+  .signIn_hide2{
+    width: 100%;
+    position: absolute;
+    top: 310px;
+    left: auto;
+    .mint-button {
+      margin-top: 9px;
+      background-color: transparent;
+      box-shadow: none;
+      &:after {
+        background-color: transparent;
+      }
+      .mint-button-text {
+        color: #ffffff;
       }
       .mint-button-icon {
         vertical-align: inherit;
