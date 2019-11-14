@@ -1087,6 +1087,8 @@ export default {
     background: #20a1ff;
     font-size: 14px;
     color: #ffffff;
+    display: flex;
+    align-items: center;
     .signIn-header-left {
       float: left;
       box-sizing: border-box;
@@ -1103,7 +1105,7 @@ export default {
     .signIn-header-center {
       float: left;
       box-sizing: border-box;
-      margin-top: 15px;
+      // margin-top: 15px;
       padding-left: 10px;
       padding-right: 170px;
       width: 100%;
@@ -1112,7 +1114,7 @@ export default {
     }
     .signIn-header-right {
       position: absolute;
-      top: 16px;
+      // top: 16px;
       right: 15px;
       padding: 0 10px;
       height: 30px;
