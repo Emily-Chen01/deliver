@@ -18,7 +18,7 @@
             <el-col :span="8" :push="1">
               <el-button type="primary" :disabled="YZdisabled || verCodeShow" @click.native="handerClick"
                          class="binding-main-btn fs12">
-                <span>{{yanzheng}}</span></el-button>
+                <span style="color:white;">{{yanzheng}}</span></el-button>
             </el-col>
           </el-form-item>
           <el-form-item v-if="verCodeShow">
@@ -44,7 +44,7 @@
         </el-form>
       </el-col>
       <el-button :disabled="verCodeShow || submitting" type="primary" @click.native="handerSubmit" class="binding-main-btn mt20 fs12">
-        <span>确定</span>
+        <span style="color:white;">确定</span>
       </el-button>
     </el-row>
     <!--弹框-->
@@ -303,6 +303,7 @@
           margin: 0;
           text-align: center;
           line-height: 25px;
+          color:white;
         }
       }
     }

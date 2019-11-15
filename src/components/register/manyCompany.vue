@@ -64,7 +64,7 @@
     },
   }
 </script>
-<style lang="scss">
+<style  lang="scss">
   #manyCompanyWarpper {
     border-bottom: 1px solid #d9d9d9;
     .manyCompanyTitle {

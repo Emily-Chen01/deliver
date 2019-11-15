@@ -2099,7 +2099,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 #leave-wrapper {
     background: #ffffff;
     min-height: 100vh;

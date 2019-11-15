@@ -62,14 +62,14 @@ export default {
 };
 </script>
 
-<style>
-* {
+<style scoped>
+/* * {
   margin: 0;
   padding: 0;
   list-style: none;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   color: #2c3e50;
-}
+} */
 .banner .swiper-slide {
   width: 100vw;
   padding: 10px;

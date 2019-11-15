@@ -63,7 +63,7 @@
             <p>
               <span
                 class="article-tab article-tab-sx article-tab-sq"
-                @click="updatePunch({punchCardUid:punch.uid,startWork:0})"
+                @click="updatePunch({punch,startWork:0})"
               >
                 <i class="icon_bg_signInImg bg-icon_gengxin"></i>
                 更新当前
@@ -112,7 +112,7 @@
             <p>
               <span
                 class="article-tab article-tab-sx article-tab-sq"
-                @click="updatePunch({punchCardUid:punch.uid,startWork:1})"
+                @click="updatePunch({punch,startWork:1})"
               >
                 <i class="icon_bg_signInImg bg-icon_gengxin"></i>
                 更新当前
@@ -160,8 +160,8 @@
         </div>
 
         <div v-if="updatePunchCard.updateState===true">
-          <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs" :key="punchIndex">
-            <div class="signIn-article-right" v-if="punchClock(punch.twStatus)">
+          <!-- <div class="signIn-article" v-for="(punch,punchIndex) in punchCardInfo.punchCardLogs" :key="punchIndex">
+            <div class="signIn-article-right" v-if="punchClock(punch.owStatus)"> -->
               <div style="padding: 0 20px;max-width:240px;"
                 class="signIn-article-top"
                 :class="{'signIn-article-top1':  punchCardInfo.attendRuleUid==='3'}"
@@ -171,23 +171,18 @@
                       <div class="changeyuantitle-bj"></div>
                       <div class="signIn-title" style="font-size:10px;margin-top:1px;">原打卡记录</div>
                     </div>
-                    <!-- <div class="punch-success-time punch-success-timex"
-                      v-text="(updatePunchCard.startWork===0)?(punchTime(punch.twTime)):(punchTime(punch.owTime))"
-                        ></div> -->
                   </div>
                   
                   <div style="display:flex;">
                     <div class="mapkuang" style="width:40%;">
-                      <img style="margin-top: -38px;margin-left: -80px;" :src="punch.twMap" >
+                      <img style="margin-top: -38px;margin-left: -80px;" :src="(updatePunchCard.startWork===0)?(updatePunchCard.twMap):(updatePunchCard.owMap)" >
                     </div>
-                    
                     <div class="signIn-yuanbottom-detail signIn-yuanbottom-detailx" style="width: 60%;    padding: 10px 0 0 6px;">
-                        <p class="punch-success-time" v-text="(updatePunchCard.startWork===0)?('上班时间： '+punchTime(punch.twTime)):('下班时间： '+punchTime(punch.owTime))" style="font-size:10px;line-height: 16px;text-align: left;" ></p>
+                      <p class="punch-success-time" v-text="(updatePunchCard.startWork===0)?('上班时间： '+punchTime(updatePunchCard.twTime)):('下班时间： '+punchTime(updatePunchCard.owTime))" style="font-size:10px;line-height: 16px;text-align: left;" ></p>
                       <p style="text-align: left;">
-                          <!-- <i class="icon_bg_signInImg bg-ico_location_1 mr5" style="font-size:8px;"></i> -->
                           <span style="font-size:10px;"
                           class="signIn-article_location"
-                          v-text="'地理位置： '+ (punch.twLocation ? (punch.twLocation+'附近') : '')"
+                          v-text="'地理位置： '+ (updatePunchCard.startWork===0)?(updatePunchCard.twLocation ? (updatePunchCard.twLocation+'附近') : ''):(updatePunchCard.owLocation ? (updatePunchCard.owLocation+'附近') : '')"
                           ></span>
                       </p>
                     </div>
@@ -196,14 +191,11 @@
                   <div class="fenge-line"></div>
 
                 <div class="amap-head" style="display:block;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-                  
                   <div style="display:flex;justify-content: space-between;">
                     <div style="display:flex;align-items:center;">
                       <span class="amap-headxinbiaoji" style="height:20px;"></span>
                       <span class="amap-head-xinbt" style="margin-top:1px;">新打卡记录</span>
                     </div>
-                    <!-- <span v-if="!isOutside" class="amap-headLeft" :class="outsideObtainValue?'amap-headLeft1':''" v-text="outsideObtainValue?'区域外':'区域内'" ></span> -->
-                    
                   </div>
                   <div style="display:flex;justify-content: space-between;margin-top: 5px;">
                     <div class="amap-headRight amap-headRightx" v-text="punTime" style="margin-left:10px;"></div>
@@ -215,11 +207,8 @@
                       style="text-align: right;margin-right: 5px;"
                     ></div>
                   </div>
-                  
                 </div>
-                <!-- <pre>{{isOutside}}</pre> -->
                 <div id="amap-box" style="padding:0;" v-if="punchCardInfo.locations.length && !failModel && !wifiPopup">
-                  <!--<div id="amapContainer"></div>-->
                   <div class="amapImgkuang">
                     <img style="margin-top: -20px;" :src="amapImg" alt />
                   </div>
@@ -247,8 +236,8 @@
                   >确定</p>
                 </div>
               </div>
-            </div>
-          </div>
+            <!-- </div>
+          </div> -->
         </div>
 
         <div class="amap-head-wku" v-if="updatePunchCard.updateState===false">
@@ -477,7 +466,13 @@ export default {
         //更新打卡信息记录
         updateState: false, //判断是否更新打卡
         punchCardUid: "", //更新打卡的数据id
-        startWork: null //更新打卡的上下班场次,0上班1下班
+        startWork: null, //更新打卡的上下班场次,0上班1下班
+        twMap:"",
+        owMap:"",
+        twTime:"",
+        owTime:"",
+        twLocation:"",
+        owLocation:""
       },
       punchCardInfo: {
         //获取打卡信息记录
@@ -671,8 +666,14 @@ export default {
     updatePunch(data) {
       this.kejian=true
       this.updatePunchCard.updateState = true;
-      this.updatePunchCard.punchCardUid = data.punchCardUid;
+      this.updatePunchCard.punchCardUid = data.punch.uid;
       this.updatePunchCard.startWork = data.startWork;
+      this.updatePunchCard.twMap= data.punch.twMap;
+      this.updatePunchCard.owMap= data.punch.owMap;
+      this.updatePunchCard.twTime= data.punch.twTime;
+      this.updatePunchCard.owTime= data.punch.owTime;
+      this.updatePunchCard.twLocation= data.punch.twLocation;
+      this.updatePunchCard.owLocation= data.punch.owLocation;
       this.handerClickEvent();
     },
     //打卡开始
@@ -953,7 +954,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 // body {
 //     position: fixed; 
 //     left: 0;

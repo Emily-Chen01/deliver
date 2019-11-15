@@ -217,7 +217,7 @@
               if (response.body.code === 200) {
                 Toast({
                   message: '反馈成功',
-                  iconClass: 'icon icon-success'
+                  iconClass: 'bg-img ico_success'
                 });
                 this.fetchProfile();
               }
@@ -236,7 +236,7 @@
           if (response.body.code === 200) {
             Toast({
               message: '状态修改成功',
-              iconClass: 'icon icon-success'
+              iconClass: 'bg-img ico_success'
             });
             this.fetchProfile();
           }
