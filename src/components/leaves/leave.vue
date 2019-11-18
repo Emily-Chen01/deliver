@@ -341,7 +341,7 @@
                         </div>
                         <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6) || item.code =='outTime'" >
                             <mt-button type="primary" @click.native="addTime(item.uid)">
-                                <span>+添加时间</span>
+                                <span style="font-size:14px;">+添加时间</span>
                             </mt-button>
                         </div>
                     </div>
@@ -427,6 +427,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="leavebox">
                     <div class="leaveboxlft icon-stars">审批对象</div>
                     <div class="leaveboxcen" v-show="shenpiShow">

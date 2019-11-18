@@ -23,7 +23,7 @@
             <img :src="imgSrc.timeIcon" class="timeImageClass">
           </div>
           <div class="timeSpanClass">
-            <span>今日工时共计:{{punchState.attendRuleUid !== '4' ? ((duration !== null) ? duration : '') : ''}}小时</span>
+            <span>今日工时共计：{{punchState.attendRuleUid !== '4' ? ((duration !== null) ? duration : '') : ''}}小时</span>
           </div>
         </div>
         <div class="punchInfo" v-for="(punchItem,punchIndex) in punchState.data" :key="punchIndex">
@@ -44,6 +44,26 @@
           </div>
         </div>
       </div>
+      <div class="timeTitle timeTitle1">
+        <div class="todayTime">
+          <div class="timeDivClass">
+            <img :src="imgSrc.timeIcon" class="timeImageClass">
+          </div>
+          <div class="timeSpanClass">
+            <span>剩余年假(天)：{{residueAnnualDays}}天</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeTitle timeTitle1 timeTitle2">
+        <div class="todayTime">
+          <div class="timeDivClass">
+            <img :src="imgSrc.timeIcon" class="timeImageClass">
+          </div>
+          <div class="timeSpanClass">
+            <span>剩余调休假(小时)：{{residueLieuHours}}小时</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -58,6 +78,8 @@
 //    abnormal=异常   normal=正常   leave=请假   这个定的值是封装在日历里面定义好的颜色
     data(){
       return {
+        residueAnnualDays:"",
+        residueLieuHours:"",
         fcEvents: [
 //                {
 //                  title : '',
@@ -128,6 +150,8 @@
             //显示默认当天考勤信息
             this.dayClick(new Date());
             if (response.body.result) {
+              this.residueAnnualDays=response.body.result.residueAnnualDays
+              this.residueLieuHours=response.body.result.residueLieuHours
               //显示假期信息
               let arrayShow = response.body.result.attend.holidays;
               if (arrayShow.length) {
@@ -296,7 +320,12 @@
     //   // text-align: right;
     // }
   }
-
+  .timeTitle2{
+    border-top: 1px solid #cccccc;
+  }
+  .timeTitle1{
+    margin-top:-10px;
+  }
   .timeTitle {
     position: relative;
     font-size: 14px;
@@ -330,11 +359,15 @@
     .lineStyle {
       border-bottom: 1px solid #cccccc;
     }
+    // .lineStyle1 {
+    //   border-top: 1px solid #cccccc;
+    // }
     .punchInfo {
       box-sizing: border-box;
       width: 100%;
       padding: 15px 15px;
       overflow: hidden;
+      border-bottom: 1px solid #cccccc;
       p {
         margin: 0;
       }

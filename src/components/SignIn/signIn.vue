@@ -151,7 +151,7 @@
       </mt-button>
     </div>
     <!--是否允许获取定位弹窗-->
-    <div v-if="kejian">
+    <!-- <div v-if="kejian"> -->
       <mt-popup v-model="qulocation" position="top" class="getLocation-alert-wrapper1" pop-transition="popup-fade" :closeOnClickModal="false">
         <div class="getLocation-alert-content">
           <p v-if="!punchCardInfo.locations.length && !failModel && !wifiPopup">您没有考勤地点，请管理员为您添加考勤地点</p>
@@ -279,7 +279,7 @@
           </div>
         </div>
       </mt-popup>
-    </div>
+    <!-- </div> -->
     
     <!--打卡成功弹窗-->
     <mt-popup v-model="popupVisible" class="punch-success-wrapper" :closeOnClickModal="false">
@@ -702,7 +702,7 @@ export default {
     },
     //取消弹框按钮
     closeAlert() {
-      this.kejian=false
+      // this.kejian=false
       // let instance = Toast('加载中');
       //打卡获取地理位置alert
       this.showBtnContent = false;
@@ -710,6 +710,7 @@ export default {
       
       // 加定时器是因为弹框不能立即消失，状态值改变，里面的内容会乱，加个定时器延迟其他状态值改变
       setTimeout(() => {
+        this.qulocation = false;
         this.kejian=false
         this.failModel = false;
         this.wifiPopup = false;
