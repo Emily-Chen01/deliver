@@ -945,6 +945,7 @@ export default {
           if (response.body.code === 200) {
             this.doSearch(true);
           } else if (response.body.code === 500) {
+            this.showBtnContent = false;
             MessageBox("提示", response.body.message);
           }
         },

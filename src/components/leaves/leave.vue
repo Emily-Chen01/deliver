@@ -341,7 +341,7 @@
                         </div>
                         <div class="mt10" v-if="item.code=='workOverTime' || (item.code=='leaveTime' && selectHoliday.TYPE==6) || item.code =='outTime'" >
                             <mt-button type="primary" @click.native="addTime(item.uid)">
-                                <span style="font-size:14px;">+添加时间</span>
+                                <span>+添加时间</span>
                             </mt-button>
                         </div>
                     </div>
@@ -2100,7 +2100,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 #leave-wrapper {
     background: #ffffff;
     min-height: 100vh;
@@ -2484,14 +2484,20 @@ export default {
         }
         &::before {
             content: "";
-            margin-right: 10px;
+            // margin-right: 10px;
             clear: both;
         }
     }
     .el-checkbox-group {
-        display: inline-block;
+        // display: inline-block;
+        .el-checkbox{
+            width: 25%;
+        }
+        .el-checkbox+.el-checkbox{
+            margin-left:0px;
+        }
     }
-    border-bottom: 1px solid #d2dce6;
+    border-bottom: 1px solid #adb4bb;
     padding: 0 0 10px 0;
 }
 .leaveboxImg {
