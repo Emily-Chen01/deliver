@@ -54,7 +54,7 @@
           </div>
         </div>
       </div>
-      <div class="timeTitle timeTitle1 timeTitle2">
+      <!-- <div class="timeTitle timeTitle1 timeTitle2">
         <div class="todayTime">
           <div class="timeDivClass">
             <img :src="imgSrc.timeIcon" class="timeImageClass">
@@ -63,7 +63,7 @@
             <span>剩余调休假(小时)：{{residueLieuHours}}小时</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
