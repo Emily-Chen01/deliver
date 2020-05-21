@@ -577,6 +577,7 @@ export default {
 
 <style lang="scss">
 .basicsInformation {
+  padding-bottom: 3px;
   .van-nav-bar .van-icon {
     color: black;
   }
@@ -601,7 +602,7 @@ export default {
     width: 90%;
     margin-left: 5%;
     padding: 15px 13px 15px 16px;
-    border-bottom: 1px solid #f5f6f8;
+    border-bottom: 1px solid #ebedf0;
   }
   .van-field__label {
     text-align: left;

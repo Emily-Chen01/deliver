@@ -24,7 +24,7 @@
               :class="['name',item.ChineseName ? 'have' : '']"
             >{{item.ChineseName ? item.ChineseName : "基本资料"}}</div>
             <div class="other">
-              <span v-show="item.Gender">{{item.Gender ? (item.Gender==1?"男":"女") : "性别"}}
+              <span v-show="item.Gender">{{item.Gender ? item.Gender : "性别"}}
               </span>
               <span v-show="item.Birthday"><i>|</i> {{item.Birthday ? item.Birthday : "生日"}}
               </span>
@@ -38,54 +38,54 @@
           <div v-show="item.Email" class="email">{{item.Email ? item.Email : "-"}}</div>
         </div>
 
-      <!-- 婚姻状况  有小孩  国籍 证件类型 证件号码 有无海外经历 政治面貌 当前地点 邮编 qq 微信
-      自我评价 当前薪资 最高学历 专业 最近公司 最近职位 工作年数 毕业院校 院校所在地 毕业时间 在校附加信息 海外学校
-      学位编码 学历编码 个人照片 意向科室 兴趣爱好 身高 体重 族别 学位 出生地 籍贯 户口所在地-->
-      <div class="ty">
-      <div class="cont" v-show="item.EnglishName">英文名: {{item.EnglishName}}</div>
-      <div class="cont" v-show="item.Phone">电话号码: {{item.Phone}}</div>
-      <div class="cont" v-show="item.WorkStartTime">开始工作时间: {{item.WorkStartTime}}</div>
-      <div class="conta" v-show="item.MaritalStatusID">婚姻状况: {{item.MaritalStatusID}}</div>
-      <div class="conta" v-show="item.Child">有无小孩: {{item.Child}}</div>
-      <div class="conta" style="width:100%" v-show="item.Nation">国籍: {{item.Nation}}</div>
-      <div class="conta" v-show="item.IdType">证件类型: {{item.IdType}}</div>
-      <div class="conta" style="width:100%" v-show="item.IdNumber">证件号码: {{item.IdNumber}}</div>
-      <div class="conta" v-show="item.OverseasExperience">有无海外经历: {{item.OverseasExperience}}</div>
-      <div class="conta" v-show="item.PoliticalStatus">政治面貌: {{item.PoliticalStatus}}</div>
-      <div class="conta" v-show="item.PostalCode">邮编: {{item.PostalCode}}</div>
-      <div class="conta" v-show="item.QQ">qq: {{item.QQ}}</div>
-      <div class="conta" v-show="item.WeiChat">微信: {{item.WeiChat}}</div>
-      <div class="conta" v-show="item.SalaryRangeID">当前薪资: {{item.SalaryRangeID}}</div>
-      <div class="conta" v-show="item.LatestEducationID">最高学历: {{item.LatestEducationID}}</div>
-      <div class="conta" v-show="item.Major">专业: {{item.Major}}</div>
-      <div class="conta" v-show="item.LatestCompany">最近公司: {{item.LatestCompany}}</div>
-      <div class="conta" v-show="item.LatestPosition">最近职位: {{item.LatestPosition}}</div>
-      <div class="conta" v-show="item.TotalYears">工作年数: {{item.TotalYears}}</div>
-      <div class="conta" v-show="item.School">毕业院校: {{item.School}}</div>
-      <div class="conta" style="width:100%" v-show="item.SchoolPlace">院校所在地: {{item.SchoolPlace}}</div>
-      <div class="conta" v-show="item.GraduationDate">毕业时间: {{item.GraduationDate}}</div>
-      <div class="conta" style="width:100%" v-show="item.AdditionalInfo">在校附加信息: {{item.AdditionalInfo}}</div>
-      <div class="conta" v-show="item.OverseaSchool">海外学校: {{item.OverseaSchool}}</div>
-      <div class="conta" v-show="item.BachelorNo">学位编码: {{item.BachelorNo}}</div>
-      <div class="conta" v-show="item.CollegeNo">学历编码: {{item.CollegeNo}}</div>
-      <div class="conta" v-show="item.SectionOffice">意向科室: {{item.SectionOffice}}</div>
-      <div class="conta" v-show="item.Hobby">兴趣爱好: {{item.Hobby}}</div>
-      <div class="conta" v-show="item.Height">身高: {{item.Height}}</div>
-      <div class="conta" v-show="item.Weight">体重: {{item.Weight}}</div>
-      <div class="conta" v-show="item.Nationality">族别: {{item.Nationality}}</div>
-      <div class="conta" v-show="item.Degree">学位: {{item.Degree}}</div>
-      <div class="conta" style="width:100%" v-show="item.BirthPlace">出生地: {{item.BirthPlace}}</div>
-      <div class="conta" style="width:100%" v-show="item.RegisteredAddress">籍贯: {{item.RegisteredAddress}}</div>
-      <div class="conta" style="width:100%" v-show="item.HuKou">户口所在地: {{item.HuKou}}</div>
-      <div
-        class="conta"
-        style="width:100%"
-        v-show="item.ExecutiveSummary"
-      >自我评价: {{item.ExecutiveSummary}}</div>
-      </div>
-      <div v-show="BasicsList.length>0" class="edit" @click="toEditBasics(item)">
-        <div class="icon"></div>
-      </div>
+        <!-- 婚姻状况  有小孩  国籍 证件类型 证件号码 有无海外经历 政治面貌 当前地点 邮编 qq 微信
+        自我评价 当前薪资 最高学历 专业 最近公司 最近职位 工作年数 毕业院校 院校所在地 毕业时间 在校附加信息 海外学校
+        学位编码 学历编码 个人照片 意向科室 兴趣爱好 身高 体重 族别 学位 出生地 籍贯 户口所在地-->
+        <div class="ty" id="ty">
+          <div class="conta" v-if="item.EnglishName">英文名: {{item.EnglishName}}</div>
+          <div class="conta" v-if="item.Phone">电话号码: {{item.Phone}}</div>
+          <div class="conta" v-if="item.WorkStartTime">开始工作时间: {{item.WorkStartTime}}</div>
+          <div class="conta" v-if="item.MaritalStatusID">婚姻状况: {{item.MaritalStatusID}}</div>
+          <div class="conta" v-if="item.Child">有无小孩: {{item.Child}}</div>
+          <div class="conta" style="width:100%" v-if="item.Nation">国籍: {{item.Nation}}</div>
+          <div class="conta" v-if="item.IdType">证件类型: {{item.IdType}}</div>
+          <div class="conta" style="width:100%" v-if="item.IdNumber">证件号码: {{item.IdNumber}}</div>
+          <div class="conta" v-if="item.OverseasExperience">有无海外经历: {{item.OverseasExperience}}</div>
+          <div class="conta" v-if="item.PoliticalStatus">政治面貌: {{item.PoliticalStatus}}</div>
+          <div class="conta" v-if="item.PostalCode">邮编: {{item.PostalCode}}</div>
+          <div class="conta" v-if="item.QQ">qq: {{item.QQ}}</div>
+          <div class="conta" v-if="item.WeiChat">微信: {{item.WeiChat}}</div>
+          <div class="conta" v-if="item.SalaryRangeID">当前薪资: {{item.SalaryRangeID}}</div>
+          <div class="conta" v-if="item.LatestEducationID">最高学历: {{item.LatestEducationID}}</div>
+          <div class="conta" v-if="item.Major">专业: {{item.Major}}</div>
+          <div class="conta" v-if="item.LatestCompany">最近公司: {{item.LatestCompany}}</div>
+          <div class="conta" v-if="item.LatestPosition">最近职位: {{item.LatestPosition}}</div>
+          <div class="conta" v-if="item.TotalYears">工作年数: {{item.TotalYears}}</div>
+          <div class="conta" v-if="item.School">毕业院校: {{item.School}}</div>
+          <div class="conta" style="width:100%" v-if="item.SchoolPlace">院校所在地: {{item.SchoolPlace}}</div>
+          <div class="conta" v-if="item.GraduationDate">毕业时间: {{item.GraduationDate}}</div>
+          <div class="conta" style="width:100%" v-if="item.AdditionalInfo">在校附加信息: {{item.AdditionalInfo}}</div>
+          <div class="conta" v-if="item.OverseaSchool">海外学校: {{item.OverseaSchool}}</div>
+          <div class="conta" v-if="item.BachelorNo">学位编码: {{item.BachelorNo}}</div>
+          <div class="conta" v-if="item.CollegeNo">学历编码: {{item.CollegeNo}}</div>
+          <div class="conta" v-if="item.SectionOffice">意向科室: {{item.SectionOffice}}</div>
+          <div class="conta" v-if="item.Hobby">兴趣爱好: {{item.Hobby}}</div>
+          <div class="conta" v-if="item.Height">身高: {{item.Height}}</div>
+          <div class="conta" v-if="item.Weight">体重: {{item.Weight}}</div>
+          <div class="conta" v-if="item.Nationality">族别: {{item.Nationality}}</div>
+          <div class="conta" v-if="item.Degree">学位: {{item.Degree}}</div>
+          <div class="conta" style="width:100%" v-if="item.BirthPlace">出生地: {{item.BirthPlace}}</div>
+          <div class="conta" style="width:100%" v-if="item.RegisteredAddress">籍贯: {{item.RegisteredAddress}}</div>
+          <div class="conta" style="width:100%" v-if="item.HuKou">户口所在地: {{item.HuKou}}</div>
+          <div
+            class="conta"
+            style="width:100%"
+            v-show="item.ExecutiveSummary"
+          >自我评价: {{item.ExecutiveSummary}}</div>
+        </div>
+        <div v-show="BasicsList.length>0" class="edit" @click="toEditBasics(item)">
+          <div class="icon"></div>
+        </div>
       </div>
       <div v-show="BasicsList.length>0" style="width:100%;height:38px;"></div>
       <div class="add" v-show="BasicsList.length===0">
@@ -137,7 +137,7 @@ export default {
       });
     }
   },
-  created() {
+  mounted() {
   },
   components: {}
 };
@@ -222,12 +222,6 @@ export default {
     width:100%;
     display: flex;
     flex-wrap: wrap;
-    .cont {
-      color: #666666;
-      font-size: 26px;
-      line-height: 45px;
-      width: 50%;
-    }
 
     .conta {
       color: #666666;

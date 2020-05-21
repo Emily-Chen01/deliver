@@ -337,7 +337,7 @@ export default {
 <style lang="scss">
 .up{
   width:100%;
-  height:160px;
+  height:150px;
   display: flex;
   align-items: center;
   background: white;
@@ -356,7 +356,7 @@ export default {
 .resume-page {
   width: 100%; 
   height: 110vh;
-  padding-bottom: 120px;
+  padding-bottom: 130px;
   position: relative;
   box-sizing: border-box;
   text-align: left;
