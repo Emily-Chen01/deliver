@@ -23,17 +23,14 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8082,
+    port: 8085,
     autoOpenBrowser: false,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       //  接口专用配置
       '/api': {
-        target: 'http://192.168.140.215:8082/',
-        // target: 'http://192.168.140.155:8080/', // star
-        // target: 'http://123.57.51.45:8080/', // test
-        // target: 'http://192.168.140.212', // jelly
+        target: 'http://192.168.14.241:8080/'
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

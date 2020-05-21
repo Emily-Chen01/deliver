@@ -6,20 +6,31 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
 }
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  /*margin-top: 5px; 5-30注销为了设计样式*/
-  font-size: 1rem;
-  height: 100vh;
-  background: #eff3f7;
+  width: 100vw;
+    height: 100vh;
+    text-align: center;
+    color: #000;
+    /* touch-action: none; */
+    background: #fff;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-overflow-scrolling: touch;
+}
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    color: transparent
+}
+
+input,
+input:focus,
+button,
+button:focus {
+    -webkit-tap-highlight-color: transparent;
 }
 </style>

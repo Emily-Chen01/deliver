@@ -1,0 +1,23 @@
+{
+  "id": "1819024",
+  "name": "ruipin",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "3745175",
+      "name": "错误",
+      "font_class": "cuowu",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "8827122",
+      "name": "delete",
+      "font_class": "delete",
+      "unicode": "e938",
+      "unicode_decimal": 59704
+    }
+  ]
+}

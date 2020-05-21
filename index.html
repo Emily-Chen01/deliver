@@ -4,12 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>薪薪乐</title>
+  <title>睿聘</title>
   <!-- 添加网页图标-->
   <link rel="shortcut icon" href="/static/logo_1.png" type="image/x-icon"/>
 </head>
-<script src="./static/jweixin-1.2.0.js"></script>
-<script src="https://webapi.amap.com/maps?v=1.4.6&key=44f5b67aec6fdd7669423d22ef317fba&plugin=AMap.Geocoder"></script>
 <style>
   * {
     padding: 0;
@@ -63,4 +61,16 @@
 <div id="app"></div>
 <!-- built files will be auto injected -->
 </body>
+<script>
+   // var vConsole = new VConsole();
+
+         document.getElementsByTagName('html')[0].style.fontSize = (document.documentElement.clientWidth ||  document.body.clientWidth) /10 + 'px';
+
+      window.addEventListener("resize",()=>{
+
+      document.getElementsByTagName('html')[0].style.fontSize = (document.documentElement.clientWidth ||  document.body.clientWidth) /10 + 'px';
+
+    });
+
+</script>
 </html>

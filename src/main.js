@@ -2,52 +2,19 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import Vant from 'vant';
+import 'vant/lib/index.css';
+Vue.use(Vant);
 import router from './router'
-import './assets/css/css_sprites.css'
-import './assets/css/quill_editor.css'
-import {
-  DatetimePicker,
-  Button,
-  InfiniteScroll,
-  Toast,
-  Tabbar,
-  TabItem,
-  Navbar,
-  Progress,
-  Popup,
-  Field,
-  Header,
-  TabContainer,
-  TabContainerItem,
-  Radio,
-  Indicator,
-  Search,
-  Cell
-} from 'mint-ui';
 import VueResource from 'vue-resource'
+import './assets/font/iconfont.css'
 
 Vue.use(VueResource);
-Vue.use(Indicator);
-Vue.component(Tabbar.name, Tabbar);
-Vue.component(TabItem.name, TabItem);
-Vue.component(Navbar.name, Navbar);
-Vue.component(Button.name, Button);
-Vue.component(Progress.name, Progress);
-Vue.component(Popup.name, Popup);
-Vue.component(Field.name, Field);
-Vue.component(DatetimePicker.name, DatetimePicker);
-Vue.component(InfiniteScroll);
-Vue.component(Header.name, Header);
-Vue.component(TabContainer.name, TabContainer);
-Vue.component(TabContainerItem.name, TabContainerItem);
-Vue.component(Radio.name, Radio);
-Vue.component(Cell.name, Cell);
-Vue.component(Search.name, Search);
 
 Vue.http.interceptors.push(function (request, next) {
   // Vue.http.headers.common['token'] = sessionStorage.getItem('token');
   // sessionStorage.setItem('openId', openId);
-  request.headers.set('openId', this.getCookie('openId'));
+  // request.headers.set('openId', this.getCookie('openId'));
   // continue to next interceptor
   next(response => {
     if (response.body.code === 4001) {
@@ -67,20 +34,20 @@ Vue.http.interceptors.push(function (request, next) {
 });
 
 //弹出框禁止滑动
-Vue.prototype.noScroll = function () {
-    var mo = function (e) { e.preventDefault() }
-    document.body.style.overflow = 'hidden'
-    document.addEventListener('touchmove', mo, false)// 禁止页面滑动
-  }
+// Vue.prototype.noScroll = function () {
+//     var mo = function (e) { e.preventDefault() }
+//     document.body.style.overflow = 'hidden'
+//     document.addEventListener('touchmove', mo, false)// 禁止页面滑动
+//   }
    
   //弹出框可以滑动
-  Vue.prototype.canScroll = function () {
-    var mo = function (e) {
-      e.preventDefault()
-    }
-    document.body.style.overflow = ''// 出现滚动条
-    document.removeEventListener('touchmove', mo, false)
-  }
+  // Vue.prototype.canScroll = function () {
+  //   var mo = function (e) {
+  //     e.preventDefault()
+  //   }
+  //   document.body.style.overflow = ''// 出现滚动条
+  //   document.removeEventListener('touchmove', mo, false)
+  // }
 
 //cook开始
 Vue.prototype.setCookie = function (c_name, value, expiredays) {
